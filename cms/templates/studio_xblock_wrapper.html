@@ -81,11 +81,11 @@ label = xblock.display_name or xblock.scope_ids.block_type
  </header>
 % if is_root or not xblock_url:
     <article class="xblock-render">
-    ${content}
+    ${content | n}
     </article>
 % else:
     <div class="xblock-message-area">
-    ${content}
+    ${content | n}
     </div>
 % endif
 
