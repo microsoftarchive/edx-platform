@@ -179,7 +179,9 @@ def verify_setting_entry(setting, display_name, value, explicitly_set):
         list_value = ', '.join(ele.find_by_css('input')[0].value for ele in setting.find_by_css('.videolist-settings-item'))
         assert_equal(value, list_value)
     else:
-        assert_equal(value, setting.find_by_css('.setting-input')[0].value)
+        # If value is set to None, don't check the html value. ie. a auto-generated values
+        if value is not None:
+            assert_equal(value, setting.find_by_css('.setting-input')[0].value)
 
     # VideoList doesn't have clear button
     if not setting.has_class('metadata-videolist-enum'):

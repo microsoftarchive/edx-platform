@@ -18,6 +18,7 @@ def i_see_only_the_settings_and_values(step):
     world.verify_all_setting_entries(
         [
             ['Category', "Week 1", False],
+            ['Discussion Id', None, True],
             ['Display Name', "Discussion", False],
             ['Subcategory', "Topic-Level Student-Visible Label", False]
         ])

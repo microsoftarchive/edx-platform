@@ -11,7 +11,11 @@ _ = lambda text: text
 
 
 class DiscussionFields(object):
-    discussion_id = String(scope=Scope.settings, default="$$GUID$$")
+    discussion_id = String(
+        display_name=_("Discussion Id"),
+        help=_("The id is a unique identifier for the discussion. It is non editable."),
+        scope=Scope.settings,
+        default="$$GUID$$")
     display_name = String(
         display_name=_("Display Name"),
         help=_("Display name for this module"),
@@ -85,8 +89,18 @@ class DiscussionDescriptor(DiscussionFields, MetadataOnlyEditingDescriptor, RawD
     metadata_translations['for'] = 'discussion_target'
 
     @property
+    def editable_metadata_fields(self):
+        editable_fields = super(DiscussionDescriptor, self).editable_metadata_fields
+
+        # Set the discussion id non editable, and make sure the user cannot clear the value
+        editable_fields['discussion_id']['non_editable'] = True
+        editable_fields['discussion_id']['explicitly_set'] = False
+
+        return editable_fields
+
+    @property
     def non_editable_metadata_fields(self):
         non_editable_fields = super(DiscussionDescriptor, self).non_editable_metadata_fields
         # We may choose to enable sort_keys in the future, but while Kevin is investigating....
-        non_editable_fields.extend([DiscussionDescriptor.discussion_id, DiscussionDescriptor.sort_key])
+        non_editable_fields.extend([DiscussionDescriptor.sort_key])
         return non_editable_fields
