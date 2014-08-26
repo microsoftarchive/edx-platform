@@ -36,7 +36,11 @@ from xmodule.editing_module import TabsEditingDescriptor
 from xmodule.raw_module import EmptyDataRawDescriptor
 from xmodule.xml_module import is_pointer_tag, name_to_pathname, deserialize_field
 
-from .video_utils import create_youtube_string, get_video_from_cdn
+from .video_utils import (
+        create_youtube_string, get_video_from_cdn,
+        get_cloudfront_transient_url, private_key_file,
+        get_s3_transient_url
+    )
 from .video_xfields import VideoFields
 from .video_handlers import VideoStudentViewHandlers, VideoStudioViewHandlers
 
@@ -111,6 +115,20 @@ class VideoModule(VideoFields, VideoStudentViewHandlers, XModule):
                 new_url = get_video_from_cdn(cdn_url, source_url)
                 if new_url:
                     sources[index] = new_url
+
+        private_key_string = private_key_file(self.private_key_file, self.course_id)
+
+        for index, source_url in enumerate(sources):
+
+            if (private_key_string and getattr(self, 'keypair_id', False) and
+                'cloudfront.net' in source_url):
+                new_url = get_cloudfront_transient_url(source_url, self.keypair_id, private_key_string)
+            elif (getattr(self, 'aws_access_key', False) and
+                getattr(self, 'aws_access_key', False) and 'amazonaws.com'):
+                new_url = get_s3_transient_url(source_url, self.aws_access_key, self.aws_secret_key)
+
+            if new_url:
+                sources[index] = new_url
 
         if self.download_video:
             if self.source:

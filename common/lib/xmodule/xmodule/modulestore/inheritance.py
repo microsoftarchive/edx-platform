@@ -153,6 +153,26 @@ class InheritanceMixin(XBlockMixin):
         default=True,
         scope=Scope.settings
     )
+    private_key_file = String(
+        help=_("Enter the name of CloudFront private key used for creating a transient video URL."),
+        display_name=_("CloudFront private key"),
+        scope=Scope.settings,
+    )
+    keypair_id = String(
+        help=_("Enter the CloudFront keypair ID of the Amazon KeyPair used for creating a transient video URL."),
+        display_name=_("CloudFront keypair ID"),
+        scope=Scope.settings,
+    )
+    aws_access_key = String(
+        help=_("Enter the AWS access key used for creating a transient video URL."),
+        display_name=_("AWS access key"),
+        scope=Scope.settings,
+    )
+    aws_secret_key = String(
+        help=_("Enter the AWS Secret key used for creating a transient video URL."),
+        display_name=_("AWS Secret key"),
+        scope=Scope.settings,
+    )
 
 
 def compute_inherited_metadata(descriptor):
