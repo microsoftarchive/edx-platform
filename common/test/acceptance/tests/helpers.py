@@ -7,6 +7,7 @@ import functools
 import requests
 from path import path
 from bok_choy.web_app_test import WebAppTest
+from xmodule.modulestore.django import modulestore
 
 
 def skip_if_browser(browser):
@@ -190,11 +191,12 @@ class UniqueCourseTest(WebAppTest):
 
     @property
     def course_id(self):
-        return self.COURSE_ID_SEPARATOR.join([
+        course_key = modulestore().make_course_key(
             self.course_info['org'],
             self.course_info['number'],
             self.course_info['run']
-        ])
+        )
+        return unicode(course_key)
 
 
 class YouTubeConfigError(Exception):
