@@ -33,6 +33,7 @@ function () {
         _renderElements(state);
         _addAriaAttributes(state);
         _bindHandlers(state);
+        _buildContextMenu(state);
     }
 
     // function _makeFunctionsPublic(state)
@@ -82,6 +83,93 @@ function () {
             state.videoAccessibleMenu.setValue(value);
             button.text(gettext(msg));
         }
+    }
+
+    function _buildContextMenu(state) {
+        var container = state.el.find('div.context-menu-container'),
+            items = {
+                'play': {
+                    'label': 'Play',
+                    'callback': _testCallback,
+                    'icon': ''
+                },
+                'pause': {
+                    'label': 'Pause',
+                    'callback': _testCallback,
+                    'icon': ''
+                },
+                'mute': {
+                    'label': 'Play',
+                    'callback': _testCallback,
+                    'icon': ''
+                },
+                'full': {
+                    'label': 'Full Screen',
+                    'callback': _testCallback,
+                    'icon': ''
+                },
+                'speed': {
+                    'label': 'Play Speed',
+                    'callback': _testCallback,
+                    'icon': '',
+                    'items': {
+                        'speed1': {
+                            'label': '0.5x',
+                            'callback': _testCallback,
+                            'icon': ''
+                        },
+                        'speed2': {
+                            'label': '1.0x',
+                            'callback': _testCallback,
+                            'icon': ''
+                        },
+                        'speed3': {
+                            'label': '1.25x',
+                            'callback': _testCallback,
+                            'icon': ''
+                        },
+                        'speed4': {
+                            'label': '1.50x',
+                            'callback': _testCallback,
+                            'icon': ''
+                        },
+                        'speed5': {
+                            'label': '2.0x',
+                            'callback': _testCallback,
+                            'icon': ''
+                        }
+                    }
+                }
+            };
+
+        menuList = _buildMenu(container, items);
+    }
+
+    function _buildMenu(el, items) {
+        var menuList, menuItem;
+
+        menuList = $('<ol role="menu"></ol>');
+        el.append(menuList);
+
+        $.each(items, function(key, value) {
+            menuItem = $('<li role="presentation">' +
+                            '<a href="#" role="menuitem" tabindex="-1">' +
+                                value.label +
+                            '</a>' +
+                         '</li>'
+                        );
+            if (!_.isUndefined(value.items)) {
+                // Recursively construct any submenu
+                _buildMenu(menuItem, value.items);
+            };
+            menuList.append(menuItem);
+        });
+
+        return menuList;
+    }
+
+    function _testCallback() {
+        console.log('Some message.')
     }
 
     function _addAriaAttributes(state) {
