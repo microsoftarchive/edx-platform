@@ -90,52 +90,51 @@ function () {
             items = {
                 'play': {
                     'label': 'Play',
-                    'callback': _testCallback,
+                    'callback': _.partial(testCallback, 'Play'),
                     'icon': ''
                 },
                 'pause': {
                     'label': 'Pause',
-                    'callback': _testCallback,
+                    'callback': _.partial(testCallback, 'Pause'),
                     'icon': ''
                 },
                 'mute': {
-                    'label': 'Play',
-                    'callback': _testCallback,
+                    'label': 'Mute',
+                    'callback': _.partial(testCallback, 'Mute'),
                     'icon': ''
                 },
                 'full': {
                     'label': 'Full Screen',
-                    'callback': _testCallback,
+                    'callback': _.partial(testCallback, 'Full Screen'),
                     'icon': ''
                 },
                 'speed': {
                     'label': 'Play Speed',
-                    'callback': _testCallback,
                     'icon': '',
                     'items': {
                         'speed1': {
                             'label': '0.5x',
-                            'callback': _testCallback,
+                            'callback': _.partial(testCallback, 'Speed 0.5x'),
                             'icon': ''
                         },
                         'speed2': {
                             'label': '1.0x',
-                            'callback': _testCallback,
+                            'callback': _.partial(testCallback, 'Speed 1.0x'),
                             'icon': ''
                         },
                         'speed3': {
                             'label': '1.25x',
-                            'callback': _testCallback,
+                            'callback': _.partial(testCallback, 'Speed 1.25x'),
                             'icon': ''
                         },
                         'speed4': {
                             'label': '1.50x',
-                            'callback': _testCallback,
+                            'callback': _.partial(testCallback, 'Speed 1.50x'),
                             'icon': ''
                         },
                         'speed5': {
                             'label': '2.0x',
-                            'callback': _testCallback,
+                            'callback': _.partial(testCallback, 'Speed 2.0x'),
                             'icon': ''
                         }
                     }
@@ -145,19 +144,29 @@ function () {
         menuList = _buildMenu(container, items);
     }
 
+    function testCallback(message) {
+        console.log(message);
+    }
+
     function _buildMenu(el, items) {
         var menuList, menuItem;
 
-        menuList = $('<ol role="menu"></ol>');
+        menuList = $('<ol class="a11y-menu-list" role="menu"></ol>');
         el.append(menuList);
 
         $.each(items, function(key, value) {
-            menuItem = $('<li role="presentation">' +
-                            '<a href="#" role="menuitem" tabindex="-1">' +
+            menuItem = $('<li class="a11y-menu-item" role="presentation">' +
+                            '<a "a11y-menu-item-link" href="#" role="menuitem" tabindex="-1">' +
                                 value.label +
                             '</a>' +
                          '</li>'
                         );
+            if (!_.isUndefined(value.callback) && _.isFunction(value.callback)) {
+                menuItem.on('click', {'callback': value.callback}, _newClickHandler);
+            }
+            // Always add a handler for keydown
+            menuItem.on('keydown', {'callback': value.callback}, _newKeyDownHandler);
+
             if (!_.isUndefined(value.items)) {
                 // Recursively construct any submenu
                 _buildMenu(menuItem, value.items);
@@ -168,8 +177,16 @@ function () {
         return menuList;
     }
 
-    function _testCallback() {
-        console.log('Some message.')
+    function _newClickHandler(event) {
+        // TODO: Close the menu
+        event.data.callback();
+    }
+
+    function _newKeyDownHandler(event) {
+        // TODO: React differently to different keystrokes
+        if (!_.isUndefined(event.data.callback) && _.isFunction(event.data.callback)) {
+            event.data.callback;
+        }
     }
 
     function _addAriaAttributes(state) {
