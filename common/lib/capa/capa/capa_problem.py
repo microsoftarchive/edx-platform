@@ -247,7 +247,6 @@ class LoncapaProblem(object):
             except Exception:
                 log.error('key=%s, correct_map = %s', key, self.correct_map)
                 raise
-
         if (not self.student_answers) or len(self.student_answers) == 0:
             return {'score': 0,
                     'total': self.get_max_score()}
