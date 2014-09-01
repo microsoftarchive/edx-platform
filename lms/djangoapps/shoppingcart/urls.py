@@ -16,6 +16,7 @@ if settings.FEATURES['ENABLE_SHOPPING_CART']:
         url(r'^add/course/{}/$'.format(settings.COURSE_ID_PATTERN), 'add_course_to_cart', name='add_course_to_cart'),
         url(r'^use_code/$', 'use_code'),
         url(r'^register_courses/$', 'register_courses'),
+        url(r'^{}/register/(?P<order_id>[0-9]+)/redeem/(?P<registration_code>[0-9A-Za-z]+)/$'.format(settings.COURSE_ID_PATTERN), 'register_code_redemption'),
     )
 
 if settings.FEATURES.get('ENABLE_PAYMENT_FAKE'):

@@ -6,12 +6,13 @@ from django.contrib.auth.models import Group
 from django.http import (HttpResponse, HttpResponseRedirect, HttpResponseNotFound,
     HttpResponseBadRequest, HttpResponseForbidden, Http404)
 from django.utils.translation import ugettext as _
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_http_methods
 from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from edxmako.shortcuts import render_to_response
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
+from courseware.courses import get_course_by_id
 from shoppingcart.reports import RefundReport, ItemizedPurchaseReport, UniversityRevenueShareReport, CertificateStatusReport
 from student.models import CourseEnrollment
 from .exceptions import ItemAlreadyInCartException, AlreadyEnrolledInCourseException, CourseDoesNotExistException, ReportTypeDoesNotExistException, \
@@ -208,6 +209,69 @@ def register_courses(request):
     CourseRegistrationCode.free_user_enrollment(cart)
     return HttpResponse(json.dumps({'response': 'success'}), content_type="application/json")
 
+
+def get_reg_code_validity(registration_code):
+    """
+    This function checks if the registration code is valid, and then checks if it was already redeemed.
+
+    """
+    reg_code_is_valid = False
+    reg_code_was_redeemed = False
+
+    try:
+        CourseRegistrationCode.objects.get(code=registration_code)
+    except CourseRegistrationCode.DoesNotExist:
+        reg_code_is_valid = False
+    else:
+        try:
+            RegistrationCodeRedemption.objects.get(registration_code__code=registration_code)
+        except RegistrationCodeRedemption.DoesNotExist:
+            reg_code_was_redeemed = False
+        else:
+            reg_code_was_redeemed = True
+
+    return reg_code_is_valid, reg_code_was_redeemed
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def register_code_redemption(request, course_id, order_id, registration_code):
+    """
+    This view allows the student to redeem the registration code
+    and enroll in the course.
+    """
+
+    course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
+    course = get_course_by_id(course_key, depth=None)
+
+    if request.method == "GET":
+        reg_code_is_valid, reg_code_was_redeemed = get_reg_code_validity(registration_code)
+
+        context = {
+            'reg_code_was_redeemed': reg_code_was_redeemed,
+            'reg_code_is_valid': reg_code_is_valid,
+            'reg_code': registration_code,
+            'course': course,
+        }
+        template_to_render = 'step1 (valid+invalid)'
+        return render_to_response(template_to_render, context)
+
+    elif request.method == "POST":
+        reg_code_is_valid, reg_code_was_redeemed = get_reg_code_validity(registration_code)
+
+        if reg_code_is_valid and not reg_code_was_redeemed:
+            #now redeem the reg code.
+            template_to_render = 'step2'
+        else:
+            template_to_render = 'step1 (invalid)'
+
+        context = {
+            'reg_code_was_redeemed': reg_code_was_redeemed,
+            'reg_code_is_valid': reg_code_is_valid,
+            'reg_code': registration_code,
+            'course': course,
+        }
+        return render_to_response(template_to_render, context)
 
 @csrf_exempt
 @require_POST
