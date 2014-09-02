@@ -88,6 +88,13 @@ CELERY_QUEUES = {
 with open(CONFIG_ROOT / CONFIG_PREFIX + "env.json") as env_file:
     ENV_TOKENS = json.load(env_file)
 
+if 'xblock-fs-storage-bucket' in ENV_TOKENS:
+    DJFS = {
+        'type' : 's3fs',
+        'bucket' : ENV_TOKENS.get('xblock-fs-storage-bucket', None),
+        'prefix' : ENV_TOKENS.get('xblock-fs-storage-prefix', '')
+    }
+
 # STATIC_URL_BASE specifies the base url to use for static files
 STATIC_URL_BASE = ENV_TOKENS.get('STATIC_URL_BASE', None)
 if STATIC_URL_BASE:

@@ -111,6 +111,13 @@ if os.environ.get('QUEUE') == 'high_mem':
 with open(CONFIG_ROOT / CONFIG_PREFIX + "env.json") as env_file:
     ENV_TOKENS = json.load(env_file)
 
+if 'xblock-fs-storage-bucket' in ENV_TOKENS:
+    DJFS = {
+        'type' : 's3fs',
+        'bucket' : ENV_TOKENS.get('xblock-fs-storage-bucket', None),
+        'prefix' : ENV_TOKENS.get('xblock-fs-storage-prefix', '')
+    }
+
 # STATIC_ROOT specifies the directory where static files are
 # collected
 STATIC_ROOT_BASE = ENV_TOKENS.get('STATIC_ROOT_BASE', None)
