@@ -798,9 +798,11 @@ class TestMixedModuleStore(unittest.TestCase):
         vertical_children_num = len(vertical.children)
 
         self.store.publish(self.course.location, self.user_id)
+        self.assertFalse(self.store.has_changes(self.store.get_item(self.vertical_x1a)))
 
         # delete leaf problem (will make parent vertical a draft)
         self.store.delete_item(self.problem_x1a_1, self.user_id)
+        self.assertTrue(self.store.has_changes(self.store.get_item(self.vertical_x1a)))
 
         draft_parent = self.store.get_item(self.vertical_x1a)
         self.assertEqual(vertical_children_num - 1, len(draft_parent.children))
@@ -813,7 +815,13 @@ class TestMixedModuleStore(unittest.TestCase):
         self.store.revert_to_published(self.vertical_x1a, self.user_id)
         reverted_parent = self.store.get_item(self.vertical_x1a)
         self.assertEqual(vertical_children_num, len(published_parent.children))
+
+        for field in reverted_parent.fields.values():
+            if getattr(reverted_parent, field.name) != getattr(published_parent, field.name):
+                assert False
+
         self.assertEqual(reverted_parent, published_parent)
+        self.assertFalse(self.store.has_changes(self.store.get_item(self.vertical_x1a)))
 
     @ddt.data('draft', 'split')
     def test_revert_to_published_root_published(self, default_ms):
