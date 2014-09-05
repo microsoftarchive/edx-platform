@@ -18,7 +18,11 @@
     if runtime? and version? and initFnName?
       runtime = new window[runtime]["v#{version}"]
       initFn = window[initFnName]
-      block = initFn(runtime, element) ? {}
+      if initFn.length == 2
+        block = initFn(runtime, element) ? {}
+      if initFn.length == 3
+        data = JSON.parse($(".xblock_json_init_args", element).text())
+        block = initFn(runtime, element, data) ? {}
       block.runtime = runtime
     else
       elementTag = $('<div>').append($element.clone()).html();
