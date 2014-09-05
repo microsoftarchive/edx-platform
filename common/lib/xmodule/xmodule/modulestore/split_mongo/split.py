@@ -57,7 +57,6 @@ from path import path
 import copy
 from pytz import UTC
 from bson.objectid import ObjectId
-from pymongo.errors import DuplicateKeyError
 
 from xblock.core import XBlock
 from xblock.fields import Scope, Reference, ReferenceList, ReferenceValueDict
@@ -2132,7 +2131,8 @@ class SplitMongoModuleStore(BulkWriteMixin, ModuleStoreWriteBase):
 
     def _serialize_fields(self, category, fields):
         """
-        Convert any references to their serialized form.
+        Convert any references to their serialized form. Handle some references already being unicoded
+        because the client passed them that way and nothing above this layer did the necessary deserialization.
 
         Remove any fields which split or its kvs computes or adds but does not want persisted.
 
@@ -2142,17 +2142,26 @@ class SplitMongoModuleStore(BulkWriteMixin, ModuleStoreWriteBase):
         xblock_class = XBlock.load_class(category, self.default_class)
         xblock_class = self.mixologist.mix(xblock_class)
 
+        def reference_block_id(reference):
+            """
+            Handle client possibly setting field to strings rather than keys to get the block_id
+            """
+            # perhaps replace by fixing the views or Field Reference*.from_json to return a Key
+            if isinstance(reference, basestring):
+                reference = BlockUsageLocator.from_string(reference)
+            return reference.block_id
+
         for field_name, value in fields.iteritems():
             if value is not None:
                 if isinstance(xblock_class.fields[field_name], Reference):
-                    fields[field_name] = value.block_id
+                    fields[field_name] = reference_block_id(value)
                 elif isinstance(xblock_class.fields[field_name], ReferenceList):
                     fields[field_name] = [
-                        ele.block_id for ele in value
+                        reference_block_id(ele) for ele in value
                     ]
                 elif isinstance(xblock_class.fields[field_name], ReferenceValueDict):
                     for key, subvalue in value.iteritems():
-                        value[key] = subvalue.block_id
+                        value[key] = reference_block_id(subvalue)
                 # should this recurse down dicts and lists just in case they contain datetime?
                 elif not isinstance(value, datetime.datetime):  # don't convert datetimes!
                     fields[field_name] = xblock_class.fields[field_name].to_json(value)
