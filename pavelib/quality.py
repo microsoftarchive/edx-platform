@@ -6,6 +6,8 @@ import os
 import errno
 from .utils.envs import Env
 
+TEST_PYLINT="1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890 1234567890"
+
 @task
 @needs('pavelib.prereqs.install_python_prereqs')
 @cmdopts([
@@ -101,7 +103,7 @@ def run_quality():
     )
 
     sh(
-        "diff-quality --violations=pep8 {pep8_reports}".format(
+        "diff-quality --violations=pep8 {pep8_reports} --fail-under=100".format(
             pep8_reports=pep8_reports)
     )
 
@@ -132,7 +134,7 @@ def run_quality():
     )
 
     sh(
-        "{pythonpath_prefix} diff-quality --violations=pylint {pylint_reports}".format(
+        "{pythonpath_prefix} diff-quality --violations=pylint {pylint_reports}  --fail-under=100".format(
             pythonpath_prefix=pythonpath_prefix,
             pylint_reports=pylint_reports
         )
