@@ -368,7 +368,6 @@ def login_analytics(*args, **kwargs):
     event_name = None
 
     action_to_event_name = {
-        "is_register": "edx.bi.user.account.ugh",
         "is_login": "edx.bi.user.account.authenticated",
         "is_dashboard": "edx.bi.user.account.linked"
     }
@@ -376,8 +375,6 @@ def login_analytics(*args, **kwargs):
     for action in action_to_event_name.keys():
         if kwargs[action]:
             event_name = action_to_event_name[action]
-
-    from nose.tools import set_trace; set_trace()
 
     registration_course_id = kwargs['request'].session.get('registration_course_id')
     tracking_context = tracker.get_tracker().resolve_context()
