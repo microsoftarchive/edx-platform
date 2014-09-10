@@ -1,0 +1,31 @@
+<%inherit file="shopping_cart_flow.html" />
+<%! from django.core.urlresolvers import reverse %>
+
+<%block name="billing_details_highlight">class="active"</%block>
+
+<%block name="custom_content">
+<div class="container">
+${form_html}
+</div>
+</%block>
+
+<script>
+  $(function() {
+    $('form input[type="submit"][value="Check Out"]').click(function(event) {
+      var payment_form = $(this).parent('form');
+      event.preventDefault();
+      var post_url = "${reverse('billing_details')}";
+      $.post(post_url,{
+               "code" : 123
+               }
+      )
+      .success(function(data) {
+                 payment_form.submit();
+              })
+      .error(function(data,status) {
+
+             })
+    });
+  });
+</script>
+

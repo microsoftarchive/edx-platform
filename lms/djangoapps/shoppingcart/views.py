@@ -6,7 +6,7 @@ from django.contrib.auth.models import Group
 from django.http import (HttpResponse, HttpResponseRedirect, HttpResponseNotFound,
     HttpResponseBadRequest, HttpResponseForbidden, Http404)
 from django.utils.translation import ugettext as _
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_http_methods
 from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -208,6 +208,32 @@ def register_courses(request):
     CourseRegistrationCode.free_user_enrollment(cart)
     return HttpResponse(json.dumps({'response': 'success'}), content_type="application/json")
 
+@require_http_methods(["GET", "POST"])
+@login_required
+def billing_details(request):
+    """
+    This is the view for capturing additional billing details
+    in case of the business purchase workflow.
+    """
+
+    cart = Order.get_cart_for_user(request.user)
+    if request.method == "GET":
+        callback_url = request.build_absolute_uri(
+            reverse("shoppingcart.views.postpay_callback")
+        )
+        form_html = render_purchase_form_html(cart, callback_url=callback_url)
+        total_cost = cart.total_cost
+        context = {
+            'amount': total_cost,
+            'form_html': form_html,
+            'site_name': 'dummy',
+        }
+        return render_to_response("shoppingcart/billing_details.html", context)
+    elif request.method == "POST":
+        print 'here'
+        return HttpResponse(json.dumps({'response': 'success'}), content_type="application/json")
+        # redirect to cyber source.
+
 
 @csrf_exempt
 @require_POST
@@ -223,6 +249,7 @@ def postpay_callback(request):
     """
     params = request.POST.dict()
     result = process_postpay_callback(params)
+    request.POST.get('reference_number')
     if result['success']:
         return HttpResponseRedirect(reverse('shoppingcart.views.show_receipt', args=[result['order'].id]))
     else:
