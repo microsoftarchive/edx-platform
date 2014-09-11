@@ -1,10 +1,11 @@
 <%inherit file="shopping_cart_flow.html" />
 <%! from django.core.urlresolvers import reverse %>
 
-<%block name="billing_details_highlight">class="active"</%block>
+<%block name="billing_details_highlight"><li class="active" >Billing Details</li></%block>
 
 <%block name="custom_content">
 <div class="container">
+  BROOO
 ${form_html}
 </div>
 </%block>
@@ -15,10 +16,21 @@ ${form_html}
       var payment_form = $(this).parent('form');
       event.preventDefault();
       var post_url = "${reverse('billing_details')}";
-      $.post(post_url,{
-               "code" : 123
-               }
-      )
+      var data = {
+               "company_name" : "Acme Inc.",
+               "company_contact_name" : "John Doe 1",
+               "company_contact_email" : "john.doe1@acme.com",
+               "recipient_name" : "John Doe 2",
+               "recipient_email" : "john.doe2@acme.com",
+               "company_address_line_1" : "Abc Drive",
+               "company_address_line_2" : "",
+               "company_city" : "Utopia",
+               "company_state" : "NY",
+               "company_zip" : "100001",
+               "company_country" : "USA",
+               "customer_reference_number" : "0001"
+               };
+      $.post(post_url, data)
       .success(function(data) {
                  payment_form.submit();
               })

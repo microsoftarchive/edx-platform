@@ -44,6 +44,10 @@ ORDER_STATUSES = (
     ('purchased', 'purchased'),
     ('refunded', 'refunded'),
 )
+ORDER_TYPES = (
+    ('personal', 'personal'),
+    ('business', 'business'),
+)
 
 # we need a tuple to represent the primary key of various OrderItem subclasses
 OrderItemSubclassPK = namedtuple('OrderItemSubclassPK', ['cls', 'pk'])  # pylint: disable=C0103
@@ -74,6 +78,21 @@ class Order(models.Model):
     bill_to_cardtype = models.CharField(max_length=32, blank=True)
     # a JSON dump of the CC processor response, for completeness
     processor_reply_dump = models.TextField(blank=True)
+
+    # bulk purchase registration code workflow billing details
+    company_name = models.CharField(max_length=255, null=True, blank=True)
+    company_contact_name = models.CharField(max_length=255, null=True, blank=True)
+    company_contact_email = models.CharField(max_length=255, null=True, blank=True)
+    recipient_name = models.CharField(max_length=255, null=True, blank=True)
+    recipient_email = models.CharField(max_length=255, null=True, blank=True)
+    company_address_line_1 = models.CharField(max_length=255, null=True, blank=True)
+    company_address_line_2 = models.CharField(max_length=255, null=True, blank=True)
+    company_city = models.CharField(max_length=255, null=True, blank=True)
+    company_state = models.CharField(max_length=255, null=True, blank=True)
+    company_zip = models.CharField(max_length=15, null=True, blank=True)
+    company_country = models.CharField(max_length=64, null=True, blank=True)
+    customer_reference_number = models.CharField(max_length=63, null=True, blank=True)
+    order_type = models.CharField(max_length=32, default='personal', choices=ORDER_TYPES)
 
     @classmethod
     def get_cart_for_user(cls, user):
@@ -194,6 +213,46 @@ class Order(models.Model):
                       from_address, [self.user.email])  # pylint: disable=E1101
         except (smtplib.SMTPException, BotoServerError):  # sadly need to handle diff. mail backends individually
             log.error('Failed sending confirmation e-mail for order %d', self.id)  # pylint: disable=E1101
+
+    def add_billing_details(self, company_name, company_contact_name, company_contact_email, recipient_name,
+                            recipient_email, company_address_line_1, company_address_line_2, company_city,
+                            company_state, company_zip, company_country, customer_reference_number):
+        """
+        This function is called after the user selects a purchase type of "Business" and
+        is asked to enter the optional billing details. The billing details are updated
+        for that order.
+
+        company_name - Name of purchasing organization
+        company_contact_name - Name of the key contact at the company the sale was made to
+        company_contact_email - Email of the key contact at the company the sale was made to
+        recipient_name - Name of the company should the invoice be sent to
+        recipient_email - Email of the company should the invoice be sent to
+        company_address_line_1 - Organization Billing Address field
+        company_address_line_2 - Organization Billing Address field
+        company_city - Organization Billing Address field
+        company_state - Organization Billing Address field
+        company_zip - Organization Billing Address field
+        company_country - Organization Billing Address field
+        customer_reference_number - purchase order number of the organization associated with this Order
+        """
+
+        self.company_name = company_name
+        self.company_contact_name = company_contact_name
+        self.company_contact_email = company_contact_email
+        self.recipient_name = recipient_name
+        self.recipient_email = recipient_email
+        self.company_address_line_1 = company_address_line_1
+        self.company_address_line_2 = company_address_line_2
+        self.company_city = company_city
+        self.company_state = company_state
+        self.company_zip = company_zip
+        self.company_country = company_country
+        self.customer_reference_number = customer_reference_number
+
+        # Since the billing details are only added in case of a business purchase type,
+        # We will set the order_type to "BUSINESS"
+        self.order_type = "business"
+        self.save()
 
     def generate_receipt_instructions(self):
         """
