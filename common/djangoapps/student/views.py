@@ -471,6 +471,9 @@ def dashboard(request):
     # longer exist (because the course IDs have changed). Still, we don't delete those
     # enrollments, because it could have been a data push snafu.
     course_enrollment_pairs = list(get_course_enrollment_pairs(user, course_org_filter, org_filter_out_set))
+    # Show active course first, ended courses (e.g. for certificate downloads) second, and unstarted courses last. 
+    # Within each of those, sort by name
+    course_enrollment_pairs.sort(key = lambda x: [x[0].has_started(), not x[0].has_ended(), x[0].display_name_with_default])
 
     course_optouts = Optout.objects.filter(user=user).values_list('course_id', flat=True)
 
