@@ -1,5 +1,5 @@
 # #-#-#-#-#  django-partial.po (edx-platform)  #-#-#-#-#
-# edX translation file.
+# edX community translations have been downloaded from Turkish (Turkey) (http://www.transifex.com/projects/p/edx-platform/language/tr_TR/).
 # Copyright (C) 2014 EdX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
 # 
@@ -25,11 +25,12 @@
 # Hakan Şenel <hgsenel@gmail.com>, 2014
 # Hakan Şenel <hgsenel@gmail.com>, 2014
 # #-#-#-#-#  mako.po (edx-platform)  #-#-#-#-#
-# edX translation file
+# edX community translations have been downloaded from Turkish (Turkey) (http://www.transifex.com/projects/p/edx-platform/language/tr_TR/)
 # Copyright (C) 2014 edX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
 # 
 # Translators:
+# Ali Özcan <aliozcan@yandex.com>, 2014
 # baris <brscvs@gmail.com>, 2013
 # baris <brscvs@gmail.com>, 2013
 # Burak Özalp <realburq@gmail.com>, 2013
@@ -84,7 +85,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: edx-platform\n"
 "Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
-"POT-Creation-Date: 2014-09-24 13:35-0400\n"
+"POT-Creation-Date: 2014-10-14 11:53-0400\n"
 "PO-Revision-Date: 2014-08-25 20:21+0000\n"
 "Last-Translator: Hakan Şenel <hgsenel@gmail.com>\n"
 "Language-Team: Turkish (Turkey) (http://www.transifex.com/projects/p/edx-platform/language/tr_TR/)\n"
@@ -103,14 +104,20 @@ msgstr ""
 msgid "Open Ended Panel"
 msgstr "Açıklı Uçlu Paneli"
 
+#. #-#-#-#-#  django-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: "Discussion" is the title of the course forum page
 #. Translators: 'Discussion' refers to the tab in the courseware that leads to
 #. the discussion forums
+#. #-#-#-#-#  mako.po (edx-platform)  #-#-#-#-#
+#. Translators: This is a forum post type
 #: cms/djangoapps/contentstore/views/component.py
 #: common/lib/xmodule/xmodule/tabs.py common/lib/xmodule/xmodule/tabs.py
+#: lms/templates/discussion/_underscore_templates.html
 msgid "Discussion"
 msgstr "Tartışma"
 
+#: cms/djangoapps/contentstore/views/component.py
+#: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/templates/courseware/instructor_dashboard.html
 #: lms/templates/courseware/instructor_dashboard.html
 #: lms/templates/instructor/instructor_dashboard_2/instructor_analytics.html
@@ -120,7 +127,7 @@ msgstr "Soru"
 #: cms/djangoapps/contentstore/views/component.py
 #: common/lib/xmodule/xmodule/video_module/video_module.py
 msgid "Advanced"
-msgstr ""
+msgstr "Gelişmiş"
 
 #: cms/djangoapps/contentstore/views/helpers.py
 #: lms/djangoapps/class_dashboard/dashboard_data.py
@@ -128,17 +135,21 @@ msgstr ""
 #: cms/templates/course_outline.html
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 msgid "Section"
-msgstr ""
+msgstr "Bölüm"
 
 #: cms/djangoapps/contentstore/views/helpers.py
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 msgid "Subsection"
-msgstr ""
+msgstr "Altbölüm"
 
 #: cms/djangoapps/contentstore/views/helpers.py
 #: lms/djangoapps/instructor/views/tools.py
 msgid "Unit"
 msgstr "Birim"
+
+#: common/djangoapps/course_groups/cohorts.py
+msgid "You cannot create two cohorts with the same name"
+msgstr ""
 
 #: common/djangoapps/course_groups/views.py
 msgid "Requested page must be numeric"
@@ -152,7 +163,7 @@ msgstr ""
 msgid "Honor Code Certificate"
 msgstr "Onur Kodu Sertifikası"
 
-#: common/djangoapps/course_modes/views.py common/djangoapps/student/views.py
+#: common/djangoapps/course_modes/views.py
 msgid "Enrollment is closed"
 msgstr "Kayıt kapandı"
 
@@ -177,6 +188,7 @@ msgid "Moderator"
 msgstr "Moderatör"
 
 #: common/djangoapps/django_comment_common/models.py
+#: lms/templates/discussion/_underscore_templates.html
 msgid "Community TA"
 msgstr "Topluluk Öğretim Elemanı"
 
@@ -249,19 +261,14 @@ msgstr "Ders no belirtilmedi."
 
 #: common/djangoapps/student/views.py lms/djangoapps/dashboard/support.py
 msgid "Invalid course id"
-msgstr ""
+msgstr "Geçersiz ders no"
 
 #: common/djangoapps/student/views.py
 msgid "Course id is invalid"
 msgstr "Ders no geçersiz"
 
-#: common/djangoapps/student/views.py
-#: lms/templates/courseware/course_about.html
-msgid "Course is full"
-msgstr "Ders Dolu"
-
-#: common/djangoapps/student/views.py
-msgid "Student is already enrolled"
+#: common/djangoapps/student/views.py common/djangoapps/student/views.py
+msgid "Could not enroll"
 msgstr ""
 
 #: common/djangoapps/student/views.py
@@ -485,6 +492,8 @@ msgid_plural ""
 "You are resetting passwords too frequently. Due to security policies, {num} "
 "days must elapse between password resets."
 msgstr[0] ""
+"Parolanızı çok sık yeniliyorsunuz. Güvenlik politikası sebebiyle, parola "
+"sıfırlama tarihleri arasında {num} gün geçmek zorunda."
 
 #: common/djangoapps/student/views.py
 msgid "Password reset unsuccessful"
@@ -943,7 +952,7 @@ msgstr "cevaplanmamış"
 
 #: common/lib/capa/capa/inputtypes.py
 msgid "processing"
-msgstr ""
+msgstr "işlem devam ediyor"
 
 #. Translators: 'ChoiceGroup' is an input type and should not be translated.
 #: common/lib/capa/capa/inputtypes.py
@@ -1007,7 +1016,7 @@ msgstr ""
 
 #: common/lib/capa/capa/inputtypes.py
 msgid "Sorry, couldn't parse formula"
-msgstr ""
+msgstr "Üzgünüz, formül okunamadı."
 
 #: common/lib/capa/capa/inputtypes.py
 msgid "{input_type}: unexpected tag {tag_name}"
@@ -1102,11 +1111,16 @@ msgstr "Çalışanların bu soruya cevap vermesinde sorun yaşandı: boş sını
 
 #: common/lib/capa/capa/responsetypes.py
 msgid "error"
-msgstr ""
+msgstr "Hata"
 
+#. #-#-#-#-#  django-partial.po (edx-platform)  #-#-#-#-#
+#. Translators: Separator used in StringResponse to display multiple answers.
+#. Example: "Answer: Answer_1 or Answer_2 or Answer_3".
+#. #-#-#-#-#  mako.po (edx-platform)  #-#-#-#-#
 #. Translators: this is the last choice of a number of choices of how to log
 #. in
 #. to the site.
+#: common/lib/capa/capa/responsetypes.py
 #: common/templates/course_modes/choose.html
 #: common/templates/course_modes/choose.html lms/templates/login.html
 #: lms/templates/register.html
@@ -1119,7 +1133,7 @@ msgstr ""
 
 #: common/lib/capa/capa/responsetypes.py
 msgid "No answer entered!"
-msgstr ""
+msgstr "Hiç cevap girilmedi!"
 
 #: common/lib/capa/capa/responsetypes.py
 msgid "CustomResponse: check function returned an invalid dictionary!"
@@ -1133,7 +1147,7 @@ msgstr ""
 
 #: common/lib/capa/capa/responsetypes.py
 msgid "No answer provided."
-msgstr ""
+msgstr "Cevap verilmedi."
 
 #: common/lib/capa/capa/responsetypes.py
 msgid "Error: No grader has been set up for this problem."
@@ -1226,7 +1240,7 @@ msgstr ""
 #: common/lib/xmodule/xmodule/word_cloud_module.py
 #: cms/templates/container.html
 msgid "Display Name"
-msgstr ""
+msgstr "Görünen Ad"
 
 #: common/lib/xmodule/xmodule/annotatable_module.py
 #: common/lib/xmodule/xmodule/discussion_module.py
@@ -1237,11 +1251,11 @@ msgstr ""
 #: common/lib/xmodule/xmodule/videoannotation_module.py
 #: common/lib/xmodule/xmodule/word_cloud_module.py
 msgid "Display name for this module"
-msgstr ""
+msgstr "Bu modül için görünen ad"
 
 #: common/lib/xmodule/xmodule/annotatable_module.py
 msgid "Annotation"
-msgstr ""
+msgstr "İpucu"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
@@ -1259,7 +1273,7 @@ msgstr ""
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 #: common/lib/xmodule/xmodule/modulestore/inheritance.py
 msgid "Maximum Attempts"
-msgstr ""
+msgstr "maksimum deneme"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid ""
@@ -1286,6 +1300,8 @@ msgstr ""
 msgid "Amount of time after the due date that submissions will be accepted"
 msgstr ""
 
+#: common/lib/xmodule/xmodule/capa_base.py
+#: common/lib/xmodule/xmodule/modulestore/inheritance.py
 #: lms/templates/problem.html
 msgid "Show Answer"
 msgstr "Yanıtı Göster:"
@@ -1299,11 +1315,11 @@ msgstr ""
 #: common/lib/xmodule/xmodule/capa_base.py
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Always"
-msgstr ""
+msgstr "Her Zaman"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Answered"
-msgstr ""
+msgstr "Yanıtlandı"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Attempted"
@@ -1311,11 +1327,11 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Closed"
-msgstr ""
+msgstr "Kapandı"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Finished"
-msgstr ""
+msgstr "Bitirildi"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Correct or Past Due"
@@ -1323,12 +1339,12 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Past Due"
-msgstr ""
+msgstr "zaman aşımına uğramış"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Never"
-msgstr ""
+msgstr "Asla"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Whether to force the save button to appear on the page"
@@ -1337,7 +1353,7 @@ msgstr ""
 #: common/lib/xmodule/xmodule/capa_base.py
 #: common/lib/xmodule/xmodule/modulestore/inheritance.py
 msgid "Randomization"
-msgstr ""
+msgstr "rastgele sıralama"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid ""
@@ -1352,7 +1368,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Per Student"
-msgstr ""
+msgstr "Herbir Öğrenci"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
@@ -1382,7 +1398,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Last submission time"
-msgstr ""
+msgstr "son gönderi zamanı:"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Timer Between Attempts"
@@ -1435,7 +1451,7 @@ msgstr "Son Kontrol"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Checking..."
-msgstr ""
+msgstr "Kontrol ediliyor..."
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "Warning: The problem has been reset to its initial state!"
@@ -1484,15 +1500,15 @@ msgstr "Hata: {msg}"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "{num_hour} hour"
-msgstr ""
+msgstr "{num_hour} saat"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "{num_minute} minute"
-msgstr ""
+msgstr "{num_minute} dakika"
 
 #: common/lib/xmodule/xmodule/capa_base.py
 msgid "{num_second} second"
-msgstr ""
+msgstr "{num_second} saniye"
 
 #. Translators: 'rescoring' refers to the act of re-submitting a student's
 #. solution so it can get a new score.
@@ -1547,7 +1563,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid "Current task that the student is on."
-msgstr ""
+msgstr "öğrencinin üzerinde çalıştığı mevcut görev:"
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid ""
@@ -1565,9 +1581,16 @@ msgstr ""
 msgid "Which step within the current task that the student is on."
 msgstr ""
 
+#: common/lib/xmodule/xmodule/combined_open_ended_module.py
+#: common/lib/xmodule/xmodule/peer_grading_module.py
 #: lms/templates/peer_grading/peer_grading.html
+#, fuzzy
 msgid "Graded"
-msgstr "Notlandırılan"
+msgstr ""
+"#-#-#-#-#  django-partial.po (edx-platform)  #-#-#-#-#\n"
+"Notlandırıldı\n"
+"#-#-#-#-#  mako.po (edx-platform)  #-#-#-#-#\n"
+"Notlandırılan"
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid ""
@@ -1581,11 +1604,11 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid "The number of times the student can try to answer this problem."
-msgstr ""
+msgstr "Öğrencinin bu soruya verebileceği cevap sayısı"
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid "Allow File Uploads"
-msgstr ""
+msgstr "dosyanın yüklenmesine izin ver"
 
 #: common/lib/xmodule/xmodule/combined_open_ended_module.py
 msgid "Whether or not the student can submit files as a response."
@@ -1705,7 +1728,7 @@ msgstr ""
 #: common/lib/xmodule/xmodule/course_module.py
 #: common/lib/xmodule/xmodule/modulestore/inheritance.py
 msgid "Course Editor"
-msgstr ""
+msgstr "Ders Editörü"
 
 #: common/lib/xmodule/xmodule/course_module.py
 #: common/lib/xmodule/xmodule/modulestore/inheritance.py
@@ -1739,9 +1762,12 @@ msgstr ""
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
 "Enter pairs of dates between which students cannot post to discussion "
-"forums, formatted as \"YYYY-MM-DD-YYYY-MM-DD\". To specify times as well as "
-"dates, format the pairs as \"YYYY-MM-DDTHH:MM-YYYY-MM-DDTHH:MM\" (be sure to"
-" include the \"T\" between the date and time)."
+"forums. Each pair should be formatted as [\"YYYY-MM-DD\", \"YYYY-MM-DD\"]. "
+"To specify times as well as dates, format each pair as [\"YYYY-MM-"
+"DDTHH:MM\", \"YYYY-MM-DDTHH:MM\"] (be sure to include the \"T\" between the "
+"date and time). An entry defining more than one blackout period might look "
+"like this: [[\"2014-09-15\", \"2014-09-21\"], [\"2014-10-01\", "
+"\"2014-10-08\"]]"
 msgstr ""
 
 #: common/lib/xmodule/xmodule/course_module.py
@@ -1779,7 +1805,10 @@ msgid "Cohort Configuration"
 msgstr ""
 
 #: common/lib/xmodule/xmodule/course_module.py
-msgid "Cohorts are not currently supported by edX."
+msgid ""
+"Enter policy keys and values to enable the cohort feature, define automated "
+"student assignment to groups, or identify any course-wide discussion topics "
+"as private to cohort members."
 msgstr ""
 
 #: common/lib/xmodule/xmodule/course_module.py
@@ -1882,7 +1911,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Add Course Team Members"
-msgstr ""
+msgstr "Ders Ekip Üyeleri Ekle"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid ""
@@ -1892,7 +1921,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Edit Course Team"
-msgstr ""
+msgstr "Ders Takımını Düzenle"
 
 #: common/lib/xmodule/xmodule/course_module.py
 msgid "Set Important Dates for Your Course"
@@ -2292,7 +2321,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Text"
-msgstr ""
+msgstr "Yazı"
 
 #: common/lib/xmodule/xmodule/html_module.py
 #: common/lib/xmodule/xmodule/html_module.py
@@ -2314,11 +2343,11 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Editor"
-msgstr ""
+msgstr "Editör"
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Visual"
-msgstr ""
+msgstr "Görsel"
 
 #: common/lib/xmodule/xmodule/html_module.py
 msgid "Raw"
@@ -2511,6 +2540,46 @@ msgid ""
 msgstr ""
 
 #: common/lib/xmodule/xmodule/lti_module.py
+msgid "Request user's username"
+msgstr ""
+
+#: common/lib/xmodule/xmodule/lti_module.py
+msgid ""
+"Select True to request the user's username. You must also set Open in New "
+"Page to True to get the user's information."
+msgstr ""
+
+#: common/lib/xmodule/xmodule/lti_module.py
+msgid "Request user's email"
+msgstr ""
+
+#: common/lib/xmodule/xmodule/lti_module.py
+msgid ""
+"Select True to request the user's email address. You must also set Open in "
+"New Page to True to get the user's information."
+msgstr ""
+
+#: common/lib/xmodule/xmodule/lti_module.py
+msgid "LTI Application Information"
+msgstr ""
+
+#: common/lib/xmodule/xmodule/lti_module.py
+msgid ""
+"Enter a description of the third party application. If requesting username "
+"and/or email, use this text box to inform users why their username and/or "
+"email will be forwarded to a third party application."
+msgstr ""
+
+#: common/lib/xmodule/xmodule/lti_module.py
+msgid "Button Text"
+msgstr ""
+
+#: common/lib/xmodule/xmodule/lti_module.py
+msgid ""
+"Enter the text on the button used to launch the third party application."
+msgstr ""
+
+#: common/lib/xmodule/xmodule/lti_module.py
 msgid ""
 "Could not parse custom parameter: {custom_parameter}. Should be \"x=y\" "
 "string."
@@ -2568,7 +2637,7 @@ msgstr ""
 #: common/lib/xmodule/xmodule/seq_module.py
 #: common/lib/xmodule/xmodule/modulestore/inheritance.py
 msgid "Due Date"
-msgstr ""
+msgstr "Teslim Tarihi"
 
 #: common/lib/xmodule/xmodule/seq_module.py
 msgid "Enter the date by which problems are due."
@@ -2585,6 +2654,11 @@ msgstr ""
 msgid "Warning"
 msgstr ""
 
+#. #-#-#-#-#  django-partial.po (edx-platform)  #-#-#-#-#
+#. Translators: This message will be added to the front of messages of type
+#. error,
+#. e.g. "Error: required field is missing".
+#: common/lib/xmodule/xmodule/split_test_module.py
 #: lms/templates/name_changes.html lms/templates/name_changes.html
 #: lms/templates/sysadmin_dashboard_gitlogs.html
 msgid "Error"
@@ -2619,7 +2693,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/split_test_module.py
 msgid "Group Configuration"
-msgstr ""
+msgstr "Grup Yapılandırma"
 
 #: common/lib/xmodule/xmodule/split_test_module.py
 msgid "Which child module students in a particular group_id should see"
@@ -3165,6 +3239,8 @@ msgid ""
 "Can't receive transcripts from Youtube for {youtube_id}. Status code: "
 "{status_code}."
 msgstr ""
+"Youtube'dan {youtube_id} için transkript alınamadı. Durum kodu: "
+"{status_code}."
 
 #: common/lib/xmodule/xmodule/video_module/transcripts_utils.py
 msgid "We support only SubRip (*.srt) transcripts format."
@@ -3275,7 +3351,7 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid "Download Video"
-msgstr ""
+msgstr "Video indir"
 
 #: common/lib/xmodule/xmodule/video_module/video_xfields.py
 msgid ""
@@ -3458,6 +3534,9 @@ msgstr "İsim"
 #: lms/djangoapps/instructor/views/legacy.py
 #: lms/djangoapps/instructor/views/legacy.py
 #: lms/djangoapps/instructor/views/tools.py
+#: lms/templates/staff_problem_info.html
+#: lms/templates/instructor/instructor_dashboard_2/metrics.html
+#: lms/templates/instructor/instructor_dashboard_2/metrics.html
 msgid "Username"
 msgstr "Kullanıcı adı"
 
@@ -3469,31 +3548,32 @@ msgstr ""
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 msgid "Percent"
-msgstr ""
+msgstr "Yüzde"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 msgid "Opened by this number of students"
-msgstr ""
+msgstr "Bu kadar öğrenci tarafından açıldı."
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 msgid "subsections"
-msgstr ""
+msgstr "Altbölümler"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 msgid "Count of Students"
-msgstr ""
+msgstr "Öğrencileri sayma"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 msgid "Percent of Students"
 msgstr ""
 
+#: lms/djangoapps/class_dashboard/dashboard_data.py
 #: lms/templates/folditchallenge.html
 msgid "Score"
 msgstr "Skor"
 
 #: lms/djangoapps/class_dashboard/dashboard_data.py
 msgid "problems"
-msgstr ""
+msgstr "Problemler"
 
 #. Translators: this string includes wiki markup.  Leave the ** and the _
 #. alone.
@@ -3523,7 +3603,7 @@ msgstr "Kullanıcı {username} yok."
 
 #: lms/djangoapps/courseware/views.py
 msgid "User {username} has never accessed problem {location}"
-msgstr ""
+msgstr "{username} kullanıcısı {location} problemine henüz erişmedi "
 
 #: lms/djangoapps/courseware/features/video.py
 msgid "ERROR: No playable video sources found!"
@@ -3578,8 +3658,9 @@ msgstr ""
 
 #: lms/djangoapps/dashboard/support.py
 msgid "Email Address"
-msgstr ""
+msgstr "E-posta Adresi"
 
+#: lms/djangoapps/dashboard/support.py
 #: lms/templates/sysadmin_dashboard_gitlogs.html
 #: lms/templates/instructor/instructor_dashboard_2/add_coupon_modal.html
 #: lms/templates/instructor/instructor_dashboard_2/edit_coupon_modal.html
@@ -3588,7 +3669,7 @@ msgstr "Ders No"
 
 #: lms/djangoapps/dashboard/support.py
 msgid "User not found"
-msgstr ""
+msgstr "Kullanıcı bulunamadı."
 
 #: lms/djangoapps/dashboard/support.py
 msgid "Course {course_id} not past the refund window."
@@ -3666,11 +3747,11 @@ msgstr ""
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "User {user} created successfully!"
-msgstr ""
+msgstr "{user}  adlı kullanıcı başarıyla oluşturuldu!"
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Cannot find user with email address {email_addr}"
-msgstr ""
+msgstr "{email_addr} e-posta adresine sahip kullanıcı bulunamadı."
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Cannot find user with username {username} - {error}"
@@ -3678,7 +3759,7 @@ msgstr ""
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Deleted user {username}"
-msgstr ""
+msgstr "{username} adlı kullanıcı silindi."
 
 #: lms/djangoapps/dashboard/sysadmin.py
 msgid "Statistic"
@@ -3871,6 +3952,10 @@ msgid "Body can't be empty"
 msgstr "Gövde boş olamaz"
 
 #: lms/djangoapps/django_comment_client/base/views.py
+msgid "Topic doesn't exist"
+msgstr ""
+
+#: lms/djangoapps/django_comment_client/base/views.py
 #: lms/djangoapps/django_comment_client/base/views.py
 msgid "Comment level too deep"
 msgstr "Yorum Seviyesi Çok Derin"
@@ -3965,13 +4050,30 @@ msgid "Goals"
 msgstr "Hedefler"
 
 #: lms/djangoapps/instructor/views/api.py
-msgid "Module does not exist."
+msgid "Cohort"
 msgstr ""
+
+#: lms/djangoapps/instructor/views/api.py
+msgid ""
+"Your enrolled student profile report is being generated! You can view the "
+"status of the generation task in the 'Pending Instructor Tasks' section."
+msgstr ""
+
+#: lms/djangoapps/instructor/views/api.py
+msgid ""
+"An enrolled student profile report generation task is already in progress. "
+"Check the 'Pending Instructor Tasks' table for the status of the task. When "
+"completed, the report will be available for download in the table below."
+msgstr ""
+
+#: lms/djangoapps/instructor/views/api.py
+msgid "Module does not exist."
+msgstr "Modül yok."
 
 #: lms/djangoapps/instructor/views/api.py
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "An error occurred while deleting the score."
-msgstr ""
+msgstr "Skoru silerken bir hata oluştu."
 
 #: lms/djangoapps/instructor/views/api.py
 msgid ""
@@ -4058,8 +4160,7 @@ msgstr ""
 #: lms/djangoapps/instructor/views/instructor_dashboard.py
 msgid ""
 "To gain insights into student enrollment and participation {link_start}visit"
-" {analytics_dashboard_name}, our new dashboard for course "
-"analytics{link_end}."
+" {analytics_dashboard_name}, our new course analytics product{link_end}."
 msgstr ""
 
 #: lms/djangoapps/instructor/views/instructor_dashboard.py
@@ -4100,6 +4201,7 @@ msgstr "Veri İndir"
 msgid "Analytics"
 msgstr "Analitikler"
 
+#: lms/djangoapps/instructor/views/instructor_dashboard.py
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Metrics"
 msgstr "Ölçümler"
@@ -4155,30 +4257,42 @@ msgstr ""
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Failed to create a background task for rescoring \"{problem_url}\"."
 msgstr ""
+"Tekrar notlandırma için arka plan görevi oluşturmakta başarısız olundu "
+"\"{problem_url}\"."
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid ""
 "Failed to create a background task for rescoring \"{problem_url}\": problem "
 "not found."
 msgstr ""
+"Tekrar notlandırma için arka plan görevi oluşturmakta başarısız olundu "
+"\"{problem_url}\" : problem bulunamadı."
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Failed to create a background task for rescoring \"{url}\": {message}."
 msgstr ""
+"Tekrar notlandırma için arkaplan görevi oluşturmakta başarısız olundu. \n"
+"\"{url}\": {message}."
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Failed to create a background task for resetting \"{problem_url}\"."
 msgstr ""
+"Sıfırlama için arka plan görevi oluşturmakta başarısız olundu "
+"\"{problem_url}\"."
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid ""
 "Failed to create a background task for resetting \"{problem_url}\": problem "
 "not found."
 msgstr ""
+"Sıfırlama için arka plan görevi oluşturmakta başarısız olundu "
+"\"{problem_url}\" : problem bulunamadı."
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Failed to create a background task for resetting \"{url}\": {message}."
 msgstr ""
+"Sıfırlama için arkaplan görevi oluşturmakta başarısız olundu. \n"
+"\"{url}\": {message}."
 
 #: lms/djangoapps/instructor/views/legacy.py
 #: lms/djangoapps/instructor/views/legacy.py
@@ -4192,36 +4306,41 @@ msgstr "Modül bulundu."
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Couldn't find module with that urlname: {url}. "
-msgstr ""
+msgstr "Bu url-ismiyle modül bulunamadı: {url}"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Deleted student module state for {state}!"
-msgstr ""
+msgstr "Öğrenci modül durumu {state} için silindi!"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Failed to delete module state for {id}/{url}. "
-msgstr ""
+msgstr "Modül durumunun {id}/{url} için silinmesi başarısız oldu."
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Module state successfully reset!"
-msgstr ""
+msgstr "Modül durumu başarıyla sıfırlandı!"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Couldn't reset module state for {id}/{url}. "
-msgstr ""
+msgstr "Modül durumu {id}/{url} için sıfırlanamadı."
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid ""
 "Failed to create a background task for rescoring \"{key}\" for student {id}."
 msgstr ""
+"Öğrenci: {id} için \"{key}\" tekrar notlandırması için arkaplan görevi "
+"oluşturmakta başarısız olundu. "
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Failed to create a background task for rescoring \"{key}\": {id}."
 msgstr ""
+"{id} için \"{key}\" tekrar notlandırması için arkaplan görevi oluşturmakta "
+"başarısız olundu. "
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Progress page for username: {username} with email address: {email}"
 msgstr ""
+"Kullanıcı adı: {username} ve {email} e-posta adresi için gelişim sayfası"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Assignment Name"
@@ -4266,7 +4385,7 @@ msgstr "Bu url ismiyle bir modül bulunamadı."
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Student state for problem {problem}"
-msgstr ""
+msgstr "{problem} problemi için öğrenci durumu"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "List of Beta Testers"
@@ -4296,15 +4415,16 @@ msgstr "Ders meta verisi içinde uzak not bilgisi bulunmuyor"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "No remote gradebook url defined in settings.FEATURES"
-msgstr ""
+msgstr "Ayarlarda uzaktan ders notu defteri bağlantısı yok. FEATURES"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "No gradebook name defined in course remote_gradebook metadata"
 msgstr ""
+"Ders remote_gradebook verisi için ders notu defteri ismi tanımlanmamış. "
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Failed to communicate with gradebook server at {url}"
-msgstr ""
+msgstr "{url} adresindeki not defteri sunucusu ile bağlantı kurulamadı"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Error: {err}"
@@ -4312,7 +4432,7 @@ msgstr "Hata: {err} "
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Remote gradebook response for {action}"
-msgstr ""
+msgstr "{action} için uzak not defteri cevabı"
 
 #: lms/djangoapps/instructor/views/legacy.py
 #: lms/djangoapps/instructor/views/legacy.py
@@ -4325,7 +4445,7 @@ msgstr "Roller"
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "List of Forum {name}s in course {id}"
-msgstr ""
+msgstr "{id} dersindeki {name} forumu listesi isimleri"
 
 #: lms/djangoapps/instructor/views/legacy.py
 #: lms/djangoapps/instructor/views/legacy.py
@@ -4341,10 +4461,14 @@ msgid ""
 "Error: user \"{username}\" does not have rolename \"{rolename}\", cannot "
 "remove"
 msgstr ""
+"Hata:  \"{username}\" adlı kullanıcı \"{rolename}\" şeklinde bir rol adına "
+"sahip değil, kaldırılamıyor."
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Removed \"{username}\" from \"{course_id}\" forum role = \"{rolename}\""
 msgstr ""
+"\"{course_id}\" dersindeki \"{username}\" adlı kullanıcı \"{rolename}\" "
+"forum rolünden kaldırıldı."
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Error: user \"{username}\" already has rolename \"{rolename}\", cannot add"
@@ -4357,10 +4481,14 @@ msgid ""
 "Error: user \"{username}\" should first be added as staff before adding as a"
 " forum administrator, cannot add"
 msgstr ""
+"Hata: \"{username}\" adlı kullanıcı, personel olarak eklenmeden önce forum "
+"yöneticisi olarak eklenmelidir, bu yüzden kullanıcı eklenemedi."
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "Added \"{username}\" to \"{course_id}\" forum role = \"{rolename}\""
 msgstr ""
+"\"{username}\" adlı kullanıcı \"{course_id}\" dersinde \"{rolename}\" forum "
+"rolüne eklendi."
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid "{title} in course {course_key}"
@@ -4402,12 +4530,16 @@ msgid ""
 "Failed to find any background tasks for course \"{course}\", module "
 "\"{problem}\" and student \"{student}\"."
 msgstr ""
+"Ders: \"{course}\", modül: \"{problem}\" ve öğrenci: \"{student}\" için "
+"herhangi bir arka plan görevi bulunamadı."
 
 #: lms/djangoapps/instructor/views/legacy.py
 msgid ""
 "Failed to find any background tasks for course \"{course}\" and module "
 "\"{problem}\"."
 msgstr ""
+"Ders: \"{course}\" ve modül: \"{problem}\" için herhangi bir arka plan "
+"görevi bulunamadı."
 
 #: lms/djangoapps/instructor/views/tools.py
 msgid "Could not find student matching identifier: {student_identifier}"
@@ -4472,9 +4604,17 @@ msgstr "silindi"
 msgid "emailed"
 msgstr "e-posta gönderilen"
 
+#. Translators: This is a past-tense verb that is inserted into task progress
+#. messages as {action}.
 #: lms/djangoapps/instructor_task/tasks.py
 msgid "graded"
 msgstr "notlandırıldı"
+
+#. Translators: This is a past-tense verb that is inserted into task progress
+#. messages as {action}.
+#: lms/djangoapps/instructor_task/tasks.py
+msgid "generated"
+msgstr ""
 
 #: lms/djangoapps/instructor_task/views.py
 #: lms/djangoapps/instructor_task/views.py
@@ -4641,6 +4781,9 @@ msgid ""
 "answers to any open response assessment questions? If not, please do so and "
 "return to this page."
 msgstr ""
+"Bu derste hiç bir açık uçlu soru bulunamadı. Herhangi bir açık uçlu "
+"değerlendirme sorusu için cevaplarınızı daha önce gönderdiniz mi? Eğer "
+"değilse, lütfen böyle yapın ve bu sayfaya geri dönün."
 
 #: lms/djangoapps/open_ended_grading/utils.py
 msgid "AI Assessment"
@@ -4742,7 +4885,7 @@ msgstr "Sepete farklı bir para birimi eklemeye çalışılıyor"
 
 #: lms/djangoapps/shoppingcart/models.py
 msgid "Registration for Course: {course_name}"
-msgstr ""
+msgstr "{course_name} kursuna kayıt"
 
 #: lms/djangoapps/shoppingcart/models.py
 msgid ""
@@ -4777,6 +4920,26 @@ msgstr ""
 "için {billing_email} adresiyle iletişime geçin. Epostanıza sipariş "
 "numaranızı da lütfen ekleyin. Lütfen kredi kartı numaranızı KESİNLİKLE "
 "yazmayın."
+
+#: lms/djangoapps/shoppingcart/models.py
+msgid ""
+"We greatly appreciate this generous contribution and your support of the "
+"{platform_name} mission.  This receipt was prepared to support charitable "
+"contributions for tax purposes.  We confirm that neither goods nor services "
+"were provided in exchange for this gift."
+msgstr ""
+
+#: lms/djangoapps/shoppingcart/models.py
+msgid "Could not find a course with the ID '{course_id}'"
+msgstr ""
+
+#: lms/djangoapps/shoppingcart/models.py
+msgid "Donation for {course}"
+msgstr ""
+
+#: lms/djangoapps/shoppingcart/models.py
+msgid "Donation for {platform_name}"
+msgstr ""
 
 #: lms/djangoapps/shoppingcart/reports.py
 msgid "Order Number"
@@ -5553,7 +5716,7 @@ msgstr ""
 
 #: lms/lib/xblock/mixin.py
 msgid "Default Tab"
-msgstr ""
+msgstr "Varsayılan Sekme"
 
 #: lms/lib/xblock/mixin.py
 msgid ""
@@ -5781,6 +5944,8 @@ msgid ""
 "You're receiving this e-mail because you requested a password reset for your"
 " user account at edx.org."
 msgstr ""
+"Bu e-posta size edx.org'daki kullanıcı hesabınız adına yapılan şifre "
+"yenileme talebi doğrultusunda yollanmıştır."
 
 #: lms/templates/registration/password_reset_email.html
 msgid "Please go to the following page and choose a new password:"
@@ -5800,7 +5965,7 @@ msgstr "Sitemizi kullandığınız için teşekkür ederiz!"
 
 #: lms/templates/registration/password_reset_email.html
 msgid "The edX Team"
-msgstr ""
+msgstr "EdX Takımı"
 
 #: lms/templates/wiki/article.html
 msgid "Last modified:"
@@ -6328,15 +6493,15 @@ msgstr "Yükleme Tamamlandı"
 
 #: cms/djangoapps/contentstore/views/component.py
 msgid "HTML"
-msgstr ""
+msgstr "HTML"
 
 #: cms/djangoapps/contentstore/views/component.py
 msgid "Video"
-msgstr ""
+msgstr "Video"
 
 #: cms/djangoapps/contentstore/views/component.py
 msgid "Blank"
-msgstr ""
+msgstr "Boş"
 
 #: cms/djangoapps/contentstore/views/course.py
 msgid "Unscheduled"
@@ -6347,6 +6512,8 @@ msgid ""
 "Special characters not allowed in organization, course number, and course "
 "run."
 msgstr ""
+"Özel karakterler organizasyon, ders numarası, ve ders süresinde "
+"kullanılamaz."
 
 #: cms/djangoapps/contentstore/views/course.py
 msgid ""
@@ -6608,7 +6775,7 @@ msgstr "Yönetici"
 #: cms/templates/manage_users.html
 #: lms/templates/discussion/_underscore_templates.html
 msgid "Staff"
-msgstr ""
+msgstr "Personel"
 
 #: cms/templates/register.html cms/templates/widgets/header.html
 #: lms/templates/index.html
@@ -6935,19 +7102,6 @@ msgid ""
 "email to confirm your email address change."
 msgstr ""
 
-#. Translators: this message is displayed when a user tries to link their
-#. account with a third-party authentication provider (for example, Google or
-#. LinkedIn) with a given edX account, but their third-party account is
-#. already
-#. associated with another edX account. provider_name is the name of the
-#. third-party authentication provider, and platform_name is the name of the
-#. edX deployment.
-#: lms/templates/dashboard.html
-msgid ""
-"The {provider_name} account you selected is already linked to another "
-"{platform_name} account."
-msgstr ""
-
 #: lms/templates/dashboard.html lms/templates/dashboard.html
 #: lms/templates/dashboard/_dashboard_info_language.html
 msgid "edit"
@@ -6958,14 +7112,17 @@ msgstr "düzenle"
 #. (for example, Google and LinkedIn) the user can link with or unlink from
 #. their edX account.
 #: lms/templates/dashboard.html
+#: lms/templates/student_profile/third_party_auth.html
 msgid "Connected Accounts"
-msgstr ""
+msgstr "Bağlı Hesaplar"
 
 #: lms/templates/dashboard.html
+#: lms/templates/student_profile/third_party_auth.html
 msgid "Linked"
 msgstr ""
 
 #: lms/templates/dashboard.html
+#: lms/templates/student_profile/third_party_auth.html
 msgid "Not Linked"
 msgstr ""
 
@@ -6973,6 +7130,7 @@ msgstr ""
 #. and their account with an external authentication provider (like Google or
 #. LinkedIn).
 #: lms/templates/dashboard.html
+#: lms/templates/student_profile/third_party_auth.html
 msgid "Unlink"
 msgstr ""
 
@@ -6980,6 +7138,7 @@ msgstr ""
 #. and their account with an external authentication provider (like Google or
 #. LinkedIn).
 #: lms/templates/dashboard.html
+#: lms/templates/student_profile/third_party_auth.html
 msgid "Link"
 msgstr ""
 
@@ -6989,7 +7148,7 @@ msgstr "Parola Sıfırla"
 
 #: lms/templates/dashboard.html
 msgid "Current Courses"
-msgstr ""
+msgstr "Mevcut Dersler"
 
 #: lms/templates/dashboard.html
 msgid "Looks like you haven't registered for any courses yet."
@@ -7252,11 +7411,11 @@ msgstr "Sık Sorulanlar"
 
 #: lms/templates/footer-edx-new.html
 msgid "edX Blog"
-msgstr ""
+msgstr "edX Blogu"
 
 #: lms/templates/footer-edx-new.html
 msgid "Donate to edX"
-msgstr ""
+msgstr "edX'e bağışta bulunuz."
 
 #: lms/templates/footer-edx-new.html
 msgid "Jobs at edX"
@@ -7264,15 +7423,15 @@ msgstr ""
 
 #: lms/templates/footer-edx-new.html
 msgid "Follow Us"
-msgstr ""
+msgstr "Bizi takip edin"
 
 #: lms/templates/footer-edx-new.html
 msgid "Twitter"
-msgstr ""
+msgstr "Twitter"
 
 #: lms/templates/footer-edx-new.html
 msgid "Facebook"
-msgstr ""
+msgstr "Facebook"
 
 #: lms/templates/footer-edx-new.html
 msgid "Meetup"
@@ -7280,11 +7439,11 @@ msgstr ""
 
 #: lms/templates/footer-edx-new.html
 msgid "LinkedIn"
-msgstr ""
+msgstr "LinkedIn"
 
 #: lms/templates/footer-edx-new.html
 msgid "Google+"
-msgstr ""
+msgstr "Google+"
 
 #: lms/templates/footer-edx.html lms/templates/footer.html
 #: lms/templates/static_templates/jobs.html
@@ -7497,7 +7656,7 @@ msgstr "Lütfen daha sonra tekrar deneyiniz."
 
 #: lms/templates/imageannotation.html
 msgid "Note: only instructors may annotate."
-msgstr ""
+msgstr "Not: sadece, eğitmenler açıklama koyabilir."
 
 #: lms/templates/index.html
 msgid "Free courses from <strong>{university_name}</strong>"
@@ -7630,7 +7789,7 @@ msgstr "Beni hatırla"
 #. authentication provider (like Google or LinkedIn).
 #: lms/templates/login.html
 msgid "Sign in with {provider_name}"
-msgstr ""
+msgstr "{provider_name} hesabıyla oturum aç"
 
 #. Translators:  "External resource" means that this learning module is hosted
 #. on a platform external to the edX LMS
@@ -7667,7 +7826,7 @@ msgstr ""
 
 #: lms/templates/lti_form.html
 msgid "Press to Launch"
-msgstr ""
+msgstr "Başlatmak için tıklayın"
 
 #: lms/templates/manage_user_standing.html
 msgid "Disable or Reenable student accounts"
@@ -7730,6 +7889,9 @@ msgid ""
 " fix it as soon as possible. Please email us at {tech_support_email} to "
 "report any problems or downtime."
 msgstr ""
+"Üzgünüz, bu modül geçici olarak devre dışı. Ekibimiz sorunu bir an önce "
+"çözmek için çalışıyor. Lütfen sorunları ve aksama süresini "
+"{tech_support_email} adresine rapor edin."
 
 #: lms/templates/module-error.html
 msgid "Raw data:"
@@ -7755,10 +7917,6 @@ msgstr "Onayla"
 msgid "Reject"
 msgstr ""
 
-#: lms/templates/navigation.html lms/templates/original_navigation.html
-msgid "Global Navigation"
-msgstr "Küresel Navigasyon"
-
 #: lms/templates/navigation.html lms/templates/navigation.html
 #: lms/templates/original_navigation.html
 msgid "Find Courses"
@@ -7778,7 +7936,7 @@ msgstr "Çıkış yap"
 
 #: lms/templates/navigation.html lms/templates/original_navigation.html
 msgid "Shopping Cart"
-msgstr ""
+msgstr "Alışveriş Sepeti"
 
 #: lms/templates/navigation.html lms/templates/original_navigation.html
 msgid "How it Works"
@@ -7809,6 +7967,10 @@ msgstr ""
 #: lms/templates/videoannotation.html
 msgid "You do not have any notes."
 msgstr "Notunuz yok."
+
+#: lms/templates/original_navigation.html
+msgid "Global Navigation"
+msgstr "Küresel Navigasyon"
 
 #: lms/templates/original_navigation.html
 #: lms/templates/sysadmin_dashboard.html
@@ -8023,7 +8185,7 @@ msgstr ""
 #. authentication service (like Google or LinkedIn).
 #: lms/templates/register.html
 msgid "You've successfully signed in with {selected_provider}."
-msgstr ""
+msgstr "{selected_provider} oturumunuz başarıyla açıldı."
 
 #: lms/templates/register.html
 msgid ""
@@ -8121,7 +8283,7 @@ msgstr "Sonraki"
 
 #: lms/templates/signup_modal.html
 msgid "Sign Up for {platform_name}"
-msgstr ""
+msgstr "{platform_name} için kaydolun"
 
 #: lms/templates/signup_modal.html lms/templates/signup_modal.html
 msgid "e.g. yourname@domain.com"
@@ -8175,11 +8337,11 @@ msgstr ""
 
 #: lms/templates/split_test_author_view.html
 msgid "Active Groups"
-msgstr ""
+msgstr "Aktif Gruplar"
 
 #: lms/templates/split_test_author_view.html
 msgid "Inactive Groups"
-msgstr ""
+msgstr "Pasif Gruplar"
 
 #: lms/templates/staff_problem_info.html
 msgid "Staff Debug Info"
@@ -8475,7 +8637,7 @@ msgstr "Videoyu Oynat"
 
 #: lms/templates/video.html
 msgid "No playable video sources found."
-msgstr ""
+msgstr "HATA: Oynatılabilir video kaynağı bulunamadı!"
 
 #: lms/templates/video.html
 msgid "Video position"
@@ -8786,6 +8948,10 @@ msgstr ""
 "Ekle {course.display_number_with_default} sepete  ({currency_symbol}{cost})"
 
 #: lms/templates/courseware/course_about.html
+msgid "Course is full"
+msgstr "Ders Dolu"
+
+#: lms/templates/courseware/course_about.html
 msgid "Enrollment in this course is by invitation only"
 msgstr ""
 
@@ -8882,6 +9048,9 @@ msgid ""
 " fix it as soon as possible. Please email us at {tech_support_email}' to "
 "report any problems or downtime."
 msgstr ""
+"Üzgünüz, bu modül geçici olarak devre dışı. Ekibimiz sorunu bir an önce "
+"çözmek için çalışıyor. Lütfen {tech_support_email} adresine yazarak "
+"sorunları ve site çökmelerini bildirin."
 
 #: lms/templates/courseware/courseware.html
 msgid "{course_number} Courseware"
@@ -8993,15 +9162,9 @@ msgid ""
 " fix it as soon as possible. Please email us at {link_to_support_email} to "
 "report any problems or downtime."
 msgstr ""
-
-#: lms/templates/courseware/grade_summary.html
-#: lms/templates/courseware/instructor_dashboard.html
-msgid "Grade summary"
-msgstr "Not özeti"
-
-#: lms/templates/courseware/grade_summary.html
-msgid "Not implemented yet"
-msgstr "Henüz gerçekleştirilmedi"
+"Üzgünüz, bu modül geçici olarak devre dışı. Ekibimiz sorunu bir an önce "
+"çözmek için çalışıyor. Lütfen sorunları ve aksama süresini "
+"{link_to_support_email} adresine rapor edin."
 
 #: lms/templates/courseware/gradebook.html
 #: lms/templates/courseware/instructor_dashboard.html
@@ -9069,7 +9232,7 @@ msgstr ""
 
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Return to the Instructor Dashboard"
-msgstr ""
+msgstr "Eğitmen Paneline Geri Dönün"
 
 #: lms/templates/courseware/instructor_dashboard.html
 msgid ""
@@ -9416,7 +9579,7 @@ msgstr "Öğrenciler"
 
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Score distribution for problems"
-msgstr ""
+msgstr "Problemler için skor dağılımı"
 
 #: lms/templates/courseware/instructor_dashboard.html
 msgid "Max"
@@ -9585,7 +9748,7 @@ msgstr "Öğrenci için Ders Gidişatı {username}' ({email})"
 
 #: lms/templates/courseware/progress.html
 msgid "Download your certificate"
-msgstr ""
+msgstr "Sertifikanızı İndirin"
 
 #: lms/templates/courseware/progress.html
 msgid "{earned:.3n} of {total:.3n} possible points"
@@ -9728,7 +9891,7 @@ msgstr "Kaydolunan isim:"
 #: lms/templates/verify_student/_verification_header.html
 #: lms/templates/verify_student/_verification_header.html
 msgid "Verified"
-msgstr ""
+msgstr "Onaylandı"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "You're enrolled as an honor code student"
@@ -9746,7 +9909,7 @@ msgstr ""
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "Auditing"
-msgstr ""
+msgstr "Denetleme"
 
 #: lms/templates/dashboard/_dashboard_course_listing.html
 msgid "You're enrolled as a professional education student"
@@ -9858,11 +10021,9 @@ msgstr "Devam etmek için yeniden doğrulanmanız gerekiyor"
 
 #: lms/templates/dashboard/_dashboard_prompt_midcourse_reverify.html
 msgid ""
-"To continue in the ID Verified track in the following courses, you need to "
-"re-verify your identity:"
+"People change, and each year we ask you to re-verify your identity for our "
+"verified certificates. Take a minute now to help us renew your identity."
 msgstr ""
-"Aşağıdaki derslerde kimlik denetimli sertifika yolunda devam için, "
-"kimliğinizi yeniden onaylamanız gerekli:"
 
 #: lms/templates/dashboard/_dashboard_prompt_midcourse_reverify.html
 msgid "{course_name}: Re-verify by {date}"
@@ -9947,6 +10108,23 @@ msgid ""
 msgstr ""
 "Dersiniz bitene kadar onaylama girişiminizden geçemezseniz, kimlik onaylı "
 "sertifika alamayacaksınız."
+
+#: lms/templates/dashboard/_dashboard_third_party_error.html
+msgid "Could Not Link Accounts"
+msgstr ""
+
+#. Translators: this message is displayed when a user tries to link their
+#. account with a third-party authentication provider (for example, Google or
+#. LinkedIn) with a given edX account, but their third-party account is
+#. already
+#. associated with another edX account. provider_name is the name of the
+#. third-party authentication provider, and platform_name is the name of the
+#. edX deployment.
+#: lms/templates/dashboard/_dashboard_third_party_error.html
+msgid ""
+"The {provider_name} account you selected is already linked to another "
+"{platform_name} account."
+msgstr ""
 
 #: lms/templates/debug/run_python_form.html
 msgid "Results:"
@@ -10080,11 +10258,11 @@ msgstr "Yanıt iletisi gönder:"
 
 #: lms/templates/discussion/_underscore_templates.html
 msgid "Expand discussion"
-msgstr ""
+msgstr "Tartışmayı genişlet"
 
 #: lms/templates/discussion/_underscore_templates.html
 msgid "Collapse discussion"
-msgstr ""
+msgstr "Tartışmayı daralt"
 
 #: lms/templates/discussion/_underscore_templates.html
 msgid "Editing post"
@@ -10253,36 +10431,6 @@ msgstr ""
 "İzlediğiniz iletilerden gelen yeni ve okunmamış etkinlikler hakkında günde "
 "bir kere özet mesaj almak için şu kutucuğu işaretleyiniz."
 
-#. Translators: This is the label for a control to
-#. select a forum post type
-#: lms/templates/discussion/_underscore_templates.html
-msgid "Post type:"
-msgstr ""
-
-#. Translators: This is a forum post type
-#: lms/templates/discussion/_underscore_templates.html
-msgid "Question"
-msgstr ""
-
-#: lms/templates/discussion/_underscore_templates.html
-msgid ""
-"Questions raise issues that need answers. Discussions share ideas and start "
-"conversations."
-msgstr ""
-
-#: lms/templates/discussion/_underscore_templates.html
-msgid "Topic Area:"
-msgstr ""
-
-#: lms/templates/discussion/_underscore_templates.html
-#: lms/templates/discussion/_underscore_templates.html
-msgid "Filter topics"
-msgstr ""
-
-#: lms/templates/discussion/_underscore_templates.html
-msgid "Add your post to a relevant topic to help others find it."
-msgstr ""
-
 #. Translators: This labels the selector for which group of students can view
 #. a
 #. post
@@ -10296,8 +10444,8 @@ msgstr "Bütün Gruplar"
 
 #: lms/templates/discussion/_underscore_templates.html
 msgid ""
-"Instructors can set whether a post in a cohorted topic is visible to all "
-"cohorts or only to a specific cohort."
+"Discussion admins, moderators, and TAs can make their posts visible to all "
+"students or specify a single cohort group."
 msgstr ""
 
 #: lms/templates/discussion/_underscore_templates.html
@@ -10326,6 +10474,36 @@ msgstr "Sınıf arkadaşlarına anonim olarak ileti gönder"
 
 #: lms/templates/discussion/_underscore_templates.html
 msgid "Add Post"
+msgstr ""
+
+#. Translators: This is the label for a control to
+#. select a forum post type
+#: lms/templates/discussion/_underscore_templates.html
+msgid "Post type:"
+msgstr ""
+
+#. Translators: This is a forum post type
+#: lms/templates/discussion/_underscore_templates.html
+msgid "Question"
+msgstr ""
+
+#: lms/templates/discussion/_underscore_templates.html
+msgid ""
+"Questions raise issues that need answers. Discussions share ideas and start "
+"conversations."
+msgstr ""
+
+#: lms/templates/discussion/_underscore_templates.html
+msgid "Topic Area:"
+msgstr ""
+
+#: lms/templates/discussion/_underscore_templates.html
+#: lms/templates/discussion/_underscore_templates.html
+msgid "Filter topics"
+msgstr ""
+
+#: lms/templates/discussion/_underscore_templates.html
+msgid "Add your post to a relevant topic to help others find it."
 msgstr ""
 
 #: lms/templates/discussion/_underscore_templates.html
@@ -10378,11 +10556,11 @@ msgstr ""
 
 #: lms/templates/discussion/_underscore_templates.html
 msgid "Open"
-msgstr ""
+msgstr "Aç"
 
 #: lms/templates/discussion/_underscore_templates.html
 msgid "More"
-msgstr ""
+msgstr "Fazlası"
 
 #: lms/templates/discussion/_underscore_templates.html
 #: lms/templates/discussion/mustache/_profile_thread.mustache
@@ -10492,7 +10670,7 @@ msgstr ""
 #: lms/templates/emails/remove_beta_tester_email_message.txt
 #: lms/templates/emails/unenroll_email_enrolledmessage.txt
 msgid "Dear {full_name}"
-msgstr ""
+msgstr "Sayın {full_name} "
 
 #: lms/templates/emails/add_beta_tester_email_message.txt
 msgid ""
@@ -10504,14 +10682,20 @@ msgstr ""
 #: lms/templates/emails/enroll_email_enrolledmessage.txt
 msgid "To start accessing course materials, please visit {course_url}"
 msgstr ""
+"Ders materyallerine erişmek için lütfen {course_url} adresini ziyaret "
+"ediniz."
 
 #: lms/templates/emails/add_beta_tester_email_message.txt
 msgid "Visit {course_about_url} to join the course and begin the beta test."
 msgstr ""
+"Derse katılmak ve beta testine başlamak için {course_about_url} ziyaret "
+"ediniz."
 
 #: lms/templates/emails/add_beta_tester_email_message.txt
 msgid "Visit {site_name} to enroll in the course and begin the beta test."
 msgstr ""
+"Derse kayıt olmak ve beta testine başlamak için {site_name} adresini ziyaret"
+" ediniz."
 
 #: lms/templates/emails/add_beta_tester_email_message.txt
 #: lms/templates/emails/enroll_email_allowedmessage.txt
@@ -10519,10 +10703,12 @@ msgstr ""
 #: lms/templates/emails/unenroll_email_allowedmessage.txt
 msgid "This email was automatically sent from {site_name} to {email_address}"
 msgstr ""
+"Bu e-posta {site_name}'den {email_address} adresine otomatik olarak "
+"gönderilmiştir."
 
 #: lms/templates/emails/add_beta_tester_email_subject.txt
 msgid "You have been invited to a beta test for {course_name}"
-msgstr ""
+msgstr "{course_name} adlı ders için beta sınamasına davet edildiniz."
 
 #: lms/templates/emails/confirm_email_change.txt
 msgid ""
@@ -10564,7 +10750,7 @@ msgstr ""
 
 #: lms/templates/emails/enroll_email_allowedmessage.txt
 msgid "Dear student,"
-msgstr ""
+msgstr "Sayın öğrencimiz,"
 
 #: lms/templates/emails/enroll_email_allowedmessage.txt
 msgid ""
@@ -10575,11 +10761,14 @@ msgstr ""
 #: lms/templates/emails/enroll_email_allowedmessage.txt
 msgid "To access the course visit {course_url} and login."
 msgstr ""
+"Derse erişmek için {course_url} adresini ziyaret ediniz ve giriş yapınız."
 
 #: lms/templates/emails/enroll_email_allowedmessage.txt
 msgid ""
 "To access the course visit {course_about_url} and register for the course."
 msgstr ""
+"Derse erişmek için {course_url} adresini ziyaret ediniz ve ders için kayıt  "
+"olunuz."
 
 #: lms/templates/emails/enroll_email_allowedmessage.txt
 msgid ""
@@ -10593,6 +10782,8 @@ msgid ""
 "Once you have registered and activated your account, you will see "
 "{course_name} listed on your dashboard."
 msgstr ""
+"Kaydolup hesabınız aktifleştirdikten sonra panelinizde {course_name} "
+"listesini göreceksiniz."
 
 #: lms/templates/emails/enroll_email_allowedmessage.txt
 msgid ""
@@ -10606,7 +10797,7 @@ msgstr ""
 
 #: lms/templates/emails/enroll_email_allowedsubject.txt
 msgid "You have been invited to register for {course_name}"
-msgstr ""
+msgstr "{course_name} adlı derse kayıt olmak için davet edildiniz."
 
 #: lms/templates/emails/enroll_email_enrolledmessage.txt
 msgid ""
@@ -10621,11 +10812,11 @@ msgstr ""
 
 #: lms/templates/emails/enroll_email_enrolledsubject.txt
 msgid "You have been enrolled in {course_name}"
-msgstr ""
+msgstr "{course_name} adlı derse kaydınız yapılmıştır."
 
 #: lms/templates/emails/order_confirmation_email.txt
 msgid "Hi {name}"
-msgstr ""
+msgstr "Merhaba {name}"
 
 #: lms/templates/emails/order_confirmation_email.txt
 msgid ""
@@ -10651,19 +10842,19 @@ msgstr ""
 
 #: lms/templates/emails/order_confirmation_email.txt
 msgid "-The {platform_name} Team"
-msgstr ""
+msgstr "- {platform_name} Takımı"
 
 #: lms/templates/emails/order_confirmation_email.txt
 msgid "Your order number is: {order_number}"
-msgstr ""
+msgstr "Sipariş numaranız şöyle: {order_number}"
 
 #: lms/templates/emails/order_confirmation_email.txt
 msgid "The items in your order are:"
-msgstr ""
+msgstr "Siparişinizdeki maddeler şöyle:"
 
 #: lms/templates/emails/order_confirmation_email.txt
 msgid "Quantity - Description - Price"
-msgstr ""
+msgstr "Miktar - Açıklama - Ücret"
 
 #: lms/templates/emails/order_confirmation_email.txt
 msgid "Total billed to credit/debit card: {currency_symbol}{total_cost}"
@@ -10821,6 +11012,9 @@ msgid ""
 "name from {old_name} to {new_name}. If you need further assistance, please "
 "e-mail the tech support at"
 msgstr ""
+"Üzgünüz. Ders personelimiz isminizi {old_name}'den {new_name}'e değitirme "
+"isteğinizi onaylamadı. Eğer daha fazla yardıma ihtiyaç duyuyorsanız, lütfen "
+"teknik desteğe e-posta atın"
 
 #: lms/templates/emails/reject_name_change.txt
 msgid ""
@@ -10828,6 +11022,9 @@ msgid ""
 "name from {old_name} to {new_name}. If you need further assistance, please "
 "e-mail the course staff at ta@edx.org."
 msgstr ""
+"Üzgünüz. Ders personelimiz isminizi {old_name}'den {new_name}'e değitirme "
+"isteğinizi onaylamadı. Eğer daha fazla yardıma ihtiyaç duyuyorsanız, lütfen "
+"ta@edx.org adresinden ders personeline e-posta atın."
 
 #: lms/templates/emails/remove_beta_tester_email_message.txt
 msgid ""
@@ -10847,7 +11044,7 @@ msgstr ""
 
 #: lms/templates/emails/unenroll_email_allowedmessage.txt
 msgid "Dear Student,"
-msgstr ""
+msgstr "Değerli Öğrencimiz,"
 
 #: lms/templates/emails/unenroll_email_allowedmessage.txt
 msgid ""
@@ -10864,6 +11061,26 @@ msgstr ""
 
 #: lms/templates/emails/unenroll_email_subject.txt
 msgid "You have been un-enrolled from {course_name}"
+msgstr "{course_name} dersinden kaydınız iptal edilmiştir."
+
+#: lms/templates/enrollment/course_enrollment_message.html
+msgid "Enrollment Successful"
+msgstr ""
+
+#: lms/templates/enrollment/course_enrollment_message.html
+msgid ""
+"Thank you for enrolling in {enrolled_course}. We hope you enjoy the course."
+msgstr ""
+
+#: lms/templates/enrollment/course_enrollment_message.html
+msgid ""
+"{platform_name} is a nonprofit bringing high-quality education to everyone, "
+"everywhere. Your help allows us to continuously improve the learning "
+"experience for millions and make a better future one learner at a time."
+msgstr ""
+
+#: lms/templates/enrollment/course_enrollment_message.html
+msgid "Donation Actions"
 msgstr ""
 
 #: lms/templates/instructor/staff_grading.html
@@ -11026,6 +11243,45 @@ msgstr "Ders Uyarıları"
 
 #: lms/templates/instructor/instructor_dashboard_2/data_download.html
 msgid ""
+"Click to display the grading configuration for the course. The grading "
+"configuration is the breakdown of graded subsections of the course (such as "
+"exams and problem sets), and can be changed on the 'Grading' page (under "
+"'Settings') in Studio."
+msgstr ""
+
+#: lms/templates/instructor/instructor_dashboard_2/data_download.html
+msgid "Grading Configuration"
+msgstr "Notlandırma Konfigürasyonu"
+
+#: lms/templates/instructor/instructor_dashboard_2/data_download.html
+msgid "Click to download a CSV of anonymized student IDs:"
+msgstr "Anonim öğrenci numaralarını CSV olarak indirmek için tıklayınız:"
+
+#: lms/templates/instructor/instructor_dashboard_2/data_download.html
+msgid "Get Student Anonymized IDs CSV"
+msgstr "Anonim Öğrenci Numaralarını CSV Olarak Getir"
+
+#: lms/templates/instructor/instructor_dashboard_2/data_download.html
+msgid "Reports"
+msgstr "Raporlar"
+
+#: lms/templates/instructor/instructor_dashboard_2/data_download.html
+msgid ""
+"For large courses, generating some reports can take several hours. When "
+"report generation is complete, a link that includes the date and time of "
+"generation appears in the table below. These reports are generated in the "
+"background, meaning it is OK to navigate away from this page while your "
+"report is generating."
+msgstr ""
+
+#: lms/templates/instructor/instructor_dashboard_2/data_download.html
+msgid ""
+"Please be patient and do not click these buttons multiple times. Clicking "
+"these buttons multiple times will significantly slow the generation process."
+msgstr ""
+
+#: lms/templates/instructor/instructor_dashboard_2/data_download.html
+msgid ""
 "Click to generate a CSV file of all students enrolled in this course, along "
 "with profile information such as email address and username:"
 msgstr ""
@@ -11046,52 +11302,8 @@ msgstr "Kayıtlı öğrencilerin profil bilgisini listele"
 
 #: lms/templates/instructor/instructor_dashboard_2/data_download.html
 msgid ""
-"Click to display the grading configuration for the course. The grading "
-"configuration is the breakdown of graded subsections of the course (such as "
-"exams and problem sets), and can be changed on the 'Grading' page (under "
-"'Settings') in Studio."
+"Click to generate a CSV grade report for all currently enrolled students."
 msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/data_download.html
-msgid "Grading Configuration"
-msgstr "Notlandırma Konfigürasyonu"
-
-#: lms/templates/instructor/instructor_dashboard_2/data_download.html
-msgid "Click to download a CSV of anonymized student IDs:"
-msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/data_download.html
-msgid "Get Student Anonymized IDs CSV"
-msgstr "Anonim Öğrenci Numaralarını CSV Olarak Getir"
-
-#: lms/templates/instructor/instructor_dashboard_2/data_download.html
-msgid "Reports"
-msgstr "Raporlar"
-
-#: lms/templates/instructor/instructor_dashboard_2/data_download.html
-msgid ""
-"Click to generate a CSV grade report for all currently enrolled students.  "
-"Links to generated reports appear in a table below when report generation is"
-" complete."
-msgstr ""
-
-#: lms/templates/instructor/instructor_dashboard_2/data_download.html
-msgid ""
-"For large courses, generating this report may take several hours. Please be "
-"patient and do not click the button multiple times. Clicking the button "
-"multiple times will significantly slow the grade generation process."
-msgstr ""
-"Büyük dersler için, bu raporu oluşturmak saatler alabilir. Lütfen sabırlı "
-"olun ve butona birden çok kez basmayın. Butona birden fazla kez basmak rapor"
-" oluşturma sürecini  belirgin bir şekilde yavaşlatacaktır."
-
-#: lms/templates/instructor/instructor_dashboard_2/data_download.html
-msgid ""
-"The report is generated in the background, meaning it is OK to navigate away"
-" from this page while your report is generating."
-msgstr ""
-"Rapor arka planda oluşturuldu, yani rapor oluşturulurken bu sayfadan "
-"çıkabilirsiniz."
 
 #: lms/templates/instructor/instructor_dashboard_2/data_download.html
 msgid "Generate Grade Report"
@@ -11103,11 +11315,10 @@ msgstr "İndirme için Hazır Raporlar"
 
 #: lms/templates/instructor/instructor_dashboard_2/data_download.html
 msgid ""
-"The grade reports listed below are generated each time the <b>Generate Grade"
-" Report</b> button is clicked. A link to each grade report remains available"
-" on this page, identified by the UTC date and time of generation. Grade "
-"reports are not deleted, so you will always be able to access previously "
-"generated reports from this page."
+"The reports listed below are available for download. A link to every report "
+"remains available on this page, identified by the UTC date and time of "
+"generation. Reports are not deleted, so you will always be able to access "
+"previously generated reports from this page."
 msgstr ""
 
 #: lms/templates/instructor/instructor_dashboard_2/data_download.html
@@ -11449,7 +11660,7 @@ msgstr ""
 
 #: lms/templates/instructor/instructor_dashboard_2/generate_registarion_codes_modal.html
 msgid "State/Province"
-msgstr ""
+msgstr "Bölge"
 
 #: lms/templates/instructor/instructor_dashboard_2/generate_registarion_codes_modal.html
 msgid "Zip"
@@ -11505,7 +11716,7 @@ msgstr ""
 
 #: lms/templates/instructor/instructor_dashboard_2/instructor_analytics.html
 msgid "Score Distribution"
-msgstr ""
+msgstr "Skor Dağılımı"
 
 #: lms/templates/instructor/instructor_dashboard_2/instructor_analytics.html
 msgid ""
@@ -11540,17 +11751,21 @@ msgstr ""
 msgid ""
 "Enter email addresses and/or usernames separated by new lines or commas."
 msgstr ""
+"Eposta adreslerinizi ve/veya kullanıcı adlarınızı satır atlayarak veya "
+"virgülle ayırarak giriniz."
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
 msgid ""
 "You will not get notification for emails that bounce, so please double-check"
 " spelling."
 msgstr ""
+"Geri gönderilen e-postalarınız için bildiri almayacaksınız, bu yüzden lütfen"
+" imla denetimi yapınız."
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
 msgid "Email Addresses/Usernames"
-msgstr ""
+msgstr "Email Adresi/Kullanıcı adı"
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
@@ -11603,6 +11818,8 @@ msgid ""
 "Note: Users must have an activated {platform_name} account before they can "
 "be enrolled as a beta tester."
 msgstr ""
+"Not: Kullanıcıların beta sınayıcısı olarak kayıt olabilmeleri için önce "
+"aktif bir {platform_name} hesabına sahip olmaları gerekir."
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
 msgid ""
@@ -11633,7 +11850,7 @@ msgstr "Yönetici Liste İdaresi"
 #. users can be added to.
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
 msgid "Select an Administrator Group:"
-msgstr ""
+msgstr "Bir yönetici grubu seçiniz:"
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
 msgid "Getting available lists..."
@@ -11702,7 +11919,7 @@ msgstr ""
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
 msgid "Add Beta Tester"
-msgstr ""
+msgstr "Beta Sınayıcısı Ekle"
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
 msgid "Discussion Admins"
@@ -11721,7 +11938,7 @@ msgstr ""
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
 msgid "Add Discussion Admin"
-msgstr ""
+msgstr "Tartışma Yöneticisi Ekle"
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
 msgid "Discussion Moderators"
@@ -11763,7 +11980,7 @@ msgstr ""
 
 #: lms/templates/instructor/instructor_dashboard_2/membership.html
 msgid "Add Community TA"
-msgstr ""
+msgstr "Topluluk Öğretim Görevlisi Ekle"
 
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 msgid "Use Reload Graphs to refresh the graphs."
@@ -11790,7 +12007,7 @@ msgstr ""
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 msgid "You can also download this data as a CSV file."
-msgstr ""
+msgstr "Bu veriyi ayrıca bir CSV dosyası olarak da indirebilirsiniz."
 
 #: lms/templates/instructor/instructor_dashboard_2/metrics.html
 msgid "Download Subsection Data for all Subsections as a CSV"
@@ -11834,7 +12051,7 @@ msgstr "E-posta Gönder"
 
 #: lms/templates/instructor/instructor_dashboard_2/send_email.html
 msgid "Message:"
-msgstr ""
+msgstr "Mesaj:"
 
 #: lms/templates/instructor/instructor_dashboard_2/send_email.html
 msgid ""
@@ -12233,16 +12450,15 @@ msgid "Go Back"
 msgstr "Geri Dön"
 
 #: lms/templates/registration/activate_account_notice.html
-msgid "Thanks For Registering!"
-msgstr "Kayıt Olduğunuz için Teşekkürler!"
+msgid "Thanks for Registering!"
+msgstr ""
 
 #: lms/templates/registration/activate_account_notice.html
 msgid ""
-"Your account is not active yet. An activation link has been sent to {email},"
-" along with instructions for activating your account."
+"You've successfully created an account on {platform_name}. We've sent an "
+"account activation message to {email}. To activate your account and start "
+"enrolling in courses, click the link in the message."
 msgstr ""
-"Hesabınız aktif değil. Aktivasyon linki ve nasıl kullanılacağına dair "
-"bilgiler {email} hesabınıza gönderildi."
 
 #: lms/templates/registration/activation_complete.html
 msgid "Activation Complete!"
@@ -12705,9 +12921,49 @@ msgid ""
 "Please wait a few seconds and then reload the page. If the problem persists,"
 " please email us at {email}."
 msgstr ""
+"Lütfen bir kaç dakika bekleyin ve sayfayı yeniden yükleyin. Eğer sorun devam"
+" ederse, lütfen {email} adresine eposta atınız."
 
 #: lms/templates/static_templates/server-overloaded.html
 msgid "Currently the {platform_name} servers are overloaded"
+msgstr "Şu an için {platform_name} sunucuları aşırı yüklendi"
+
+#: lms/templates/student_account/email_change_failed.html
+msgid "Email change failed."
+msgstr ""
+
+#: lms/templates/student_account/email_change_failed.html
+msgid "Something went wrong. Please contact {support} for help."
+msgstr ""
+
+#: lms/templates/student_account/email_change_failed.html
+msgid ""
+"The email address you wanted to use is already used by another "
+"{platform_name} account."
+msgstr ""
+
+#: lms/templates/student_account/email_change_failed.html
+msgid ""
+"You can try again from the {link_start}account settings{link_end} page."
+msgstr ""
+
+#: lms/templates/student_account/email_change_successful.html
+msgid "Email change successful!"
+msgstr ""
+
+#: lms/templates/student_account/email_change_successful.html
+msgid ""
+"You should see your new email address listed on the {link_start}account "
+"settings{link_end} page."
+msgstr ""
+
+#: lms/templates/student_account/index.html
+msgid "Student Account"
+msgstr ""
+
+#: lms/templates/student_profile/index.html
+#: lms/templates/student_profile/index.html
+msgid "Student Profile"
 msgstr ""
 
 #: lms/templates/verify_student/_modal_editname.html
@@ -12785,9 +13041,11 @@ msgstr "Yeniden onaylıyorsunuz, şunun için"
 
 #: lms/templates/verify_student/_verification_header.html
 #: lms/templates/verify_student/_verification_header.html
+#: lms/templates/verify_student/_verification_header.html
 msgid "You are registering for"
 msgstr "Şunun için kayıt oluyorsunuz"
 
+#: lms/templates/verify_student/_verification_header.html
 #: lms/templates/verify_student/_verification_header.html
 msgid "Professional Education"
 msgstr ""
@@ -13961,7 +14219,7 @@ msgstr ""
 
 #: cms/templates/checklists.html
 msgid "Studio checklists"
-msgstr ""
+msgstr "Stüdyo yapılacak işler listeleri"
 
 #: cms/templates/component.html cms/templates/studio_xblock_wrapper.html
 #: cms/templates/studio_xblock_wrapper.html
@@ -13979,7 +14237,7 @@ msgstr "Bu bileşeni silin"
 #: cms/templates/component.html cms/templates/edit-tabs.html
 #: cms/templates/edit-tabs.html cms/templates/studio_xblock_wrapper.html
 msgid "Drag to reorder"
-msgstr ""
+msgstr "Tekrar düzenlemek için sürükle"
 
 #: cms/templates/container.html
 msgid "View Live Version"
@@ -13987,19 +14245,57 @@ msgstr ""
 
 #: cms/templates/container.html
 msgid "Preview Changes"
-msgstr ""
+msgstr "Önizleme Değişiklikleri"
 
-#: cms/templates/container.html cms/templates/group_configurations.html
-#: cms/templates/settings_graders.html
-msgid "What can I do on this page?"
-msgstr "Bu sayfada ne yapabilirim?"
+#: cms/templates/container.html
+msgid "Adding components"
+msgstr ""
 
 #: cms/templates/container.html
 msgid ""
-"You can view and edit course components that contain other components on "
-"this page. In the case of experiment blocks, this allows you to confirm that"
-" you have properly configured your experiment groups and make changes to "
-"existing content."
+"Select a component type under {em_start}Add New Component{em_end}. Then "
+"select a template."
+msgstr ""
+
+#: cms/templates/container.html
+msgid ""
+"The new component is added at the bottom of the page or group. You can then "
+"edit and move the component."
+msgstr ""
+
+#: cms/templates/container.html
+msgid "Editing components"
+msgstr ""
+
+#: cms/templates/container.html
+msgid ""
+"Click the {em_start}Edit{em_end} icon in a component to edit its content."
+msgstr ""
+
+#: cms/templates/container.html
+msgid "Reorganizing components"
+msgstr ""
+
+#: cms/templates/container.html
+msgid "Drag components to new locations within this component."
+msgstr ""
+
+#: cms/templates/container.html
+msgid "For content experiments, you can drag components to other groups."
+msgstr ""
+
+#: cms/templates/container.html
+msgid "Working with content experiments"
+msgstr ""
+
+#: cms/templates/container.html
+msgid ""
+"Confirm that you have properly configured content in each of your experiment"
+" groups."
+msgstr ""
+
+#: cms/templates/container.html
+msgid "Learn more about component containers"
 msgstr ""
 
 #: cms/templates/container.html
@@ -14008,7 +14304,7 @@ msgstr "Birim Yeri"
 
 #: cms/templates/container.html
 msgid "Location ID"
-msgstr ""
+msgstr "Konum ID"
 
 #: cms/templates/container.html
 msgid ""
@@ -14018,7 +14314,7 @@ msgstr ""
 
 #: cms/templates/container.html
 msgid "Location in Course Outline"
-msgstr ""
+msgstr "Ders Özetindeki Konum"
 
 #: cms/templates/course-create-rerun.html
 msgid "Create a Course Rerun of:"
@@ -14106,11 +14402,11 @@ msgstr ""
 
 #: cms/templates/course-create-rerun.html
 msgid "Create Re-run"
-msgstr ""
+msgstr "Yeniden Çalıştırmayi Yarat"
 
 #: cms/templates/course-create-rerun.html
 msgid "When will my course re-run start?"
-msgstr ""
+msgstr "Kursum ne zaman yeniden başlayacak?"
 
 #: cms/templates/course-create-rerun.html
 msgid "The new course is set to start on January 1, 2030 at midnight (UTC)."
@@ -14193,7 +14489,7 @@ msgstr "Bütün bölümleri daralt"
 
 #: cms/templates/course_outline.html
 msgid "Expand All Sections"
-msgstr ""
+msgstr "Bütün Bölümleri Genişlet"
 
 #: cms/templates/course_outline.html
 msgid "Click to open the courseware in the LMS in a new tab"
@@ -14206,11 +14502,11 @@ msgstr "Canlı Görüntüle"
 
 #: cms/templates/course_outline.html
 msgid "Course Start Date:"
-msgstr ""
+msgstr "Kurs Başlama Tarihi:"
 
 #: cms/templates/course_outline.html cms/templates/course_outline.html
 msgid "Edit Start Date"
-msgstr ""
+msgstr "Başlanğıç Tarihi Düzenle"
 
 #: cms/templates/course_outline.html
 msgid "Creating your course organization"
@@ -14597,19 +14893,24 @@ msgstr "Dersin git url'si:"
 #: cms/templates/settings_advanced.html cms/templates/settings_graders.html
 #: cms/templates/widgets/header.html
 msgid "Group Configurations"
-msgstr ""
+msgstr "Grup Ayarları"
 
 #: cms/templates/group_configurations.html
 msgid "New Group Configuration"
-msgstr ""
+msgstr "Yeni Grup Yapılandırması"
 
 #: cms/templates/group_configurations.html
 msgid "This module is disabled at the moment."
-msgstr ""
+msgstr "Bu modül şu anda devre dışı bırakılmıştır."
+
+#: cms/templates/group_configurations.html cms/templates/settings_graders.html
+msgid "What can I do on this page?"
+msgstr "Bu sayfada ne yapabilirim?"
 
 #: cms/templates/group_configurations.html
 msgid "You can create, edit, and delete group configurations."
 msgstr ""
+"Siz grup konfikasyonlarini oluşturabilir, düzenleyebilir ve silebilirsiniz."
 
 #: cms/templates/group_configurations.html
 msgid ""
@@ -14634,7 +14935,7 @@ msgstr ""
 
 #: cms/templates/group_configurations.html
 msgid "Learn More"
-msgstr ""
+msgstr "Daha fazlasını öğren"
 
 #: cms/templates/group_configurations.html cms/templates/settings.html
 #: cms/templates/settings_advanced.html cms/templates/settings_graders.html
@@ -14676,6 +14977,8 @@ msgstr "Hoşgeldiniz"
 msgid ""
 "Studio helps manage your online courses, so you can focus on teaching them"
 msgstr ""
+"Stüdyo, çevrimiçi kursları düzenlemenize yardım eder, böylece siz kursları "
+"öğretmeye odaklanabilirsiniz."
 
 #: cms/templates/howitworks.html
 msgid "Studio's Many Features"
@@ -14720,6 +15023,9 @@ msgid ""
 "Draft your outline and build content anywhere. Simple drag and drop tools "
 "let you reorganize quickly."
 msgstr ""
+"İstediğin yerde ders iskeletinin taslağını hazırla ve her yerde içerik "
+"oluştur . Basit sürükle ve bırak araçları bunları hızlıca ayarlamanıza "
+"yardımcı olacak."
 
 #: cms/templates/howitworks.html
 msgid "Go A Week Or A Semester At A Time"
@@ -14744,6 +15050,9 @@ msgid ""
 "learning. Insert videos, discussions, and a wide variety of exercises with "
 "just a few clicks."
 msgstr ""
+"Studio içeriği öğrenmeyi takviye ederek işlemenizi sağlar. Videolar, "
+"tartışmalar ekleyin ve bir çok türde olabilen alıştırma tiplerini birkaç "
+"tıklama ile kullanın."
 
 #: cms/templates/howitworks.html
 msgid "Create Learning Pathways"
@@ -14754,6 +15063,8 @@ msgid ""
 "Help your students understand one concept at a time with multimedia, HTML, "
 "and exercises."
 msgstr ""
+"Çoklu ortam, HTML ve egzersizleri kullanarak öğrencilerinizin bir seferde "
+"bir kavramı anlamasına yardım edin."
 
 #: cms/templates/howitworks.html
 msgid "Work Visually, Organize Quickly"
@@ -14776,6 +15087,8 @@ msgid ""
 "It's more than just multiple choice. Studio supports more than a dozen types"
 " of problems to challenge your learners."
 msgstr ""
+"Çoklu seçenekten çok daha fazlası.  Stüdyo, öğrencilerinizi zorlamak için "
+"bir düzineden daha fazla çeşitli probleme sahiptir."
 
 #: cms/templates/howitworks.html cms/templates/howitworks.html
 msgid ""
@@ -14809,6 +15122,8 @@ msgid ""
 "Caught a bug? No problem. When you want, your changes go live when you click"
 " Save."
 msgstr ""
+"Sorunla mı karşılaştınız? Problem yok. Ne zaman isterseniz, "
+"değişiklikleriniz Kaydet butonuna basınca kaydedilecektir."
 
 #: cms/templates/howitworks.html
 msgid "Release-On Date Publishing"
@@ -15127,6 +15442,8 @@ msgid ""
 "The public display name for your course. This cannot be changed, but you can"
 " set a different display name in Advanced Settings later."
 msgstr ""
+"Kursunuz için genel görüntülenen isim. Bu değiştirilemez, fakat Gelişmiş "
+"Ayarlar bölümünden görüntülenen ismini değiştirebilirsiniz. "
 
 #: cms/templates/index.html
 msgid "The name of the organization sponsoring the course."
@@ -15189,7 +15506,7 @@ msgstr ""
 
 #: cms/templates/index.html
 msgid "Re-run Course"
-msgstr ""
+msgstr "Kursu Yeniden Çalıştır"
 
 #: cms/templates/index.html
 msgid "Are you staff on an existing Studio course?"
@@ -15290,7 +15607,7 @@ msgstr ""
 
 #: cms/templates/index.html
 msgid "New to edX Studio?"
-msgstr ""
+msgstr "edX Stüdyo'da yeni misiniz?"
 
 #: cms/templates/index.html
 msgid ""
@@ -15299,14 +15616,18 @@ msgid ""
 " page to access our continously updated documentation and other Studio "
 "resources."
 msgstr ""
+"Şu an görüntülediğiniz stüdyo sayfasıyla ilgili daha fazla bilgiye ulaşmak "
+"için lütfen sağ üst köşedeki yardım kısmına tıklayınız. Bunun yanında "
+"sürekli güncellenen döküman ve diğer stüdyo kaynaklarına erişmek için "
+"sayfanın en altında bulunan bağlantıları kullanabilirsiniz."
 
 #: cms/templates/index.html
 msgid "Getting Started with edX Studio"
-msgstr ""
+msgstr "edX Stüdyo'ya başlangıç"
 
 #: cms/templates/index.html cms/templates/widgets/sock.html
 msgid "Request help with edX Studio"
-msgstr ""
+msgstr "edX Stüdyo hakkında yardım iste"
 
 #: cms/templates/index.html cms/templates/index.html cms/templates/index.html
 msgid "Can I create courses in Studio?"
@@ -15679,6 +16000,11 @@ msgstr "Dersin başlayacağı ilk gün"
 msgid "Course Start Time"
 msgstr "Ders Başlangıç Saati"
 
+#: cms/templates/settings.html cms/templates/settings.html
+#: cms/templates/settings.html cms/templates/settings.html
+msgid "(UTC)"
+msgstr ""
+
 #: cms/templates/settings.html
 msgid "Course End Date"
 msgstr "Ders Bitiş Tarihi"
@@ -15727,6 +16053,11 @@ msgid ""
 "summary page, follow the instructions provided by your <abbr title=\"Program"
 " Manager\">PM</abbr>."
 msgstr ""
+"Bu tarihler <strong>dersinizin görülebileceği günleri</strong> "
+"etkilemektedir, ama bunlar <strong>ders özetinizde yer alan tarihler "
+"değildir</strong>. Dersinizin özet sayfasında yer aldığı gibi başlangıç ve "
+"kayıt tarihlerinizi belirlemek için, <abbr title=\"Program Manager\">Program"
+" Yöneticisi</abbr> tarafından sağlanan yönergeleri izleyiniz."
 
 #: cms/templates/settings.html
 msgid "Introducing Your Course"
@@ -15850,11 +16181,11 @@ msgstr ""
 
 #: cms/templates/settings_advanced.html
 msgid "Hide Deprecated Settings"
-msgstr ""
+msgstr "Kaldırılan Ayarları Gizle"
 
 #: cms/templates/settings_advanced.html cms/templates/settings_advanced.html
 msgid "Show Deprecated Settings"
-msgstr ""
+msgstr "Kaldırılan Ayarları Göster"
 
 #: cms/templates/settings_advanced.html
 msgid "Your policy changes have been saved."
@@ -15985,7 +16316,7 @@ msgstr "Genişlet veya Daralt"
 
 #: cms/templates/studio_xblock_wrapper.html
 msgid "This block contains multiple components."
-msgstr ""
+msgstr "Bu blok çoklu bileşen içermektedir."
 
 #: cms/templates/textbooks.html
 msgid "You have unsaved changes. Do you really want to leave this page?"
@@ -16155,7 +16486,7 @@ msgstr "Yardım &amp; Hesap Navigasyonu"
 
 #: cms/templates/widgets/header.html cms/templates/widgets/header.html
 msgid "Contextual Online Help"
-msgstr ""
+msgstr "İçerik Hakkında Çevrimiçi Yardım"
 
 #: cms/templates/widgets/header.html
 msgid "Currently signed in as:"
@@ -16222,11 +16553,11 @@ msgstr "Etiket"
 
 #: cms/templates/widgets/sock.html
 msgid "Looking for help with Studio?"
-msgstr ""
+msgstr "Stüdyo için yardım mı arıyorsunuz?"
 
 #: cms/templates/widgets/sock.html cms/templates/widgets/sock.html
 msgid "edX Studio Documentation"
-msgstr ""
+msgstr "edX Stüdyo Dökümantasyonu"
 
 #: cms/templates/widgets/sock.html
 msgid ""
@@ -16235,14 +16566,19 @@ msgid ""
 "download the Building and Running an edX Course PDF file, to go to the edX "
 "Author Support site, or to enroll in edX101."
 msgstr ""
+"Herhangi bir sayfa hakkında daha fazla bilgi almak için, bulunduğunuz "
+"sayfanın sağ üst köşesinde bulunan yardım tuşuna tıklayabilirsiniz. Ayrıca "
+"aşağıdaki bağlantıları kullanarak edX derslerini oluşturma ve yürütme "
+"hakkındaki .PDF dosyasını indirebilir, edX yazar destek sitesine gidebilir "
+"ya da edX101'e kaydolabilirsiniz."
 
 #: cms/templates/widgets/sock.html
 msgid "Building and Running an edX Course PDF"
-msgstr ""
+msgstr "edX derslerini oluşturma ve yürütme hakkındaki .PDF"
 
 #: cms/templates/widgets/sock.html cms/templates/widgets/sock.html
 msgid "edX Studio Author Support"
-msgstr ""
+msgstr "edX Stüdyo Yazar Desteği"
 
 #: cms/templates/widgets/sock.html
 msgid "Enroll in edX101"
@@ -16250,11 +16586,11 @@ msgstr "edx101 e kaydol"
 
 #: cms/templates/widgets/sock.html
 msgid "How to use edX Studio to build your course"
-msgstr ""
+msgstr "Kursları oluşturmak için edX Stüdyo nasıl kullanılır"
 
 #: cms/templates/widgets/sock.html
 msgid "Have problems, questions, or suggestions about edX Studio?"
-msgstr ""
+msgstr "edX Stüdyo hakkında sorunuz, sorununuz, yada öneriniz mi var?"
 
 #: cms/templates/widgets/tabs-aggregator.html
 msgid "name"

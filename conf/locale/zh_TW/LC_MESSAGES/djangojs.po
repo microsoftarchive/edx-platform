@@ -1,5 +1,5 @@
 # #-#-#-#-#  djangojs-partial.po (edx-platform)  #-#-#-#-#
-# edX translation file.
+# edX community translations have been downloaded from Chinese (Taiwan) (http://www.transifex.com/projects/p/edx-platform/language/zh_TW/).
 # Copyright (C) 2014 EdX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
 # 
@@ -18,6 +18,7 @@
 # Xaver Y.R. Chen <yrchen@atcity.org>, 2013-2014
 # Xaver Y.R. Chen <yrchen@atcity.org>, 2013
 # Yung Wei <oscarwei1988@gmail.com>, 2014
+# Zhen-Rong Chen <zhenrcaaron@gmail.com>, 2014
 # Zhen-Rong Chen <zhenrcaaron@gmail.com>, 2014
 # KUN-MIN SYU <qwer20108@gmail.com>, 2014
 # 陳子琦 <christtabris@gmail.com>, 2014
@@ -49,6 +50,7 @@
 # Translators:
 # Lin Yu-Chun <iftwoplustwoequalsfive@gmail.com>, 2014
 # LIU,SHU-HAO <jeremy55662004@gmail.com>, 2014
+# Zhen-Rong Chen <zhenrcaaron@gmail.com>, 2014
 # #-#-#-#-#  underscore-studio.po (edx-platform)  #-#-#-#-#
 # edX translation file
 # Copyright (C) 2014 edX
@@ -56,6 +58,7 @@
 # 
 # Translators:
 # LIU,SHU-HAO <jeremy55662004@gmail.com>, 2014
+# KUN-MIN SYU <qwer20108@gmail.com>, 2014
 # Lin Yu-Chun <iftwoplustwoequalsfive@gmail.com>, 2014
 # LIU,SHU-HAO <jeremy55662004@gmail.com>, 2014
 # Xaver Y.R. Chen <yrchen@atcity.org>, 2014
@@ -65,9 +68,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: edx-platform\n"
 "Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
-"POT-Creation-Date: 2014-09-24 13:34-0400\n"
-"PO-Revision-Date: 2014-09-16 04:59+0000\n"
-"Last-Translator: KUN-MIN SYU <qwer20108@gmail.com>\n"
+"POT-Creation-Date: 2014-10-14 11:52-0400\n"
+"PO-Revision-Date: 2014-10-15 15:41+0000\n"
+"Last-Translator: Xaver Y.R. Chen <yrchen@atcity.org>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/edx-platform/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -105,10 +108,12 @@ msgstr "好的"
 #: cms/templates/js/group-configuration-edit.underscore
 #: cms/templates/js/section-name-edit.underscore
 #: cms/templates/js/xblock-string-field-editor.underscore
+#: lms/templates/instructor/instructor_dashboard_2/add-cohort-form.underscore
 msgid "Cancel"
 msgstr "取消"
 
 #: cms/static/js/base.js lms/static/js/verify_student/photocapture.js
+#: cms/templates/js/checklist.underscore
 msgid "This link will open in a new browser window/tab"
 msgstr "該連結將在新的瀏覽器視窗或標籤中打開"
 
@@ -117,6 +122,16 @@ msgstr "該連結將在新的瀏覽器視窗或標籤中打開"
 #: cms/static/js/views/show_textbook.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
+#: cms/templates/js/course-outline.underscore
+#: cms/templates/js/course-outline.underscore
+#: cms/templates/js/course_grade_policy.underscore
+#: cms/templates/js/group-configuration-details.underscore
+#: cms/templates/js/group-configuration-details.underscore
+#: cms/templates/js/group-configuration-edit.underscore
+#: cms/templates/js/group-configuration-edit.underscore
+#: cms/templates/js/show-textbook.underscore
+#: cms/templates/js/xblock-outline.underscore
+#: cms/templates/js/xblock-outline.underscore
 msgid "Delete"
 msgstr "刪除"
 
@@ -129,10 +144,17 @@ msgstr "刪除"
 msgid "Name"
 msgstr "名稱"
 
+#. #-#-#-#-#  djangojs-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: cms/static/js/views/modals/base_modal.js
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
+#: cms/templates/js/course_info_handouts.underscore
+#: cms/templates/js/edit-textbook.underscore
+#: cms/templates/js/group-configuration-edit.underscore
+#: cms/templates/js/section-name-edit.underscore
+#: cms/templates/js/xblock-string-field-editor.underscore
+#: lms/templates/instructor/instructor_dashboard_2/add-cohort-form.underscore
 msgid "Save"
 msgstr "儲存"
 
@@ -174,7 +196,7 @@ msgstr[0] "(%(earned)s/%(possible)s 分)"
 #: common/lib/xmodule/xmodule/js/src/capa/display.js
 msgid "(%(num_points)s point possible)"
 msgid_plural "(%(num_points)s points possible)"
-msgstr[0] "(%(num_points)s 最高分)"
+msgstr[0] "(%(num_points)s 可能的分數)"
 
 #: common/lib/xmodule/xmodule/js/src/capa/display.js
 #: common/lib/xmodule/xmodule/js/src/capa/display.js
@@ -624,9 +646,11 @@ msgstr "刪除列"
 msgid "Delete table"
 msgstr "刪除表格"
 
+#. #-#-#-#-#  djangojs-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
+#: cms/templates/js/group-configuration-edit.underscore
 msgid "Description"
 msgstr "敘述"
 
@@ -660,10 +684,16 @@ msgstr "文件屬性"
 msgid "Edit HTML"
 msgstr "編輯 HTML"
 
+#. #-#-#-#-#  djangojs-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 #: common/static/js/vendor/ova/catch/js/catch.js
+#: cms/templates/js/course_info_handouts.underscore
+#: cms/templates/js/group-configuration-details.underscore
+#: cms/templates/js/show-textbook.underscore
+#: cms/templates/js/xblock-string-field-editor.underscore
+#: cms/templates/js/mock/mock-container-page.underscore
 msgid "Edit"
 msgstr "編輯"
 
@@ -1065,9 +1095,12 @@ msgstr "新文件"
 msgid "New window"
 msgstr "新視窗"
 
+#. #-#-#-#-#  djangojs-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
+#: cms/templates/js/paging-footer.underscore
+#: cms/templates/js/paging-header.underscore
 msgid "Next"
 msgstr "下一個"
 
@@ -1119,7 +1152,7 @@ msgstr "貼上為純文字"
 msgid ""
 "Paste is now in plain text mode. Contents will now be pasted as plain text "
 "until you toggle this option off."
-msgstr ""
+msgstr "當前為純本文黏貼模式。內容都將以純本文模式黏貼直到切換選項為關閉。"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
@@ -1203,10 +1236,13 @@ msgstr "全部取代"
 msgid "Replace with"
 msgstr "取代為"
 
+#. #-#-#-#-#  djangojs-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
+#: cms/templates/js/metadata-file-uploader-item.underscore
+#: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Replace"
 msgstr "取代"
 
@@ -1222,7 +1258,7 @@ msgstr "恢復上一版草稿"
 msgid ""
 "Rich Text Area. Press ALT-F9 for menu. Press ALT-F10 for toolbar. Press "
 "ALT-0 for help"
-msgstr ""
+msgstr "豐富本文區域。按ALT-F9打開清單。按ALT-F10打開工具列。按ALT-0查看幫助"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
@@ -1404,7 +1440,7 @@ msgstr "要顯示的文字"
 msgid ""
 "The URL you entered seems to be an email address. Do you want to add the "
 "required mailto: prefix?"
-msgstr ""
+msgstr "您輸入的URL似乎是一個E-mail地址。請問您要加上 mailto: 前綴嗎?"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
@@ -1412,7 +1448,7 @@ msgstr ""
 msgid ""
 "The URL you entered seems to be an external link. Do you want to add the "
 "required http:// prefix?"
-msgstr ""
+msgstr "您輸入的URL似乎是一個外部連結。請問您要加上 http:// 前綴嗎?"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
@@ -1518,11 +1554,41 @@ msgid ""
 "Ctrl+X/C/V keyboard shortcuts instead."
 msgstr "您的瀏覽器不支援直接存取剪貼簿，請使用快捷鍵Ctrl+X/C/V 代替。"
 
+#: common/lib/xmodule/xmodule/js/src/lti/lti.js
+msgid ""
+"Click OK to have your username and e-mail address sent to a 3rd party application.\n"
+"\n"
+"Click Cancel to return to this page without sending your information."
+msgstr ""
+"點擊確定有你的使用者名稱和e-mail地址發送到第3方應用程序。\n"
+"\n"
+"點擊取消返回到該頁面，而不發送您的信息。"
+
+#: common/lib/xmodule/xmodule/js/src/lti/lti.js
+msgid ""
+"Click OK to have your username sent to a 3rd party application.\n"
+"\n"
+"Click Cancel to return to this page without sending your information."
+msgstr ""
+"點擊確定有你的使用者名稱發送到第3方應用程序。\n"
+"\n"
+"點擊取消返回到該頁面，而不發送您的信息。"
+
+#: common/lib/xmodule/xmodule/js/src/lti/lti.js
+msgid ""
+"Click OK to have your e-mail address sent to a 3rd party application.\n"
+"\n"
+"Click Cancel to return to this page without sending your information."
+msgstr ""
+"點擊確定有你的e-mail地址發送到第3方應用程序。\n"
+"\n"
+"點擊取消返回到該頁面，而不發送您的信息。"
+
 #: common/lib/xmodule/xmodule/js/src/sequence/display.js
 msgid ""
 "Sequence error! Cannot navigate to tab %(tab_name)s in the current "
 "SequenceModule. Please contact the course staff."
-msgstr ""
+msgstr "順序錯誤！無法導覽至標籤 %(tab_name)s在當前SequenceModule。請聯繫課程的工作人員。"
 
 #: common/lib/xmodule/xmodule/js/src/video/00_i18n.js
 #: common/lib/xmodule/xmodule/js/src/video/04_video_control.js
@@ -1536,11 +1602,11 @@ msgstr "暫停"
 
 #: common/lib/xmodule/xmodule/js/src/video/00_i18n.js
 msgid "Mute"
-msgstr ""
+msgstr "靜音"
 
 #: common/lib/xmodule/xmodule/js/src/video/00_i18n.js
 msgid "Unmute"
-msgstr ""
+msgstr "取消靜音"
 
 #: common/lib/xmodule/xmodule/js/src/video/00_i18n.js
 #: common/lib/xmodule/xmodule/js/src/video/04_video_control.js
@@ -1554,7 +1620,7 @@ msgstr "填滿瀏覽器"
 
 #: common/lib/xmodule/xmodule/js/src/video/00_i18n.js
 msgid "Speed"
-msgstr ""
+msgstr "速度"
 
 #: common/lib/xmodule/xmodule/js/src/video/00_i18n.js
 msgid "Volume"
@@ -1709,77 +1775,75 @@ msgstr "我們處理您的請求時遇到了一些麻煩，請再試一次。"
 #: common/static/coffee/src/discussion/utils.js
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
-#: common/static/coffee/src/discussion/views/new_post_view.js
-#: common/static/coffee/src/discussion/views/new_post_view.js
-#: common/static/coffee/src/discussion/views/new_post_view.js
+#: common/static/coffee/src/discussion/views/discussion_topic_menu_view.js
 msgid "…"
 msgstr "..."
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 msgid "currently %(numVotes)s vote"
 msgid_plural "currently %(numVotes)s votes"
-msgstr[0] ""
+msgstr[0] "目前 %(numVotes)s 票數"
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 msgid "%(numVotes)s Vote"
 msgid_plural "%(numVotes)s Votes"
-msgstr[0] ""
+msgstr[0] "%(numVotes)s 票數"
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 msgid "We had some trouble subscribing you to this thread. Please try again."
-msgstr ""
+msgstr "我們在協助您訂閱此主題時遇到了一些麻煩。請再試一次。"
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 msgid ""
 "We had some trouble unsubscribing you from this thread. Please try again."
-msgstr ""
+msgstr "我們在協助您取消訂閱此主題時遇到了一些麻煩。請再試一次。"
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 msgid ""
 "We had some trouble marking this response as an answer.  Please try again."
-msgstr ""
+msgstr "我們將此回復作為答案時遇到了一些麻煩。請再試一次。"
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 msgid ""
 "We had some trouble removing this response as an answer.  Please try again."
-msgstr ""
+msgstr "我們移除此回復作為答案時遇到了一些麻煩。請再試一次。"
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 msgid "We had some trouble marking this response endorsed.  Please try again."
-msgstr ""
+msgstr "我們贊同此回復作為答案時遇到了一些麻煩。請再試一次。"
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 msgid "We had some trouble removing this endorsement.  Please try again."
-msgstr ""
+msgstr "我們移除此贊同時遇到了一些麻煩。請再試一次。"
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 msgid "We had some trouble saving your vote.  Please try again."
-msgstr ""
+msgstr "我們儲存您的投票時遇到了一些麻煩。請再試一次。"
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 msgid "We had some trouble pinning this thread. Please try again."
-msgstr ""
+msgstr "我們標記此主題時遇到了一些麻煩。請再試一次。"
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 msgid "We had some trouble unpinning this thread. Please try again."
-msgstr ""
+msgstr "我們取消標記此主題時遇到了一些麻煩。請再試一次。"
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 msgid ""
 "We had some trouble removing your flag on this post.  Please try again."
-msgstr ""
+msgstr "我們移除您此文章的十遇到了一些麻煩。請再試一次。"
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 msgid "We had some trouble reporting this post.  Please try again."
-msgstr ""
+msgstr "我們回報此文章時遇到了一些麻煩，請再試一次。"
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 msgid "We had some trouble closing this thread.  Please try again."
-msgstr ""
+msgstr " 我們關閉討論串時遇到了一些麻煩，請再試一次。"
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 msgid "We had some trouble reopening this thread.  Please try again."
-msgstr ""
+msgstr "我們再次開啟討論串時遇到了一些麻煩，請再試一次。"
 
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 msgid "Load more"
@@ -1836,7 +1900,7 @@ msgstr "載入更多回覆時遇到了一些麻煩，請再試一次。"
 #: common/static/coffee/src/discussion/views/discussion_thread_view.js
 msgid "%(numResponses)s other response"
 msgid_plural "%(numResponses)s other responses"
-msgstr[0] ""
+msgstr[0] "%(numResponses)s 其它回覆"
 
 #: common/static/coffee/src/discussion/views/discussion_thread_view.js
 msgid "%(numResponses)s response"
@@ -1870,7 +1934,7 @@ msgstr "載入您請求的頁面時遇到了一些麻煩，請再試一次。"
 
 #: common/static/coffee/src/discussion/views/new_post_view.js
 msgid "Your post will be discarded."
-msgstr ""
+msgstr "您的文章將會被捨棄。"
 
 #: common/static/coffee/src/discussion/views/response_comment_show_view.js
 msgid "anonymous"
@@ -1971,40 +2035,40 @@ msgstr[0] "%d 一年"
 #. report
 #: common/static/js/vendor/ova/flagging-annotator.js
 msgid "Check the box to remove all flags."
-msgstr ""
+msgstr "確認此方框來清除標誌。"
 
 #. Translators: 'totalFlags' is the number of flags solely for that annotation
 #: common/static/js/vendor/ova/flagging-annotator.js
 msgid "Check the box to remove %(totalFlags)s flag."
 msgid_plural "Check the box to remove %(totalFlags)s flags."
-msgstr[0] ""
+msgstr[0] "確認此方框來清除%(totalFlags)s標誌。"
 
 #. Translators: 'count' is the number of flags solely for that annotation that
 #. will be removed
 #: common/static/js/vendor/ova/flagging-annotator.js
 msgid "Check the box to remove %(count)s flag."
 msgid_plural "Check the box to remove %(count)s flags."
-msgstr[0] ""
+msgstr[0] "確認此方框來清除%(count)s標誌。"
 
 #: common/static/js/vendor/ova/flagging-annotator.js
 msgid "All flags have been removed. To undo, uncheck the box."
-msgstr ""
+msgstr "所有標誌已經被刪除。若要復原，取消選中的方框。"
 
 #: common/static/js/vendor/ova/flagging-annotator.js
 #: common/static/js/vendor/ova/flagging-annotator.js
 msgid "You have already reported this annotation."
-msgstr ""
+msgstr "您已經公佈此註解了。"
 
 #: common/static/js/vendor/ova/flagging-annotator.js
 #: common/static/js/vendor/ova/flagging-annotator.js
 msgid "Report annotation as inappropriate or offensive."
-msgstr ""
+msgstr "公布註解為不適當或令人厭惡。"
 
 #. Translators: 'count' is the number of flags solely for that annotation
 #: common/static/js/vendor/ova/flagging-annotator.js
 msgid "This annotation has %(count)s flag."
 msgid_plural "This annotation has %(count)s flags."
-msgstr[0] ""
+msgstr[0] "此註解有 %(count)s 標誌。"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "User"
@@ -2070,6 +2134,15 @@ msgstr "註解文本"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
+#: cms/templates/js/metadata-dict-entry.underscore
+#: cms/templates/js/metadata-file-uploader-entry.underscore
+#: cms/templates/js/metadata-list-entry.underscore
+#: cms/templates/js/metadata-number-entry.underscore
+#: cms/templates/js/metadata-option-entry.underscore
+#: cms/templates/js/metadata-string-entry.underscore
+#: cms/templates/js/mock/mock-xmodule-editor.underscore
+#: cms/templates/js/mock/mock-xmodule-settings-only-editor.underscore
+#: cms/templates/js/video/metadata-translations-entry.underscore
 msgid "Clear"
 msgstr "清除"
 
@@ -2079,7 +2152,7 @@ msgstr "文本"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Video"
-msgstr "視頻"
+msgstr "影片"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Image"
@@ -2124,6 +2197,7 @@ msgid "Choose"
 msgstr "選擇"
 
 #: lms/static/admin/js/SelectFilter2.js
+#: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Remove"
 msgstr "移除"
 
@@ -2255,7 +2329,7 @@ msgstr "Post body"
 #. distribution.;
 #: lms/static/coffee/src/instructor_dashboard/analytics.js
 msgid "Error fetching distribution."
-msgstr ""
+msgstr "獲取分佈錯誤。"
 
 #: lms/static/coffee/src/instructor_dashboard/analytics.js
 #: lms/static/coffee/src/instructor_dashboard/instructor_analytics.js
@@ -2278,6 +2352,11 @@ msgid "<%= num_students %> students scored."
 msgstr "<%= num_students %> 個學生取得分數。"
 
 #: lms/static/coffee/src/instructor_dashboard/data_download.js
+msgid "Error generating student profile information. Please try again."
+msgstr "錯誤產生在學生簡介資訊中。請再試一次。"
+
+#: lms/static/coffee/src/instructor_dashboard/data_download.js
+#: cms/templates/js/mock/mock-group-configuration-page.underscore
 msgid "Loading..."
 msgstr "載入中..."
 
@@ -2321,6 +2400,7 @@ msgid "Enter username or email"
 msgstr "請輸入使用者名稱或是電子郵件信箱"
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
+#: lms/static/js/views/cohort_editor.js
 msgid "Please enter a username or email."
 msgstr "請輸入使用者名稱或是電子郵件信箱"
 
@@ -2457,7 +2537,7 @@ msgstr "您的郵件已成功地在佇列中等待發送。"
 msgid ""
 "You are about to send an email titled '<%= subject %>' to yourself. Is this "
 "OK?"
-msgstr ""
+msgstr "您即將發送標題為'<%= subject %>' 的電子郵件給您自己，請確認？"
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid ""
@@ -2493,7 +2573,7 @@ msgstr "獲取這門課程的電子郵件任務歷史記錄錯誤。"
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid "There was an error obtaining email content history for this course."
-msgstr ""
+msgstr "獲取這門課程的電子郵件內容歷史記錄有錯誤 。"
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
@@ -2507,7 +2587,7 @@ msgstr "請輸入學生的電子郵件信箱或使用者名稱："
 msgid ""
 "Error getting student progress url for '<%= student_id %>'. Make sure that "
 "the student identifier is spelled correctly."
-msgstr ""
+msgstr "獲取學生學習進度的url為 '<%= student_id %>'錯誤。請確認學生的標識符拼寫是否正確。"
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
@@ -2531,6 +2611,7 @@ msgid ""
 " '<%= student_id %>'. Make sure that the problem and student identifiers are"
 " complete and correct."
 msgstr ""
+"試圖重置問題 '<%= problem_id %>' 錯誤 '與學生 '<%= student_id %>' 。請確認問題和學生的標識符拼寫是否正確。"
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid ""
@@ -2543,6 +2624,8 @@ msgid ""
 " %>'. Make sure that the problem and student identifiers are complete and "
 "correct."
 msgstr ""
+"刪除學生 '<%= student_id %>'s 有關的問題狀態 '<%= problem_id %>' "
+"錯誤。請確認問題和學生的標識符的拼寫是否正確。"
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid "Module state successfully deleted."
@@ -2563,6 +2646,8 @@ msgid ""
 "'<%= student_id %>'. Make sure that the the problem and student identifiers "
 "are complete and correct."
 msgstr ""
+"啟動一個學生 '<%= problem_id %>' 任務rescore問題 '<%= student_id %>' "
+"錯誤。請確認問題和學生的標識符的拼寫是否正確。"
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid ""
@@ -2570,6 +2655,8 @@ msgid ""
 "student_id %>'. Make sure that the problem and student identifiers are "
 "complete and correct."
 msgstr ""
+"獲取問題 '<%= problem_id %>' 任務歷史記錄和學生 '<%= student_id %>' "
+"錯誤。請確認問題和學生的標識符的拼寫是否正確。"
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid "Reset attempts for all students on problem '<%= problem_id %>'?"
@@ -2587,7 +2674,7 @@ msgid ""
 "Error starting a task to reset attempts for all students on problem '<%= "
 "problem_id %>'. Make sure that the problem identifier is complete and "
 "correct."
-msgstr ""
+msgstr "刪除所有學生有關的問題狀態 '<%= problem_id %>' 錯誤。請確認問題的標識符拼寫是否正確。"
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid "Rescore problem '<%= problem_id %>' for all students?"
@@ -2604,7 +2691,7 @@ msgstr "開始rescore學生問題任務問題  '<%= problem_id %>' 。點擊“�
 msgid ""
 "Error starting a task to rescore problem '<%= problem_id %>'. Make sure that"
 " the problem identifier is complete and correct."
-msgstr ""
+msgstr "啟動rescore問題 '<%= problem_id %>' 任務錯誤。請確認問題的標識符拼寫是否正確。"
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid "Error listing task history for this student and problem."
@@ -2668,57 +2755,57 @@ msgstr "任務進度"
 msgid ""
 "An error occurred retrieving your email. Please try again later, and contact"
 " technical support if the problem persists."
-msgstr ""
+msgstr "檢索您的郵件有錯誤。請稍候再試一次，並且若問題依然存在，請聯繫技術支援部門。"
 
 #: lms/static/coffee/src/instructor_dashboard/util.js
 #: lms/static/coffee/src/instructor_dashboard/util.js
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Unknown"
-msgstr ""
+msgstr "未知"
 
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Subject"
-msgstr ""
+msgstr "主題"
 
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Sent By"
-msgstr ""
+msgstr "由誰寄送"
 
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Time Sent"
-msgstr ""
+msgstr "寄送時間"
 
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Number Sent"
-msgstr ""
+msgstr "寄送數量"
 
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Copy Email To Editor"
-msgstr ""
+msgstr "複製郵件到編輯器"
 
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Subject:"
-msgstr ""
+msgstr "主題 :"
 
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Sent By:"
-msgstr ""
+msgstr "由誰寄送 :"
 
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Time Sent:"
-msgstr ""
+msgstr "寄送時間 :"
 
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Sent To:"
-msgstr ""
+msgstr "寄送給 :"
 
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Message:"
-msgstr ""
+msgstr "訊息："
 
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "No tasks currently running."
-msgstr ""
+msgstr "未有任務在進行中。"
 
 #: lms/static/coffee/src/staff_grading/staff_grading.js
 msgid "Grades saved.  Fetching the next submission to grade."
@@ -2914,6 +3001,103 @@ msgstr "成功重評用戶 {user} 得分"
 msgid "Failed to rescore problem."
 msgstr "重評得分失敗。"
 
+#: lms/static/js/dashboard/donation.js
+msgid "Please enter a valid donation amount."
+msgstr "請輸入有效的捐款金額。"
+
+#: lms/static/js/dashboard/donation.js
+msgid "Your donation could not be submitted."
+msgstr "您的捐款無法提交。"
+
+#: lms/static/js/student_account/account.js
+#: lms/static/js/student_profile/profile.js
+msgid "The data could not be saved."
+msgstr "資料無法被儲存。"
+
+#: lms/static/js/student_account/account.js
+msgid "Please enter a valid email address"
+msgstr "請輸入有效的電子郵件地址。"
+
+#: lms/static/js/student_account/account.js
+msgid "Please enter a valid password"
+msgstr "請輸入一組有效的密碼。"
+
+#: lms/static/js/student_account/account.js
+msgid "Please check your email to confirm the change"
+msgstr "請檢閱您的電子郵件以確認變更。"
+
+#: lms/static/js/student_profile/profile.js
+msgid "Full name cannot be blank"
+msgstr "全名欄位不能為空白。"
+
+#: lms/static/js/student_profile/profile.js
+msgid "Language cannot be blank"
+msgstr "語言欄位不能為空白。"
+
+#: lms/static/js/student_profile/profile.js
+msgid "We couldn't populate the list of language choices."
+msgstr "我們無法填入這個語言選擇列表。"
+
+#: lms/static/js/student_profile/profile.js
+msgid "Saved"
+msgstr "已儲存"
+
+#: lms/static/js/views/cohort_editor.js
+msgid "Error adding students."
+msgstr "新增學生錯誤。"
+
+#: lms/static/js/views/cohort_editor.js
+msgid "{numUsersAdded} student has been added to this cohort group"
+msgid_plural "{numUsersAdded} students have been added to this cohort group"
+msgstr[0] "{numUsersAdded}學生已經被加入到同伴群組中"
+
+#: lms/static/js/views/cohort_editor.js
+msgid "{numMoved} student was removed from {oldCohort}"
+msgid_plural "{numMoved} students were removed from {oldCohort}"
+msgstr[0] "{numMoved}學生被移除從{oldCohort}"
+
+#: lms/static/js/views/cohort_editor.js
+msgid "{numPresent} student was already in the cohort group"
+msgid_plural "{numPresent} students were already in the cohort group"
+msgstr[0] "{numPresent}學生已經在同伴群組中"
+
+#: lms/static/js/views/cohort_editor.js
+msgid "Unknown user: {user}"
+msgstr "未知的使用者: {user}"
+
+#: lms/static/js/views/cohort_editor.js
+msgid "There was an error when trying to add students:"
+msgid_plural "There were {numErrors} errors when trying to add students:"
+msgstr[0] "當嘗試新增學生時，發生錯誤 {numErrors}："
+
+#: lms/static/js/views/cohort_editor.js
+msgid "View all errors"
+msgstr "查看所有錯誤"
+
+#: lms/static/js/views/cohorts.js
+msgid "You currently have no cohort groups configured"
+msgstr "您目前還未擁有同伴團隊設定"
+
+#: lms/static/js/views/cohorts.js
+#: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
+msgid "Add Cohort Group"
+msgstr "新增同伴群組"
+
+#: lms/static/js/views/cohorts.js
+msgid ""
+"The {cohortGroupName} cohort group has been created. You can manually add "
+"students to this group below."
+msgstr "{cohortGroupName}同伴群組已經被產生。您可以手動增加學生到以下群組。"
+
+#: lms/static/js/views/cohorts.js
+msgid ""
+"We've encountered an error. Please refresh your browser and then try again."
+msgstr "發生錯誤。請重新載入頁面並重新執行。"
+
+#: lms/static/js/views/cohorts.js
+msgid "Please enter a name for your new cohort group."
+msgstr "請幫您的新同伴團隊輸入一個名字"
+
 #: lms/templates/class_dashboard/all_section_metrics.js
 #: lms/templates/class_dashboard/all_section_metrics.js
 msgid "Unable to retrieve data, please try again later."
@@ -2962,7 +3146,7 @@ msgstr "儲存中&hellip;"
 
 #: cms/static/coffee/src/views/tabs.js
 msgid "Delete Page Confirmation"
-msgstr ""
+msgstr "刪除頁面確認"
 
 #: cms/static/coffee/src/views/tabs.js
 msgid ""
@@ -2977,7 +3161,7 @@ msgstr "刪除中&hellip;"
 
 #: cms/static/coffee/src/xblock/cms.runtime.v1.js
 msgid "OpenAssessment Save Error"
-msgstr ""
+msgstr "開啟評分儲存錯誤"
 
 #: cms/static/js/base.js
 msgid "This link will open in a modal window"
@@ -2993,14 +3177,14 @@ msgstr "尋求 Studio 的協助嗎？"
 
 #: cms/static/js/collections/group.js
 msgid "Group %s"
-msgstr ""
+msgstr "群組%s"
 
 #. Translators: Dictionary used for creation ids that are used in
 #. default group names. For example: A, B, AA in Group A,
 #. Group B, ..., Group AA, etc.
 #: cms/static/js/collections/group.js
 msgid "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-msgstr ""
+msgstr "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 #: cms/static/js/models/course.js cms/static/js/models/section.js
 msgid "You must specify a name"
@@ -3008,27 +3192,27 @@ msgstr "您必須指定一個名稱"
 
 #: cms/static/js/models/group.js
 msgid "Group name is required"
-msgstr ""
+msgstr "需要群組名稱"
 
 #: cms/static/js/models/group_configuration.js
 msgid "Group A"
-msgstr ""
+msgstr "群組 A"
 
 #: cms/static/js/models/group_configuration.js
 msgid "Group B"
-msgstr ""
+msgstr "群組 B"
 
 #: cms/static/js/models/group_configuration.js
 msgid "Group Configuration name is required."
-msgstr ""
+msgstr "需要群組設定名稱。"
 
 #: cms/static/js/models/group_configuration.js
 msgid "There must be at least one group."
-msgstr ""
+msgstr "務必至少含一個群組。"
 
 #: cms/static/js/models/group_configuration.js
 msgid "All groups must have a name."
-msgstr ""
+msgstr "所有群組務必有一個名稱。"
 
 #: cms/static/js/models/uploads.js
 msgid ""
@@ -3106,27 +3290,27 @@ msgstr ""
 msgid "Your file has been deleted."
 msgstr "您的檔案已經被刪除"
 
-#: cms/static/js/views/assets.js
+#: cms/static/js/views/assets.js cms/templates/js/asset-library.underscore
 msgid "Date Added"
 msgstr "新增日期"
 
 #: cms/static/js/views/assets.js
 msgid "Uploading…"
-msgstr ""
+msgstr "上傳中……"
 
 #: cms/static/js/views/assets.js
 #: cms/templates/js/asset-upload-modal.underscore
 msgid "Choose File"
-msgstr ""
+msgstr "選擇檔案"
 
 #: cms/static/js/views/assets.js
 #: cms/templates/js/asset-upload-modal.underscore
 msgid "Upload New File"
-msgstr ""
+msgstr "上傳新檔案"
 
 #: cms/static/js/views/assets.js
 msgid "Load Another File"
-msgstr ""
+msgstr "載入另一個檔案"
 
 #: cms/static/js/views/course_info_update.js
 msgid "Are you sure you want to delete this update?"
@@ -3138,11 +3322,11 @@ msgstr "這個操作必須完成。"
 
 #: cms/static/js/views/course_rerun.js
 msgid "Create Re-run"
-msgstr ""
+msgstr "創建再次執行"
 
 #: cms/static/js/views/course_rerun.js
 msgid "Processing Re-run Request"
-msgstr ""
+msgstr "正在處理再次執行需求"
 
 #: cms/static/js/views/edit_chapter.js
 msgid "Upload a new PDF to “<%= name %>”"
@@ -3150,7 +3334,7 @@ msgstr "上傳一個新的PDF檔案至\"<%= name %>\""
 
 #: cms/static/js/views/edit_chapter.js
 msgid "Please select a PDF file to upload."
-msgstr ""
+msgstr "請選擇要上傳的PDF文件"
 
 #: cms/static/js/views/edit_textbook.js
 #: cms/static/js/views/group_configuration_edit.js
@@ -3163,18 +3347,18 @@ msgstr "儲存中"
 #: cms/static/js/views/group_configuration_details.js
 msgid "Contains %(count)s group"
 msgid_plural "Contains %(count)s groups"
-msgstr[0] ""
+msgstr[0] "包含%(count)s群組"
 
 #: cms/static/js/views/group_configuration_details.js
 msgid "Not in Use"
-msgstr ""
+msgstr "未使用"
 
 #. Translators: 'count' is number of units that the group
 #. configuration is used in.
 #: cms/static/js/views/group_configuration_details.js
 msgid "Used in %(count)s unit"
 msgid_plural "Used in %(count)s units"
-msgstr[0] ""
+msgstr[0] "用在%(count)s 單位"
 
 #. Translators: 'outlineAnchor' is an anchor pointing to
 #. the course outline page.
@@ -3182,19 +3366,19 @@ msgstr[0] ""
 msgid ""
 "This Group Configuration is not in use. Start by adding a content experiment"
 " to any Unit via the %(outlineAnchor)s."
-msgstr ""
+msgstr "此群組設定未使用。透過%(outlineAnchor)s 開始為每個單元增加內容實驗。"
 
 #: cms/static/js/views/group_configuration_details.js
 msgid "Course Outline"
-msgstr ""
+msgstr "課程內容"
 
 #: cms/static/js/views/group_configuration_item.js
 msgid "Delete this Group Configuration?"
-msgstr ""
+msgstr "要刪除這群組設定嗎?"
 
 #: cms/static/js/views/group_configuration_item.js
 msgid "Deleting this Group Configuration is permanent and cannot be undone."
-msgstr ""
+msgstr "刪除這群組設定的影響是永久的且無法還原的。"
 
 #: cms/static/js/views/group_configuration_item.js
 #: cms/static/js/views/show_textbook.js
@@ -3203,11 +3387,11 @@ msgstr "刪除中"
 
 #: cms/static/js/views/import.js cms/static/js/views/import.js.c
 msgid "Choose new file"
-msgstr ""
+msgstr "選擇新的檔案"
 
 #: cms/static/js/views/import.js
 msgid "Error importing course"
-msgstr ""
+msgstr "匯入課程錯誤"
 
 #: cms/static/js/views/import.js
 msgid "There was an error with the upload"
@@ -3221,7 +3405,7 @@ msgstr "檔案格式不支援，請上傳 <code>tar.gz</code> 格式的檔案。
 
 #: cms/static/js/views/metadata.js
 msgid "Upload File"
-msgstr ""
+msgstr "上傳檔案"
 
 #: cms/static/js/views/overview.js
 msgid "Collapse All Sections"
@@ -3237,13 +3421,15 @@ msgstr "釋出日期："
 
 #: cms/static/js/views/overview.js
 msgid "{month}/{day}/{year} at {hour}:{minute} UTC"
-msgstr ""
+msgstr "世界標準時間 {月}/{日}/{年} 的 {時}:{分}"
 
 #: cms/static/js/views/overview.js
 msgid "Edit section release date"
 msgstr "編輯章節釋出日期"
 
 #: cms/static/js/views/overview_assignment_grader.js
+#: cms/templates/js/course-outline.underscore
+#: cms/templates/js/grading-editor.underscore
 msgid "Not Graded"
 msgstr "不評分"
 
@@ -3253,7 +3439,7 @@ msgstr "不評分"
 msgid ""
 "Showing %(current_item_range)s out of %(total_items_count)s, sorted by "
 "%(sort_name)s ascending"
-msgstr ""
+msgstr "從%(current_item_range)s中顯示%(total_items_count)s秒，按%(sort_name)s升序排列"
 
 #. Translators: sample result: "Showing 0-9 out of 25 total, sorted by Date
 #. Added descending"
@@ -3261,21 +3447,13 @@ msgstr ""
 msgid ""
 "Showing %(current_item_range)s out of %(total_items_count)s, sorted by "
 "%(sort_name)s descending"
-msgstr ""
+msgstr "從%(current_item_range)s中顯示%(total_items_count)s秒，按%(sort_name)s降序排列"
 
 #. Translators: turns into "25 total" to be used in other sentences, e.g.
 #. "Showing 0-9 out of 25 total".
 #: cms/static/js/views/paging_header.js
 msgid "%(total_items)s total"
-msgstr ""
-
-#: cms/static/js/views/section_edit.js
-msgid "Your change could not be saved"
-msgstr "您的變更無法儲存"
-
-#: cms/static/js/views/section_edit.js
-msgid "Return and resolve this issue"
-msgstr "返回並解決這個問題"
+msgstr "共%(total_items)s"
 
 #: cms/static/js/views/show_textbook.js
 msgid "Delete “<%= name %>”?"
@@ -3291,7 +3469,7 @@ msgstr "刪除教材的操作將無法復原。一旦被删除，教材的相關
 #: cms/templates/js/metadata-file-uploader-item.underscore
 #: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Upload"
-msgstr ""
+msgstr "上傳"
 
 #: cms/static/js/views/uploads.js
 msgid "We're sorry, there was an error"
@@ -3324,15 +3502,16 @@ msgstr "您做的變更已被儲存。"
 
 #: cms/static/js/views/xblock_editor.js
 msgid "Editor"
-msgstr ""
+msgstr "編輯器"
 
 #: cms/static/js/views/xblock_editor.js
+#: cms/templates/js/mock/mock-group-configuration-page.underscore
 msgid "Settings"
 msgstr "設定"
 
 #: cms/static/js/views/xblock_outline.js
 msgid "New %(component_type)s"
-msgstr ""
+msgstr "新 %(component_type)s"
 
 #: cms/static/js/views/components/add_xblock.js
 #: cms/static/js/views/utils/xblock_utils.js
@@ -3341,26 +3520,26 @@ msgstr "新增&hellip;"
 
 #: cms/static/js/views/modals/course_outline_modals.js
 msgid "%(display_name)s Settings"
-msgstr ""
+msgstr "%(display_name)s 設定"
 
 #: cms/static/js/views/modals/course_outline_modals.js
 msgid "Change the settings for %(display_name)s"
-msgstr ""
+msgstr "為%(display_name)s變更設定"
 
 #: cms/static/js/views/modals/course_outline_modals.js
 msgid "Publish %(display_name)s"
-msgstr ""
+msgstr "發佈 %(display_name)s"
 
 #: cms/static/js/views/modals/course_outline_modals.js
 msgid "Publish all unpublished changes for this %(item)s?"
-msgstr ""
+msgstr "要為此 %(item)s發佈所有尚未發佈的變更嗎?"
 
 #: cms/static/js/views/modals/course_outline_modals.js
 #: cms/templates/js/course-outline.underscore
 #: cms/templates/js/course-outline.underscore
 #: cms/templates/js/publish-xblock.underscore
 msgid "Publish"
-msgstr ""
+msgstr "發佈"
 
 #: cms/static/js/views/modals/edit_xblock.js
 msgid "Component"
@@ -3368,19 +3547,19 @@ msgstr "組件"
 
 #: cms/static/js/views/modals/edit_xblock.js
 msgid "Editing: %(title)s"
-msgstr ""
+msgstr "編輯: %(title)s"
 
 #: cms/static/js/views/modals/validation_error_modal.js
 msgid "Validation Error While Saving"
-msgstr ""
+msgstr "儲存驗證錯誤"
 
 #: cms/static/js/views/modals/validation_error_modal.js
 msgid "Undo Changes"
-msgstr ""
+msgstr "復原變更"
 
 #: cms/static/js/views/modals/validation_error_modal.js
 msgid "Change Manually"
-msgstr ""
+msgstr "手動變更"
 
 #: cms/static/js/views/pages/container.js
 msgid "Duplicating&hellip;"
@@ -3388,55 +3567,55 @@ msgstr "複製&hellip;"
 
 #: cms/static/js/views/pages/container_subviews.js
 msgid "Publishing&hellip;"
-msgstr ""
+msgstr "發佈&hellip;"
 
 #: cms/static/js/views/pages/container_subviews.js
 #: cms/static/js/views/pages/container_subviews.js
 #: cms/templates/js/publish-xblock.underscore
 msgid "Discard Changes"
-msgstr ""
+msgstr "捨棄變更"
 
 #: cms/static/js/views/pages/container_subviews.js
 msgid ""
 "Are you sure you want to revert to the last published version of the unit? "
 "You cannot undo this action."
-msgstr ""
+msgstr "您確定要回歸到此單元所發佈的上一版本?您不可復原此動作。"
 
 #: cms/static/js/views/pages/container_subviews.js
 msgid "Discarding Changes&hellip;"
-msgstr ""
+msgstr "捨棄變更&hellip;"
 
 #: cms/static/js/views/pages/container_subviews.js
 msgid "Hiding from Students&hellip;"
-msgstr ""
+msgstr "對學生隱藏&hellip;"
 
 #: cms/static/js/views/pages/container_subviews.js
 msgid "Explicitly Hiding from Students&hellip;"
-msgstr ""
+msgstr "明確的對學生隱藏&hellip;"
 
 #: cms/static/js/views/pages/container_subviews.js
 msgid "Inheriting Student Visibility&hellip;"
-msgstr ""
+msgstr "繼承學生能見度&hellip;"
 
 #: cms/static/js/views/pages/container_subviews.js
 #: cms/static/js/views/pages/container_subviews.js
 msgid "Make Visible to Students"
-msgstr ""
+msgstr "學生可見"
 
 #: cms/static/js/views/pages/container_subviews.js
 msgid ""
 "If the unit was previously published and released to students, any changes "
 "you made to the unit when it was hidden will now be visible to students. Do "
 "you want to proceed?"
-msgstr ""
+msgstr "如果此單元先前已被發佈且釋出給學生，任何單元於隱藏時的改動現在將不再對學生隱藏。您希望繼續嗎?"
 
 #: cms/static/js/views/pages/container_subviews.js
 msgid "Making Visible to Students&hellip;"
-msgstr ""
+msgstr "讓學生可以看見 &hellip;"
 
 #: cms/static/js/views/pages/group_configurations.js
 msgid "You have unsaved changes. Do you really want to leave this page?"
-msgstr ""
+msgstr "您尚有未保存的修改，確定要離開此頁面嗎?"
 
 #: cms/static/js/views/settings/advanced.js
 msgid ""
@@ -3454,6 +3633,10 @@ msgid ""
 "currently in place yet. If you are having difficulties, please review your "
 "policy pairs."
 msgstr "請注意：您設置的策略關鍵字和值的驗證結果目前失敗。如果您遇到問題，請再檢查一次。"
+
+#: cms/static/js/views/settings/main.js
+msgid "%(hours)s:%(minutes)s (current UTC time)"
+msgstr "%(hours)s：%(minutes)s (現在國際標準時間)"
 
 #: cms/static/js/views/settings/main.js
 msgid "Upload your course image."
@@ -3487,27 +3670,27 @@ msgstr "組件"
 
 #: cms/static/js/views/utils/xblock_utils.js
 msgid "Delete this %(xblock_type)s?"
-msgstr ""
+msgstr "是否將此 %(xblock_type)s 刪除?"
 
 #: cms/static/js/views/utils/xblock_utils.js
 msgid "Deleting this %(xblock_type)s is permanent and cannot be undone."
-msgstr ""
+msgstr "刪除此%(xblock_type)s的影響是永久的且無法還原的。"
 
 #: cms/static/js/views/utils/xblock_utils.js
 msgid "Yes, delete this %(xblock_type)s"
-msgstr ""
+msgstr "是的，將此 %(xblock_type)s 刪除"
 
 #: cms/static/js/views/utils/xblock_utils.js
 msgid "section"
-msgstr ""
+msgstr "章節"
 
 #: cms/static/js/views/utils/xblock_utils.js
 msgid "subsection"
-msgstr ""
+msgstr "小節"
 
 #: cms/static/js/views/utils/xblock_utils.js
 msgid "unit"
-msgstr ""
+msgstr "單元"
 
 #: cms/static/js/views/video/translations_editor.js
 msgid ""
@@ -3517,47 +3700,167 @@ msgstr "很抱歉，在分析您上傳的字幕時發生錯誤，請檢查您的
 
 #: cms/static/js/views/video/translations_editor.js
 msgid "Upload translation"
-msgstr ""
+msgstr "上傳翻譯"
 
 #: common/templates/js/image-modal.underscore
 msgid "Large"
-msgstr ""
+msgstr "大"
 
 #: common/templates/js/image-modal.underscore
 msgid "Zoom In"
-msgstr ""
+msgstr "放大"
 
 #: common/templates/js/image-modal.underscore
 msgid "Zoom Out"
-msgstr ""
+msgstr "縮小"
 
 #: common/templates/js/discussion/thread-show.underscore
 msgid "This post is visible only to %(group_name)s."
-msgstr ""
+msgstr "此文章只可以被%(group_name)s看見"
 
 #: common/templates/js/discussion/thread-show.underscore
 msgid "This post is visible to everyone."
-msgstr ""
+msgstr "此文章可以被任何人看見。"
 
 #: common/templates/js/discussion/thread-show.underscore
 msgid "%(post_type)s posted %(time_ago)s by %(author)s"
-msgstr ""
+msgstr "%(post_type)s發表%(time_ago)s由%(author)s"
 
 #: common/templates/js/discussion/thread-show.underscore
 msgid "Pinned"
-msgstr ""
+msgstr "固定"
 
 #: common/templates/js/discussion/thread-show.underscore
 msgid "Reported"
-msgstr ""
+msgstr "報告"
 
 #: common/templates/js/discussion/thread-show.underscore
 msgid "Closed"
-msgstr ""
+msgstr "已關閉"
 
 #: common/templates/js/discussion/thread-show.underscore
 msgid "(this post is about %(courseware_title_linked)s)"
-msgstr ""
+msgstr "(此文章有關%(courseware_title_linked)s)"
+
+#: lms/templates/dashboard/donation.underscore
+msgid "Donate"
+msgstr "捐款"
+
+#: lms/templates/instructor/instructor_dashboard_2/add-cohort-form.underscore
+msgid "Add a New Cohort Group"
+msgstr "新增新的同伴群組"
+
+#: lms/templates/instructor/instructor_dashboard_2/add-cohort-form.underscore
+msgid "New Cohort Name"
+msgstr "新同伴名稱"
+
+#: lms/templates/instructor/instructor_dashboard_2/add-cohort-form.underscore
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+msgid "(Required Field)"
+msgstr "(必填字段)"
+
+#: lms/templates/instructor/instructor_dashboard_2/add-cohort-form.underscore
+msgid "Enter Your New Cohort Group's Name"
+msgstr "請輸入新的同伴群組名稱"
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+msgid ""
+"Students are added to this group only when you provide their email addresses"
+" or usernames on this page."
+msgstr "當您於此頁面中提供學生的電子郵件地址或使用者名稱，學生才會被加至此群組中。"
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+msgid "What does this mean?"
+msgstr "這是什麼意思？"
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+msgid "Students are added to this group automatically."
+msgstr "學生將會被自動加入此群組。"
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+msgid "Edit settings in Studio"
+msgstr "在Studio編輯設定"
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+msgid "Add students to this cohort group"
+msgstr "新增學生在此同伴群組"
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+msgid ""
+"Note: Students can only be in one cohort group. Adding students to this "
+"group overrides any previous group assignment."
+msgstr "注意：學生只能在一個同伴群組之中。新增學生在此群組之中將會覆蓋之前群組作業。"
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+msgid ""
+"Enter email addresses and/or usernames separated by new lines or commas for "
+"students to add. *"
+msgstr "輸入電子郵件地址或使用者名稱並用新的行和逗號隔開好讓學生新增。"
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+msgid "e.g. johndoe@example.com, JaneDoe, joeydoe@example.com"
+msgstr "例子： johndoe@example.com, JaneDoe, joeydoe@example.com"
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+msgid ""
+"You will not get notification for emails that bounce, so please double-check"
+" spelling."
+msgstr "對該類問題您不會受到提示郵件，因此請仔細檢查，確保拼寫無誤。"
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+msgid "Add Students"
+msgstr "新增學生"
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-selector.underscore
+msgid "Select a cohort group"
+msgstr "選擇同伴群組"
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-selector.underscore
+msgid "%(cohort_name)s (%(user_count)s)"
+msgstr "%(cohort_name)s (%(user_count)s)"
+
+#: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
+msgid "Cohort Management"
+msgstr "同伴管理"
+
+#: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
+msgid "Select a cohort group to manage"
+msgstr "選擇要管理的同伴群組"
+
+#: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
+msgid "View Cohort Group"
+msgstr "查看同伴群組"
+
+#: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
+msgid ""
+"To review all student cohort group assignments, download course profile "
+"information on %(link_start)s the Data Download page. %(link_end)s"
+msgstr "審查學生群組的作業，請在%(link_start)s資料下載頁面%(link_end)s下載課程簡介資訊。"
+
+#: lms/templates/student_account/account.underscore
+msgid "New Address"
+msgstr "新地址"
+
+#: lms/templates/student_account/account.underscore
+msgid "Password"
+msgstr "密碼"
+
+#: lms/templates/student_account/account.underscore
+msgid "Change My Email Address"
+msgstr "更改我的電子郵件地址"
+
+#: lms/templates/student_profile/profile.underscore
+msgid "Full Name"
+msgstr "全名"
+
+#: lms/templates/student_profile/profile.underscore
+msgid "Preferred Language"
+msgstr "偏好的語言"
+
+#: lms/templates/student_profile/profile.underscore
+msgid "Update Profile"
+msgstr "更新簡介"
 
 #: cms/templates/js/add-xblock-component-menu-problem.underscore
 msgid "Common Problem Types"
@@ -3569,11 +3872,11 @@ msgstr "新增組件"
 
 #: cms/templates/js/advanced_entry.underscore
 msgid "Deprecated"
-msgstr ""
+msgstr "已棄用的"
 
 #: cms/templates/js/asset-library.underscore
 msgid "List of uploaded files and assets in this course"
-msgstr ""
+msgstr "此課程中的上傳檔案和資產清單"
 
 #: cms/templates/js/asset-library.underscore
 msgid "Embed URL"
@@ -3586,35 +3889,35 @@ msgstr "外部URL"
 #: cms/templates/js/asset-library.underscore
 #: cms/templates/js/basic-modal.underscore
 msgid "Actions"
-msgstr ""
+msgstr "動作"
 
 #: cms/templates/js/asset-library.underscore
 msgid "You haven't added any assets to this course yet."
-msgstr ""
+msgstr "尚未向該課程新增任何資源。"
 
 #: cms/templates/js/asset-library.underscore
 msgid "Upload your first asset"
-msgstr ""
+msgstr "上傳您的第一個資源"
 
 #: cms/templates/js/asset-upload-modal.underscore
 msgid "close"
-msgstr ""
+msgstr "關閉"
 
 #: cms/templates/js/asset.underscore
 msgid "Open/download this file"
-msgstr ""
+msgstr "打開/下載這個檔案"
 
 #: cms/templates/js/asset.underscore
 msgid "Delete this asset"
-msgstr ""
+msgstr "刪除這個資源"
 
 #: cms/templates/js/asset.underscore
 msgid "Lock this asset"
-msgstr ""
+msgstr "鎖定這個資源"
 
 #: cms/templates/js/asset.underscore
 msgid "Lock/unlock file"
-msgstr ""
+msgstr "鎖定/解除這個檔案"
 
 #: cms/templates/js/checklist.underscore
 msgid "{number}% of checklists completed"
@@ -3622,29 +3925,29 @@ msgstr "檢查表中的 {number}% o已完成檢查"
 
 #: cms/templates/js/checklist.underscore
 msgid "Tasks Completed:"
-msgstr ""
+msgstr "已完成的任務："
 
 #: cms/templates/js/container-message.underscore
 msgid ""
 "Caution: The last published version of this unit is live. By publishing "
 "changes you will change the student experience."
-msgstr ""
+msgstr "注意:這單元最新發佈的版本已上線。藉由更新的發佈將會改善學生體驗。 "
 
 #: cms/templates/js/course-outline.underscore
 msgid "Contains staff only content"
-msgstr ""
+msgstr "包含僅限工作人員的內容"
 
 #: cms/templates/js/course-outline.underscore
 msgid "Unpublished changes to live content"
-msgstr ""
+msgstr "未發佈更改直播內容"
 
 #: cms/templates/js/course-outline.underscore
 msgid "Unpublished units will not be released"
-msgstr ""
+msgstr "未發佈的單元將不會被釋出"
 
 #: cms/templates/js/course-outline.underscore
 msgid "Unpublished changes to content that will release in the future"
-msgstr ""
+msgstr "未發佈更改之內容將會在未來被釋出"
 
 #: cms/templates/js/course-outline.underscore
 #: cms/templates/js/course-outline.underscore
@@ -3655,271 +3958,271 @@ msgstr ""
 #: cms/templates/js/xblock-outline.underscore
 #: cms/templates/js/xblock-outline.underscore
 msgid "gettext("
-msgstr ""
+msgstr "gettext("
 
 #: cms/templates/js/course-outline.underscore
 msgid "Display Name"
-msgstr ""
+msgstr "顯示名稱"
 
 #: cms/templates/js/course-outline.underscore
 #: cms/templates/js/course-outline.underscore
 msgid "Configure"
-msgstr ""
+msgstr "設定"
 
 #: cms/templates/js/course-outline.underscore
 #: cms/templates/js/course-outline.underscore
 msgid "Drag to reorder"
-msgstr ""
+msgstr "拖動以重新排序"
 
 #: cms/templates/js/course-outline.underscore
 msgid "Release Status:"
-msgstr ""
+msgstr "發佈狀態:"
 
 #: cms/templates/js/course-outline.underscore
 #: cms/templates/js/publish-xblock.underscore
 #: cms/templates/js/xblock-outline.underscore
 msgid "Released:"
-msgstr ""
+msgstr "已釋出："
 
 #: cms/templates/js/course-outline.underscore
 #: cms/templates/js/publish-xblock.underscore
 msgid "Scheduled:"
-msgstr ""
+msgstr "時程表:"
 
 #: cms/templates/js/course-outline.underscore
 #: cms/templates/js/publish-xblock.underscore
 msgid "Unscheduled"
-msgstr ""
+msgstr "未排程"
 
 #: cms/templates/js/course-outline.underscore
 msgid "Graded as:"
-msgstr ""
+msgstr "當前評分方式："
 
 #: cms/templates/js/course-outline.underscore
 msgid "Due:"
-msgstr ""
+msgstr "原因："
 
 #: cms/templates/js/course-outline.underscore
 #: cms/templates/js/xblock-outline.underscore
 msgid "You haven't added any content to this course yet."
-msgstr ""
+msgstr "尚未向該課程新增任何內容。"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "Assignment Type Name"
-msgstr ""
+msgstr "作業類型名稱"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "e.g. Homework, Midterm Exams"
-msgstr ""
+msgstr "例如：回家作業、期中考試"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "Abbreviation"
-msgstr ""
+msgstr "縮寫"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "e.g. HW, Midterm"
-msgstr ""
+msgstr "例如：回家作業、期中考試"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "Weight of Total Grade"
-msgstr ""
+msgstr "總等級權重"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "as a percent, e.g. 40"
-msgstr ""
+msgstr "百分比，例如：40"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "Total Number"
-msgstr ""
+msgstr "總數"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "total exercises assigned"
-msgstr ""
+msgstr "分配的練習總數"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "Number of Droppable"
-msgstr ""
+msgstr "可放棄的數量"
 
 #: cms/templates/js/course_grade_policy.underscore
 msgid "total exercises that won't be graded"
-msgstr ""
+msgstr "不被評級的練習總數"
 
 #: cms/templates/js/course_info_handouts.underscore
 msgid "Course Handouts"
-msgstr ""
+msgstr "課程講義"
 
 #: cms/templates/js/course_info_handouts.underscore
 msgid "You have no handouts defined"
-msgstr ""
+msgstr "您尚未定義講義"
 
 #: cms/templates/js/course_info_handouts.underscore
 msgid ""
 "There is invalid code in your content. Please check to make sure it is valid"
 " HTML."
-msgstr ""
+msgstr "您的內容有無效的代碼。請仔細檢查以確保其是合法的HTML。"
 
 #: cms/templates/js/due-date-editor.underscore
 msgid "Due Date:"
-msgstr ""
+msgstr "截止日期:"
 
 #: cms/templates/js/due-date-editor.underscore
 msgid "Due Time in UTC:"
-msgstr ""
+msgstr "截止時間以國際標準時間顯示"
 
 #: cms/templates/js/due-date-editor.underscore
 #: cms/templates/js/due-date-editor.underscore
 msgid "Clear Grading Due Date"
-msgstr ""
+msgstr "清除評分"
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "Chapter Name"
-msgstr ""
+msgstr "章節名稱"
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "Chapter %s"
-msgstr ""
+msgstr "章節 %s"
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "provide the title/name of the chapter that will be used in navigating"
-msgstr ""
+msgstr "提供將用在導航中的章節題/名稱"
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "Chapter Asset"
-msgstr ""
+msgstr "章節資源"
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "path/to/introductionToCookieBaking-CH%d.pdf"
-msgstr ""
+msgstr "path/to/introductionToCookieBaking-CH%d.pdf"
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "upload a PDF file or provide the path to a Studio asset file"
-msgstr ""
+msgstr "上傳PDF檔案或提供指向Studio資源檔案的路徑"
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "Upload PDF"
-msgstr ""
+msgstr "上傳PDF"
 
 #: cms/templates/js/edit-chapter.underscore
 msgid "delete chapter"
-msgstr ""
+msgstr "刪除章節"
 
 #: cms/templates/js/edit-textbook.underscore
 #: cms/templates/js/group-configuration-edit.underscore
 msgid "error.message"
-msgstr ""
+msgstr "error.message"
 
 #: cms/templates/js/edit-textbook.underscore
 msgid "Textbook information"
-msgstr ""
+msgstr "課本訊息"
 
 #: cms/templates/js/edit-textbook.underscore
 msgid "Textbook Name"
-msgstr ""
+msgstr "課本名稱"
 
 #: cms/templates/js/edit-textbook.underscore
 msgid "Introduction to Cookie Baking"
-msgstr ""
+msgstr "烘烤餅乾簡介"
 
 #: cms/templates/js/edit-textbook.underscore
 msgid ""
 "provide the title/name of the text book as you would like your students to "
 "see it"
-msgstr ""
+msgstr "提供您希望學生看到的課本標題/名稱"
 
 #: cms/templates/js/edit-textbook.underscore
 msgid "Chapter information"
-msgstr ""
+msgstr "章節訊息"
 
 #: cms/templates/js/edit-textbook.underscore
 msgid "Add a Chapter"
-msgstr ""
+msgstr "新增章節"
 
 #: cms/templates/js/grading-editor.underscore
 msgid "Grading"
-msgstr ""
+msgstr "評分"
 
 #: cms/templates/js/grading-editor.underscore
 msgid "Grade as:"
-msgstr ""
+msgstr "當前評分方式："
 
 #: cms/templates/js/group-configuration-details.underscore
 msgid "ID"
-msgstr ""
+msgstr "身份標識"
 
 #: cms/templates/js/group-configuration-details.underscore
 #: cms/templates/js/group-configuration-edit.underscore
 msgid "Cannot delete when in use by an experiment"
-msgstr ""
+msgstr "當在實驗中使用時並不能被刪除"
 
 #: cms/templates/js/group-configuration-details.underscore
 msgid "This Group Configuration is used in:"
-msgstr ""
+msgstr "此群組設定被使用在；"
 
 #: cms/templates/js/group-configuration-edit.underscore
 msgid "Group Configuration information"
-msgstr ""
+msgstr "群組設定資訊"
 
 #: cms/templates/js/group-configuration-edit.underscore
 msgid "Group Configuration Name"
-msgstr ""
+msgstr "群組設定名稱"
 
 #: cms/templates/js/group-configuration-edit.underscore
 msgid "Group Configuration ID"
-msgstr ""
+msgstr "群組設定ID"
 
 #: cms/templates/js/group-configuration-edit.underscore
 msgid "This is the Name of the Group Configuration"
-msgstr ""
+msgstr "這是群組設定的名稱"
 
 #: cms/templates/js/group-configuration-edit.underscore
 msgid "Name or short description of the configuration"
-msgstr ""
+msgstr "設定的名稱或簡短描述"
 
 #: cms/templates/js/group-configuration-edit.underscore
 msgid "This is the Description of the Group Configuration"
-msgstr ""
+msgstr "這是群組設定的描述"
 
 #: cms/templates/js/group-configuration-edit.underscore
 msgid "Optional long description"
-msgstr ""
+msgstr "可選的長描述"
 
 #: cms/templates/js/group-configuration-edit.underscore
 msgid "Group information"
-msgstr ""
+msgstr "群組資訊"
 
 #: cms/templates/js/group-configuration-edit.underscore
 msgid "Groups"
-msgstr ""
+msgstr "群組"
 
 #: cms/templates/js/group-configuration-edit.underscore
 msgid ""
 "Name of the groups that students will be assigned to, for example, Control, "
 "Video, Problems. You must have two or more groups."
-msgstr ""
+msgstr "要分配給學生的組名稱，例如:控制、影片、問題。 您必須要有兩個以上的組。"
 
 #: cms/templates/js/group-configuration-edit.underscore
 msgid "Add another group"
-msgstr ""
+msgstr "增加其他群組"
 
 #: cms/templates/js/group-configuration-edit.underscore
 msgid ""
 "This configuration is currently used in content experiments. If you make "
 "changes to the groups, you may need to edit those experiments."
-msgstr ""
+msgstr "此設定現在被使用在內容實驗中。如果您對群組做變更，您將會需會編輯那些實驗。"
 
 #: cms/templates/js/group-configuration-edit.underscore
 msgid "Create"
-msgstr ""
+msgstr "創建"
 
 #: cms/templates/js/group-edit.underscore
 msgid "delete group"
-msgstr ""
+msgstr "刪除群組"
 
 #: cms/templates/js/metadata-dict-entry.underscore
 #: cms/templates/js/metadata-list-entry.underscore
 #: cms/templates/js/video/metadata-translations-entry.underscore
 msgid "Add"
-msgstr ""
+msgstr "新增"
 
 #: cms/templates/js/metadata-dict-entry.underscore
 #: cms/templates/js/metadata-file-uploader-entry.underscore
@@ -3931,62 +4234,62 @@ msgstr ""
 #: cms/templates/js/mock/mock-xmodule-settings-only-editor.underscore
 #: cms/templates/js/video/metadata-translations-entry.underscore
 msgid "Clear Value"
-msgstr ""
+msgstr "清除職"
 
 #: cms/templates/js/metadata-file-uploader-item.underscore
 #: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Download"
-msgstr ""
+msgstr "下載"
 
 #: cms/templates/js/no-group-configurations.underscore
 msgid "You haven't created any group configurations yet."
-msgstr ""
+msgstr "您還未創立任何群組設定。"
 
 #: cms/templates/js/no-group-configurations.underscore
 msgid "Add your first Group Configuration"
-msgstr ""
+msgstr "新增您的第一個群組設定"
 
 #: cms/templates/js/no-textbooks.underscore
 msgid "You haven't added any textbooks to this course yet."
-msgstr ""
+msgstr "您尚未向該課程新增任何課本。"
 
 #: cms/templates/js/no-textbooks.underscore
 msgid "Add your first textbook"
-msgstr ""
+msgstr "新增您的第一本課本"
 
 #: cms/templates/js/paging-footer.underscore
 #: cms/templates/js/paging-header.underscore
 msgid "Previous"
-msgstr ""
+msgstr "上一個"
 
 #: cms/templates/js/paging-footer.underscore
 msgid "Page number"
-msgstr ""
+msgstr "夜馬"
 
 #: cms/templates/js/publish-history.underscore
 msgid "Never published"
-msgstr ""
+msgstr "從未發佈"
 
 #: cms/templates/js/publish-history.underscore
 #: cms/templates/js/publish-xblock.underscore
 msgid "Last published %(last_published_date)s by %(publish_username)s"
-msgstr ""
+msgstr "最新發佈 %(last_published_date)s 藉由 %(publish_username)s"
 
 #: cms/templates/js/publish-history.underscore
 #: cms/templates/js/publish-xblock.underscore
 #: cms/templates/js/publish-xblock.underscore
 #: cms/templates/js/staff-lock-editor.underscore
 msgid "message"
-msgstr ""
+msgstr "訊息"
 
 #: cms/templates/js/publish-history.underscore
 #: cms/templates/js/publish-xblock.underscore
 msgid "Previously published"
-msgstr ""
+msgstr "過去發佈"
 
 #: cms/templates/js/publish-xblock.underscore
 msgid "Draft (Never published)"
-msgstr ""
+msgstr "初稿  (Never published)"
 
 #: cms/templates/js/publish-xblock.underscore
 msgid "Visible to Staff Only"
@@ -3994,35 +4297,35 @@ msgstr "僅限工作人員檢視"
 
 #: cms/templates/js/publish-xblock.underscore
 msgid "Published and Live"
-msgstr ""
+msgstr "發佈並上線"
 
 #: cms/templates/js/publish-xblock.underscore
 msgid "Published (not yet released)"
-msgstr ""
+msgstr "發佈(尚未釋出)"
 
 #: cms/templates/js/publish-xblock.underscore
 msgid "Draft (Unpublished changes)"
-msgstr ""
+msgstr "初稿  (Unpublished changes)"
 
 #: cms/templates/js/publish-xblock.underscore
 msgid "Release:"
-msgstr ""
+msgstr "釋出："
 
 #: cms/templates/js/publish-xblock.underscore
 msgid "Publishing Status"
-msgstr ""
+msgstr "發佈狀態"
 
 #: cms/templates/js/publish-xblock.underscore
 msgid "Draft saved on %(last_saved_date)s by %(edit_username)s"
-msgstr ""
+msgstr "儲存草稿於%(last_saved_date)s 藉由 %(edit_username)s"
 
 #: cms/templates/js/publish-xblock.underscore
 msgid "Is Visible To:"
-msgstr ""
+msgstr "對其可見："
 
 #: cms/templates/js/publish-xblock.underscore
 msgid "Will Be Visible To:"
-msgstr ""
+msgstr "將會對其可見:"
 
 #: cms/templates/js/publish-xblock.underscore
 msgid "Staff Only"
@@ -4035,120 +4338,120 @@ msgstr "工作人員和學生"
 #: cms/templates/js/publish-xblock.underscore
 #: cms/templates/js/staff-lock-editor.underscore
 msgid "Hide from students"
-msgstr ""
+msgstr "對學生隱藏"
 
 #: cms/templates/js/release-date-editor.underscore
 msgid "Release Date and Time"
-msgstr ""
+msgstr "釋出日期及時間"
 
 #: cms/templates/js/release-date-editor.underscore
 msgid "Release Date:"
-msgstr ""
+msgstr "釋出日期:"
 
 #: cms/templates/js/release-date-editor.underscore
 msgid "Release Time in UTC:"
-msgstr ""
+msgstr "釋出時間以國際標準時間顯示"
 
 #: cms/templates/js/release-date-editor.underscore
 #: cms/templates/js/release-date-editor.underscore
 msgid "Clear Release Date/Time"
-msgstr ""
+msgstr "清除釋出日期/時間"
 
 #: cms/templates/js/show-textbook.underscore
 msgid "View Live"
-msgstr ""
+msgstr "線上檢視"
 
 #: cms/templates/js/staff-lock-editor.underscore
 msgid "Student Visibility"
-msgstr ""
+msgstr "學生能見度"
 
 #: cms/templates/js/staff-lock-editor.underscore
 msgid ""
 "If the unit was previously published and released to students, any changes "
 "you made to the unit when it was hidden will now be visible to students."
-msgstr ""
+msgstr "如果此單元先前已被發佈且釋出給學生，任何單元於隱藏時的改動現在將不再對學生隱藏。 "
 
 #: cms/templates/js/staff-lock-editor.underscore
 msgid ""
 "If you make this %(xblockType)s visible to students, students will be able "
 "to see its content after the release date has passed and you have published "
 "the unit(s)."
-msgstr ""
+msgstr "如果您對學生公開此 %(xblockType)s，學生將會看到此內容在釋出日期通過之後並且您已經發佈此單元(s)。"
 
 #: cms/templates/js/staff-lock-editor.underscore
 msgid ""
 "Any subsections or units that are explicitly hidden from students will "
 "remain hidden after you clear this option for the section."
-msgstr ""
+msgstr "任何對學生明確隱藏的小節或是單元，將會停留隱藏在您為此章節清理此選項之後。"
 
 #: cms/templates/js/staff-lock-editor.underscore
 msgid ""
 "Any units that are explicitly hidden from students will remain hidden after "
 "you clear this option for the subsection."
-msgstr ""
+msgstr "任何對學生明確隱藏單元，將會停留隱藏在您為此小節清理此選項之後。"
 
 #: cms/templates/js/upload-dialog.underscore
 msgid "File upload succeeded"
-msgstr ""
+msgstr "檔案上傳成功"
 
 #: cms/templates/js/validation-error-modal.underscore
 msgid ""
 "There were {strong_start}{num_errors} validation error(s){strong_end} while "
 "trying to save the course setting(s) in the database."
-msgstr ""
+msgstr "當試著儲存課程設定(s)在資料庫裡時，有{strong_start}{num_errors} 驗證錯誤(s){strong_end} 。"
 
 #: cms/templates/js/validation-error-modal.underscore
 msgid ""
 "Please check the following validation feedbacks and reflect them in your "
 "course settings:"
-msgstr ""
+msgstr "請確認以下驗證回饋並且思考它們在您的課程設定:"
 
 #: cms/templates/js/xblock-string-field-editor.underscore
 #: cms/templates/js/xblock-string-field-editor.underscore
 msgid "Edit the name"
-msgstr ""
+msgstr "編輯"
 
 #: cms/templates/js/xblock-string-field-editor.underscore
 msgid "Edit %(display_name)s (required)"
-msgstr ""
+msgstr "編輯 %(display_name)s (必填)"
 
 #: cms/templates/js/xblock-string-field-editor.underscore
 msgid "formLabel"
-msgstr ""
+msgstr "formLabel"
 
 #: cms/templates/js/mock/mock-container-page.underscore
 msgid "View Live Version"
-msgstr ""
+msgstr "觀看直播版本"
 
 #: cms/templates/js/mock/mock-container-page.underscore
 msgid "Preview Changes"
-msgstr ""
+msgstr "預覽變更"
 
 #: cms/templates/js/mock/mock-container-page.underscore
 msgid "Unit Location"
-msgstr ""
+msgstr "單元位置"
 
 #: cms/templates/js/mock/mock-container-page.underscore
 msgid ""
 "Use this ID when you create links to this unit from other course content. "
 "You enter the ID in the URL field."
-msgstr ""
+msgstr "使用此ID當您從其他課程內容為此單元建立一個連結。您輸入ID在URL欄位。"
 
 #: cms/templates/js/mock/mock-group-configuration-page.underscore
 msgid "Group Configurations"
-msgstr ""
+msgstr "群組設定"
 
 #: cms/templates/js/mock/mock-group-configuration-page.underscore
 msgid "Page Actions"
-msgstr ""
+msgstr "頁面功能"
 
 #: cms/templates/js/mock/mock-group-configuration-page.underscore
 msgid "New Group Configuration"
-msgstr ""
+msgstr "新群組設定"
 
 #: cms/templates/js/video/transcripts/metadata-videolist-entry.underscore
 msgid "Add URLs for additional versions"
-msgstr ""
+msgstr "為其他格式新增URL"
 
 #: cms/templates/js/video/transcripts/metadata-videolist-entry.underscore
 msgid ""
@@ -4157,25 +4460,26 @@ msgid ""
 "another version. These URLs cannot be YouTube URLs. The first listed video "
 "that\\'s compatible with the student\\'s computer will play."
 msgstr ""
+"要確保所有學生都能存取影片，我們建議您同時提供.mp4和.webm的影片格式。點擊下方按鈕為新增另一個影片格式的網址。這些網址不能是YouTube的網址。列表中第一個與學生電腦相容的影片會被播放。"
 
 #: cms/templates/js/video/transcripts/metadata-videolist-entry.underscore
 msgid "Default Timed Transcript"
-msgstr ""
+msgstr "默認字幕"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-choose.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-replace.underscore
 msgid "Timed Transcript Conflict"
-msgstr ""
+msgstr "字幕衝突"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-choose.underscore
 msgid ""
 "The timed transcript for the first video file does not appear to be the same"
 " as the timed transcript for the second video file."
-msgstr ""
+msgstr "第一個影片檔案的字幕似乎與第二個影片檔案的字幕不同。"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-choose.underscore
 msgid "Which timed transcript would you like to use?"
-msgstr ""
+msgstr "您想使用哪個字幕?"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-choose.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-found.underscore
@@ -4185,22 +4489,22 @@ msgstr ""
 #: cms/templates/js/video/transcripts/messages/transcripts-uploaded.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 msgid "Error."
-msgstr ""
+msgstr "錯誤。"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-choose.underscore
 msgid "Timed Transcript from"
-msgstr ""
+msgstr "字幕來自"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-found.underscore
 msgid "Timed Transcript Found"
-msgstr ""
+msgstr "找到字幕"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-found.underscore
 msgid ""
 "EdX has a timed transcript for this video. If you want to edit this "
 "transcript, you can download, edit, and re-upload the existing transcript. "
 "If you want to replace this transcript, upload a new .srt transcript file."
-msgstr ""
+msgstr "EdX 有該影片的字幕。如果您希望編輯該字幕，可以下載編輯後重新上傳。如果您想替換該字幕，請上傳一個新的.srt 字幕檔案。"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-found.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-found.underscore
@@ -4214,12 +4518,12 @@ msgstr ""
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 msgid "Upload New Transcript"
-msgstr ""
+msgstr "上傳新字幕"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-found.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-import.underscore
 msgid "Upload New .srt Transcript"
-msgstr ""
+msgstr "上傳新的.srt字幕"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-found.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-found.underscore
@@ -4228,11 +4532,11 @@ msgstr ""
 #: cms/templates/js/video/transcripts/messages/transcripts-uploaded.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-uploaded.underscore
 msgid "Download Transcript for Editing"
-msgstr ""
+msgstr "下載字幕進行編輯"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-import.underscore
 msgid "No EdX Timed Transcript"
-msgstr ""
+msgstr "沒有EdX字幕"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-import.underscore
 msgid ""
@@ -4240,62 +4544,64 @@ msgid ""
 " a transcript on YouTube. You can import the YouTube transcript or upload "
 "your own .srt transcript file."
 msgstr ""
+"EdX 在Studio 中沒有該影片的字幕，但是我們在YouTube 中找到了一個字幕。您可以導入YouTube 字幕或者上傳您自己的.srt "
+"字幕檔案。"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-import.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-import.underscore
 msgid "Import YouTube Transcript"
-msgstr ""
+msgstr "匯入YouTube字幕"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-not-found.underscore
 msgid "No Timed Transcript"
-msgstr ""
+msgstr "沒有字幕"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-not-found.underscore
 msgid ""
 "EdX doesn\\'t have a timed transcript for this video. Please upload an .srt "
 "file."
-msgstr ""
+msgstr "EdX 沒有該影片的字幕。請上傳一個 .srt 檔案。"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-replace.underscore
 msgid ""
 "The timed transcript for this video on edX is out of date, but YouTube has a"
 " current timed transcript for this video."
-msgstr ""
+msgstr "edX 上該視頻的字幕已過時，但YouTube 上有該視頻字幕的當前版本。"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-replace.underscore
 msgid "Do you want to replace the edX transcript with the YouTube transcript?"
-msgstr ""
+msgstr "您希望用YouTube 字幕替換edX 字幕嗎？"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-replace.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-replace.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-replace.underscore
 msgid "Yes, replace the edX transcript with the YouTube transcript"
-msgstr ""
+msgstr "是的，用 YouTube 字幕替換 edX 字幕"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-uploaded.underscore
 msgid "Timed Transcript Uploaded Successfully"
-msgstr ""
+msgstr "字幕上傳成功"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-uploaded.underscore
 msgid ""
 "EdX has a timed transcript for this video. If you want to replace this "
 "transcript, upload a new .srt transcript file. If you want to edit this "
 "transcript, you can download, edit, and re-upload the existing transcript."
-msgstr ""
+msgstr "EdX 有該影片的字幕。如果您希望替換該字幕，請上傳一個新的.srt 字幕文件。如果您希望編輯該字幕，可以下載編輯後重新上傳。"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 msgid "Confirm Timed Transcript"
-msgstr ""
+msgstr "默認字幕"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 msgid ""
 "You changed a video URL, but did not change the timed transcript file. Do "
 "you want to use the current timed transcript or upload a new .srt transcript"
 " file?"
-msgstr ""
+msgstr "您變更了影片的URL，但沒有變更字幕檔案。您希望繼續使用當前的字幕檔案還是上傳一個新的.srt 字幕檔案？"
 
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 #: cms/templates/js/video/transcripts/messages/transcripts-use-existing.underscore
 msgid "Use Current Transcript"
-msgstr ""
+msgstr "使用當前字幕"

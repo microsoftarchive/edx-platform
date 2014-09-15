@@ -1,5 +1,5 @@
 # #-#-#-#-#  djangojs-partial.po (edx-platform)  #-#-#-#-#
-# edX translation file.
+# edX community translations have been downloaded from Malayalam (http://www.transifex.com/projects/p/edx-platform/language/ml/).
 # Copyright (C) 2014 EdX
 # This file is distributed under the GNU AFFERO GENERAL PUBLIC LICENSE.
 # 
@@ -30,8 +30,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: edx-platform\n"
 "Report-Msgid-Bugs-To: openedx-translation@googlegroups.com\n"
-"POT-Creation-Date: 2014-09-24 13:34-0400\n"
-"PO-Revision-Date: 2014-08-28 00:15+0000\n"
+"POT-Creation-Date: 2014-10-14 11:52-0400\n"
+"PO-Revision-Date: 2014-10-08 18:08+0000\n"
 "Last-Translator: Sarina Canelake <sarina@edx.org>\n"
 "Language-Team: Malayalam (http://www.transifex.com/projects/p/edx-platform/language/ml/)\n"
 "MIME-Version: 1.0\n"
@@ -49,7 +49,7 @@ msgstr ""
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 #: common/static/coffee/src/discussion/utils.js
 msgid "OK"
-msgstr ""
+msgstr "ശരി"
 
 #. #-#-#-#-#  djangojs-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: this is a message from the raw HTML editor displayed in the
@@ -70,13 +70,14 @@ msgstr ""
 #: cms/templates/js/group-configuration-edit.underscore
 #: cms/templates/js/section-name-edit.underscore
 #: cms/templates/js/xblock-string-field-editor.underscore
+#: lms/templates/instructor/instructor_dashboard_2/add-cohort-form.underscore
 msgid "Cancel"
-msgstr ""
+msgstr "ഒഴിവാക്കു"
 
 #: cms/static/js/base.js lms/static/js/verify_student/photocapture.js
 #: cms/templates/js/checklist.underscore
 msgid "This link will open in a new browser window/tab"
-msgstr ""
+msgstr "ഈ ലിങ്ക് ഒരു പുതിയ ബ്രൌസര്‍ വിന്റോയില്‍ അല്ലെങ്കില്‍ ടാബില്‍ തുറക്കും"
 
 #: cms/static/js/views/asset.js
 #: cms/static/js/views/group_configuration_item.js
@@ -94,7 +95,7 @@ msgstr ""
 #: cms/templates/js/xblock-outline.underscore
 #: cms/templates/js/xblock-outline.underscore
 msgid "Delete"
-msgstr ""
+msgstr "നീക്കം ചെയ്യുക"
 
 #. #-#-#-#-#  djangojs-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: this is a message from the raw HTML editor displayed in the
@@ -103,7 +104,7 @@ msgstr ""
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 #: cms/templates/js/asset-library.underscore
 msgid "Name"
-msgstr ""
+msgstr "പേര്"
 
 #. #-#-#-#-#  djangojs-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: this is a message from the raw HTML editor displayed in the
@@ -115,32 +116,33 @@ msgstr ""
 #: cms/templates/js/group-configuration-edit.underscore
 #: cms/templates/js/section-name-edit.underscore
 #: cms/templates/js/xblock-string-field-editor.underscore
+#: lms/templates/instructor/instructor_dashboard_2/add-cohort-form.underscore
 msgid "Save"
-msgstr ""
+msgstr "സംരക്ഷിക്കുക"
 
 #: common/lib/xmodule/xmodule/js/src/annotatable/display.js
 msgid "Show Annotations"
-msgstr ""
+msgstr "വ്യാഖ്യാനങ്ങള്‍ കാണിക്കുക"
 
 #: common/lib/xmodule/xmodule/js/src/annotatable/display.js
 msgid "Hide Annotations"
-msgstr ""
+msgstr "വ്യാഖ്യാനങ്ങള്‍ മറച്ചുവക്കുക"
 
 #: common/lib/xmodule/xmodule/js/src/annotatable/display.js
 msgid "Expand Instructions"
-msgstr ""
+msgstr "നിര്‍ദ്ദേശങ്ങള്‍ വിശദീകരിക്കുക"
 
 #: common/lib/xmodule/xmodule/js/src/annotatable/display.js
 msgid "Collapse Instructions"
-msgstr ""
+msgstr "നിര്‍ദ്ദേശങ്ങള്‍ സങ്കോചിപ്പിക്കുക"
 
 #: common/lib/xmodule/xmodule/js/src/annotatable/display.js
 msgid "Commentary"
-msgstr ""
+msgstr "വിവരണങ്ങള്‍"
 
 #: common/lib/xmodule/xmodule/js/src/annotatable/display.js
 msgid "Reply to Annotation"
-msgstr ""
+msgstr "വ്യാഖ്യാനങ്ങള്‍ക്ക് മറുപടി പറയുക"
 
 #. Translators: %(earned)s is the number of points earned. %(total)s is the
 #. total number of points (examples: 0/1, 1/1, 2/3, 5/10). The total number of
@@ -149,59 +151,59 @@ msgstr ""
 #: common/lib/xmodule/xmodule/js/src/capa/display.js
 msgid "(%(earned)s/%(possible)s point)"
 msgid_plural "(%(earned)s/%(possible)s points)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "(%(earned)s/%(possible)s പോയിന്റു്)"
+msgstr[1] "(%(earned)s/%(possible)s പോയിന്റുകള്‍)"
 
 #. Translators: %(num_points)s is the number of points possible (examples: 1,
 #. 3, 10). There will always be at least 1 point possible.;
 #: common/lib/xmodule/xmodule/js/src/capa/display.js
 msgid "(%(num_points)s point possible)"
 msgid_plural "(%(num_points)s points possible)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "(സാധ്യമായത് %(num_points)s പോയിന്റു്)"
+msgstr[1] "(സാധ്യമായത് %(num_points)s പോയിന്റുകള്‍)"
 
 #: common/lib/xmodule/xmodule/js/src/capa/display.js
 #: common/lib/xmodule/xmodule/js/src/capa/display.js
 msgid "Answer:"
-msgstr ""
+msgstr "ഉത്തരം"
 
 #. Translators: the word Answer here refers to the answer to a problem the
 #. student must solve.;
 #: common/lib/xmodule/xmodule/js/src/capa/display.js
 #: common/lib/xmodule/xmodule/js/src/capa/display.js
 msgid "Hide Answer"
-msgstr ""
+msgstr "ഉത്തരം മറച്ചുവക്കുക"
 
 #. Translators: the word Answer here refers to the answer to a problem the
 #. student must solve.;
 #: common/lib/xmodule/xmodule/js/src/capa/display.js
 msgid "Show Answer"
-msgstr ""
+msgstr "ഉത്തരം കാണിക്കുക"
 
 #: common/lib/xmodule/xmodule/js/src/capa/display.js
 msgid "Reveal Answer"
-msgstr ""
+msgstr "ഉത്തരം പ്രകാശിപ്പിക്കുക"
 
 #: common/lib/xmodule/xmodule/js/src/capa/display.js
 msgid "Answer hidden"
-msgstr ""
+msgstr "ഉത്തരങ്ങള്‍ മറച്ചിരിക്കുന്നു"
 
 #. Translators: the word unanswered here is about answering a problem the
 #. student must solve.;
 #: common/lib/xmodule/xmodule/js/src/capa/display.js
 #: common/lib/xmodule/xmodule/js/src/capa/display.js
 msgid "unanswered"
-msgstr ""
+msgstr "ഉത്തരം പറയാത്തത്"
 
 #: common/lib/xmodule/xmodule/js/src/capa/display.js
 msgid "Status: unsubmitted"
-msgstr ""
+msgstr "സ്ഥിതി: സമര്‍പ്പിച്ചിട്ടില്ല"
 
 #. Translators: A "rating" is a score a student gives to indicate how well
 #. they feel they were graded on this problem
 #: common/lib/xmodule/xmodule/js/src/combinedopenended/display.js
 msgid "You need to pick a rating before you can submit."
-msgstr ""
+msgstr "സമര്‍പ്പിക്കുന്നതിനു മുന്‍പേ ഒരു സ്ഥാനക്രമം തിരഞ്ഞെടുക്കേണ്ടതുണ്ട് "
 
 #. Translators: this message appears when transitioning between openended
 #. grading
@@ -211,54 +213,64 @@ msgstr ""
 #: common/lib/xmodule/xmodule/js/src/combinedopenended/display.js
 msgid "Your score did not meet the criteria to move to the next step."
 msgstr ""
+"താങ്കളുടെ പോയിന്‍റ് നില അടുത്ത പടിയിലേക്കവശ്യമായ മാനദണ്ഡം പാലിക്കുന്നില്ല"
 
 #: common/lib/xmodule/xmodule/js/src/combinedopenended/display.js
 #: lms/static/coffee/src/staff_grading/staff_grading.js
 msgid "Submit"
-msgstr ""
+msgstr "സമര്‍പ്പിക്കുക"
 
 #. Translators: one clicks this button after one has finished filling out the
 #. grading
 #. form for an openended assessment
 #: common/lib/xmodule/xmodule/js/src/combinedopenended/display.js
 msgid "Submit assessment"
-msgstr ""
+msgstr "മൂല്ല്യനിര്‍ണ്ണയം സമര്‍പ്പിക്കുക"
 
 #: common/lib/xmodule/xmodule/js/src/combinedopenended/display.js
 msgid ""
 "Your response has been submitted. Please check back later for your grade."
 msgstr ""
+"താങ്കളുടെ പ്രതികരണം സമര്‍പ്പിച്ചിരിക്കുന്നു. താങ്കളുടെ നിലവാരം "
+"അറിയുന്നതിനായി ദയവായി പിന്നീട് പരിശോധിക്കുക."
 
 #. Translators: this button is clicked to submit a student's rating of
 #. an evaluator's assessment
 #: common/lib/xmodule/xmodule/js/src/combinedopenended/display.js
 msgid "Submit post-assessment"
-msgstr ""
+msgstr "മൂല്ല്യനിര്‍ണ്ണയ വിലയിരുത്തല്‍ സമര്‍പ്പിക്കുക"
 
 #: common/lib/xmodule/xmodule/js/src/combinedopenended/display.js
 msgid "Answer saved, but not yet submitted."
-msgstr ""
+msgstr "ഉത്തരങ്ങള്‍ സംരക്ഷിച്ചിരിക്കുന്നു, പക്ഷേ ഇതുവരെ സമര്‍പ്പിച്ചിട്ടില്ല."
 
 #: common/lib/xmodule/xmodule/js/src/combinedopenended/display.js
 msgid ""
 "Please confirm that you wish to submit your work. You will not be able to "
 "make any changes after submitting."
 msgstr ""
+"താങ്കളുടെ ജോലി സമര്‍പ്പിക്കുവാന്‍ ഉറപ്പു നല്കുക. സമര്‍പ്പിച്ചതിനു ശേഷം "
+"മാറ്റങ്ങള്‍ വരുത്തുവാന്‍ സാധ്യമല്ല."
 
 #: common/lib/xmodule/xmodule/js/src/combinedopenended/display.js
 msgid ""
 "You are trying to upload a file that is too large for our system.  Please "
 "choose a file under 2MB or paste a link to it into the answer box."
 msgstr ""
+"താങ്കള്‍ അയക്കുവാന്‍ ശ്രമിക്കുന്ന ഫയല്‍ ഞങ്ങളുടെ വ്യവസ്ഥിതിക്കനുസരിച്ച് വളരെ"
+" വലുതാണ്. ദയവായി 2MB-യില്‍ താഴെയുള്ള ഫയല്‍ തിരഞ്ഞെടുക്കുക അല്ലെങ്കില്‍ "
+"ഫയലിലേക്കുള്ള ശൃംഗലാംഗം ഉത്തരപ്പെട്ടിയില്‍ നല്കുക."
 
 #: common/lib/xmodule/xmodule/js/src/combinedopenended/display.js
 msgid ""
 "Are you sure you want to remove your previous response to this question?"
 msgstr ""
+"ഈ ചോദ്യത്തിന് താങ്കള്‍ ഏറ്റവും ഒടുവില്‍ നല്കിയ പ്രതികരണം തീര്‍ച്ചയായും "
+"നീക്കം ചെയ്യണോ?"
 
 #: common/lib/xmodule/xmodule/js/src/combinedopenended/display.js
 msgid "Moved to next step."
-msgstr ""
+msgstr "അടുത്ത പടിയിലേക്ക് പ്രവേശിച്ചിരിക്കുന്നു."
 
 #: common/lib/xmodule/xmodule/js/src/combinedopenended/display.js
 msgid ""
@@ -267,6 +279,10 @@ msgid ""
 " uploaded the image to another website, you can paste a link to it into the "
 "answer box."
 msgstr ""
+"ഈ ചോദ്യത്തിനു് ഫയല്‍ അപ്പ്ലോഡു് ആവശ്യമാണെങ്കിലും താങ്കളുടെ ബ്രവ്സര്‍ "
+"പിന്തുനക്കുന്നില്ല. ഗൂഗിള്‍ ക്രോമിന്റെ പുതിയ പതിപ്പ് പരീക്ഷിച്ചു നോക്കുക. "
+"ഗത്യന്തരം, താങ്കള്‍ വേറെ വെബ്സൈറ്റില്‍ ചിത്രം അപ്പ്ലോഡു് "
+"ചെയ്തിട്ടുണ്ടെങ്കില്‍ ആ ഫയലിലേക്കുള്ള ശൃംഗലാംഗം ഉത്തരപ്പെട്ടിയില്‍ നല്കുക."
 
 #. Translators: "Show Question" is some text that, when clicked, shows a
 #. question's
@@ -274,50 +290,50 @@ msgstr ""
 #: common/lib/xmodule/xmodule/js/src/combinedopenended/display.js
 #: common/lib/xmodule/xmodule/js/src/combinedopenended/display.js
 msgid "Show Question"
-msgstr ""
+msgstr "ചോദ്യം കാണിക്കുക"
 
 #: common/lib/xmodule/xmodule/js/src/combinedopenended/display.js
 #: common/lib/xmodule/xmodule/js/src/combinedopenended/display.js
 msgid "Hide Question"
-msgstr ""
+msgstr "ചോദ്യം മറക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Paragraph"
-msgstr ""
+msgstr "ഖണ്‌ഡിക"
 
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Preformatted"
-msgstr ""
+msgstr "ഘടന നിറ്വചിച്ചത്"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Heading 1"
-msgstr ""
+msgstr "ശീര്‍ഷകം 1"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Heading 2"
-msgstr ""
+msgstr "ശീര്‍ഷകം 2"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Heading 3"
-msgstr ""
+msgstr "ശീര്‍ഷകം 3"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Add to Dictionary"
-msgstr ""
+msgstr "നിഘണ്ടുവിലേക്ക് ചേര്‍ക്കുക"
 
 #. #-#-#-#-#  djangojs-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: this is a message from the raw HTML editor displayed in the
@@ -325,104 +341,104 @@ msgstr ""
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 #: cms/templates/js/add-xblock-component-menu-problem.underscore
 msgid "Advanced"
-msgstr ""
+msgstr "വികസിതമായത്"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Align center"
-msgstr ""
+msgstr "നടുവിലേക്ക് അടുക്കിവയ്ക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Align left"
-msgstr ""
+msgstr "ഇടത്തോട്ട് അടുക്കിവയ്ക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Align right"
-msgstr ""
+msgstr "വലത്തോട്ട് അടുക്കിവയ്ക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Alignment"
-msgstr ""
+msgstr "പൊരുത്തപ്പെടല്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Alternative source"
-msgstr ""
+msgstr "ഇതര സ്രോതസ്സ് "
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Anchor"
-msgstr ""
+msgstr "അടിസ്ഥാനം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Anchors"
-msgstr ""
+msgstr "അടിസ്ഥാനങ്ങള്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Author"
-msgstr ""
+msgstr "ലേഖകന്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Background color"
-msgstr ""
+msgstr "പശ്ചാത്തല വര്‍ണ്ണം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 #: lms/static/js/Markdown.Editor.js
 msgid "Blockquote"
-msgstr ""
+msgstr "ഉദ്ധരണി ചിഹ്നം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Blocks"
-msgstr ""
+msgstr "ബ്ലോക്സ്"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Body"
-msgstr ""
+msgstr "ചട്ടക്കൂട്‌"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Bold"
-msgstr ""
+msgstr "കടുപ്പിക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Border color"
-msgstr ""
+msgstr "അതിര്‍ത്തി വര്‍ണ്ണം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Border"
-msgstr ""
+msgstr "അതിര്‍ത്തി"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Bottom"
-msgstr ""
+msgstr "കീഴ്‌ഭാഗം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
@@ -434,55 +450,55 @@ msgstr ""
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Caption"
-msgstr ""
+msgstr "അടിയെഴുത്ത്"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Cell padding"
-msgstr ""
+msgstr "ആപൂരണം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Cell properties"
-msgstr ""
+msgstr "ഗുണവിശേഷങ്ങള്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Cell spacing"
-msgstr ""
+msgstr "സെല്ലുകളുടെ അകലം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Cell type"
-msgstr ""
+msgstr "സെല്ലിന്റെ തരം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Cell"
-msgstr ""
+msgstr "സെല്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Center"
-msgstr ""
+msgstr "മദ്ധ്യം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Circle"
-msgstr ""
+msgstr "വൃത്തം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Clear formatting"
-msgstr ""
+msgstr "ഘടന എടുത്തു മാറ്റൂക"
 
 #. #-#-#-#-#  djangojs-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: this is a message from the raw HTML editor displayed in the
@@ -490,25 +506,25 @@ msgstr ""
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 #: common/templates/js/image-modal.underscore
 msgid "Close"
-msgstr ""
+msgstr "അടയ്ക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Code block"
-msgstr ""
+msgstr "കോഡ്‌ ബ്ളോക്ക് "
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Code"
-msgstr ""
+msgstr "കോഡ്‌"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Color"
-msgstr ""
+msgstr "വര്‍ണ്ണം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
@@ -520,91 +536,91 @@ msgstr ""
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Column group"
-msgstr ""
+msgstr "കോളം ഗ്രൂപ്പ്"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Column"
-msgstr ""
+msgstr "കോളം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Constrain proportions"
-msgstr ""
+msgstr "അനുപാതം നിയന്ത്രിക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Copy row"
-msgstr ""
+msgstr "വരി പകര്‍ത്തുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Copy"
-msgstr ""
+msgstr "പകര്‍ത്തുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Could not find the specified string."
-msgstr ""
+msgstr "നിര്‍ദ്ദിഷ്‌ട ശൃംഖല കണ്ടെത്തനായില്ല."
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Custom color"
-msgstr ""
+msgstr "നിർദ്ദേശാനുസൃത വർണ്ണം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Custom..."
-msgstr ""
+msgstr "നിർദ്ദേശാനുസൃതം..."
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Cut row"
-msgstr ""
+msgstr "വരി മുറിക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Cut"
-msgstr ""
+msgstr "മുറിക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Decrease indent"
-msgstr ""
+msgstr "മാര്‍ജിനുമായുള്ള അകലം കുറക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Default"
-msgstr ""
+msgstr "മൂലക്രമീകരണങ്ങള്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Delete column"
-msgstr ""
+msgstr "കോളം നീക്കം ചെയ്യുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Delete row"
-msgstr ""
+msgstr "വരി നീക്കം ചെയ്യുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Delete table"
-msgstr ""
+msgstr "പട്ടിക നീക്കം ചെയ്യുക"
 
 #. #-#-#-#-#  djangojs-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: this is a message from the raw HTML editor displayed in the
@@ -612,37 +628,37 @@ msgstr ""
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 #: cms/templates/js/group-configuration-edit.underscore
 msgid "Description"
-msgstr ""
+msgstr "വ്യാഖ്യാനം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Dimensions"
-msgstr ""
+msgstr "അളവുകള്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Disc"
-msgstr ""
+msgstr "ഡിസ്ക്ക്"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Div"
-msgstr ""
+msgstr "ഡിവ്"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Document properties"
-msgstr ""
+msgstr "പ്രമാണങ്ങളുടെ ഗുണവിശേഷങ്ങള്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Edit HTML"
-msgstr ""
+msgstr "എച് ടി എം എല്‍ തിരുത്തുക"
 
 #. #-#-#-#-#  djangojs-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: this is a message from the raw HTML editor displayed in the
@@ -655,91 +671,91 @@ msgstr ""
 #: cms/templates/js/xblock-string-field-editor.underscore
 #: cms/templates/js/mock/mock-container-page.underscore
 msgid "Edit"
-msgstr ""
+msgstr "തിരുത്തുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Embed"
-msgstr ""
+msgstr "ഉറപ്പിക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Emoticons"
-msgstr ""
+msgstr "വികാര ചിഹ്നഭാഷകള്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Encoding"
-msgstr ""
+msgstr "എന്‍കോഡിങ്ങ്"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "File"
-msgstr ""
+msgstr "ഫയല്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Find and replace"
-msgstr ""
+msgstr "കണ്ടെത്തലും പകരം വയ്ക്കലും"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Find next"
-msgstr ""
+msgstr "അടുത്തത് കണ്ടെത്തുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Find previous"
-msgstr ""
+msgstr "മുന്‍പുള്ളത് കണ്ടെത്തുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Find"
-msgstr ""
+msgstr "കണ്ടെത്തുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Finish"
-msgstr ""
+msgstr "പൂര്‍ണ്ണമാക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Font Family"
-msgstr ""
+msgstr "ഫോണ്ടു് കുടുംബം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Font Sizes"
-msgstr ""
+msgstr "ഫോണ്ടു് വലിപ്പം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Footer"
-msgstr ""
+msgstr "അടിക്കുറിപ്പ്‌"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Format"
-msgstr ""
+msgstr "ഘടന"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Formats"
-msgstr ""
+msgstr "ഘടനകള്‍"
 
 #. #-#-#-#-#  djangojs-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: this is a message from the raw HTML editor displayed in the
@@ -747,313 +763,313 @@ msgstr ""
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 #: common/templates/js/image-modal.underscore
 msgid "Fullscreen"
-msgstr ""
+msgstr "മുഴുവന്‍ സ്ക്രീനിലാക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "General"
-msgstr ""
+msgstr "പൊതുവായത്"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "H Align"
-msgstr ""
+msgstr "തിരശ്ചീനമായി അടുക്കിവയ്ക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Header 1"
-msgstr ""
+msgstr "തലക്കെട്ട്‌ 1"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Header 2"
-msgstr ""
+msgstr "തലക്കെട്ട്‌ 2"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Header 3"
-msgstr ""
+msgstr "തലക്കെട്ട്‌ 3"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Header 4"
-msgstr ""
+msgstr "തലക്കെട്ട്‌ 4"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Header 5"
-msgstr ""
+msgstr "തലക്കെട്ട്‌ 5"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Header 6"
-msgstr ""
+msgstr "തലക്കെട്ട്‌ 6"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Header cell"
-msgstr ""
+msgstr "തലക്കെട്ടുള്ള സെല്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Header"
-msgstr ""
+msgstr "തലക്കെട്ട്‌"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Headers"
-msgstr ""
+msgstr "തലക്കെട്ടുകള്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Heading 4"
-msgstr ""
+msgstr "ശീര്‍ഷകം 4"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Heading 5"
-msgstr ""
+msgstr "ശീര്‍ഷകം 5"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Heading 6"
-msgstr ""
+msgstr "ശീര്‍ഷകം 6"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Headings"
-msgstr ""
+msgstr "ശീര്‍ഷകങ്ങള്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Height"
-msgstr ""
+msgstr "ഉയരം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Horizontal line"
-msgstr ""
+msgstr "ശാഖാപാത"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Horizontal space"
-msgstr ""
+msgstr "തിരശ്ചീനമായ അന്തരം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "HTML source code"
-msgstr ""
+msgstr "എച് ടി എം എല്‍ സോർസ്  കോഡു്"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Ignore all"
-msgstr ""
+msgstr "മുഴുവന്‍ അവഗണിക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Ignore"
-msgstr ""
+msgstr "അവഗണിക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Image description"
-msgstr ""
+msgstr "ചിത്രത്തിന്റെ വ്യാഖ്യാനം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Increase indent"
-msgstr ""
+msgstr "മാര്‍ജിനുമായുള്ള അകലം കൂട്ടുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Inline"
-msgstr ""
+msgstr "ഇന്‍ ലൈന്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Insert column after"
-msgstr ""
+msgstr "ശേഷം കോളം ചേര്‍ക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Insert column before"
-msgstr ""
+msgstr "മുമ്പില്‍ കോളം ചേര്‍ക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Insert date/time"
-msgstr ""
+msgstr "തിയതി/സമയം ചേര്‍ക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Insert image"
-msgstr ""
+msgstr "ചിത്രം ചേര്‍ക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Insert link"
-msgstr ""
+msgstr "ലിങ്കു് ചേര്‍ക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Insert row after"
-msgstr ""
+msgstr "ശേഷം വരി ചേര്‍ക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Insert row before"
-msgstr ""
+msgstr "മുമ്പില്‍ വരി ചേര്‍ക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Insert table"
-msgstr ""
+msgstr "പട്ടിക ചേര്‍ക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Insert template"
-msgstr ""
+msgstr "അച്ച് ചേര്‍ക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Insert video"
-msgstr ""
+msgstr "വീഡിയോ ദൃശ്യം ചേര്‍ക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Insert"
-msgstr ""
+msgstr "ചേര്‍ക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Insert/edit image"
-msgstr ""
+msgstr "ചിത്രം ചേര്‍ക്കുക/തിരുത്തുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Insert/edit link"
-msgstr ""
+msgstr "ലിങ്കു് ചേര്‍ക്കുക/തിരുത്തുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Insert/edit video"
-msgstr ""
+msgstr "വീഡിയോ ദൃശ്യം ചേര്‍ക്കുക/തിരുത്തുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Italic"
-msgstr ""
+msgstr "ചെരിവെഴുത്ത്‌"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Justify"
-msgstr ""
+msgstr "മാര്‍ജിന്‍ ന്യായീകരിക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Keywords"
-msgstr ""
+msgstr "സൂചകപദങ്ങള്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Left to right"
-msgstr ""
+msgstr "ഇടതുനിന്നും വലത്തോട്ട്"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Left"
-msgstr ""
+msgstr "ഇടത്ത്"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Lower Alpha"
-msgstr ""
+msgstr "ചെറിയ അക്കങ്ങളും അക്ഷരങ്ങളും"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Lower Greek"
-msgstr ""
+msgstr "ചെറിയ ഗ്രീക്ക്"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Lower Roman"
-msgstr ""
+msgstr "ചെറിയ റോമന്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Match case"
-msgstr ""
+msgstr "അവസ്ഥ തുല്ല്യമാക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Merge cells"
-msgstr ""
+msgstr "സെല്ലുകള്‍ ലയിപ്പിക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Middle"
-msgstr ""
+msgstr "മധ്യഭാഗം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "New document"
-msgstr ""
+msgstr "പുതിയ പ്രമാണം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "New window"
-msgstr ""
+msgstr "പുതിയ വിന്റോ"
 
 #. #-#-#-#-#  djangojs-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: this is a message from the raw HTML editor displayed in the
@@ -1062,49 +1078,49 @@ msgstr ""
 #: cms/templates/js/paging-footer.underscore
 #: cms/templates/js/paging-header.underscore
 msgid "Next"
-msgstr ""
+msgstr "അടുത്തത്"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "No color"
-msgstr ""
+msgstr "വര്‍ണ്ണം ഇല്ല"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Nonbreaking space"
-msgstr ""
+msgstr "നോണ്‍-ബ്രെയ്ക്കിങ്ങ് സ്പേസ്"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "None"
-msgstr ""
+msgstr "യാതൊന്നുമരുത്‌"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Numbered list"
-msgstr ""
+msgstr "എണ്ണമിട്ട പട്ടിക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Ok"
-msgstr ""
+msgstr "ശരി"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Page break"
-msgstr ""
+msgstr "പേജ് മുറിക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Paste as text"
-msgstr ""
+msgstr "വചനമായി പതിപ്പിക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
@@ -1113,48 +1129,50 @@ msgid ""
 "Paste is now in plain text mode. Contents will now be pasted as plain text "
 "until you toggle this option off."
 msgstr ""
+"പതിപ്പിക്കല്‍ പ്രക്രിയ ഇപ്പോള്‍ ലളിതവചന രീതിയിലാണ്. ഈ ഐച്ഛികം മാറ്റൂന്നതുവരെ"
+" ഉള്ളടക്കങ്ങള്‍ ലളിതവചന രീതിയിലായിരിക്കും പതിപ്പിക്കുന്നത്."
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Paste row after"
-msgstr ""
+msgstr "ശേഷം വരി പതിപ്പിക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Paste row before"
-msgstr ""
+msgstr "മുമ്പില്‍ വരി പതിപ്പിക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Paste your embed code below:"
-msgstr ""
+msgstr "താങ്ങളുടെ എംബെഡ് കോഡ് താഴെ പതിപ്പിക്കുക:"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Paste"
-msgstr ""
+msgstr "പതിപ്പിക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Poster"
-msgstr ""
+msgstr "ചുവര്‍പരസ്യം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Pre"
-msgstr ""
+msgstr "ആദ്യ"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Prev"
-msgstr ""
+msgstr "മുമ്പിലത്തെ"
 
 #. #-#-#-#-#  djangojs-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: this is a message from the raw HTML editor displayed in the
@@ -1163,38 +1181,38 @@ msgstr ""
 #: lms/static/coffee/src/customwmd.js
 #: cms/templates/js/asset-library.underscore
 msgid "Preview"
-msgstr ""
+msgstr "പൂര്‍വ്വദര്‍ശനം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Print"
-msgstr ""
+msgstr "അച്ചടിക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Redo"
-msgstr ""
+msgstr "വീണ്ടും ചെയ്യുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Remove link"
-msgstr ""
+msgstr "ലിങ്ക് നീക്കം ചെയ്യുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Replace all"
-msgstr ""
+msgstr "എല്ലാം പകരം വയ്‌ക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Replace with"
-msgstr ""
+msgstr "ഇതുകൊണ്ട് മാറ്റിവയ്ക്കുക"
 
 #. #-#-#-#-#  djangojs-partial.po (edx-platform)  #-#-#-#-#
 #. Translators: this is a message from the raw HTML editor displayed in the
@@ -1204,13 +1222,13 @@ msgstr ""
 #: cms/templates/js/metadata-file-uploader-item.underscore
 #: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Replace"
-msgstr ""
+msgstr "പകരം വയ്ക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Restore last draft"
-msgstr ""
+msgstr "അവസാനത്തെ രൂപരേഖ പുനഃസ്ഥാപിക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
@@ -1219,180 +1237,182 @@ msgid ""
 "Rich Text Area. Press ALT-F9 for menu. Press ALT-F10 for toolbar. Press "
 "ALT-0 for help"
 msgstr ""
+"റിച്ച് ടെക്സ്റ്റ് സ്ഥലം. മെനുവിനായി ALT-F9 അമര്‍ത്തുക. ടൂള്‍ ബാറിനായി "
+"ALT-F910 അമറ്ത്തുക. സഹായത്തിനായി ALT-0 അമര്‍ത്തുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Right to left"
-msgstr ""
+msgstr "വലത്തുനിന്നും ഇടത്തോട്ട്"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Right"
-msgstr ""
+msgstr "വലത്ത്"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Robots"
-msgstr ""
+msgstr "റോബോട്ടുകള്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Row group"
-msgstr ""
+msgstr "വരി സംഘം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Row properties"
-msgstr ""
+msgstr "വരിയുടെ ഗുണവിശേഷങ്ങള്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Row type"
-msgstr ""
+msgstr "വരി തരം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Row"
-msgstr ""
+msgstr "വരി"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Rows"
-msgstr ""
+msgstr "വരികള്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Scope"
-msgstr ""
+msgstr "പരിധി"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Select all"
-msgstr ""
+msgstr "എല്ലാം തിരഞ്ഞെടുക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Show blocks"
-msgstr ""
+msgstr "ബ്ലോക്സ് കാണിക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Show invisible characters"
-msgstr ""
+msgstr "അദൃശ്യമായ അക്ഷരങ്ങള്‍ കാണിക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Source code"
-msgstr ""
+msgstr "സോർസ് കോഡു്"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Source"
-msgstr ""
+msgstr "സ്രോതസ്സ്‌"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Special character"
-msgstr ""
+msgstr "പ്രത്യേകോദ്ദേശ്യത്തിനുള്ള അക്ഷരങ്ങള്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Spellcheck"
-msgstr ""
+msgstr "അക്ഷരവിന്യാസം പരിശോധിക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Split cell"
-msgstr ""
+msgstr "സെല്ല് വേര്‍തിരിക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Square"
-msgstr ""
+msgstr "സമചതുരം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Start search"
-msgstr ""
+msgstr "തിരയല്‍ ആരംഭിക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Strikethrough"
-msgstr ""
+msgstr "ഇടയിലൂടെ പ്രസിദ്ധപ്പെടുത്തുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Style"
-msgstr ""
+msgstr "ശൈലി"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Subscript"
-msgstr ""
+msgstr "കീഴ്‌ക്കുറിപ്പ്‌"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Superscript"
-msgstr ""
+msgstr "മുകള്‍ക്കുറിപ്പ്"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Table properties"
-msgstr ""
+msgstr "പട്ടികയുടെ ഗുണവിശേഷങ്ങള്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Table"
-msgstr ""
+msgstr "പട്ടിക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Target"
-msgstr ""
+msgstr "ലക്ഷ്യം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Templates"
-msgstr ""
+msgstr "അച്ചുകള്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Text color"
-msgstr ""
+msgstr "വചനങ്ങളുടെ വര്‍ണ്ണം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Text to display"
-msgstr ""
+msgstr "പ്രദര്‍ശിപ്പിക്കുവാനുള്ള വചനങ്ങള്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
@@ -1401,6 +1421,8 @@ msgid ""
 "The URL you entered seems to be an email address. Do you want to add the "
 "required mailto: prefix?"
 msgstr ""
+"താങ്ങള്‍ പ്രവേശിപ്പിച്ച URL ഒരു ഈമെയില്‍ ആണെന്നു തൊന്നുന്നു. ആവശ്യമായ "
+"mailto: എന്ന ഉപസര്‍ഗ്ഗം ചേര്‍ക്കേണ്ടതുണ്ടോ?"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
@@ -1409,30 +1431,32 @@ msgid ""
 "The URL you entered seems to be an external link. Do you want to add the "
 "required http:// prefix?"
 msgstr ""
+"താങ്ങള്‍ പ്രവേശിപ്പിച്ച URL പുറത്തുള്ള ഒരു ലിങ്കു് ആണെന്നു തൊന്നുന്നു. "
+"ആവശ്യമായ http:// എന്ന ഉപസര്‍ഗ്ഗം ചേര്‍ക്കേണ്ടതുണ്ടോ?"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Title"
-msgstr ""
+msgstr "തലക്കെട്ട്‌"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Tools"
-msgstr ""
+msgstr "ഉപകരണങ്ങള്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Top"
-msgstr ""
+msgstr "മേലഗ്രം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Underline"
-msgstr ""
+msgstr "അടിവര"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
@@ -1444,67 +1468,69 @@ msgstr ""
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Upper Alpha"
-msgstr ""
+msgstr "വലിയ അക്കങ്ങളും അക്ഷരങ്ങളും"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Upper Roman"
-msgstr ""
+msgstr "വലിയ റോമന്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Url"
-msgstr ""
+msgstr "യു ആര്‍ എല്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "V Align"
-msgstr ""
+msgstr "കുത്തനെ അടുക്കിവയ്ക്കുക"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Vertical space"
-msgstr ""
+msgstr "കുത്തനെയുള്ള അകലം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "View"
-msgstr ""
+msgstr "ദൃശ്യം"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Visual aids"
-msgstr ""
+msgstr "പഠനസഹായി"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Whole words"
-msgstr ""
+msgstr "സമ്പൂര്‍ണ്ണ പദങ്ങള്‍"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Width"
-msgstr ""
+msgstr "വീതി"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "Words: {0}"
-msgstr ""
+msgstr "പദങ്ങള്‍: {0}"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
 #: common/lib/xmodule/xmodule/js/src/html/edit.js
 msgid "You have unsaved changes are you sure you want to navigate away?"
 msgstr ""
+"സൂക്ഷിക്കാത്ത മാറ്റങ്ങൾ ഉണ്ട് ഈ പേജ് വിട്ട് താങ്കൾക്ക് നിശ്ചയമായും "
+"പോകേണ്ടതുണ്ടോ?"
 
 #. Translators: this is a message from the raw HTML editor displayed in the
 #. browser when a user needs to edit HTML
@@ -1513,22 +1539,47 @@ msgid ""
 "Your browser doesn't support direct access to the clipboard. Please use the "
 "Ctrl+X/C/V keyboard shortcuts instead."
 msgstr ""
+"താങ്ങളുടെ ബ്രൌസരിനു എഴുത്തുപലകയെ നേരിട്ട്  സമീപിക്കുവാന്‍ കഴിയില്ല. പകരം "
+"ദയവായി Ctrl+X/C/V എന്നിങ്ങനെയുള്ള കുറുക്കുവഴികള്‍ ഉപയൊഗിക്കുക."
+
+#: common/lib/xmodule/xmodule/js/src/lti/lti.js
+msgid ""
+"Click OK to have your username and e-mail address sent to a 3rd party application.\n"
+"\n"
+"Click Cancel to return to this page without sending your information."
+msgstr ""
+
+#: common/lib/xmodule/xmodule/js/src/lti/lti.js
+msgid ""
+"Click OK to have your username sent to a 3rd party application.\n"
+"\n"
+"Click Cancel to return to this page without sending your information."
+msgstr ""
+
+#: common/lib/xmodule/xmodule/js/src/lti/lti.js
+msgid ""
+"Click OK to have your e-mail address sent to a 3rd party application.\n"
+"\n"
+"Click Cancel to return to this page without sending your information."
+msgstr ""
 
 #: common/lib/xmodule/xmodule/js/src/sequence/display.js
 msgid ""
 "Sequence error! Cannot navigate to tab %(tab_name)s in the current "
 "SequenceModule. Please contact the course staff."
 msgstr ""
+"അനുക്രമത്തില്‍ തകരാര്‍! ഇപ്പോഴത്തെ SequenceModule ളില്‍ %(tab_name)s ലേക്ക് "
+"പോകുവാന്‍ സാധ്യമല്ല. ദയവായി കോഴ്സ് ജീവനക്കാരുമായി ബന്ധപ്പെടുക."
 
 #: common/lib/xmodule/xmodule/js/src/video/00_i18n.js
 #: common/lib/xmodule/xmodule/js/src/video/04_video_control.js
 msgid "Play"
-msgstr ""
+msgstr "പ്ലേ"
 
 #: common/lib/xmodule/xmodule/js/src/video/00_i18n.js
 #: common/lib/xmodule/xmodule/js/src/video/04_video_control.js
 msgid "Pause"
-msgstr ""
+msgstr "പോസ്."
 
 #: common/lib/xmodule/xmodule/js/src/video/00_i18n.js
 msgid "Mute"
@@ -1541,12 +1592,12 @@ msgstr ""
 #: common/lib/xmodule/xmodule/js/src/video/00_i18n.js
 #: common/lib/xmodule/xmodule/js/src/video/04_video_control.js
 msgid "Exit full browser"
-msgstr ""
+msgstr "മുഴുവന്‍ ബ്രൌസറില്‍ നിന്ന് പുറത്തേക്ക്."
 
 #: common/lib/xmodule/xmodule/js/src/video/00_i18n.js
 #: common/lib/xmodule/xmodule/js/src/video/04_video_control.js
 msgid "Fill browser"
-msgstr ""
+msgstr "ഫയല്‍ ബ്രൌസര്‍."
 
 #: common/lib/xmodule/xmodule/js/src/video/00_i18n.js
 msgid "Speed"
@@ -1554,42 +1605,42 @@ msgstr ""
 
 #: common/lib/xmodule/xmodule/js/src/video/00_i18n.js
 msgid "Volume"
-msgstr ""
+msgstr "ശബ്ദം"
 
 #. Translators: Volume level equals 0%.
 #: common/lib/xmodule/xmodule/js/src/video/00_i18n.js
 msgid "Muted"
-msgstr ""
+msgstr "ശബ്ദമില്ലാതാക്കിയിരിക്കുന്നു."
 
 #. Translators: Volume level in range ]0,20]%
 #: common/lib/xmodule/xmodule/js/src/video/00_i18n.js
 msgid "Very low"
-msgstr ""
+msgstr "വളരെ കുറച്ച്"
 
 #. Translators: Volume level in range ]20,40]%
 #: common/lib/xmodule/xmodule/js/src/video/00_i18n.js
 msgid "Low"
-msgstr ""
+msgstr "കുറച്ച്"
 
 #. Translators: Volume level in range ]40,60]%
 #: common/lib/xmodule/xmodule/js/src/video/00_i18n.js
 msgid "Average"
-msgstr ""
+msgstr "ശരാശരി"
 
 #. Translators: Volume level in range ]60,80]%
 #: common/lib/xmodule/xmodule/js/src/video/00_i18n.js
 msgid "Loud"
-msgstr ""
+msgstr "ഉറക്കെ"
 
 #. Translators: Volume level in range ]80,99]%
 #: common/lib/xmodule/xmodule/js/src/video/00_i18n.js
 msgid "Very loud"
-msgstr ""
+msgstr "വളരെ ഉ"
 
 #. Translators: Volume level equals 100%.
 #: common/lib/xmodule/xmodule/js/src/video/00_i18n.js
 msgid "Maximum"
-msgstr ""
+msgstr "പരമാവധി"
 
 #: common/lib/xmodule/xmodule/js/src/video/02_html5_video.js
 msgid ""
@@ -1599,61 +1650,63 @@ msgstr ""
 #: common/lib/xmodule/xmodule/js/src/video/02_html5_video.js
 msgid "This browser cannot play .mp4, .ogg, or .webm files."
 msgstr ""
+"ഈ ബ്രൌസറിന്  .mp4, .ogg, അല്ലെങ്കില്‍ .webm ഫയലുകള്‍ "
+"പ്രവര്‍ത്തിപ്പിക്കാനാകില്ല."
 
 #: common/lib/xmodule/xmodule/js/src/video/02_html5_video.js
 msgid "Try using a different browser, such as Google Chrome."
-msgstr ""
+msgstr "ഗൂഗിള്‍ ക്രോം പോലുള്ള ഒരു ബ്രൌസര്‍ ഉപയോഗിച്ചു നോക്കുക."
 
 #: common/lib/xmodule/xmodule/js/src/video/04_video_control.js
 msgid "Video slider"
-msgstr ""
+msgstr "വീഡിയോ ചലനസഹായി"
 
 #: common/lib/xmodule/xmodule/js/src/video/05_video_quality_control.js
 msgid "HD on"
-msgstr ""
+msgstr "HD യില്‍"
 
 #: common/lib/xmodule/xmodule/js/src/video/05_video_quality_control.js
 msgid "HD off"
-msgstr ""
+msgstr "HD യില്‍ അല്ല"
 
 #: common/lib/xmodule/xmodule/js/src/video/06_video_progress_slider.js
 #: common/lib/xmodule/xmodule/js/src/video/06_video_progress_slider.js
 msgid "Video position"
-msgstr ""
+msgstr "വീഡിയോ സ്ഥാനം"
 
 #: common/lib/xmodule/xmodule/js/src/video/06_video_progress_slider.js
 msgid "Video ended"
-msgstr ""
+msgstr "വീഡിയോ അവസാനിച്ചിരിക്കുന്നു"
 
 #: common/lib/xmodule/xmodule/js/src/video/06_video_progress_slider.js
 msgid "%(value)s hour"
 msgid_plural "%(value)s hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(value)s മണിക്കൂര്‍"
+msgstr[1] "%(value)s മണിക്കൂറുകള്‍"
 
 #: common/lib/xmodule/xmodule/js/src/video/06_video_progress_slider.js
 msgid "%(value)s minute"
 msgid_plural "%(value)s minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(value)s നിമിഷം"
+msgstr[1] "%(value)s നിമിഷങ്ങള്‍"
 
 #: common/lib/xmodule/xmodule/js/src/video/06_video_progress_slider.js
 msgid "%(value)s second"
 msgid_plural "%(value)s seconds"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(value)s സെക്കന്റു്"
+msgstr[1] "%(value)s സെക്കന്റുകള്‍"
 
 #: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
 msgid "Caption will be displayed when "
-msgstr ""
+msgstr "അടിയെഴുത്ത് കാണിക്കുന്നത്"
 
 #: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
 msgid "Turn on captions"
-msgstr ""
+msgstr "അടിയെഴുത്തുകള്‍ കാണിക്കുക"
 
 #: common/lib/xmodule/xmodule/js/src/video/09_video_caption.js
 msgid "Turn off captions"
-msgstr ""
+msgstr "അടിയെഴുത്തുകള്‍ കാണി"
 
 #: common/lib/xmodule/xmodule/public/js/split_test_author_view.js
 msgid "Creating missing groups&hellip;"
@@ -1662,11 +1715,11 @@ msgstr ""
 #: common/static/coffee/src/discussion/discussion_module_view.js
 #: common/static/coffee/src/discussion/discussion_module_view.js
 msgid "Hide Discussion"
-msgstr ""
+msgstr "ചര്‍ച്ച ഒളിപ്പിക്കുക"
 
 #: common/static/coffee/src/discussion/discussion_module_view.js
 msgid "Show Discussion"
-msgstr ""
+msgstr "ചര്‍ച്ച കാണിക്കുക"
 
 #: common/static/coffee/src/discussion/discussion_module_view.js
 #: common/static/coffee/src/discussion/discussion_module_view.js
@@ -1679,40 +1732,47 @@ msgstr ""
 #: common/static/coffee/src/discussion/views/discussion_user_profile_view.js
 #: common/static/coffee/src/discussion/views/response_comment_view.js
 msgid "Sorry"
-msgstr ""
+msgstr "ക്ഷമിക്കണം"
 
 #: common/static/coffee/src/discussion/discussion_module_view.js
 msgid "We had some trouble loading the discussion. Please try again."
 msgstr ""
+"ചര്‍ച്ച കാണിക്കുന്നതില്‍ ഞങ്ങള്‍ ചില തകരാറുകള്‍ നേരിട്ടു. ദയവായി വീണ്ടും "
+"ശ്രമിക്കുക."
 
 #: common/static/coffee/src/discussion/discussion_module_view.js
 msgid ""
 "We had some trouble loading the threads you requested. Please try again."
 msgstr ""
+"താങ്കള്‍ അഭ്യര്‍ത്ഥിച്ച കഥാതന്തുക്കള്‍ കാണിക്കുന്നതില്‍ ഞങ്ങള്‍ ചില "
+"തകരാറുകള്‍ നേരിട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക."
 
 #: common/static/coffee/src/discussion/utils.js
 msgid "Loading content"
-msgstr ""
+msgstr "ഉള്ളടക്കങ്ങള്‍ ലോഡ് ചെയ്തുകൊണ്ടിരിക്കുന്നു"
 
 #: common/static/coffee/src/discussion/utils.js
 msgid ""
 "We had some trouble processing your request. Please ensure you have copied "
 "any unsaved work and then reload the page."
 msgstr ""
+"താങ്കളുടെ അഭ്യര്‍ത്ഥനയുടെ നടത്തിപ്പില്‍ ഞങ്ങള്‍ ചില തകരാറുകള്‍ നേരിട്ടു. "
+"സൂക്ഷിക്കാത്ത എല്ലാ മാറ്റങ്ങളും പകര്‍ത്തിയശേഷം ദയവായി പേജ് വീണ്ടും ലോഡ് "
+"ചെയ്യുക."
 
 #: common/static/coffee/src/discussion/utils.js
 msgid "We had some trouble processing your request. Please try again."
 msgstr ""
+"താങ്കളുടെ അഭ്യര്‍ത്ഥനയുടെ നടത്തിപ്പില്‍ ഞങ്ങള്‍ ചില തകരാറുകള്‍ നേരിട്ടു. "
+"ദയവായി വീണ്ടും ശ്രമിക്കുക."
 
 #: common/static/coffee/src/discussion/utils.js
 #: common/static/coffee/src/discussion/utils.js
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
-#: common/static/coffee/src/discussion/views/new_post_view.js
-#: common/static/coffee/src/discussion/views/new_post_view.js
-#: common/static/coffee/src/discussion/views/new_post_view.js
+#: common/static/coffee/src/discussion/views/discussion_topic_menu_view.js
 msgid "…"
-msgstr ""
+msgstr "..."
 
 #: common/static/coffee/src/discussion/views/discussion_content_view.js
 msgid "currently %(numVotes)s vote"
@@ -1784,56 +1844,66 @@ msgstr ""
 
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 msgid "Load more"
-msgstr ""
+msgstr "കൂടുതല്‍ ലോഡ്‌ ചെയ്യുക"
 
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 msgid "Loading more threads"
-msgstr ""
+msgstr "കൂടുതല്‍ കഥാതന്തുക്കള്‍ ലോഡ്‌ ചെയ്യുക"
 
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 msgid "We had some trouble loading more threads. Please try again."
 msgstr ""
+"കൂടുതല്‍ കഥാതന്തുക്കള്‍ കാണിക്കുന്നതില്‍ ഞങ്ങള്‍ ചില തകരാറുകള്‍ നേരിട്ടു. "
+"ദയവായി വീണ്ടും ശ്രമിക്കുക."
 
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 msgid "%(unread_count)s new comment"
 msgid_plural "%(unread_count)s new comments"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(unread_count)s പുതിയ അഭിപ്രായം"
+msgstr[1] "%(unread_count)s പുതിയ അഭിപ്രായങ്ങള്‍"
 
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 msgid "Search Results"
-msgstr ""
+msgstr "തിരയല്‍ ഫലങ്ങള്‍‌‌"
 
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 msgid "Loading thread list"
-msgstr ""
+msgstr "കഥാതന്തുക്കളുടെ അനുക്രമണിക ലോഡ് ചെയ്തുകൊണ്ടിരിക്കുന്നു"
 
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 msgid ""
 "No results found for %(original_query)s. Showing results for "
 "%(suggested_query)s."
 msgstr ""
+"%(original_query)s ക്ക് ഫലങ്ങള്‍ ലഭിച്ചില്ല. %(suggested_query)s യുടെ "
+"ഫലങ്ങള്‍ കാണിച്ചിരിക്കുന്നു."
 
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 msgid "No threads matched your query."
-msgstr ""
+msgstr "താങ്കളുടെ ചോദ്യവുമായി സാമ്യമുള്ള കഥാതന്തുക്കള്‍ ലഭിച്ചില്ല."
 
 #: common/static/coffee/src/discussion/views/discussion_thread_list_view.js
 msgid "Show posts by %(username)s."
-msgstr ""
+msgstr "%(username)s അനുസരിച്ച് പോസ്റ്റുകള്‍ കാണിക്കുക."
 
 #: common/static/coffee/src/discussion/views/discussion_thread_view.js
 msgid ""
 "The thread you selected has been deleted. Please select another thread."
 msgstr ""
+"താങ്കള്‍ തിരഞ്ഞെടുത്ത കഥാതന്തു നീക്കം ചെയ്തിരിക്കുന്നു. ദയവായി മറ്റൊരു "
+"കഥാതന്തു തിരഞ്ഞെടുക്കുക."
 
 #: common/static/coffee/src/discussion/views/discussion_thread_view.js
 msgid "We had some trouble loading responses. Please reload the page."
 msgstr ""
+"പ്രതികരണങ്ങള്‍ കാണിക്കുന്നതില്‍ ഞങ്ങള്‍ ചില തകരാറുകള്‍ നേരിട്ടു. ദയവായി പേജ്"
+" വീണ്ടും ലോഡ് ചെയ്യുക."
 
 #: common/static/coffee/src/discussion/views/discussion_thread_view.js
 msgid "We had some trouble loading more responses. Please try again."
 msgstr ""
+"കൂടുതല്‍ പ്രതികരണങ്ങള്‍ കാണിക്കുന്നതില്‍ ഞങ്ങള്‍ ചില തകരാറുകള്‍ നേരിട്ടു. "
+"ദയവായി വീണ്ടും ശ്രമിക്കുക."
 
 #: common/static/coffee/src/discussion/views/discussion_thread_view.js
 msgid "%(numResponses)s other response"
@@ -1844,34 +1914,36 @@ msgstr[1] ""
 #: common/static/coffee/src/discussion/views/discussion_thread_view.js
 msgid "%(numResponses)s response"
 msgid_plural "%(numResponses)s responses"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(numResponses)s പ്രതികരണം"
+msgstr[1] "%(numResponses)s പ്രതികരണങ്ങള്‍"
 
 #: common/static/coffee/src/discussion/views/discussion_thread_view.js
 msgid "Showing all responses"
-msgstr ""
+msgstr "എല്ലാ പ്രതികരണങ്ങളും കാണിച്ചിരിക്കുന്നു"
 
 #: common/static/coffee/src/discussion/views/discussion_thread_view.js
 msgid "Showing first response"
 msgid_plural "Showing first %(numResponses)s responses"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "ആദ്യത്തെ പ്രതികരണം കാണിച്ചിരിക്കുന്നു"
+msgstr[1] "ആദ്യത്തെ %(numResponses)s പ്രതികരണങ്ങള്‍ കാണിച്ചിരിക്കുന്നു"
 
 #: common/static/coffee/src/discussion/views/discussion_thread_view.js
 msgid "Load all responses"
-msgstr ""
+msgstr "എല്ലാ പ്രതികരണങ്ങളും ലോഡ് ചെയ്യുക"
 
 #: common/static/coffee/src/discussion/views/discussion_thread_view.js
 msgid "Load next %(numResponses)s responses"
-msgstr ""
+msgstr "അടുത്ത %(numResponses)s പ്രതികരണങ്ങളും ലോഡ് ചെയ്യുക"
 
 #: common/static/coffee/src/discussion/views/discussion_thread_view.js
 msgid "Are you sure you want to delete this post?"
-msgstr ""
+msgstr "തീര്‍ച്ചയായും പോസ്റ്റ് നീക്കം ചെയ്യേണ്ടതുണ്ടോ?"
 
 #: common/static/coffee/src/discussion/views/discussion_user_profile_view.js
 msgid "We had some trouble loading the page you requested. Please try again."
 msgstr ""
+"താങ്കള്‍ അഭ്യര്‍ത്ഥിച്ച പേജ് ലോഡ് ചെയ്യുന്നതില്‍ ഞങ്ങള്‍ ചില തകരാറുകള്‍ "
+"നേരിട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക."
 
 #: common/static/coffee/src/discussion/views/new_post_view.js
 msgid "Your post will be discarded."
@@ -1879,39 +1951,41 @@ msgstr ""
 
 #: common/static/coffee/src/discussion/views/response_comment_show_view.js
 msgid "anonymous"
-msgstr ""
+msgstr "അജ്ഞാതന്‍"
 
 #: common/static/coffee/src/discussion/views/response_comment_view.js
 msgid "Are you sure you want to delete this comment?"
-msgstr ""
+msgstr "ഈ  അഭിപ്രായം തീര്‍ച്ചയായും നീക്കം ചെയ്യണോ?"
 
 #: common/static/coffee/src/discussion/views/response_comment_view.js
 msgid "We had some trouble deleting this comment. Please try again."
 msgstr ""
+"അഭിപ്രായം നീക്കം ചെയ്യുന്നതില്‍ ഞങ്ങള്‍ ചില തകരാറുകള്‍ നേരിട്ടു. ദയവായി "
+"വീണ്ടും ശ്രമിക്കുക."
 
 #: common/static/coffee/src/discussion/views/thread_response_view.js
 msgid "Are you sure you want to delete this response?"
-msgstr ""
+msgstr "ഈ പ്രതികരണം തീര്‍ച്ചയായും നീക്കം ചെയ്യണോ?"
 
 #: common/static/js/capa/drag_and_drop/base_image.js
 msgid "Drop target image"
-msgstr ""
+msgstr "ഉദ്ദിഷ്ട ചിത്രം വീഴ്‌ത്തുക"
 
 #: common/static/js/capa/drag_and_drop/draggable_events.js
 msgid "dragging out of slider"
-msgstr ""
+msgstr "ചലനസഹായി ചലിപ്പിക്കുക"
 
 #: common/static/js/capa/drag_and_drop/draggable_events.js
 msgid "dragging"
-msgstr ""
+msgstr "ഇഴക്കുക"
 
 #: common/static/js/capa/drag_and_drop/draggable_events.js
 msgid "dropped in slider"
-msgstr ""
+msgstr "ചലനസഹായിയിലേക്ക് വീഴ്ത്തുക"
 
 #: common/static/js/capa/drag_and_drop/draggable_events.js
 msgid "dropped on target"
-msgstr ""
+msgstr "ലക്ഷ്യത്തിലേക്ക് വീഴ്ത്തുക"
 
 #. Translators: %s will be a time quantity, such as "4 minutes" or "1 day"
 #: common/static/js/src/jquery.timeago.locale.js
@@ -1921,165 +1995,170 @@ msgstr ""
 #. Translators: %s will be a time quantity, such as "4 minutes" or "1 day"
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "%s from now"
-msgstr ""
+msgstr "%s മുതൽ "
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "less than a minute"
-msgstr ""
+msgstr "ഒരു നിമിഷത്തില്‍ കുറവ്"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "about a minute"
-msgstr ""
+msgstr "ഏകദേശം ഒരു നിമിഷം"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d നിമിഷം"
+msgstr[1] "%d നിമിഷങ്ങള്‍"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "about an hour"
-msgstr ""
+msgstr "ഏകദേശം ഒരു മണിക്കൂര്‍"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "about %d hour"
 msgid_plural "about %d hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "ഏകദേശം %d മണിക്കൂര്‍"
+msgstr[1] "ഏകദേശം %d മണിക്കൂറുകള്‍"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "a day"
-msgstr ""
+msgstr "ഒരു ദിവസം"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d ദിവസം"
+msgstr[1] "%d ദിവസങ്ങള്‍"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "about a month"
-msgstr ""
+msgstr "ഏകദേശം ഒരു മാസം"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "%d month"
 msgid_plural "%d months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d മാസം"
+msgstr[1] "%d മാസങ്ങള്‍"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "about a year"
-msgstr ""
+msgstr "ഏകദേശം ഒരു വര്‍ഷം"
 
 #: common/static/js/src/jquery.timeago.locale.js
 msgid "%d year"
 msgid_plural "%d years"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d വര്‍ഷം"
+msgstr[1] "%d വര്‍ഷങ്ങള്‍"
 
 #. Translators: please note that this is not a literal flag, but rather a
 #. report
 #: common/static/js/vendor/ova/flagging-annotator.js
 msgid "Check the box to remove all flags."
-msgstr ""
+msgstr "അടയാളങ്ങള്‍ നീക്കം ചെയ്യുന്നതിനായി ഈ പെട്ടിയില്‍ ശരിയിടുക"
 
 #. Translators: 'totalFlags' is the number of flags solely for that annotation
 #: common/static/js/vendor/ova/flagging-annotator.js
 msgid "Check the box to remove %(totalFlags)s flag."
 msgid_plural "Check the box to remove %(totalFlags)s flags."
 msgstr[0] ""
+"%(totalFlags)s അടയാളം നീക്കം ചെയ്യുന്നതിനായി ഈ പെട്ടിയില്‍ ശരിയിടുക"
 msgstr[1] ""
+"%(totalFlags)s അടയാളങ്ങള്‍ നീക്കം ചെയ്യുന്നതിനായി ഈ പെട്ടിയില്‍ ശരിയിടുക"
 
 #. Translators: 'count' is the number of flags solely for that annotation that
 #. will be removed
 #: common/static/js/vendor/ova/flagging-annotator.js
 msgid "Check the box to remove %(count)s flag."
 msgid_plural "Check the box to remove %(count)s flags."
-msgstr[0] ""
+msgstr[0] "%(count)s അടയാളങ്ങളം നീക്കം ചെയ്യുന്നതിനായി ഈ പെട്ടിയില്‍ ശരിയിടുക"
 msgstr[1] ""
+"%(count)s അടയാളങ്ങള്‍ നീക്കം ചെയ്യുന്നതിനായി ഈ പെട്ടിയില്‍ ശരിയിടുക"
 
 #: common/static/js/vendor/ova/flagging-annotator.js
 msgid "All flags have been removed. To undo, uncheck the box."
 msgstr ""
+"എല്ലാ അടയാളങ്ങളും നീക്കം ചെയ്തിരിക്കുന്നു. പഴയപടി ആക്കുന്നതിന് ഈ പെട്ടിയിലെ "
+"ശരി കളയുക."
 
 #: common/static/js/vendor/ova/flagging-annotator.js
 #: common/static/js/vendor/ova/flagging-annotator.js
 msgid "You have already reported this annotation."
-msgstr ""
+msgstr "ഈ വ്യാഖ്യാനം താങ്ങൾ മുൻപേ രേഖപ്പെടുത്തിയതാണ്."
 
 #: common/static/js/vendor/ova/flagging-annotator.js
 #: common/static/js/vendor/ova/flagging-annotator.js
 msgid "Report annotation as inappropriate or offensive."
-msgstr ""
+msgstr "വ്യാഖ്യാനം അനുചിതമായതോ അല്ലെങ്കിൽ അനിഷ്‌ടകരമായതോ ആയി രേഖപ്പെടുത്തുക."
 
 #. Translators: 'count' is the number of flags solely for that annotation
 #: common/static/js/vendor/ova/flagging-annotator.js
 msgid "This annotation has %(count)s flag."
 msgid_plural "This annotation has %(count)s flags."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "ഈ വ്യാഖ്യാനത്തിന്  %(count)s അടയാളം ഉണ്ട്."
+msgstr[1] "ഈ വ്യാഖ്യാനത്തിന്  %(count)s അടയാളങ്ങൾ ഉണ്ട്."
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "User"
-msgstr ""
+msgstr "ഉപയോക്താവ്‌"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Annotation"
-msgstr ""
+msgstr "വ്യാഖ്യാനം"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Start"
-msgstr ""
+msgstr "തുടങ്ങുക"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "End"
-msgstr ""
+msgstr "അവസാനിപ്പിക്കുക"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "#Replies"
-msgstr ""
+msgstr "#മറുപടികൾ"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Date posted"
-msgstr ""
+msgstr "പ്രസിദ്ധപ്പെടുത്തിയ തീയതി"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "More"
-msgstr ""
+msgstr "കൂടുതൽ"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "My Notes"
-msgstr ""
+msgstr "എന്റെ കുറിപ്പുകൾ"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Instructor"
-msgstr ""
+msgstr "അദ്ധ്യാപകന്‍"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Public"
-msgstr ""
+msgstr "പൊതുവായ"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Search"
-msgstr ""
+msgstr "തിരയല്‍"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Users"
-msgstr ""
+msgstr "ഉപയോക്താക്കൾ"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Tags"
-msgstr ""
+msgstr "അനുബന്ധങ്ങൾ"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Annotation Text"
-msgstr ""
+msgstr "വ്യാഖ്യാന വചനങ്ങൾ"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 #: common/static/js/vendor/ova/catch/js/catch.js
@@ -2093,92 +2172,98 @@ msgstr ""
 #: cms/templates/js/mock/mock-xmodule-settings-only-editor.underscore
 #: cms/templates/js/video/metadata-translations-entry.underscore
 msgid "Clear"
-msgstr ""
+msgstr "എടുത്തു മാറ്റുക"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Text"
-msgstr ""
+msgstr "വചനം"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Video"
-msgstr ""
+msgstr "വീഡിയോ"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Image"
-msgstr ""
+msgstr "ചിത്രം"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Reply"
-msgstr ""
+msgstr "മറുപടി പറയുക"
 
 #: common/static/js/vendor/ova/catch/js/catch.js
 msgid "Tags:"
-msgstr ""
+msgstr "അനുബന്ധങ്ങൾ:"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Available %s"
-msgstr ""
+msgstr "ലഭ്യമായത് %s"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid ""
 "This is the list of available %s. You may choose some by selecting them in "
 "the box below and then clicking the \"Choose\" arrow between the two boxes."
 msgstr ""
+"ഇതാണ് ലഭ്യമായ %s കളുടെ പത്രീക. നിങ്ങള്ക്ക് രണ്ട് പത്രികള്‍ക്കിടയിലുള്ള "
+"തെരെഞ്ഞടുക്കുക അമ്പുകള്‍ ഉപയോഗിച്ച് അതില്‍ നിന്ന് തെരെഞ്ഞെടുക്കാവുന്നതാണ്."
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Type into this box to filter down the list of available %s."
-msgstr ""
+msgstr "ലഭ്യമായ %s അരിച്ചെടുക്കുന്നതിനായി ഈ പെട്ടിയിൽ ടൈപ്പ് ചെയ്യുക."
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Filter"
-msgstr ""
+msgstr "അരിക്കുക"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Choose all"
-msgstr ""
+msgstr "എല്ലാം തെരെഞ്ഞെടുക്കുക"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Click to choose all %s at once."
-msgstr ""
+msgstr "എല്ലാ %s കളും ഒരുമിച്ച് തെരെഞ്ഞെടുക്കാന്‍ അമര്‍ത്തുക."
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Choose"
-msgstr ""
+msgstr "തെരെഞ്ഞെടുക്കുക"
 
 #: lms/static/admin/js/SelectFilter2.js
 #: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Remove"
-msgstr ""
+msgstr "നീക്കം ചെയ്യുക"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Chosen %s"
-msgstr ""
+msgstr "%s തെരെഞ്ഞെടുത്തു"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid ""
 "This is the list of chosen %s. You may remove some by selecting them in the "
 "box below and then clicking the \"Remove\" arrow between the two boxes."
 msgstr ""
+"ഇതാണ് തെരെഞ്ഞെടുത്ത %s കളുടെ പത്രീക. നിങ്ങള്ക്ക് രണ്ട് പത്രികള്‍ക്കിടയിലുള്ള"
+" തെരെഞ്ഞടുക്കുക അമ്പുകള്‍ ഉപയോഗിച്ച് അതില്‍ നിന്ന് തെരെഞ്ഞെടുക്കാവുന്നതാണ്."
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Remove all"
-msgstr ""
+msgstr "എല്ലാം നീക്കം ചെയ്യുക"
 
 #: lms/static/admin/js/SelectFilter2.js
 msgid "Click to remove all chosen %s at once."
-msgstr ""
+msgstr "എല്ലാ തെരെഞ്ഞെടുത്ത %s കളും ഒരുമിച്ച് നീക്കം ചെയ്യാന്‍ അമര്‍ത്തുക"
 
 #: lms/static/admin/js/actions.js lms/static/admin/js/actions.min.js
 msgid "%(sel)s of %(cnt)s selected"
 msgid_plural "%(sel)s of %(cnt)s selected"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(cnt)s ൽ %(sel)s തിരഞ്ഞെടുത്തിരിക്കുന്നു."
+msgstr[1] "%(cnt)s ൽ %(sel)s തിരഞ്ഞെടുത്തിരിക്കുന്നു"
 
 #: lms/static/admin/js/actions.js lms/static/admin/js/actions.min.js
 msgid ""
 "You have unsaved changes on individual editable fields. If you run an "
 "action, your unsaved changes will be lost."
 msgstr ""
+"വ്യക്തികത തിരുത്തല്‍ പെട്ടികളില്‍ സൂക്ഷിക്കാത്ത മാറ്റങ്ങളുണ്ട്. നിങ്ങള്‍ ഒരു"
+" പ്രവര്‍ത്തി ചെയ്യുകയാണെങ്കില്‍ സൂക്ഷിക്കാത്ത മാറ്റങ്ങള്‍ നഷ്ടമാകും."
 
 #: lms/static/admin/js/actions.js lms/static/admin/js/actions.min.js
 msgid ""
@@ -2186,6 +2271,9 @@ msgid ""
 "individual fields yet. Please click OK to save. You'll need to re-run the "
 "action."
 msgstr ""
+"നിങ്ങള്‍ ഒരു പ്രവര്‍ത്തി തെരെഞ്ഞെടുത്തിരിക്കുന്നു, പക്ഷേ വ്യക്തികത "
+"തിരുത്തല്‍ പെട്ടികളിലെ മാറ്റങ്ങള്‍ സൂക്ഷിച്ചിട്ടില്ല. സൂക്ഷിക്കാന്‍ ശരി "
+"അമര്‍ത്തുക. പ്രവര്‍ത്തി വീണ്ടും ചെയ്യേണ്ടതായി വരും"
 
 #: lms/static/admin/js/actions.js lms/static/admin/js/actions.min.js
 msgid ""
@@ -2193,234 +2281,269 @@ msgid ""
 "fields. You're probably looking for the Go button rather than the Save "
 "button."
 msgstr ""
+"നിങ്ങള്‍ ഒരു പ്രവര്‍ത്തി തെരെഞ്ഞെടുത്തിരിക്കുന്നു, വ്യക്തികത തിരുത്തല്‍ "
+"പെട്ടികളില്‍ നിങ്ങള്‍ ഒരു മാറ്റവും വരുത്തിയിട്ടില്ല. നിങ്ങള്‍ സൂക്ഷിക്കുക "
+"എന്നതിനു പകരം കടന്നു പോകുക എന്ന ബട്ടണ്‍ ആയിരിക്കാം ഉദ്ദേശിച്ചത്."
 
 #. Translators: the names of months, keep the pipe (|) separators.
 #: lms/static/admin/js/calendar.js lms/static/admin/js/dateparse.js
 msgid ""
 "January|February|March|April|May|June|July|August|September|October|November|December"
 msgstr ""
+"ജനുവരി|ഫെബ്രുവരി|മാർച്ച്|ഏപ്രിൽ|മെയ്‌|ജൂണ്‍|ജൂലായ്|ഓഗസ്റ്റ്|സെപ്റ്റംബർ|ഒക്ടോബർ|നവംബർ|ഡിസംബർ"
 
 #. Translators: abbreviations for days of the week, keep the pipe (|)
 #. separators.
 #: lms/static/admin/js/calendar.js
 msgid "S|M|T|W|T|F|S"
-msgstr ""
+msgstr "ഞാ|തി|ചൊ|ബു|വ്യാ|വെ|ശ"
 
 #: lms/static/admin/js/collapse.js lms/static/admin/js/collapse.js.c
 #: lms/static/admin/js/collapse.min.js
 msgid "Show"
-msgstr ""
+msgstr "കാണിക്കുക"
 
 #: lms/static/admin/js/collapse.js lms/static/admin/js/collapse.min.js
 msgid "Hide"
-msgstr ""
+msgstr "ഒളിപ്പിക്കുക"
 
 #. Translators: the names of days, keep the pipe (|) separators.
 #: lms/static/admin/js/dateparse.js
 msgid "Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday"
-msgstr ""
+msgstr "ഞായർ|തിങ്കൾ|ചൊവ്വ|ബുധൻ|വ്യാഴം|വെള്ളി|ശനീ"
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Now"
-msgstr ""
+msgstr "ഇപ്പോള്‍"
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Clock"
-msgstr ""
+msgstr "ഘടികാരം"
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Choose a time"
-msgstr ""
+msgstr "സമയം തെരെഞ്ഞെടുക്കുക"
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Midnight"
-msgstr ""
+msgstr "പാതിരാത്രി"
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "6 a.m."
-msgstr ""
+msgstr "പുലര്‍ച്ചെ 6 മണി"
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Noon"
-msgstr ""
+msgstr "ഉച്ച"
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Today"
-msgstr ""
+msgstr "ഇന്ന്"
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Calendar"
-msgstr ""
+msgstr "കലണ്ടര്‍"
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Yesterday"
-msgstr ""
+msgstr "ഇന്നലെ"
 
 #: lms/static/admin/js/admin/DateTimeShortcuts.js
 msgid "Tomorrow"
-msgstr ""
+msgstr "നാളെ"
 
 #: lms/static/coffee/src/calculator.js
 msgid "Open Calculator"
-msgstr ""
+msgstr "കണക്കുക്കൂട്ടല്‍ യന്ത്രം തുറക്കുക"
 
 #: lms/static/coffee/src/calculator.js
 msgid "Close Calculator"
-msgstr ""
+msgstr "കണക്കുക്കൂട്ടല്‍ യന്ത്രം അടയ്ക്കുക"
 
 #: lms/static/coffee/src/customwmd.js
 msgid "Post body"
-msgstr ""
+msgstr "പോസ്റ്റ് ബോഡി"
 
 #. Translators: "Distribution" refers to a grade distribution. This error
 #. message appears when there is an error getting the data on grade
 #. distribution.;
 #: lms/static/coffee/src/instructor_dashboard/analytics.js
 msgid "Error fetching distribution."
-msgstr ""
+msgstr "തരംതിരിവ് എടുക്കുന്നതിൽ തകരാർ നേരിട്ടു."
 
 #: lms/static/coffee/src/instructor_dashboard/analytics.js
 #: lms/static/coffee/src/instructor_dashboard/instructor_analytics.js
 msgid "Unavailable metric display."
-msgstr ""
+msgstr "അളവുകോല്‍ പ്രദര്‍ശനം ലഭ്യമല്ല."
 
 #: lms/static/coffee/src/instructor_dashboard/analytics.js
 #: lms/static/coffee/src/instructor_dashboard/instructor_analytics.js
 msgid "Error fetching grade distributions."
-msgstr ""
+msgstr "നിലവാര തരംതിരിവ് എടുക്കുന്നതിൽ തകരാർ നേരിട്ടു."
 
 #: lms/static/coffee/src/instructor_dashboard/analytics.js
 #: lms/static/coffee/src/instructor_dashboard/instructor_analytics.js
 msgid "Last Updated: <%= timestamp %>"
-msgstr ""
+msgstr "അവസാനമായി പുതുക്കിയത്: <%= timestamp %>"
 
 #: lms/static/coffee/src/instructor_dashboard/analytics.js
 #: lms/static/coffee/src/instructor_dashboard/instructor_analytics.js
 msgid "<%= num_students %> students scored."
+msgstr "<%= num_students %> വിദ്യാർഥികൾ വിജയിച്ചു."
+
+#: lms/static/coffee/src/instructor_dashboard/data_download.js
+msgid "Error generating student profile information. Please try again."
 msgstr ""
 
 #: lms/static/coffee/src/instructor_dashboard/data_download.js
 #: cms/templates/js/mock/mock-group-configuration-page.underscore
 msgid "Loading..."
-msgstr ""
+msgstr "ലോഡ് ചെയ്തുകൊണ്ടിരിക്കുന്നു..."
 
 #: lms/static/coffee/src/instructor_dashboard/data_download.js
 msgid "Error getting student list."
-msgstr ""
+msgstr "കുട്ടികളുടെ പട്ടിക ലഭിക്കുന്നതില്‍ പിഴവ് സംഭവിച്ചു."
 
 #: lms/static/coffee/src/instructor_dashboard/data_download.js
 msgid "Error retrieving grading configuration."
-msgstr ""
+msgstr "നിലവാര സജ്ജീകരണം വീണ്ടെടുക്കുന്നതില്‍ പിഴവ് സംഭവിച്ചു."
 
 #: lms/static/coffee/src/instructor_dashboard/data_download.js
 msgid "Error generating grades. Please try again."
 msgstr ""
+"നിലവാരങ്ങള്‍ ഉല്‍പാദിപ്പിക്കുന്നതില്‍ പിഴവ് നേരിട്ടു. ദയവായി വീണ്ടും "
+"ശ്രമിക്കുക."
 
 #: lms/static/coffee/src/instructor_dashboard/data_download.js
 msgid "File Name"
-msgstr ""
+msgstr "ഫയലിന്റെ പേരു്"
 
 #: lms/static/coffee/src/instructor_dashboard/data_download.js
 msgid ""
 "Links are generated on demand and expire within 5 minutes due to the "
 "sensitive nature of student information."
 msgstr ""
+"വിദ്യാര്‍ഥി വിവരങ്ങളുടെ അതിസൂക്ഷ്മ പ്രകൃതം മൂലം ലിങ്കുകള്‍ "
+"ആവഴ്യപ്പെടുന്നതനുസരിച്ച് ഉദ്പാദിപ്പിക്കുകയും അവ 5 നിമിഷങ്ങള്‍ക്കകം തന്നെ "
+"ഉപയോഗശൂന്യമാവുകയും ചെയ്യും."
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Username"
-msgstr ""
+msgstr "ഉപയോക്ത നാമം"
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Email"
-msgstr ""
+msgstr "ഈമെയില്‍"
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Revoke access"
-msgstr ""
+msgstr "പ്രവേശനമാര്‍ഗം മടക്കിവിളിക്കുക"
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Enter username or email"
-msgstr ""
+msgstr "ഉപയോക്ത നാമമോ ഈമെയിലോ പ്രവേശിപ്പിക്കുക"
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
+#: lms/static/js/views/cohort_editor.js
 msgid "Please enter a username or email."
-msgstr ""
+msgstr "ദയവായി ഒരു ഉപയോക്ത നാമമോ ഈമെയിലോ പ്രവേശിപ്പിക്കുക"
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Error changing user's permissions."
-msgstr ""
+msgstr "ഉപയോക്താവിന്റെ അനുമതികള്‍ മാറ്റുന്നതില്‍ തകരാര്‍ നേരിട്ടു."
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid ""
 "Could not find a user with username or email address '<%= identifier %>'."
 msgstr ""
+"'<%= identifier %>' എന്ന് പേരോ അല്ലെങ്കില്‍ ഈമെയിലോ ഉള്ള ഉപയോക്താവിനെ "
+"കണ്ടെത്താനായില്ല."
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid ""
 "Error: User '<%= username %>' has not yet activated their account. Users "
 "must create and activate their accounts before they can be assigned a role."
 msgstr ""
+"പിഴവ്: ഉപയോക്താവ്‌  '<%= username %>' ഇതുവരെ അവരുടെ അക്കൗണ്ട്‌ "
+"പ്രയോഗക്ഷമമാക്കിയിട്ടില്ല. ഉപയോക്താക്കള്‍ക്ക് കടമകള്‍ നിശ്ചയിക്കുന്നതിനു "
+"മുന്‍പ് അവര്‍ അക്കൗണ്ട്‌ ഉണ്ടാക്കുകയും അത് പ്രയോഗക്ഷമമാക്കുകയും വേണം."
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Error: You cannot remove yourself from the Instructor group!"
 msgstr ""
+"പിഴവ്: താങ്കള്‍ക്ക് അദ്ധ്യാപകസംഘത്തില്‍ നിന്നും താങ്കളെത്തന്നെ നീക്കം "
+"ചെയ്യാന്‍ സാധ്യമല്ല!"
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Error adding/removing users as beta testers."
 msgstr ""
+"ഉപയോക്താക്കളെ ബീറ്റാ പരിശോധകരായി ചേര്‍ക്കുന്നതില്‍/നീക്കം ചെയ്യുന്നതില്‍ "
+"തകരാര്‍ നേരിട്ടു."
 
 #. Translators: A list of users appears after this sentence;
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "These users were successfully added as beta testers:"
-msgstr ""
+msgstr "ഈ ഉപയോക്താക്കളെ വിജയകരമായി ബീറ്റാ പരിശോധകരായി ചേര്‍ത്തിരിക്കുന്നു:"
 
 #. Translators: A list of users appears after this sentence;
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "These users were successfully removed as beta testers:"
 msgstr ""
+"ഈ ഉപയോക്താക്കളെ വിജയകരമായി ബീറ്റാ പരിശോധകരില്‍ നിന്നും നീക്കം "
+"ചേര്‍ത്തിരിക്കുന്നു:"
 
 #. Translators: A list of users appears after this sentence;
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "These users were not added as beta testers:"
-msgstr ""
+msgstr "ഈ ഉപയോക്താക്കളെ ബീറ്റാ പരിശോധകരായി ചേര്‍ത്തിട്ടില്ല:"
 
 #. Translators: A list of users appears after this sentence;
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "These users were not removed as beta testers:"
-msgstr ""
+msgstr "ഈ ഉപയോക്താക്കളെ ബീറ്റാ പരിശോധകരില്‍ നിന്നും നീക്കം ചെയ്തിട്ടില്ല:"
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid ""
 "Users must create and activate their account before they can be promoted to "
 "beta tester."
 msgstr ""
+"ഉപയോക്താക്കളെ ബീറ്റാ പരിശോധകരായി ഉയര്‍ത്തും മുന്‍പ് അവര്‍ അക്കൗണ്ട്‌ "
+"ഉണ്ടാക്കുകയും അത് പ്രയോഗക്ഷമമാക്കുകയും വേണം."
 
 #. Translators: A list of identifiers (which are email addresses and/or
 #. usernames) appears after this sentence;
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Could not find users associated with the following identifiers:"
 msgstr ""
+"താഴെകാണുന്ന തിരിച്ചറിയല്‍ രേഖകളുമായി ബന്ധപ്പെട്ട ഉപയോക്താക്കളെ "
+"കണ്ടെത്താനായില്ല:"
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Error enrolling/unenrolling users."
 msgstr ""
+"ഉപയോക്താക്കളെ അംഗമായി ചേര്‍ക്കുന്നതിലും/നീക്കം ചെയ്യുന്നതിലും തകരാര്‍ "
+"സംഭവിച്ചു."
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "The following email addresses and/or usernames are invalid:"
 msgstr ""
+"താഴെ കൊടുത്തിരിക്കുന്ന ഈമെയിലോ അല്ലെങ്കില്‍ ഉപയോക്ത നാമം പ്രാബല്യത്തില്‍ "
+"ഇല്ല:"
 
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Successfully enrolled and sent email to the following users:"
 msgstr ""
+"താഴെകാണുന്ന ഉപയോക്താക്കളെ അംഗങ്ങളായി ചേര്‍ക്കുകയും ഈമെയില്‍ അയക്കുകയും "
+"ചെയ്തു:"
 
 #. Translators: A list of users appears after this sentence;
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "Successfully enrolled the following users:"
-msgstr ""
+msgstr "താഴെകാണുന്ന ഉപയോക്താക്കളെ അംഗങ്ങളായി ചേത്തിരിക്കുന്നു:"
 
 #. Translators: A list of users appears after this sentence;
 #: lms/static/coffee/src/instructor_dashboard/membership.js
@@ -2428,11 +2551,16 @@ msgid ""
 "Successfully sent enrollment emails to the following users. They will be "
 "allowed to enroll once they register:"
 msgstr ""
+"താഴെകാണുന്ന ഉപയോക്താക്കള്‍ക്ക്  അംഗത്വ ഈമെയില്‍ അയച്ചിരിക്കുന്നു. "
+"രജിസ്റ്റര്‍ ചെയ്‌തു കഴിഞ്ഞാല്‍ അംഗത്വം എടുക്കുന്നത്  അവര്‍ക്ക് "
+"അനുവദനീയമാണ്::"
 
 #. Translators: A list of users appears after this sentence;
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "These users will be allowed to enroll once they register:"
 msgstr ""
+"രജിസ്റ്റര്‍ ചെയ്‌തു കഴിഞ്ഞാല്‍ ഈ ഉപയോക്താക്കള്‍ക്ക് അംഗത്വം എടുക്കുന്നത് "
+"അനുവദനീയമാണ്::"
 
 #. Translators: A list of users appears after this sentence;
 #: lms/static/coffee/src/instructor_dashboard/membership.js
@@ -2440,11 +2568,14 @@ msgid ""
 "Successfully sent enrollment emails to the following users. They will be "
 "enrolled once they register:"
 msgstr ""
+"താഴെകാണുന്ന ഉപയോക്താക്കള്‍ക്ക്  അംഗത്വ ഈമെയില്‍ അയച്ചിരിക്കുന്നു. "
+"രജിസ്റ്റര്‍ ചെയ്‌തു കഴിഞ്ഞാല്‍ ഈ ഉപയോക്താക്കള്‍ക്ക് അംഗത്വം നല്കുന്നതാണ്:"
 
 #. Translators: A list of users appears after this sentence;
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "These users will be enrolled once they register:"
 msgstr ""
+"രജിസ്റ്റര്‍ ചെയ്‌തു കഴിഞ്ഞാല്‍ ഈ ഉപയോക്താക്കള്‍ക്ക് അംഗത്വം നല്കുന്നതാണ്:"
 
 #. Translators: A list of users appears after this sentence;
 #: lms/static/coffee/src/instructor_dashboard/membership.js
@@ -2452,11 +2583,13 @@ msgid ""
 "Emails successfully sent. The following users are no longer enrolled in the "
 "course:"
 msgstr ""
+"ഈമെയില്‍ വിജയകരമായി അയച്ചിരിക്കുന്നു. താഴെകാണുന്ന ഉപയോക്താക്കള്‍ ഇനി മുതല്‍"
+" കോഴ്സിലെ അംഗങ്ങള്‍ അല്ല"
 
 #. Translators: A list of users appears after this sentence;
 #: lms/static/coffee/src/instructor_dashboard/membership.js
 msgid "The following users are no longer enrolled in the course:"
-msgstr ""
+msgstr "താഴെകാണുന്ന ഉപയോക്താക്കള്‍ ഇനി മുതല്‍ കോഴ്സിലെ അംഗങ്ങള്‍ അല്ല"
 
 #. Translators: A list of users appears after this sentence. This situation
 #. arises when a staff member tries to unenroll a user who is not currently
@@ -2465,36 +2598,47 @@ msgstr ""
 msgid ""
 "These users were not affiliated with the course so could not be unenrolled:"
 msgstr ""
+"ഈ ഉപയോക്താക്കള്‍ കോഴ്സിലെ അംഗങ്ങള്‍ അല്ല, അതുകൊണ്ട് അവരുടെ അംഗത്വം എടുത്തു "
+"കളയാന്‍ സാധ്യമല്ല:"
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid "Your message must have a subject."
-msgstr ""
+msgstr "താങ്കളുടെ സന്ദേശത്തിന് ഒരു വിഷയം ആവശ്യമാണ്."
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid "Your message cannot be blank."
-msgstr ""
+msgstr "താങ്കളുടെ സന്ദേശം ശൂന്യമാകാന്‍ പാടില്ല."
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid "Your email was successfully queued for sending."
 msgstr ""
+"താങ്കളുടെ ഈമെയില്‍ അയക്കുവാനായുള്ള വരിയില്‍ വിജയകരമായി ചേര്‍ത്തിരിക്കുന്നു."
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid ""
 "You are about to send an email titled '<%= subject %>' to yourself. Is this "
 "OK?"
 msgstr ""
+"താങ്കള്‍  '<%= subject %>' എന്ന തലക്കെട്ടോടു കൂടിയ ഈമെയില്‍ "
+"താങ്കള്‍ക്കുതന്നെ അയക്കുവാന്‍ പോകുകയാണ്. ഇത് ശരിയല്ലേ?"
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid ""
 "You are about to send an email titled '<%= subject %>' to everyone who is "
 "staff or instructor on this course. Is this OK?"
 msgstr ""
+"താങ്കള്‍  '<%= subject %>' എന്ന തലക്കെട്ടോടു കൂടിയ ഈമെയില്‍ ഈ കോഴ്സിലെ എല്ലാ"
+" ജീവനക്കാര്‍ക്കും അല്ലെങ്കില്‍ അദ്ധ്യാപകര്‍ക്കും അയക്കുവാന്‍ പോകുകയാണ്. ഇത് "
+"ശരിയല്ലേ?"
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid ""
 "You are about to send an email titled '<%= subject %>' to ALL (everyone who "
 "is enrolled in this course as student, staff, or instructor). Is this OK?"
 msgstr ""
+"താങ്കള്‍  '<%= subject %>' എന്ന തലക്കെട്ടോടു കൂടിയ ഈമെയില്‍ ഈ കോഴ്സിലെ "
+"എല്ലാവര്‍ക്കും (വിദ്യാര്‍ഥികള്‍, ജീവനക്കാര്‍ അല്ലെങ്കില്‍ അദ്ധ്യാപകര്‍) "
+"അയക്കുവാന്‍ പോകുകയാണ്. ഇത് ശരിയല്ലേ?"
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid ""
@@ -2502,23 +2646,29 @@ msgid ""
 "classes, it may take up to an hour (or more, if other courses are "
 "simultaneously sending email) to send all emails."
 msgstr ""
+"താങ്കളുടെ ഈമെയില്‍ അയക്കുവാനായുള്ള വരിയിലാണ്. വലിയ ക്ലാസ്സുകള്‍ക്ക് ഈമെയില്‍"
+" അയക്കുവാനായി ഒരു മണിക്കൂര്‍ അല്ലെങ്കില്‍ അതിലധികം (ഒരേ സമയത്ത്‌ ഇതര "
+"കോഴ്സുകള്‍ ഈമെയില്‍ അയക്കുവാന്‍ ശ്രമിക്കുന്നുണ്ടെങ്കില്‍)സമയം "
+"എടുക്കാവുന്നതാണ്."
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid "Error sending email."
-msgstr ""
+msgstr " ഈമെയില്‍ അയക്കുന്നതില്‍ തകരാര്‍ സംഭവിച്ചു."
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid "There is no email history for this course."
-msgstr ""
+msgstr "ഈ കോഴ്സിന് ഈമെയില്‍ ചരിത്രം ഇല്ല."
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid "There was an error obtaining email task history for this course."
 msgstr ""
+"ഈ കോഴ്സിന്റെ ഈമെയില്‍ കര്‍ത്തവ്യ ചരിത്രം ലഭിക്കുന്നതില്‍ തകരാര്‍ സംഭവിച്ചു."
 
 #: lms/static/coffee/src/instructor_dashboard/send_email.js
 msgid "There was an error obtaining email content history for this course."
 msgstr ""
+"ഈ കോഴ്സിന്റെ ഈമെയില്‍ ഉള്ളടക്ക ചരിത്രം ലഭിക്കുന്നതില്‍ തകരാര്‍ സംഭവിച്ചു."
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
@@ -2527,12 +2677,17 @@ msgstr ""
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid "Please enter a student email address or username."
 msgstr ""
+"ദയവായി ഒരു വിദ്യാര്‍ഥിയുടെ ഈമെയിലോ അല്ലെങ്കില്‍ ഉപയോക്ത നാമമോ "
+"പ്രവേശിപ്പിക്കുക."
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid ""
 "Error getting student progress url for '<%= student_id %>'. Make sure that "
 "the student identifier is spelled correctly."
 msgstr ""
+"'<%= student_id %>' യുടെ പുരോഗതി യൂആര്‍എല്‍ ലഭിക്കുന്നതില്‍ തകരാര്‍ "
+"സംഭവിച്ചു. ദയവായി വിദ്യാര്‍ഥിയുടെ തിരിച്ചറിയല്‍ രേഖ നല്കിയത് കൃത്യമാണ് എന്ന്"
+" ഉറപ്പുവരുത്തുക."
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
@@ -2542,13 +2697,15 @@ msgstr ""
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid "Please enter a problem location."
-msgstr ""
+msgstr "കോഴ്സിലെ പ്രശ്നമുള്ള സ്ഥലം ചേര്‍ക്കുക."
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid ""
 "Success! Problem attempts reset for problem '<%= problem_id %>' and student "
 "'<%= student_id %>'."
 msgstr ""
+"വിജയം!  '<%= problem_id %>' പ്രശ്നത്തിന് '<%= student_id %>' എന്ന "
+"വിദ്യാര്‍ഥിയുടെ ശ്രമങ്ങളുടെ എണ്ണം പുനഃക്രമീകരിച്ചിരിക്കുന്നു."
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid ""
@@ -2556,11 +2713,17 @@ msgid ""
 " '<%= student_id %>'. Make sure that the problem and student identifiers are"
 " complete and correct."
 msgstr ""
+" '<%= problem_id %>' പ്രശ്നത്തിന് '<%= student_id %>' എന്ന വിദ്യാര്‍ഥിയുടെ "
+"ശ്രമങ്ങളുടെ എണ്ണം പുനഃക്രമീകരിക്കുന്നതില്‍ തകരാര്‍ നേരിട്ടു. "
+"പ്രശ്നത്തിന്റേയും വിദ്യാര്‍ഥിയുടേയും തിരിച്ചറിയല്‍ രേഖകള്‍ പൂര്‍ണ്ണമെന്നും "
+"ശരിയെന്നും ഉറപ്പുവരുത്തുക."
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid ""
 "Delete student '<%= student_id %>'s state on problem '<%= problem_id %>'?"
 msgstr ""
+"'<%= student_id %>' എന്ന വിദ്യാര്‍ഥിയുടെ <%= problem_id %>' പ്രശ്നത്തിന്റെ "
+"അവസ്ഥ നീക്കം ചെയ്യേണ്ടതുണ്ടോ?"
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid ""
@@ -2568,10 +2731,14 @@ msgid ""
 " %>'. Make sure that the problem and student identifiers are complete and "
 "correct."
 msgstr ""
+"'<%= student_id %>' എന്ന വിദ്യാര്‍ഥിയുടെ <%= problem_id %>' പ്രശ്നത്തിന്റെ "
+"അവസ്ഥ നീക്കം ചെയ്യുന്നതില്‍ തകരാര്‍ നേരിട്ടു. പ്രശ്നത്തിന്റേയും "
+"വിദ്യാര്‍ഥിയുടേയും തിരിച്ചറിയല്‍ രേഖകള്‍ പൂര്‍ണ്ണമെന്നും ശരിയെന്നും "
+"ഉറപ്പുവരുത്തുക."
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid "Module state successfully deleted."
-msgstr ""
+msgstr "Module അവസ്ഥ വിജയകരമായി നീക്കം ചെയ്തിരിക്കുന്നു."
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid ""
@@ -2579,6 +2746,10 @@ msgid ""
 "'<%= student_id %>'. Click the 'Show Background Task History for Student' "
 "button to see the status of the task."
 msgstr ""
+"<%= problem_id %>' പ്രശ്നത്തിന്റെയും '<%= student_id %>' വിദ്യാര്‍ഥിയുടെയും"
+"  പുനരെണ്ണല്‍ കൃത്യം ആരംഭിച്ചു. കൃത്യത്തിന്റെ സ്ഥിതി അറിയുവാനായി "
+"'വിദ്യാര്‍ഥിയുടെ പശ്ചാത്തല കര്‍ത്തവ്യ ചരിത്രം കാണിക്കുക' എന്ന ബട്ടണ്‍ "
+"അമര്‍ത്തുക."
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid ""
@@ -2586,6 +2757,10 @@ msgid ""
 "'<%= student_id %>'. Make sure that the the problem and student identifiers "
 "are complete and correct."
 msgstr ""
+"<%= problem_id %>' പ്രശ്നത്തിന്റെയും '<%= student_id %>' വിദ്യാര്‍ഥിയുടെയും"
+"  പുനരെണ്ണല്‍ കൃത്യം ആരംഭിക്കുന്നതില്‍ തകരാര്‍ നേരിട്ടു. പ്രശ്നത്തിന്റേയും "
+"വിദ്യാര്‍ഥിയുടേയും തിരിച്ചറിയല്‍ രേഖകള്‍ പൂര്‍ണ്ണമെന്നും ശരിയെന്നും "
+"ഉറപ്പുവരുത്തുക."
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid ""
@@ -2593,10 +2768,16 @@ msgid ""
 "student_id %>'. Make sure that the problem and student identifiers are "
 "complete and correct."
 msgstr ""
+"<%= problem_id %>' പ്രശ്നത്തിന്റെയും '<%= student_id %>' വിദ്യാര്‍ഥിയുടേയും "
+"കര്‍ത്തവ്യ ചരിത്രം ലഭിക്കുന്നതില്‍ തകരാര്‍ സംഭവിച്ചു. പ്രശ്നത്തിന്റേയും "
+"വിദ്യാര്‍ഥിയുടേയും തിരിച്ചറിയല്‍ രേഖകള്‍ പൂര്‍ണ്ണമെന്നും ശരിയെന്നും "
+"ഉറപ്പുവരുത്തുക."
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid "Reset attempts for all students on problem '<%= problem_id %>'?"
 msgstr ""
+" '<%= problem_id %>' പ്രശ്നത്തിന്  എല്ലാ വിദ്യാര്‍ഥികളുടേയും ശ്രമങ്ങളുടെ "
+"എണ്ണം പുനഃക്രമീകരിച്ചിരിക്കേണ്ടതുണ്ടോ?"
 
 #: lms/static/coffee/src/instructor_dashboard/student_admin.js
 msgid ""
@@ -2637,55 +2818,55 @@ msgstr ""
 #. sending email
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Task Type"
-msgstr ""
+msgstr "കര്‍ത്തവ്യത്തിന്റെ തരം"
 
 #. Translators: a "Task" is a background process such as grading students or
 #. sending email
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Task inputs"
-msgstr ""
+msgstr "കര്‍ത്തവ്യനിവേശങ്ങള്‍"
 
 #. Translators: a "Task" is a background process such as grading students or
 #. sending email
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Task ID"
-msgstr ""
+msgstr "കര്‍ത്തവ്യത്തിന്റെ ഐഡി"
 
 #. Translators: a "Requester" is a username that requested a task such as
 #. sending email
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Requester"
-msgstr ""
+msgstr "അപേക്ഷകന്‍"
 
 #. Translators: A timestamp of when a task (eg, sending email) was submitted
 #. appears after this
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Submitted"
-msgstr ""
+msgstr "സമര്‍പ്പിച്ചിരിക്കുന്നു"
 
 #. Translators: The length of a task (eg, sending email) in seconds appears
 #. this
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Duration (sec)"
-msgstr ""
+msgstr "ദൈര്‍ഘ്യം (സെക്കന്റ്)"
 
 #. Translators: The state (eg, "In progress") of a task (eg, sending email)
 #. appears after this.
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "State"
-msgstr ""
+msgstr "അവസ്ഥ"
 
 #. Translators: a "Task" is a background process such as grading students or
 #. sending email
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Task Status"
-msgstr ""
+msgstr "കര്‍ത്തവ്യത്തിന്റെ സ്ഥിതി"
 
 #. Translators: a "Task" is a background process such as grading students or
 #. sending email
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Task Progress"
-msgstr ""
+msgstr "കര്‍ത്തവ്യത്തിന്റെ പുരോഗതി"
 
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid ""
@@ -2697,39 +2878,39 @@ msgstr ""
 #: lms/static/coffee/src/instructor_dashboard/util.js
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Unknown"
-msgstr ""
+msgstr "അജ്ഞാതം"
 
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Subject"
-msgstr ""
+msgstr "വിഷയം"
 
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Sent By"
-msgstr ""
+msgstr "അയച്ചിരിക്കുന്നത്"
 
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Time Sent"
-msgstr ""
+msgstr "അയച്ച സമയം"
 
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Number Sent"
-msgstr ""
+msgstr "അയച്ച എണ്ണം"
 
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Copy Email To Editor"
-msgstr ""
+msgstr "ഈമെയില്‍ തിരുത്തൽ സഹായിയിലേക്ക്  പകര്‍ത്തുക"
 
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Subject:"
-msgstr ""
+msgstr "വിഷയം"
 
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Sent By:"
-msgstr ""
+msgstr "അയച്ചിരിക്കുന്നത്:"
 
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Time Sent:"
-msgstr ""
+msgstr "അയച്ച സമയം:"
 
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Sent To:"
@@ -2737,11 +2918,11 @@ msgstr ""
 
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "Message:"
-msgstr ""
+msgstr "സന്ദേശം:"
 
 #: lms/static/coffee/src/instructor_dashboard/util.js
 msgid "No tasks currently running."
-msgstr ""
+msgstr "കര്‍വ്യങ്ങള്‍ ഒന്നും തന്നെ ഇപ്പോള്‍ പ്രവര്‍ത്തിക്കുന്നില്ല."
 
 #: lms/static/coffee/src/staff_grading/staff_grading.js
 msgid "Grades saved.  Fetching the next submission to grade."
@@ -2761,23 +2942,23 @@ msgstr ""
 
 #: lms/static/coffee/src/staff_grading/staff_grading.js
 msgid "Required"
-msgstr ""
+msgstr "ആവശ്യമായത്"
 
 #: lms/static/coffee/src/staff_grading/staff_grading.js
 msgid "Progress"
-msgstr ""
+msgstr "പുരോഗതി"
 
 #: lms/static/coffee/src/staff_grading/staff_grading.js
 msgid "Back to problem list"
-msgstr ""
+msgstr "പ്രശ്നങ്ങളുടെ പട്ടികയിലേക്ക് മടങ്ങി"
 
 #: lms/static/coffee/src/staff_grading/staff_grading.js
 msgid "Try loading again"
-msgstr ""
+msgstr "വീണ്ടും ലോഡ് ചെയ്യാന്‍ "
 
 #: lms/static/coffee/src/staff_grading/staff_grading.js
 msgid "<%= num %> available "
-msgstr ""
+msgstr "<%= num %> ലഭ്യമാണ്"
 
 #: lms/static/coffee/src/staff_grading/staff_grading.js
 msgid "<%= num %> graded "
@@ -2785,7 +2966,7 @@ msgstr ""
 
 #: lms/static/coffee/src/staff_grading/staff_grading.js
 msgid "<%= num %> more needed to start ML"
-msgstr ""
+msgstr "ML തുടങ്ങാനായി <%= num %> കൂടി ആവശ്യമാണ്"
 
 #: lms/static/coffee/src/staff_grading/staff_grading.js
 msgid "Re-check for submissions"
@@ -2937,6 +3118,107 @@ msgstr ""
 msgid "Failed to rescore problem."
 msgstr ""
 
+#: lms/static/js/dashboard/donation.js
+msgid "Please enter a valid donation amount."
+msgstr ""
+
+#: lms/static/js/dashboard/donation.js
+msgid "Your donation could not be submitted."
+msgstr ""
+
+#: lms/static/js/student_account/account.js
+#: lms/static/js/student_profile/profile.js
+msgid "The data could not be saved."
+msgstr ""
+
+#: lms/static/js/student_account/account.js
+msgid "Please enter a valid email address"
+msgstr ""
+
+#: lms/static/js/student_account/account.js
+msgid "Please enter a valid password"
+msgstr ""
+
+#: lms/static/js/student_account/account.js
+msgid "Please check your email to confirm the change"
+msgstr ""
+
+#: lms/static/js/student_profile/profile.js
+msgid "Full name cannot be blank"
+msgstr ""
+
+#: lms/static/js/student_profile/profile.js
+msgid "Language cannot be blank"
+msgstr ""
+
+#: lms/static/js/student_profile/profile.js
+msgid "We couldn't populate the list of language choices."
+msgstr ""
+
+#: lms/static/js/student_profile/profile.js
+msgid "Saved"
+msgstr ""
+
+#: lms/static/js/views/cohort_editor.js
+msgid "Error adding students."
+msgstr ""
+
+#: lms/static/js/views/cohort_editor.js
+msgid "{numUsersAdded} student has been added to this cohort group"
+msgid_plural "{numUsersAdded} students have been added to this cohort group"
+msgstr[0] ""
+msgstr[1] ""
+
+#: lms/static/js/views/cohort_editor.js
+msgid "{numMoved} student was removed from {oldCohort}"
+msgid_plural "{numMoved} students were removed from {oldCohort}"
+msgstr[0] ""
+msgstr[1] ""
+
+#: lms/static/js/views/cohort_editor.js
+msgid "{numPresent} student was already in the cohort group"
+msgid_plural "{numPresent} students were already in the cohort group"
+msgstr[0] ""
+msgstr[1] ""
+
+#: lms/static/js/views/cohort_editor.js
+msgid "Unknown user: {user}"
+msgstr ""
+
+#: lms/static/js/views/cohort_editor.js
+msgid "There was an error when trying to add students:"
+msgid_plural "There were {numErrors} errors when trying to add students:"
+msgstr[0] ""
+msgstr[1] ""
+
+#: lms/static/js/views/cohort_editor.js
+msgid "View all errors"
+msgstr ""
+
+#: lms/static/js/views/cohorts.js
+msgid "You currently have no cohort groups configured"
+msgstr ""
+
+#: lms/static/js/views/cohorts.js
+#: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
+msgid "Add Cohort Group"
+msgstr ""
+
+#: lms/static/js/views/cohorts.js
+msgid ""
+"The {cohortGroupName} cohort group has been created. You can manually add "
+"students to this group below."
+msgstr ""
+
+#: lms/static/js/views/cohorts.js
+msgid ""
+"We've encountered an error. Please refresh your browser and then try again."
+msgstr ""
+
+#: lms/static/js/views/cohorts.js
+msgid "Please enter a name for your new cohort group."
+msgstr ""
+
 #: lms/templates/class_dashboard/all_section_metrics.js
 #: lms/templates/class_dashboard/all_section_metrics.js
 msgid "Unable to retrieve data, please try again later."
@@ -2969,10 +3251,14 @@ msgid ""
 "This may be happening because of an error with our server or your internet "
 "connection. Try refreshing the page or making sure you are online."
 msgstr ""
+"ഇത് സംഭവിക്കുന്നത് ഞങ്ങളുടെ സെര്‍വരിന്റെയോ അല്ലെങ്കില്‍ താങ്കളുടെ "
+"ഇന്റർനെറ്റ്‌ ബന്ധത്തിന്റെയോ തകരാറുമൂലം ആകാം. ഈ പേജ് ഒന്ന് പുതുക്കി നോക്കുക "
+"അല്ലെങ്കിൽ താങ്കൾ ഇന്റര്‍നെറ്റുമായി ബന്ധം "
+"പുലര്‍ത്തിക്കൊണ്ടിരിക്കുന്നുണ്ടെന്ന് ഉറപ്പുവരുത്തുക."
 
 #: cms/static/coffee/src/main.js
 msgid "Studio's having trouble saving your work"
-msgstr ""
+msgstr "താങ്കളുടെ പ്രവൃത്തി സൂക്ഷിക്കുന്നതിൽ തടസ്സം നേരിട്ടിരിക്കുന്നു"
 
 #: cms/static/coffee/src/views/tabs.js cms/static/coffee/src/views/tabs.js
 #: cms/static/coffee/src/xblock/cms.runtime.v1.js
@@ -2984,22 +3270,23 @@ msgstr ""
 #: cms/static/js/views/utils/xblock_utils.js
 #: cms/static/js/views/utils/xblock_utils.js
 msgid "Saving&hellip;"
-msgstr ""
+msgstr "സൂക്ഷിക്കുന്നു"
 
 #: cms/static/coffee/src/views/tabs.js
 msgid "Delete Page Confirmation"
-msgstr ""
+msgstr "പേജ് നീക്കം ചെയ്യൽ സ്ഥിരീകരണം"
 
 #: cms/static/coffee/src/views/tabs.js
 msgid ""
 "Are you sure you want to delete this page? This action cannot be undone."
 msgstr ""
+"ഈ പുതുക്കല്‍ നീക്കം ചെയ്യണോ? ഈ പ്രവൃത്തി പൂർവസ്ഥിതിയിലാക്കുക അസാധ്യമാണ്."
 
 #: cms/static/coffee/src/views/tabs.js
 #: cms/static/js/views/course_info_update.js
 #: cms/static/js/views/utils/xblock_utils.js
 msgid "Deleting&hellip;"
-msgstr ""
+msgstr "നീക്കം ചെയ്യുന്നു"
 
 #: cms/static/coffee/src/xblock/cms.runtime.v1.js
 msgid "OpenAssessment Save Error"
@@ -3007,15 +3294,15 @@ msgstr ""
 
 #: cms/static/js/base.js
 msgid "This link will open in a modal window"
-msgstr ""
+msgstr "ഈ ലിങ്ക് ഒരു മോഡല്‍ വിന്റോയില്‍ തുറക്കും"
 
 #: cms/static/js/sock.js
 msgid "Hide Studio Help"
-msgstr ""
+msgstr "സ്റ്റുഡിയോ സഹായം മറച്ചുവയ്ക്കുക"
 
 #: cms/static/js/sock.js
 msgid "Looking for Help with Studio?"
-msgstr ""
+msgstr "സ്റ്റുഡിയോയുമായി ബന്ധപ്പെട്ട സഹായം ആവശ്യമാണോ?"
 
 #: cms/static/js/collections/group.js
 msgid "Group %s"
@@ -3030,19 +3317,19 @@ msgstr ""
 
 #: cms/static/js/models/course.js cms/static/js/models/section.js
 msgid "You must specify a name"
-msgstr ""
+msgstr "ഒരു പേര് നിര്‍ബന്ധമായും നല്‍കണം"
 
 #: cms/static/js/models/group.js
 msgid "Group name is required"
-msgstr ""
+msgstr "സംഘത്തിന്റ പേര്  ആവശ്യമാണ്‌ "
 
 #: cms/static/js/models/group_configuration.js
 msgid "Group A"
-msgstr ""
+msgstr "സംഘം A"
 
 #: cms/static/js/models/group_configuration.js
 msgid "Group B"
-msgstr ""
+msgstr "സംഘം B"
 
 #: cms/static/js/models/group_configuration.js
 msgid "Group Configuration name is required."
@@ -3061,42 +3348,44 @@ msgid ""
 "Only <%= fileTypes %> files can be uploaded. Please select a file ending in "
 "<%= fileExtensions %> to upload."
 msgstr ""
+"<%= fileTypes %> ഫയലുകള്‍ മാത്രമേ അപ്‍ലോഡ് ചെയ്യാന്‍ പറ്റൂ.  <%= "
+"fileExtensions %> ല്‍ അവസാനിക്കുന്ന ഒരു ഫയല്‍ തെരെഞ്ഞെടുക്കുക."
 
 #: cms/static/js/models/uploads.js
 msgid "or"
-msgstr ""
+msgstr "അല്ലെങ്കില്‍"
 
 #: cms/static/js/models/settings/course_details.js
 msgid "The course must have an assigned start date."
-msgstr ""
+msgstr "ഈ കോഴ്സിനു ഒരു തുടക്ക ദിനം ഉണ്ടായിരിക്കണം"
 
 #: cms/static/js/models/settings/course_details.js
 msgid "The course end date cannot be before the course start date."
-msgstr ""
+msgstr "കോഴ്സിന്റെ ഒടുക്ക ദിനം തുടക്ക ദിനത്തിനു മുമ്പാകരുത്"
 
 #: cms/static/js/models/settings/course_details.js
 msgid "The course start date cannot be before the enrollment start date."
-msgstr ""
+msgstr "കോഴ്സിന്റെ തുടക്ക ദിനം പേരു ചേര്‍ക്കല്‍ ദിനത്തിന്റെ മുമ്പാകരുത്"
 
 #: cms/static/js/models/settings/course_details.js
 msgid "The enrollment start date cannot be after the enrollment end date."
-msgstr ""
+msgstr "പേരചേര്‍ക്കല്‍ തുടക്കം പേരുചേര്‍ക്കല്‍ ഒടുക്കത്തിനു ശേഷമാകരുത്"
 
 #: cms/static/js/models/settings/course_details.js
 msgid "The enrollment end date cannot be after the course end date."
-msgstr ""
+msgstr "പേരു ചേര്‍ക്കല്‍ ഒടുക്ക ദിനം കോഴ്സിന്റെ ഒടുക്ക ദിനത്തിനു ശേഷമാകരുത്"
 
 #: cms/static/js/models/settings/course_details.js
 msgid "Key should only contain letters, numbers, _, or -"
-msgstr ""
+msgstr "കീ അക്ഷരങ്ങളും _ ഉം അക്കങ്ങളും -ഉം മാത്രമേ ഉള്‍കൊള്ളാവു"
 
 #: cms/static/js/models/settings/course_grader.js
 msgid "There's already another assignment type with this name."
-msgstr ""
+msgstr "ഈ പേരോട് കൂടിയ മറ്റൊരു അസൈന്‍മെന്റ് ടൈപ്പ് നിലവിലുണ്ട്"
 
 #: cms/static/js/models/settings/course_grader.js
 msgid "Please enter an integer between 0 and 100."
-msgstr ""
+msgstr "പൂജ്യത്തിനും നൂറിനുമിടയിലെ ഒരു പൂര്‍ണ സംഖ്യ നല്‍കൂ"
 
 #: cms/static/js/models/settings/course_grader.js
 msgid "Please enter an integer greater than 0."
@@ -3108,15 +3397,15 @@ msgstr ""
 
 #: cms/static/js/models/settings/course_grader.js
 msgid "Cannot drop more <% attrs.types %> than will assigned."
-msgstr ""
+msgstr "അസൈന്‍ ചെയ്തതിനെക്കാള്‍ <% attrs.types %> ഒഴിവാക്കാന്‍ പറ്റില്ല"
 
 #: cms/static/js/models/settings/course_grading_policy.js
 msgid "Grace period must be specified in HH:MM format."
-msgstr ""
+msgstr "അതിക കാലാവധി മണിക്കൂര്‍:നിമിഷം ഫോര്‍മാറ്റിലായിരിക്കണം."
 
 #: cms/static/js/views/asset.js
 msgid "Delete File Confirmation"
-msgstr ""
+msgstr "ഫയല്‍ നീക്കം ചെയ്യുന്നത് ഉറപ്പിക്കല്‍"
 
 #: cms/static/js/views/asset.js
 msgid ""
@@ -3124,10 +3413,12 @@ msgid ""
 "\n"
 "Also any content that links/refers to this item will no longer work (e.g. broken images and/or links)"
 msgstr ""
+"ഈ ഫയല്‍ നീക്കം ചെയ്യണമെന്ന് നിങ്ങള്‍ക്ക് ഉറപ്പാണോ? പിന്നീട് ഒരു തിരിച്ചു പോക്ക് സാധ്യമല്ല്\n"
+"ഇതിനെ പരാമര്‍ശിക്കുന്ന മറ്റു ഉള്ളടക്കങ്ങള്‍ ഇതിനു ശേഷം പ്രവര്‍ത്തിക്കില്ല.(ഉദാ: വിച്ഛേദിക്കപ്പെട്ട ചിത്രങ്ങള്‍, ലിങ്കുകള്‍)"
 
 #: cms/static/js/views/asset.js
 msgid "Your file has been deleted."
-msgstr ""
+msgstr "നിങ്ങളുടെ ഫയല്‍ നീക്കം ചെയ്തിരിക്കുന്നു"
 
 #: cms/static/js/views/assets.js cms/templates/js/asset-library.underscore
 msgid "Date Added"
@@ -3135,29 +3426,29 @@ msgstr ""
 
 #: cms/static/js/views/assets.js
 msgid "Uploading…"
-msgstr ""
+msgstr "അപ്‌ലോഡ്‌  ചെയ്തുകൊണ്ടിരിക്കുന്നു..."
 
 #: cms/static/js/views/assets.js
 #: cms/templates/js/asset-upload-modal.underscore
 msgid "Choose File"
-msgstr ""
+msgstr "ഫയൽ തിരഞ്ഞെടുക്കുക"
 
 #: cms/static/js/views/assets.js
 #: cms/templates/js/asset-upload-modal.underscore
 msgid "Upload New File"
-msgstr ""
+msgstr "പുതിയ ഫയൽ അപ്‌ലോഡ്‌ ചെയ്യുക "
 
 #: cms/static/js/views/assets.js
 msgid "Load Another File"
-msgstr ""
+msgstr "പുതിയ ഫയൽ ലോഡ്‌  ചെയ്യുക "
 
 #: cms/static/js/views/course_info_update.js
 msgid "Are you sure you want to delete this update?"
-msgstr ""
+msgstr "ഈ പുതുക്കല്‍ നീക്കം ചെയ്യണോ?"
 
 #: cms/static/js/views/course_info_update.js
 msgid "This action cannot be undone."
-msgstr ""
+msgstr "ഈ പ്രവൃത്തി വീണ്ടെടുക്കാന്‍ കഴിയില്ല."
 
 #: cms/static/js/views/course_rerun.js
 msgid "Create Re-run"
@@ -3169,17 +3460,17 @@ msgstr ""
 
 #: cms/static/js/views/edit_chapter.js
 msgid "Upload a new PDF to “<%= name %>”"
-msgstr ""
+msgstr " “<%= name %>” ലേക്ക് ഒരു പുതിയ പി.ഡി.എഫ് അപ്ലോഡ് ചെയ്യുക"
 
 #: cms/static/js/views/edit_chapter.js
 msgid "Please select a PDF file to upload."
-msgstr ""
+msgstr "അപ്‌ലോഡ്‌ ചെയ്യുന്നതിനായി ഒരു PDF ഫയൽ തിരഞ്ഞെടുക്കുക"
 
 #: cms/static/js/views/edit_textbook.js
 #: cms/static/js/views/group_configuration_edit.js
 #: cms/static/js/views/overview_assignment_grader.js
 msgid "Saving"
-msgstr ""
+msgstr "സൂക്ഷിക്കുന്നു"
 
 #. Translators: 'count' is number of groups that the group
 #. configuration contains.
@@ -3191,7 +3482,7 @@ msgstr[1] ""
 
 #: cms/static/js/views/group_configuration_details.js
 msgid "Not in Use"
-msgstr ""
+msgstr "ഉപയോഗത്തിലില്ല"
 
 #. Translators: 'count' is number of units that the group
 #. configuration is used in.
@@ -3215,16 +3506,17 @@ msgstr ""
 
 #: cms/static/js/views/group_configuration_item.js
 msgid "Delete this Group Configuration?"
-msgstr ""
+msgstr "സംഖസജ്ജീകരണം എടുത്തുകളയേണോ?"
 
 #: cms/static/js/views/group_configuration_item.js
 msgid "Deleting this Group Configuration is permanent and cannot be undone."
 msgstr ""
+"സംഖസജ്ജീകരണം എടുത്തുകളയൽ ശാശ്വതവും പൂർവസ്ഥിതിയിലേക്കാക്കാൻ കഴിയാത്തതും ആണ്."
 
 #: cms/static/js/views/group_configuration_item.js
 #: cms/static/js/views/show_textbook.js
 msgid "Deleting"
-msgstr ""
+msgstr "നീക്കം ചെയ്തു കൊണ്ടിരിക്കുന്നു"
 
 #: cms/static/js/views/import.js cms/static/js/views/import.js.c
 msgid "Choose new file"
@@ -3236,37 +3528,39 @@ msgstr ""
 
 #: cms/static/js/views/import.js
 msgid "There was an error with the upload"
-msgstr ""
+msgstr "അപ്‍ലോഡ് ചെയ്യുന്നതില്‍ ഒരു പ്രശ്നം"
 
 #: cms/static/js/views/import.js
 msgid ""
 "File format not supported. Please upload a file with a <code>tar.gz</code> "
 "extension."
 msgstr ""
+"ഫയല്‍ ഫോര്‍മാറ്റ് പിന്തുണക്കുന്നതല്ല. ദയവായി <code>.tar.gz</code> "
+"എക്സ്റ്റെന്‍ഷനോട് കൂടിയ ഒരു ഫയല്‍ അപ്ലോഡ് ചെയ്യുക"
 
 #: cms/static/js/views/metadata.js
 msgid "Upload File"
-msgstr ""
+msgstr "ഫയൽ അപ്‌ലോഡ്‌ ചെയ്യുക"
 
 #: cms/static/js/views/overview.js
 msgid "Collapse All Sections"
-msgstr ""
+msgstr "എല്ലാ മേഖലകളും ഒരുമിപ്പിക്കുക"
 
 #: cms/static/js/views/overview.js
 msgid "Expand All Sections"
-msgstr ""
+msgstr "എല്ലാ മേഖലകളും വികസിപ്പിക്കുക"
 
 #: cms/static/js/views/overview.js
 msgid "Release date:"
-msgstr ""
+msgstr "പ്രസിദ്ധപ്പെടുത്തിയ തിയതി."
 
 #: cms/static/js/views/overview.js
 msgid "{month}/{day}/{year} at {hour}:{minute} UTC"
-msgstr ""
+msgstr "{മാസം}/{ദിനം}/{വര്‍ഷം} സമയം {മണി}:{നിമിഷം} യു.ടി.സി"
 
 #: cms/static/js/views/overview.js
 msgid "Edit section release date"
-msgstr ""
+msgstr "വിഭാഗം തിരുത്തുക പ്രസിദ്ധപ്പെടുത്തിയ തിയതി "
 
 #: cms/static/js/views/overview_assignment_grader.js
 #: cms/templates/js/course-outline.underscore
@@ -3281,6 +3575,8 @@ msgid ""
 "Showing %(current_item_range)s out of %(total_items_count)s, sorted by "
 "%(sort_name)s ascending"
 msgstr ""
+"%(total_items_count)s ൽ %(current_item_range)s %(sort_name)s ആരോഹണക്രമത്തിൽ "
+"കാണിച്ചിരിക്കുന്നു "
 
 #. Translators: sample result: "Showing 0-9 out of 25 total, sorted by Date
 #. Added descending"
@@ -3289,78 +3585,77 @@ msgid ""
 "Showing %(current_item_range)s out of %(total_items_count)s, sorted by "
 "%(sort_name)s descending"
 msgstr ""
+"%(total_items_count)s ൽ %(current_item_range)s %(sort_name)s അവരോഹണക്രമത്തിൽ"
+" കാണിച്ചിരിക്കുന്നു"
 
 #. Translators: turns into "25 total" to be used in other sentences, e.g.
 #. "Showing 0-9 out of 25 total".
 #: cms/static/js/views/paging_header.js
 msgid "%(total_items)s total"
-msgstr ""
-
-#: cms/static/js/views/section_edit.js
-msgid "Your change could not be saved"
-msgstr ""
-
-#: cms/static/js/views/section_edit.js
-msgid "Return and resolve this issue"
-msgstr ""
+msgstr "%(total_items)s മുഴുവന്‍"
 
 #: cms/static/js/views/show_textbook.js
 msgid "Delete “<%= name %>”?"
-msgstr ""
+msgstr "“<%= name %>” നീക്കം ചെയ്യണോ?"
 
 #: cms/static/js/views/show_textbook.js
 msgid ""
 "Deleting a textbook cannot be undone and once deleted any reference to it in"
 " your courseware's navigation will also be removed."
 msgstr ""
+"ഒരു ടെക്സ്റ്റ് ബുക്ക് ഡിലീറ്റ് ചെയ്യുന്നത് പുനസ്ഥാപിക്കാന്‍ കഴിയില്ല, അതു "
+"പോലെ നിങ്ങളുടെ കോഴ്സ്‍വെയറിലെ ബന്ധപ്പെട്ട പരാമര്‍ശങ്ങളും നീക്കം ചെയ്യപ്പെടും"
 
 #: cms/static/js/views/uploads.js
 #: cms/templates/js/metadata-file-uploader-item.underscore
 #: cms/templates/js/video/metadata-translations-item.underscore
 msgid "Upload"
-msgstr ""
+msgstr "അപ്‌ലോഡ്‌ ചെയ്യുക"
 
 #: cms/static/js/views/uploads.js
 msgid "We're sorry, there was an error"
-msgstr ""
+msgstr "ക്ഷമിക്കണം, ഒരു പ്രശ്നമുണ്ടായി"
 
 #: cms/static/js/views/validation.js
 msgid "You've made some changes"
-msgstr ""
+msgstr "നിങ്ങള്‍ ചില മാറ്റങ്ങള്‍ വരുത്തിയിരിക്കുന്നു"
 
 #: cms/static/js/views/validation.js
 msgid "Your changes will not take effect until you save your progress."
 msgstr ""
+"നിങ്ങള്‍ മാറ്റങ്ങള്‍ സൂക്ഷിക്കുന്നത് വരെ പ്രാബല്യത്തില്‍ വരുന്നതായിരിക്കില്ല"
 
 #: cms/static/js/views/validation.js
 msgid "You've made some changes, but there are some errors"
 msgstr ""
+"നിങ്ങള്‍ ചില മാറ്റങ്ങള്‍ വരുത്തിയിരിക്കുന്നു, പക്ഷേ അതില്‍ ചില "
+"പ്രശ്നങ്ങളുണ്ട്."
 
 #: cms/static/js/views/validation.js
 msgid ""
 "Please address the errors on this page first, and then save your progress."
-msgstr ""
+msgstr "ആദ്യം ഈ താളിലെ പ്രശ്നങ്ങളെ അഭിമുഖീകരിക്കു, പിന്നെ സൂക്ഷിക്കൂ"
 
 #: cms/static/js/views/validation.js
 msgid "Save Changes"
-msgstr ""
+msgstr "മാറ്റങ്ങള്‍ സംരക്ഷിക്കുക"
 
 #: cms/static/js/views/validation.js
 msgid "Your changes have been saved."
-msgstr ""
+msgstr "നിങ്ങളുടെ മാറ്റങ്ങള്‍ സൂക്ഷിച്ചിരിക്കുന്നു."
 
 #: cms/static/js/views/xblock_editor.js
 msgid "Editor"
-msgstr ""
+msgstr "തിരുത്തൽ സഹായി "
 
 #: cms/static/js/views/xblock_editor.js
 #: cms/templates/js/mock/mock-group-configuration-page.underscore
 msgid "Settings"
-msgstr ""
+msgstr "ക്രമീകരണങ്ങൾ "
 
 #: cms/static/js/views/xblock_outline.js
 msgid "New %(component_type)s"
-msgstr ""
+msgstr "പുതിയ %(component_type)s"
 
 #: cms/static/js/views/components/add_xblock.js
 #: cms/static/js/views/utils/xblock_utils.js
@@ -3388,15 +3683,15 @@ msgstr ""
 #: cms/templates/js/course-outline.underscore
 #: cms/templates/js/publish-xblock.underscore
 msgid "Publish"
-msgstr ""
+msgstr "പ്രസിദ്ധീകരിക്കുക"
 
 #: cms/static/js/views/modals/edit_xblock.js
 msgid "Component"
-msgstr ""
+msgstr "ഘടകഭാഗം"
 
 #: cms/static/js/views/modals/edit_xblock.js
 msgid "Editing: %(title)s"
-msgstr ""
+msgstr "തിരുത്തുക: %(title)s"
 
 #: cms/static/js/views/modals/validation_error_modal.js
 msgid "Validation Error While Saving"
@@ -3422,13 +3717,15 @@ msgstr ""
 #: cms/static/js/views/pages/container_subviews.js
 #: cms/templates/js/publish-xblock.underscore
 msgid "Discard Changes"
-msgstr ""
+msgstr "മാറ്റങ്ങൾ നിരാകരിക്കുക"
 
 #: cms/static/js/views/pages/container_subviews.js
 msgid ""
 "Are you sure you want to revert to the last published version of the unit? "
 "You cannot undo this action."
 msgstr ""
+"ഈ യൂണിറ്റിന്റെ ഒടുവിൽ പ്രസിദ്ധീകരിച്ച ഭാഷ്യത്തിലേക്ക് മദങ്ങിചെല്ലേണമോ? ഈ "
+"പ്രവര്ത്തി പൂർവസ്ഥിതിയിലാക്കുക അസാധ്യമാണ്. "
 
 #: cms/static/js/views/pages/container_subviews.js
 msgid "Discarding Changes&hellip;"
@@ -3449,7 +3746,7 @@ msgstr ""
 #: cms/static/js/views/pages/container_subviews.js
 #: cms/static/js/views/pages/container_subviews.js
 msgid "Make Visible to Students"
-msgstr ""
+msgstr "വിദ്യാര്‍ത്ഥികൾക്ക് ദൃശ്യമാക്കുക "
 
 #: cms/static/js/views/pages/container_subviews.js
 msgid ""
@@ -3457,6 +3754,9 @@ msgid ""
 "you made to the unit when it was hidden will now be visible to students. Do "
 "you want to proceed?"
 msgstr ""
+"ഇതിനുമുൻപു യൂണിറ്റ് വിദ്യാര്‍ത്ഥികൾക്കായി പ്രസിദ്ധപ്പെദുതിയതാണെങ്കിൽ, "
+"യൂണിറ്റ്  രഹസ്യമായ സമയത്തുചെയ്ത മാറ്റങ്ങൾ ഇപ്പോൾ വിദ്യാര്‍ത്ഥികൾക്ക് "
+"ദൃശ്യമാകും. തുടരേണ്ടതുണ്ടോ?"
 
 #: cms/static/js/views/pages/container_subviews.js
 msgid "Making Visible to Students&hellip;"
@@ -3465,16 +3765,20 @@ msgstr ""
 #: cms/static/js/views/pages/group_configurations.js
 msgid "You have unsaved changes. Do you really want to leave this page?"
 msgstr ""
+"സൂക്ഷിക്കാത്ത മാറ്റങ്ങൾ ഉണ്ട്. ഈ പേജ് വിട്ട് താങ്കൾക്ക് നിശ്ചയമായും "
+"പോകേണ്ടതുണ്ടോ?"
 
 #: cms/static/js/views/settings/advanced.js
 msgid ""
 "Your changes will not take effect until you save your progress. Take care "
 "with key and value formatting, as validation is not implemented."
 msgstr ""
+"നിങ്ങള്‍ മാറ്റങ്ങള്‍ സൂക്ഷിക്കുന്നത് വരെ പ്രാബല്യത്തില്‍ "
+"വരുന്നതായിരിക്കില്ല. കീയും വാല്യുവും ശരിയായ രീതിയില്‍ നല്‍കാന്‍ ശ്രദ്ധിക്കൂ,"
 
 #: cms/static/js/views/settings/advanced.js
 msgid "Your policy changes have been saved."
-msgstr ""
+msgstr "നിങ്ങളുടെ നയങ്ങള്‍ സൂക്ഷിച്ചിരിക്കുന്നു"
 
 #: cms/static/js/views/settings/advanced.js
 msgid ""
@@ -3482,70 +3786,83 @@ msgid ""
 "currently in place yet. If you are having difficulties, please review your "
 "policy pairs."
 msgstr ""
+"നിലപാട് താഴിന്റെയും മൂല്യത്തിന്റെയും സൂക്ഷ്മ പരിശോധന ഇതു വരെ "
+"തയ്യാറായിട്ടില്ല. എന്തെങ്കിലും ബുദ്ധിമുട്ട് വരുന്നുവെങ്കില്‍ നിലപാട് "
+"ജോഡികള്‍ പുനപരിശോധിക്കുക"
+
+#: cms/static/js/views/settings/main.js
+msgid "%(hours)s:%(minutes)s (current UTC time)"
+msgstr ""
 
 #: cms/static/js/views/settings/main.js
 msgid "Upload your course image."
-msgstr ""
+msgstr "കോഴ്സ് ചിത്രം അപ്‍ലോഡ് ചെയ്യുക."
 
 #: cms/static/js/views/settings/main.js
 msgid "Files must be in JPEG or PNG format."
-msgstr ""
+msgstr "ഫയലുകള്‍ ജെ.പി.ഇ.ജി അല്ലെങ്കില്‍ പി.എന്‍.ജി ഫോര്‍മാറ്റിലായിരിക്കണം."
 
 #: cms/static/js/views/utils/create_course_utils.js
 msgid "Required field."
-msgstr ""
+msgstr "ആവശ്യമായ പെട്ടി."
 
 #: cms/static/js/views/utils/create_course_utils.js
 msgid "Please do not use any spaces in this field."
-msgstr ""
+msgstr "ഈ പെട്ടിയില്‍ വിടവുകൾ  ഉപയോഗിക്കരുത്."
 
 #: cms/static/js/views/utils/create_course_utils.js
 msgid "Please do not use any spaces or special characters in this field."
-msgstr ""
+msgstr "ഈ പെട്ടിയില്‍ വിടവുകളോ പ്രത്യേക അക്ഷരങ്ങളോ ഉപയോഗിക്കരുത്."
 
 #: cms/static/js/views/utils/create_course_utils.js
 msgid ""
 "The combined length of the organization, course number, and course run "
 "fields cannot be more than 65 characters."
 msgstr ""
+"പ്രസ്ഥാനം, കോഴ്സ് സംഖ്യ, മറ്റു വിവരങ്ങള്‍ എന്നിവയുടെ ആകെ നീളം 65 "
+"അക്ഷരങ്ങളില്‍ കൂടരുത്."
 
 #: cms/static/js/views/utils/xblock_utils.js
 msgid "component"
-msgstr ""
+msgstr "ഘടകഭാഗം"
 
 #: cms/static/js/views/utils/xblock_utils.js
 msgid "Delete this %(xblock_type)s?"
-msgstr ""
+msgstr "ഈ %(xblock_type)s? നീക്കം ചെയ്യുക"
 
 #: cms/static/js/views/utils/xblock_utils.js
 msgid "Deleting this %(xblock_type)s is permanent and cannot be undone."
 msgstr ""
+"%(xblock_type)s എടുത്തുകളയൽ ശാശ്വതവും പൂർവസ്ഥിതിയിലേക്കാക്കാൻ കഴിയാത്തതും "
+"ആണ്."
 
 #: cms/static/js/views/utils/xblock_utils.js
 msgid "Yes, delete this %(xblock_type)s"
-msgstr ""
+msgstr "അതേ, ഈ %(xblock_type)s എടുത്തു കളയുക"
 
 #: cms/static/js/views/utils/xblock_utils.js
 msgid "section"
-msgstr ""
+msgstr "വിഭാഗം"
 
 #: cms/static/js/views/utils/xblock_utils.js
 msgid "subsection"
-msgstr ""
+msgstr "ഉപവിഭാഗം"
 
 #: cms/static/js/views/utils/xblock_utils.js
 msgid "unit"
-msgstr ""
+msgstr "യൂണിറ്റ് "
 
 #: cms/static/js/views/video/translations_editor.js
 msgid ""
 "Sorry, there was an error parsing the subtitles that you uploaded. Please "
 "check the format and try again."
 msgstr ""
+"ക്ഷമിക്കുക, താങ്ങൾ അപ്‌ലോഡ്‌ ചെയ്ത ഉപശീര്‍ഷകം വ്യാകരിക്കുന്നതിൽ "
+"തെറ്റുപറ്റിയിരിക്കുന്നു. ഘടന പരിശോധിച്ചത്തിനു ശേഷം വീണ്ടും ശ്രമിക്കുക "
 
 #: cms/static/js/views/video/translations_editor.js
 msgid "Upload translation"
-msgstr ""
+msgstr "തര്‍ജ്ജമ അപ്‌ലോഡ്‌ ചെയ്യുക"
 
 #: common/templates/js/image-modal.underscore
 msgid "Large"
@@ -3585,6 +3902,126 @@ msgstr ""
 
 #: common/templates/js/discussion/thread-show.underscore
 msgid "(this post is about %(courseware_title_linked)s)"
+msgstr ""
+
+#: lms/templates/dashboard/donation.underscore
+msgid "Donate"
+msgstr ""
+
+#: lms/templates/instructor/instructor_dashboard_2/add-cohort-form.underscore
+msgid "Add a New Cohort Group"
+msgstr ""
+
+#: lms/templates/instructor/instructor_dashboard_2/add-cohort-form.underscore
+msgid "New Cohort Name"
+msgstr ""
+
+#: lms/templates/instructor/instructor_dashboard_2/add-cohort-form.underscore
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+msgid "(Required Field)"
+msgstr ""
+
+#: lms/templates/instructor/instructor_dashboard_2/add-cohort-form.underscore
+msgid "Enter Your New Cohort Group's Name"
+msgstr ""
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+msgid ""
+"Students are added to this group only when you provide their email addresses"
+" or usernames on this page."
+msgstr ""
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+msgid "What does this mean?"
+msgstr ""
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+msgid "Students are added to this group automatically."
+msgstr ""
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+msgid "Edit settings in Studio"
+msgstr ""
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+msgid "Add students to this cohort group"
+msgstr ""
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+msgid ""
+"Note: Students can only be in one cohort group. Adding students to this "
+"group overrides any previous group assignment."
+msgstr ""
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+msgid ""
+"Enter email addresses and/or usernames separated by new lines or commas for "
+"students to add. *"
+msgstr ""
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+msgid "e.g. johndoe@example.com, JaneDoe, joeydoe@example.com"
+msgstr ""
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+msgid ""
+"You will not get notification for emails that bounce, so please double-check"
+" spelling."
+msgstr ""
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-editor.underscore
+msgid "Add Students"
+msgstr ""
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-selector.underscore
+msgid "Select a cohort group"
+msgstr ""
+
+#: lms/templates/instructor/instructor_dashboard_2/cohort-selector.underscore
+msgid "%(cohort_name)s (%(user_count)s)"
+msgstr ""
+
+#: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
+msgid "Cohort Management"
+msgstr ""
+
+#: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
+msgid "Select a cohort group to manage"
+msgstr ""
+
+#: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
+msgid "View Cohort Group"
+msgstr ""
+
+#: lms/templates/instructor/instructor_dashboard_2/cohorts.underscore
+msgid ""
+"To review all student cohort group assignments, download course profile "
+"information on %(link_start)s the Data Download page. %(link_end)s"
+msgstr ""
+
+#: lms/templates/student_account/account.underscore
+msgid "New Address"
+msgstr ""
+
+#: lms/templates/student_account/account.underscore
+msgid "Password"
+msgstr ""
+
+#: lms/templates/student_account/account.underscore
+msgid "Change My Email Address"
+msgstr ""
+
+#: lms/templates/student_profile/profile.underscore
+msgid "Full Name"
+msgstr ""
+
+#: lms/templates/student_profile/profile.underscore
+msgid "Preferred Language"
+msgstr ""
+
+#: lms/templates/student_profile/profile.underscore
+msgid "Update Profile"
 msgstr ""
 
 #: cms/templates/js/add-xblock-component-menu-problem.underscore
