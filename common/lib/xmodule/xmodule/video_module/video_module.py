@@ -208,7 +208,7 @@ class VideoModule(VideoFields, VideoTranscriptsMixin, VideoStudentViewHandlers, 
             elif self.html5_sources:
                 download_video_link = self.html5_sources[0]
 
-        track_url, transcript_language, sorted_languages = get_transcripts_for_student(self)
+        track_url, transcript_language, sorted_languages = self.get_transcripts_for_student()
 
         return self.system.render_template('video.html', {
             'ajax_url': self.system.ajax_url + '/save_user_state',

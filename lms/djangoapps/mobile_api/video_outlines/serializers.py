@@ -9,7 +9,7 @@ from edxval.api import (
 
 class BlockOutline(object):
 
-    def __init__(self, course_id, start_block, categories_to_outliner, request, local_cache):
+    def __init__(self, course_id, start_block, categories_to_outliner, request):
         """Create a BlockOutline using `start_block` as a starting point.
 
         `local_cache`
@@ -18,7 +18,7 @@ class BlockOutline(object):
         self.categories_to_outliner = categories_to_outliner
         self.course_id = course_id
         self.request = request # needed for making full URLS
-        self.local_cache = local_cache
+        self.local_cache = {}
         try:
             self.local_cache['course_videos'] = get_video_info_for_course_and_profile(
                 unicode(course_id), "mobile_low"
@@ -106,6 +106,7 @@ def video_summary(course, course_id, video_descriptor, request, local_cache):
     val_video_info = local_cache['course_videos'].get(video_descriptor.edx_video_id)
     if val_video_info:
         video_url = val_video_info['url']
+
     # Then fall back to VideoDescriptor fields for video URLs
     elif video_descriptor.html5_sources:
         video_url = video_descriptor.html5_sources[0]
@@ -121,15 +122,7 @@ def video_summary(course, course_id, video_descriptor, request, local_cache):
         size = 0
 
     # Transcripts...
-    usage_id_str = video_descriptor.scope_ids.usage_id._to_string()
-    transcripts_langs_cache = local_cache['transcripts_langs']
-
-    if usage_id_str in transcripts_langs_cache:
-        transcript_langs = transcripts_langs_cache[usage_id_str]
-    else:
-        transcript_langs = video_descriptor.available_translations(verify_assets=False)
-        transcripts_langs_cache[usage_id_str] = transcript_langs
-
+    transcript_langs = video_descriptor.available_translations(verify_assets=False)
     transcripts = {
         lang: reverse(
             'video-transcripts-detail',
@@ -152,5 +145,5 @@ def video_summary(course, course_id, video_descriptor, request, local_cache):
         "transcripts": transcripts,
         "language": video_descriptor.transcript_language,
         "category": video_descriptor.category,
-        "id": usage_id_str
+        "id": video_descriptor.scope_ids.usage_id._to_string(),
     }

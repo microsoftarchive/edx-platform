@@ -26,6 +26,7 @@ from mobile_api import get_mobile_course
 
 
 class VideoSummaryList(generics.ListAPIView):
+    """A list of all Videos in this Course that the user has access to."""
     authentication_classes = (OAuth2Authentication, SessionAuthentication)
     permission_classes = (permissions.IsAuthenticated,)
 
@@ -33,27 +34,22 @@ class VideoSummaryList(generics.ListAPIView):
         course_id = CourseKey.from_string(kwargs['course_id'])
         course = get_mobile_course(course_id, request.user)
 
-        transcripts_cache_key = "VideoSummaryList.transcripts.langs.{}".format(course_id)
-        original_transcripts_langs_cache = cache.get(transcripts_cache_key, {})
-        local_cache = {'transcripts_langs': dict(original_transcripts_langs_cache)}
-
         video_outline = list(
             BlockOutline(
-                course_id,
-                course,
+                course_id, 
+                course, 
                 {"video": partial(video_summary, course)},
                 request,
-                local_cache,
             )
         )
-        # If we added any entries, renew the cache...
-        if local_cache['transcripts_langs'] != original_transcripts_langs_cache:
-            cache.set(transcripts_cache_key, local_cache['transcripts_langs'])
-
         return Response(video_outline)
 
 
 class VideoTranscripts(generics.RetrieveAPIView):
+    """Read-only view for a single transcript (SRT) file for a particular language.
+
+    Returns an `HttpResponse` with an SRT file download for the body.
+    """
     authentication_classes = (OAuth2Authentication, SessionAuthentication)
     permission_classes = (permissions.IsAuthenticated,)
 
