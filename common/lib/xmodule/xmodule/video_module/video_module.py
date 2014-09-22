@@ -461,7 +461,6 @@ class VideoDescriptor(VideoFields, VideoTranscriptsMixin, VideoStudioViewHandler
             # First try a lookup in VAL
             if self.edx_video_id and edxval_api:
                 val_youtube_id = edxval_api.get_url_for_profile(self.edx_video_id, "youtube")
-
                 if val_youtube_id:
                     return 'http://youtu.be/{0}'.format(val_youtube_id)
 

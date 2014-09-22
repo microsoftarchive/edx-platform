@@ -127,7 +127,7 @@ def video_summary(course, course_id, video_descriptor, request, local_cache):
     if usage_id_str in transcripts_langs_cache:
         transcript_langs = transcripts_langs_cache[usage_id_str]
     else:
-        transcript_langs = video_descriptor.available_translations()
+        transcript_langs = video_descriptor.available_translations(verify_assets=False)
         transcripts_langs_cache[usage_id_str] = transcript_langs
 
     transcripts = {

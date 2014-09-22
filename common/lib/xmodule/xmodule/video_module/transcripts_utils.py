@@ -512,9 +512,30 @@ class VideoTranscriptsMixin(object):
 
     This is necessary for both VideoModule and VideoDescriptor.
     """
-    def available_translations(self):
-        """Return a list of language codes for which we have transcripts."""
+
+    def available_translations(self, verify_assets=True):
+        """Return a list of language codes for which we have transcripts.
+
+        Args:
+            verify_assets (boolean): If True, checks to ensure that the transcripts
+                really exist in the contentstore. If False, we just look at the
+                VideoDescriptor fields and do not query the contentstore. One reason
+                we might do this is to avoid slamming contentstore() with queries
+                when trying to make a listing of videos and their languages.
+
+                Defaults to True.
+        """
         translations = []
+
+        # If we're not verifying the assets, we just trust our field values
+        if not verify_assets:
+            if self.sub:
+                translations = ['en']
+            translations += list(self.transcripts)
+            return translations
+
+        # If we've gotten this far, we're going to verify that the transcripts
+        # being referenced are actually in the contentstore.
         if self.sub:  # check if sjson exists for 'en'.
             try:
                 Transcript.asset(self.location, self.sub, 'en')
