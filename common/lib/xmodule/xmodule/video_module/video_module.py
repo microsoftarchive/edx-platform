@@ -37,7 +37,7 @@ from xmodule.editing_module import TabsEditingDescriptor
 from xmodule.raw_module import EmptyDataRawDescriptor
 from xmodule.xml_module import is_pointer_tag, name_to_pathname, deserialize_field
 
-from .transcripts_utils import Transcript
+from .transcripts_utils import Transcript, VideoTranscriptsMixin
 from .video_utils import create_youtube_string, get_video_from_cdn
 from .video_xfields import VideoFields
 from .video_handlers import VideoStudentViewHandlers, VideoStudioViewHandlers
@@ -74,72 +74,7 @@ log = logging.getLogger(__name__)
 _ = lambda text: text
 
 
-def get_transcripts(video):
-    """
-    For the given video module, returns:
-    track_url -> subtitle download url
-    transcript_language -> default transcript language
-    sorted_languages -> dictionary of available transcript languages
-    """
-    track_url = None
-    if video.download_track:
-        if video.track:
-            track_url = video.track
-        elif video.sub or video.transcripts:
-            track_url = video.runtime.handler_url(video, 'transcript', 'download').rstrip('/?')
-
-    if not video.transcripts:
-        transcript_language = u'en'
-        languages = {'en': 'English'}
-    else:
-        if video.transcript_language in video.transcripts:
-            transcript_language = video.transcript_language
-        elif video.sub:
-            transcript_language = u'en'
-        else:
-            transcript_language = sorted(video.transcripts.keys())[0]
-
-        native_languages = {lang: label for lang, label in settings.LANGUAGES if len(lang) == 2}
-        languages = {
-            lang: native_languages.get(lang, display)
-            for lang, display in settings.ALL_LANGUAGES
-            if lang in video.transcripts
-        }
-
-        if video.sub:
-            languages['en'] = 'English'
-
-    # OrderedDict for easy testing of rendered context in tests
-    sorted_languages = sorted(languages.items(), key=itemgetter(1))
-    if 'table' in video.transcripts:
-        sorted_languages.insert(0, ('table', 'Table of Contents'))
-
-    sorted_languages = OrderedDict(sorted_languages)
-    return track_url, transcript_language, sorted_languages
-
-
-class VideoTranscripts(object):
-    def available_translations(self):
-        """Return a list of language codes for which we have transcripts."""
-        translations = []
-        if self.sub:  # check if sjson exists for 'en'.
-            try:
-                Transcript.asset(self.location, self.sub, 'en')
-            except NotFoundError:
-                pass
-            else:
-                translations = ['en']
-        for lang in self.transcripts:
-            try:
-                Transcript.asset(self.location, None, None, self.transcripts[lang])
-            except NotFoundError:
-                continue
-            translations.append(lang)
-
-        return translations
-
-
-class VideoModule(VideoFields, VideoTranscripts, VideoStudentViewHandlers, XModule):
+class VideoModule(VideoFields, VideoTranscriptsMixin, VideoStudentViewHandlers, XModule):
     """
     XML source example:
 
@@ -186,6 +121,54 @@ class VideoModule(VideoFields, VideoTranscripts, VideoStudentViewHandlers, XModu
     ]}
     js_module_name = "Video"
 
+    def get_transcripts_for_student(self):
+        """Return transcript information necessary for rendering the XModule student view.
+
+        This is more or less a direct extraction from `get_html`. 
+
+        Returns:
+            Tuple of (track_url, transcript_language, sorted_languages)
+
+            track_url -> subtitle download url
+            transcript_language -> default transcript language
+            sorted_languages -> dictionary of available transcript languages
+        """
+        track_url = None
+        if self.download_track:
+            if self.track:
+                track_url = self.track
+            elif self.sub or self.transcripts:
+                track_url = self.runtime.handler_url(self, 'transcript', 'download').rstrip('/?')
+
+        if not self.transcripts:
+            transcript_language = u'en'
+            languages = {'en': 'English'}
+        else:
+            if self.transcript_language in self.transcripts:
+                transcript_language = self.transcript_language
+            elif self.sub:
+                transcript_language = u'en'
+            else:
+                transcript_language = sorted(self.transcripts.keys())[0]
+
+            native_languages = {lang: label for lang, label in settings.LANGUAGES if len(lang) == 2}
+            languages = {
+                lang: native_languages.get(lang, display)
+                for lang, display in settings.ALL_LANGUAGES
+                if lang in self.transcripts
+            }
+
+            if self.sub:
+                languages['en'] = 'English'
+
+        # OrderedDict for easy testing of rendered context in tests
+        sorted_languages = sorted(languages.items(), key=itemgetter(1))
+        if 'table' in self.transcripts:
+            sorted_languages.insert(0, ('table', 'Table of Contents'))
+
+        sorted_languages = OrderedDict(sorted_languages)
+        return track_url, transcript_language, sorted_languages
+
 
     def get_html(self):
         transcript_download_format = self.transcript_download_format if not (self.download_track and self.track) else None
@@ -225,7 +208,7 @@ class VideoModule(VideoFields, VideoTranscripts, VideoStudentViewHandlers, XModu
             elif self.html5_sources:
                 download_video_link = self.html5_sources[0]
 
-        track_url, transcript_language, sorted_languages = get_transcripts(self)
+        track_url, transcript_language, sorted_languages = get_transcripts_for_student(self)
 
         return self.system.render_template('video.html', {
             'ajax_url': self.system.ajax_url + '/save_user_state',
@@ -261,7 +244,7 @@ class VideoModule(VideoFields, VideoTranscripts, VideoStudentViewHandlers, XModu
         })
 
 
-class VideoDescriptor(VideoFields, VideoTranscripts, VideoStudioViewHandlers, TabsEditingDescriptor, EmptyDataRawDescriptor):
+class VideoDescriptor(VideoFields, VideoTranscriptsMixin, VideoStudioViewHandlers, TabsEditingDescriptor, EmptyDataRawDescriptor):
     """
     Descriptor for `VideoModule`.
     """
@@ -607,58 +590,3 @@ class VideoDescriptor(VideoFields, VideoTranscripts, VideoStudioViewHandlers, Ta
             field_data['download_track'] = True
 
         return field_data
-
-
-    # This is a temp interface -- name it better, and it should only exist in module, not
-    # descriptor
-    def api_summary(self):
-        return {
-            "url": self.html5_sources[0] if self.html5_sources else self.source,
-            "duration": None,
-            "display_name": self.display_name,
-            "category": self.category,
-        }
-
-    # FIXME: dormsbee
-    # Copying over for temporary expedience. Fix before actually opening a PR
-    def get_transcript(self, transcript_format='srt', lang=None):
-        """
-        Returns transcript, filename and MIME type.
-
-        Raises:
-            - NotFoundError if cannot find transcript file in storage.
-            - ValueError if transcript file is empty or incorrect JSON.
-            - KeyError if transcript file has incorrect format.
-
-        If language is 'en', self.sub should be correct subtitles name.
-        If language is 'en', but if self.sub is not defined, this means that we
-        should search for video name in order to get proper transcript (old style courses).
-        If language is not 'en', give back transcript in proper language and format.
-        """
-        from .transcripts_utils import Transcript
-
-        if not lang:
-            lang = self.transcript_language
-
-        if lang == 'en':
-            if self.sub:  # HTML5 case and (Youtube case for new style videos)
-                transcript_name = self.sub
-            elif self.youtube_id_1_0:  # old courses
-                transcript_name = self.youtube_id_1_0
-            else:
-                log.debug("No subtitles for 'en' language")
-                raise ValueError
-
-            data = Transcript.asset(self.location, transcript_name, lang).data
-            filename = u'{}.{}'.format(transcript_name, transcript_format)
-            content = Transcript.convert(data, 'sjson', transcript_format)
-        else:
-            data = Transcript.asset(self.location, None, None, self.transcripts[lang]).data
-            filename = u'{}.{}'.format(os.path.splitext(self.transcripts[lang])[0], transcript_format)
-            content = Transcript.convert(data, 'srt', transcript_format)
-
-        if not content:
-            log.debug('no subtitles produced in get_transcript')
-            raise ValueError
-
-        return content, filename, Transcript.mime_types[transcript_format]
