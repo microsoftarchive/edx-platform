@@ -603,7 +603,7 @@ class CourseEnrollment(models.Model):
     """
     MODEL_TAGS = ['course_id', 'is_active', 'mode']
 
-    user = models.ForeignKey(User, related_name="course_enrollments")
+    user = models.ForeignKey(User)
     course_id = CourseKeyField(max_length=255, db_index=True)
     created = models.DateTimeField(auto_now_add=True, null=True, db_index=True)
 
