@@ -1420,13 +1420,8 @@ INSTALLED_APPS = (
     # Country list
     'django_countries',
 
-    # edX Public API
+    # edX Mobile API
     'mobile_api',
-#    'public_api.users',
-
-    # OAuth2
-    'provider',
-    'provider.oauth2',
 )
 
 ######################### MARKETING SITE ###############################
