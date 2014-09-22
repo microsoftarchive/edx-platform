@@ -149,6 +149,7 @@ class TestGetHtmlMethod(BaseTestXmodule):
 
     def setUp(self):
         self.setup_course()
+        self.maxDiff = None
 
     def test_get_html_track(self):
         SOURCE_XML = """
@@ -163,7 +164,7 @@ class TestGetHtmlMethod(BaseTestXmodule):
                 {transcripts}
             </video>
         """
-    
+
         cases = [
             {
                 'download_track': u'true',
@@ -202,7 +203,7 @@ class TestGetHtmlMethod(BaseTestXmodule):
             },
         ]
         sources = json.dumps([u'example.mp4', u'example.webm'])
-    
+
         expected_context = {
             'data_dir': getattr(self, 'data_dir', None),
             'show_captions': 'true',
@@ -225,7 +226,7 @@ class TestGetHtmlMethod(BaseTestXmodule):
             'yt_test_url': 'gdata.youtube.com/feeds/api/videos/',
             'transcript_download_formats_list': [{'display_name': 'SubRip (.srt) file', 'value': 'srt'}, {'display_name': 'Text (.txt) file', 'value': 'txt'}],
         }
-    
+
         for data in cases:
             DATA = SOURCE_XML.format(
                 download_track=data['download_track'],
@@ -233,14 +234,14 @@ class TestGetHtmlMethod(BaseTestXmodule):
                 sub=data['sub'],
                 transcripts=data['transcripts'],
             )
-    
+
             self.initialize_module(data=DATA)
             track_url = self.item_descriptor.xmodule_runtime.handler_url(
                 self.item_descriptor, 'transcript', 'download'
             ).rstrip('/?')
-    
+
             context = self.item_descriptor.render(STUDENT_VIEW).content
-    
+
             expected_context.update({
                 'transcript_download_format': None if self.item_descriptor.track and self.item_descriptor.download_track else 'srt',
                 'transcript_languages': '{"en": "English"}' if not data['transcripts'] else json.dumps({"uk": u'Українська'}),
@@ -260,7 +261,7 @@ class TestGetHtmlMethod(BaseTestXmodule):
                 context,
                 self.item_descriptor.xmodule_runtime.render_template('video.html', expected_context),
             )
-    
+
     def test_get_html_source(self):
         SOURCE_XML = """
             <video show_captions="true"
@@ -304,7 +305,7 @@ class TestGetHtmlMethod(BaseTestXmodule):
                 'sources': [],
                 'result': {},
             },
-    
+
             # self.download_video == False
             {
                 'download_video': 'false',
@@ -318,7 +319,7 @@ class TestGetHtmlMethod(BaseTestXmodule):
                 },
             },
         ]
-    
+
         initial_context = {
             'data_dir': getattr(self, 'data_dir', None),
             'show_captions': 'true',
@@ -344,7 +345,7 @@ class TestGetHtmlMethod(BaseTestXmodule):
             'transcript_language': u'en',
             'transcript_languages': '{"en": "English"}',
         }
-    
+
         for data in cases:
             DATA = SOURCE_XML.format(
                 download_video=data['download_video'],
@@ -353,7 +354,7 @@ class TestGetHtmlMethod(BaseTestXmodule):
             )
             self.initialize_module(data=DATA)
             context = self.item_descriptor.render(STUDENT_VIEW).content
-    
+
             expected_context = dict(initial_context)
             expected_context.update({
                 'transcript_translation_url': self.item_descriptor.xmodule_runtime.handler_url(
@@ -366,12 +367,12 @@ class TestGetHtmlMethod(BaseTestXmodule):
                 'id': self.item_descriptor.location.html_id(),
             })
             expected_context.update(data['result'])
-    
+
             self.assertEqual(
                 context,
                 self.item_descriptor.xmodule_runtime.render_template('video.html', expected_context)
             )
-    
+
 
     def test_get_html_with_non_existant_edx_video_id(self):
         """
@@ -408,8 +409,10 @@ class TestGetHtmlMethod(BaseTestXmodule):
             edx_video_id=no_video_data['edx_video_id']
         )
         self.initialize_module(data=DATA)
-        with self.assertRaises(ValVideoNotFoundError):
-            self.item_descriptor.render(STUDENT_VIEW).content
+
+        # Referencing a non-existent VAL ID in courseware won't cause an error --
+        # it'll just fall back to the values in the VideoDescriptor.
+        self.assertIn("example_source.mp4", self.item_descriptor.render(STUDENT_VIEW).content)
 
     @mock.patch('edxval.api.get_video_info')
     def test_get_html_with_mocked_edx_video_id(self, mock_get_video_info):
@@ -423,7 +426,7 @@ class TestGetHtmlMethod(BaseTestXmodule):
                     'url': u'http://www.meowmix.com',
                     'file_size': 25556,
                     'bitrate': 9600,
-                    'profile': u'desktop'
+                    'profile': u'desktop_mp4'
                 }
             ]
         }
@@ -511,13 +514,13 @@ class TestGetHtmlMethod(BaseTestXmodule):
     def test_get_html_with_existing_edx_video_id(self):
         result = create_profile(
             dict(
-                profile_name="desktop",
+                profile_name="desktop_mp4",
                 extension="mp4",
                 width=200,
                 height=2001
             )
         )
-        self.assertEqual(result, "desktop")
+        self.assertEqual(result, "desktop_mp4")
         result = create_video(
             dict(
                 client_video_id="Thunder Cats",
@@ -525,10 +528,10 @@ class TestGetHtmlMethod(BaseTestXmodule):
                 edx_video_id="thundercats",
                 encoded_videos=[
                     dict(
-                        url="http://www.thunder.com",
+                        url="http://fake-video.edx.org/thundercats.mp4",
                         file_size=9000,
                         bitrate=42,
-                        profile="desktop",
+                        profile="desktop_mp4",
                     )
                 ]
             )
@@ -555,11 +558,10 @@ class TestGetHtmlMethod(BaseTestXmodule):
             """,
             'edx_video_id':"thundercats",
             'result': {
-                'download_video_link': u'http://www.thunder.com',
+                'download_video_link': u'http://fake-video.edx.org/thundercats.mp4',
                 'sources': json.dumps([u'example.mp4', u'example.webm']),
             }
         }
-
 
         # Video found for edx_video_id
         initial_context = {
@@ -610,13 +612,6 @@ class TestGetHtmlMethod(BaseTestXmodule):
         })
         expected_context.update(data['result'])
 
-        print "CONTEXT"
-        print context
-        print "SOMETHING ELSE"
-        print self.item_descriptor.xmodule_runtime.render_template(
-            'video.html',
-            expected_context
-        )
         self.assertEqual(
             context,
             self.item_descriptor.xmodule_runtime.render_template('video.html', expected_context)
@@ -633,9 +628,9 @@ class TestGetHtmlMethod(BaseTestXmodule):
             'http://example.com/example.webm': 'http://cdn_example.com/example.webm',
             }
             return cdn.get(args[1])
-    
+
         mocked_get_video.side_effect = side_effect
-    
+
         SOURCE_XML = """
             <video show_captions="true"
             display_name="A Name"
@@ -666,7 +661,7 @@ class TestGetHtmlMethod(BaseTestXmodule):
                 },
             },
         ]
-    
+
         initial_context = {
             'data_dir': getattr(self, 'data_dir', None),
             'show_captions': 'true',
@@ -692,7 +687,7 @@ class TestGetHtmlMethod(BaseTestXmodule):
             'transcript_language': u'en',
             'transcript_languages': '{"en": "English"}',
         }
-    
+
         for data in cases:
             DATA = SOURCE_XML.format(
                 download_video=data['download_video'],
@@ -701,9 +696,9 @@ class TestGetHtmlMethod(BaseTestXmodule):
             )
             self.initialize_module(data=DATA)
             self.item_descriptor.xmodule_runtime.user_location = 'CN'
-    
+
             context = self.item_descriptor.render('student_view').content
-    
+
             expected_context = dict(initial_context)
             expected_context.update({
                 'transcript_translation_url': self.item_descriptor.xmodule_runtime.handler_url(
@@ -716,7 +711,7 @@ class TestGetHtmlMethod(BaseTestXmodule):
                 'id': self.item_descriptor.location.html_id(),
             })
             expected_context.update(data['result'])
-    
+
             self.assertEqual(
                 context,
                 self.item_descriptor.xmodule_runtime.render_template('video.html', expected_context)
@@ -734,9 +729,9 @@ class TestGetHtmlMethod(BaseTestXmodule):
             'http://example.com/example.webm': 'http://cdn_example.com/example.webm',
             }
             return cdn.get(args[1])
-    
+
         mocked_get_video.side_effect = side_effect
-    
+
         SOURCE_XML = """
             <video show_captions="true"
             display_name="A Name"
@@ -767,7 +762,7 @@ class TestGetHtmlMethod(BaseTestXmodule):
                 },
             },
         ]
-    
+
         initial_context = {
             'data_dir': getattr(self, 'data_dir', None),
             'show_captions': 'true',
@@ -793,7 +788,7 @@ class TestGetHtmlMethod(BaseTestXmodule):
             'transcript_language': u'en',
             'transcript_languages': '{"en": "English"}',
         }
-    
+
         for data in cases:
             DATA = SOURCE_XML.format(
                 download_video=data['download_video'],
@@ -802,9 +797,9 @@ class TestGetHtmlMethod(BaseTestXmodule):
             )
             self.initialize_module(data=DATA)
             self.item_descriptor.xmodule_runtime.user_location = 'CN'
-    
+
             context = self.item_descriptor.render('student_view').content
-    
+
             expected_context = dict(initial_context)
             expected_context.update({
                 'transcript_translation_url': self.item_descriptor.xmodule_runtime.handler_url(
@@ -817,7 +812,7 @@ class TestGetHtmlMethod(BaseTestXmodule):
                 'id': self.item_descriptor.location.html_id(),
             })
             expected_context.update(data['result'])
-    
+
             self.assertEqual(
                 context,
                 self.item_descriptor.xmodule_runtime.render_template('video.html', expected_context)

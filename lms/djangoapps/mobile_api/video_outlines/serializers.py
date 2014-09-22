@@ -10,10 +10,7 @@ from edxval.api import (
 class BlockOutline(object):
 
     def __init__(self, course_id, start_block, categories_to_outliner, request):
-        """Create a BlockOutline using `start_block` as a starting point.
-
-        `local_cache`
-        """
+        """Create a BlockOutline using `start_block` as a starting point."""
         self.start_block = start_block
         self.categories_to_outliner = categories_to_outliner
         self.course_id = course_id
@@ -25,7 +22,6 @@ class BlockOutline(object):
             )
         except ValInternalError:
             self.local_cache['course_videos'] = {}
-
 
     def __iter__(self):
         child_to_parent = {}
@@ -102,7 +98,7 @@ class BlockOutline(object):
 
 
 def video_summary(course, course_id, video_descriptor, request, local_cache):
-    # First try to check VAL for the URLs we want...
+    # First try to check VAL for the URLs we want.
     val_video_info = local_cache['course_videos'].get(video_descriptor.edx_video_id)
     if val_video_info:
         video_url = val_video_info['url']

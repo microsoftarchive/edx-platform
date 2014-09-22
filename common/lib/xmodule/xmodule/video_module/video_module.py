@@ -186,7 +186,7 @@ class VideoModule(VideoFields, VideoTranscriptsMixin, VideoStudentViewHandlers, 
                 if new_url:
                     sources[index] = new_url
 
-        download_video_link = ""
+        download_video_link = None
         youtube_streams = ""
 
         # If we have an edx_video_id, we prefer its values over what we store
@@ -196,7 +196,11 @@ class VideoModule(VideoFields, VideoTranscriptsMixin, VideoStudentViewHandlers, 
             val_video_urls = edxval_api.get_urls_for_profiles(
                 self.edx_video_id, ["desktop_mp4", "youtube"]
             )
-            download_video_link = val_video_urls["desktop_mp4"]
+            # For compatibility with existing JS code, download_video_link must stay None if
+            # nothing is found in VAL. VAL by default will give blank strings for URLs it 
+            # doesn't have, hence the if/then rather than straight assignment.
+            if val_video_urls["desktop_mp4"]:
+                download_video_link = val_video_urls["desktop_mp4"]
             if val_video_urls["youtube"]:
                 youtube_streams = "1.00:{}".format(val_video_urls["youtube"])
 
