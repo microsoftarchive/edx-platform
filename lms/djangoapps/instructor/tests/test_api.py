@@ -81,7 +81,13 @@ REPORTS_DATA = (
         'instructor_api_endpoint': 'get_students_features',
         'task_api_endpoint': 'instructor_task.api.submit_calculate_students_features_csv',
         'extra_instructor_api_kwargs': {'csv': '/csv'}
-    }
+    },
+    {
+        'report_type': 'student responses',
+        'instructor_api_endpoint': 'calculate_student_responses_csv',
+        'task_api_endpoint': 'instructor_task.api.submit_calculate_student_responses_csv',
+        'extra_instructor_api_kwargs': {}
+    },
 )
 
 
@@ -170,6 +176,7 @@ class TestInstructorAPIDenyLevels(ModuleStoreTestCase, LoginEnrollmentTestCase):
         )
 
         # Endpoints that only Staff or Instructors can access
+        # Entries should be a tuple of (api_method_name, {request_args_sent_to_endpoint})
         self.staff_level_endpoints = [
             ('students_update_enrollment', {'identifiers': 'foo@example.org', 'action': 'enroll'}),
             ('get_grading_config', {}),
@@ -188,6 +195,7 @@ class TestInstructorAPIDenyLevels(ModuleStoreTestCase, LoginEnrollmentTestCase):
             ('list_report_downloads', {}),
             ('calculate_grades_csv', {}),
             ('get_students_features', {}),
+            ('calculate_student_responses_csv', {}),
         ]
         # Endpoints that only Instructors can access
         self.instructor_level_endpoints = [
