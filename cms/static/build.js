@@ -297,12 +297,13 @@
 
     dir: "../build",
     waitSeconds: 60,
+    findNestedDependencies: true,
     modules: [
         {name: 'js/require_pages/base'},
-        {name: 'js/require_pages/index'}, // Course
-        {name: 'js/require_pages/login'}, // Login
-        {name: 'js/require_pages/outline'}, // Outline
-        {name: 'js/require_pages/container'} // Container
+        {name: 'js/require_pages/index', exclude: ["backbone", "jquery", "underscore"]}, // Course
+        {name: 'js/require_pages/login', exclude: ["backbone", "jquery", "underscore"]}, // Login
+        {name: 'js/require_pages/outline', exclude: ["backbone", "jquery", "underscore"]}, // Outline
+        {name: 'js/require_pages/container', exclude: ["backbone", "jquery", "underscore"]} // Container
         // {name: 'js/require_pages/container'}, // Advanced Settings
     ]
 })
