@@ -47,31 +47,35 @@ class TestBulkAssertionTestCase(BulkAssertionTest):
             self.assertEquals(1, 2)
 
     @ddt.data(
-        'assertEqual', 'assertEquals'
+        ('assertEqual', 1, 2),
+        ('assertEquals', 1, 2),
+        ('assertItemsEqual', (1, 1, 2), (2, 2, 1)),
     )
-    def test_bulk_assert_equals(self, asserterFn):
+    @ddt.unpack
+    def test_bulk_assert_equals(self, asserterFn, *args):
         asserter = getattr(self, asserterFn)
         contextmanager = self.bulk_assertions()
 
         contextmanager.__enter__()
-        super(BulkAssertionTest, self).assertIsNotNone(self._manager)
-        asserter(1, 2)
-        asserter(3, 4)
+        asserter(*args)
 
         # Use super(BulkAssertionTest) to make sure we get un-adulturated assertions
         with super(BulkAssertionTest, self).assertRaises(AssertionError):
             contextmanager.__exit__(None, None, None)
 
     @ddt.data(
-        'assertEqual', 'assertEquals'
+        ('assertEqual', (1, 1), (1, 2)),
+        ('assertEquals', (1, 1), (1, 2)),
+        ('assertItemsEqual', ((1, 1, 2), (2, 1, 1)), ((1, 1, 2), (2, 2, 1))),
     )
-    def test_bulk_assert_closed(self, asserterFn):
+    @ddt.unpack
+    def test_bulk_assert_closed(self, asserterFn, pass_args, fail_args):
         asserter = getattr(self, asserterFn)
 
         with self.bulk_assertions():
-            asserter(1, 1)
-            asserter(2, 2)
+            asserter(*pass_args)
+            asserter(*pass_args)
 
         # Use super(BulkAssertionTest) to make sure we get un-adulturated assertions
         with super(BulkAssertionTest, self).assertRaises(AssertionError):
-            asserter(1, 2)
+            asserter(*fail_args)

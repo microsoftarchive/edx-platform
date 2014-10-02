@@ -238,7 +238,7 @@ class MongoContentstoreBuilder(object):
 
 
 MODULESTORE_SETUPS = (
-    MongoModulestoreBuilder(),
+#    MongoModulestoreBuilder(),
 #     VersioningModulestoreBuilder(),  # FIXME LMS-11227
     MixedModulestoreBuilder([('draft', MongoModulestoreBuilder())]),
     MixedModulestoreBuilder([('split', VersioningModulestoreBuilder())]),
@@ -250,6 +250,13 @@ COURSE_DATA_NAMES = (
     'split_test_module',
     'split_test_module_draft',
 )
+import os
+ROOT_DIR = '../data-prod-export/coursedump'
+#COURSE_DATA_NAMES = os.listdir(ROOT_DIR)
+COURSE_DATA_NAMES = [
+    'MITx...2.01x...2T2014',
+    'HarvardX...CB22x...2013_Spring'
+]
 
 
 @ddt.ddt
@@ -263,6 +270,8 @@ class CrossStoreXMLRoundtrip(CourseComparisonTest):
         super(CrossStoreXMLRoundtrip, self).setUp()
         self.export_dir = mkdtemp()
         self.addCleanup(rmtree, self.export_dir, ignore_errors=True)
+
+        self.maxDiff = None
 
     @ddt.data(*itertools.product(
         MODULESTORE_SETUPS,
@@ -288,7 +297,7 @@ class CrossStoreXMLRoundtrip(CourseComparisonTest):
                         import_from_xml(
                             source_store,
                             'test_user',
-                            'common/test/data',
+                            ROOT_DIR,
                             course_dirs=[course_data_name],
                             static_content_store=source_content,
                             target_course_id=source_course_key,
@@ -324,6 +333,7 @@ class CrossStoreXMLRoundtrip(CourseComparisonTest):
                         self.exclude_field(None, 'wiki_slug')
                         self.exclude_field(None, 'xml_attributes')
                         self.exclude_field(None, 'parent')
+                        self.exclude_field(None, 'error_msg')
                         self.ignore_asset_key('_id')
                         self.ignore_asset_key('uploadDate')
                         self.ignore_asset_key('content_son')

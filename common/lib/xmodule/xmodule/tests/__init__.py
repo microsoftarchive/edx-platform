@@ -12,7 +12,9 @@ import os
 import pprint
 import unittest
 
+from collections import namedtuple
 from contextlib import contextmanager
+from functools import wraps
 from lazy import lazy
 from mock import Mock
 from operator import attrgetter
@@ -198,6 +200,19 @@ class BulkAssertionManager(object):
         super(BulkAssertionTest, self._test_case).assertEqual(self._equal_expected, self._equal_actual)
 
 
+def batched_assertion(asserter):
+    @wraps(asserter)
+    def wrapper(self, *args, **kwargs):
+        try:
+            return asserter(self, *args, **kwargs)
+        except AssertionError as exc:
+            if self._assertion_messages is None:
+                raise
+            else:
+                self._assertion_messages.append(exc.message)
+    return wrapper
+
+
 class BulkAssertionTest(unittest.TestCase):
     """
     This context manager provides a BulkAssertionManager to assert with,
@@ -207,26 +222,23 @@ class BulkAssertionTest(unittest.TestCase):
 
     def setUp(self, *args, **kwargs):
         super(BulkAssertionTest, self).setUp(*args, **kwargs)
-        self._manager = None
+        self._assertion_messages = None
 
     @contextmanager
     def bulk_assertions(self):
-        if self._manager:
+        if self._assertion_messages is not None:
             yield
         else:
-            try:
-                self._manager = BulkAssertionManager(self)
-                yield
-            finally:
-                self._manager.run_assertions()
-                self._manager = None
+            self._assertion_messages = []
+            yield
+            if self._assertion_messages:
+                raise self.failureException(u'Assertions:\n' + u'\n\n'.join(unicode(msg) for msg in self._assertion_messages))
+            else:
+                self._assertion_messages = None
 
-    def assertEqual(self, expected, actual, message=None):
-        if self._manager is not None:
-            self._manager.assertEqual(expected, actual, message)
-        else:
-            super(BulkAssertionTest, self).assertEqual(expected, actual, message)
-    assertEquals = assertEqual
+    assertEqual = batched_assertion(unittest.TestCase.assertEqual)
+    assertEquals = batched_assertion(unittest.TestCase.assertEquals)
+    assertItemsEqual = batched_assertion(unittest.TestCase.assertItemsEqual)
 
 
 class LazyFormat(object):
@@ -249,6 +261,17 @@ class LazyFormat(object):
     def __repr__(self):
         return unicode(self)
 
+
+class ComparableAsset(namedtuple('ComparableAsset', 'type, path, fields')):
+    def __new__(cls, ignored_keys, asset):
+        for key in ignored_keys:
+            asset.pop(key)
+
+        asset_key = asset.pop('asset_key')
+        assert asset_key.to_deprecated_string() == asset.pop('filename')
+        return super(ComparableAsset, cls).__new__(cls, asset_key.asset_type, asset_key.path, asset.viewitems())
+
+
 class CourseComparisonTest(BulkAssertionTest):
     """
     Mixin that has methods for comparing courses for equality.
@@ -258,6 +281,9 @@ class CourseComparisonTest(BulkAssertionTest):
         super(CourseComparisonTest, self).setUp()
         self.field_exclusions = set()
         self.ignored_asset_keys = set()
+
+        # Get both custom messages and standard assertion messages combined
+        self.longMessage = True
 
     def exclude_field(self, usage_id, field_name):
         """
@@ -304,7 +330,7 @@ class CourseComparisonTest(BulkAssertionTest):
             expected,
             actual,
             LazyFormat(
-                "Field {} doesn't match between usages {} and {}: {!r} != {!r}",
+                "Field {} doesn't match between usages {} and {}",
                 reference_field.name,
                 expected_block.scope_ids.usage_id,
                 actual_block.scope_ids.usage_id,
@@ -322,13 +348,15 @@ class CourseComparisonTest(BulkAssertionTest):
         if isinstance(field, (Reference, ReferenceList, ReferenceValueDict)):
             self.assertReferenceRelativelyEqual(field, expected_block, actual_block)
         else:
+            # if expected_block.scope_ids.usage_id.block_id == '55c72c5f6bf048c2b3375eafa2f31d81' and field.name == 'showanswer':
+            #     import pudb; pu.db
             expected = field.read_from(expected_block)
             actual = field.read_from(actual_block)
             self.assertEqual(
                 expected,
                 actual,
                 LazyFormat(
-                    "Field {} doesn't match between usages {} and {}: {!r} != {!r}",
+                    "Field {} doesn't match between usages {} and {}",
                     field.name,
                     expected_block.scope_ids.usage_id,
                     actual_block.scope_ids.usage_id,
@@ -371,7 +399,7 @@ class CourseComparisonTest(BulkAssertionTest):
 
     def _assertCoursesEqual(self, expected_items, actual_items, actual_course_key, expect_drafts=False):
         with self.bulk_assertions():
-            self.assertEqual(len(expected_items), len(actual_items))
+            self.assertEqual(len(expected_items), len(actual_items), LazyFormat('XBlock count differs: {} != {}', len(expected_items), len(actual_items)))
 
             def map_key(usage_key):
                 return (usage_key.block_type, usage_key.block_id)
@@ -425,39 +453,26 @@ class CourseComparisonTest(BulkAssertionTest):
                         # get_children() rather than children to strip privates from public parents
                         for item_child in actual_item.get_children()
                     ]
-                    self.assertEqual(expected_children, actual_children)
+                    self.assertEqual(
+                        expected_children,
+                        actual_children,
+                        LazyFormat(
+                            "Children of usages {} and {} don't match",
+                            expected_item.location,
+                            actual_item.location,
+                            expected_children,
+                            actual_children
+                        )
+                    )
 
-    def assertAssetEqual(self, expected_course_key, expected_asset, actual_course_key, actual_asset):
-        """
-        Assert that two assets are equal, allowing for differences related to their being from different courses.
-        """
-        for key in self.ignored_asset_keys:
-            if key in expected_asset:
-                del expected_asset[key]
-            if key in actual_asset:
-                del actual_asset[key]
-
-        expected_key = expected_asset.pop('asset_key')
-        actual_key = actual_asset.pop('asset_key')
-        self.assertEqual(expected_key.map_into_course(actual_course_key), actual_key)
-        self.assertEqual(expected_key, actual_key.map_into_course(expected_course_key))
-
-        expected_filename = expected_asset.pop('filename')
-        actual_filename = actual_asset.pop('filename')
-        self.assertEqual(expected_key.to_deprecated_string(), expected_filename)
-        self.assertEqual(actual_key.to_deprecated_string(), actual_filename)
-        self.assertEqual(expected_asset, actual_asset)
-
-    def _assertAssetsEqual(self, expected_course_key, expected_assets, actual_course_key, actual_assets):  # pylint: disable=invalid-name
+    def _assertAssetsEqual(self, expected_course_key, expected_assets, actual_course_key, actual_assets, asset_type):  # pylint: disable=invalid-name
         """
         Private helper method for assertAssetsEqual
         """
-        self.assertEqual(len(expected_assets), len(actual_assets))
-
-        actual_assets_map = {asset['asset_key']: asset for asset in actual_assets}
-        for expected_item in expected_assets:
-            actual_item = actual_assets_map[expected_item['asset_key'].map_into_course(actual_course_key)]
-            self.assertAssetEqual(expected_course_key, expected_item, actual_course_key, actual_item)
+        self.assertItemsEqual(
+            [ComparableAsset(self.ignored_asset_keys, dict(expected_asset)) for expected_asset in expected_assets],
+            [ComparableAsset(self.ignored_asset_keys, dict(actual_asset)) for actual_asset in actual_assets],
+        )
 
     def assertAssetsEqual(self, expected_store, expected_course_key, actual_store, actual_course_key):
         """
@@ -470,10 +485,10 @@ class CourseComparisonTest(BulkAssertionTest):
 
         with self.bulk_assertions():
 
-            self.assertEqual(expected_count, actual_count)
-            self._assertAssetsEqual(expected_course_key, expected_content, actual_course_key, actual_content)
+            self.assertEqual(expected_count, actual_count, 'Reported asset counts differ')
+            self._assertAssetsEqual(expected_course_key, expected_content, actual_course_key, actual_content, 'Asset')
 
             expected_thumbs = expected_store.get_all_content_thumbnails_for_course(expected_course_key)
             actual_thumbs = actual_store.get_all_content_thumbnails_for_course(actual_course_key)
 
-            self._assertAssetsEqual(expected_course_key, expected_thumbs, actual_course_key, actual_thumbs)
+            self._assertAssetsEqual(expected_course_key, expected_thumbs, actual_course_key, actual_thumbs, 'Thumbnail')
