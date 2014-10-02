@@ -1,4 +1,4 @@
-define(["jquery.form", "js/index"], function(dom, $) {
+define(["jquery.form", "js/index"], function() {
     return function () {
         // showing/hiding creation rights UI
         $('.show-creationrights').click(function(e) {

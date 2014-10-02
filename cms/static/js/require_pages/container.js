@@ -3,7 +3,7 @@ define([
     "js/collections/component_template", "xmodule", "coffee/src/main",
     "xblock/cms.runtime.v1"
 ],
-function(dom, $, XBlockInfo, ContainerPage, ComponentTemplates, xmoduleLoader) {
+function(XBlockInfo, ContainerPage, ComponentTemplates, xmoduleLoader) {
     return function (componentTemplates, XBlockInfoJSON, action, isUnitPage) {
         var templates = new ComponentTemplates(componentTemplates, {parse: true});
         var mainXBlockInfo = new XBlockInfo(XBlockInfoJSON, {parse: true});
