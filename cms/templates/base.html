@@ -86,9 +86,8 @@
       % if user.is_authenticated():
       <script type="text/javascript">
         require(['js/require_pages/base'], function () {
-            require(['js/require_pages/base', 'js/sock']);
+            require(['js/sock']);
         });
-
       </script>
       <%include file="widgets/sock.html" args="online_help_token=online_help_token" />
       % endif

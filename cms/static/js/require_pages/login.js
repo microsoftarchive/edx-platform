@@ -1,4 +1,4 @@
-define(["jquery.cookie", "utility"], function(dom, $) {
+define(["jquery.cookie", "utility"], function() {
     return function (homepageURL) {
         function postJSON(url, data, callback) {
             $.ajax({
