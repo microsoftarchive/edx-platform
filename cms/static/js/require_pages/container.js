@@ -1,5 +1,4 @@
 define([
-    'domReady!', 'jquery',
     "js/models/xblock_info", "js/views/pages/container",
     "js/collections/component_template", "xmodule", "coffee/src/main",
     "xblock/cms.runtime.v1"

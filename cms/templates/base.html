@@ -46,7 +46,7 @@
             baseUrl: baseUrl
         };
     </script>
-    <script type="text/javascript" src="${static.url("js/vendor/require.js")}"></script>
+    <script type="text/javascript" data-main="js/require_pages/base" src="${static.url("js/vendor/require.js")}"></script>
 
     ## js templates
     <script id="system-feedback-tpl" type="text/template">
@@ -54,19 +54,21 @@
     </script>
 
     <script type="text/javascript">
-        require(['domReady!', 'jquery', 'js/require_pages/base']);
+        ## require(['domReady!', 'jquery', 'js/require_pages/base']);
     </script>
 
     % if context_course:
         <script type="text/javascript">
-        require(['js/models/course'], function(Course) {
-            window.course = new Course({
-                id: "${context_course.id | escapejs}",
-                name: "${context_course.display_name_with_default | h}",
-                url_name: "${context_course.location.name | h}",
-                org: "${context_course.location.org | h}",
-                num: "${context_course.location.course | h}",
-                revision: "${context_course.location.revision | h}"
+        require(['js/require_pages/base',], function () {
+            require(['js/models/course'], function(Course) {
+                window.course = new Course({
+                  id: "${context_course.id | escapejs}",
+                  name: "${context_course.display_name_with_default | h}",
+                  url_name: "${context_course.location.name | h}",
+                  org: "${context_course.location.org | h}",
+                  num: "${context_course.location.course | h}",
+                  revision: "${context_course.location.revision | h}"
+                });
             });
         });
         </script>
@@ -87,7 +89,10 @@
 
       % if user.is_authenticated():
       <script type="text/javascript">
-        require(['js/sock']);
+        require(['js/require_pages/base'], function () {
+            require(['js/require_pages/base', 'js/sock']);
+        });
+
       </script>
       <%include file="widgets/sock.html" args="online_help_token=online_help_token" />
       % endif
