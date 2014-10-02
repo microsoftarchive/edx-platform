@@ -125,6 +125,17 @@ def compile_coffeescript(*files):
         "node_modules/.bin/coffee", "--compile", *files
     ))
 
+@task
+@no_help
+def optimize_requirejs(build_file=None):
+    """
+    Optimize requirejs modules.
+    """
+    if not build_file:
+        build_file = "cms/static/build.js"
+    sh(cmd(
+        "node", "node_modules/requirejs/bin/r.js", "-o", build_file
+    ))
 
 def compile_sass(debug=False):
     """
@@ -228,6 +239,7 @@ def update_assets(args):
     process_xmodule_assets()
     compile_coffeescript()
     compile_sass(args.debug)
+    optimize_requirejs()
 
     if args.collect:
         collect_assets(args.system, args.settings)

@@ -36,8 +36,9 @@ templates = ["basic-modal", "modal-button", "edit-xblock-modal",
 
 <%block name="jsextra">
 <script type='text/javascript'>
-    require(["domReady!", "jquery", "js/models/xblock_info", "js/views/pages/container",
-        "js/collections/component_template", "xmodule", "coffee/src/main", "xblock/cms.runtime.v1"],
+    require(['js/studio_lib'], function() {
+        require(["domReady!", "jquery", "js/models/xblock_info", "js/views/pages/container",
+            "js/collections/component_template", "xmodule", "coffee/src/main", "xblock/cms.runtime.v1"],
             function(doc, $, XBlockInfo, ContainerPage, ComponentTemplates, xmoduleLoader) {
                 var templates = new ComponentTemplates(${component_templates | n}, {parse: true});
                 var mainXBlockInfo = new XBlockInfo(${json.dumps(xblock_info) | n}, {parse: true});
@@ -53,7 +54,8 @@ templates = ["basic-modal", "modal-button", "edit-xblock-modal",
                     });
                     view.render();
                 });
-            });
+        });
+    });
 </script>
 
 </%block>

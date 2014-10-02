@@ -296,7 +296,7 @@ STATIC_ROOT = ENV_ROOT / "staticfiles" / git.revision
 
 STATICFILES_DIRS = [
     COMMON_ROOT / "static",
-    PROJECT_ROOT / "static",
+    PROJECT_ROOT / "build",
     LMS_ROOT / "static",
 
     # This is how you would use the textbook images locally

@@ -14,7 +14,8 @@ from contentstore.utils import reverse_usage_url
 
 <%block name="jsextra">
 <script type="text/javascript">
-    require(["domReady!", "jquery", "js/views/pages/course_outline", "js/models/xblock_outline_info"],
+    require(['js/studio_lib'], function() {
+        require(["domReady!", "jquery", "js/views/pages/course_outline", "js/models/xblock_outline_info"],
             function(doc, $, CourseOutlinePage, XBlockOutlineInfo) {
                 var courseXBlock = new XBlockOutlineInfo(${json.dumps(course_structure) | n}, { parse: true });
                 var view = new CourseOutlinePage({
@@ -23,7 +24,8 @@ from contentstore.utils import reverse_usage_url
                     initialState: ${json.dumps(initial_state) | n}
                 });
                 view.render();
-            });
+        });
+    });
 </script>
 </%block>
 

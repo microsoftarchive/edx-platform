@@ -1,5 +1,5 @@
 define(["domReady", "jquery", "underscore", "js/utils/cancel_on_escape", "js/views/utils/create_course_utils",
-    "js/views/utils/view_utils"],
+    "js/views/utils/view_utils", "js/studio_lib"],
     function (domReady, $, _, CancelOnEscape, CreateCourseUtilsFactory, ViewUtils) {
         var CreateCourseUtils = CreateCourseUtilsFactory({
             name: '.new-course-name',

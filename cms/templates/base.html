@@ -327,14 +327,16 @@
 
     % if context_course:
         <script type="text/javascript">
-        require(['js/models/course'], function(Course) {
-            window.course = new Course({
-                id: "${context_course.id | escapejs}",
-                name: "${context_course.display_name_with_default | h}",
-                url_name: "${context_course.location.name | h}",
-                org: "${context_course.location.org | h}",
-                num: "${context_course.location.course | h}",
-                revision: "${context_course.location.revision | h}"
+        require(['js/studio_lib'], function() {
+            require(['js/models/course'], function(Course) {
+                window.course = new Course({
+                    id: "${context_course.id | escapejs}",
+                    name: "${context_course.display_name_with_default | h}",
+                    url_name: "${context_course.location.name | h}",
+                    org: "${context_course.location.org | h}",
+                    num: "${context_course.location.course | h}",
+                    revision: "${context_course.location.revision | h}"
+                });
             });
         });
         </script>
