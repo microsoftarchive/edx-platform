@@ -43,7 +43,66 @@
     <script type="text/javascript">
         window.baseUrl = "${settings.STATIC_URL}";
         var require = {
-            baseUrl: baseUrl
+            baseUrl: baseUrl,
+            paths: {
+              "gettext": "/i18n",
+              "xmodule": "/xmodule/xmodule",
+             // externally hosted files
+              "tender": [
+                "//edxedge.tenderapp.com/tender_widget",
+                // if tender fails to load, fallback on a local file
+                // so that require doesn't fall over
+                "js/src/tender_fallback"
+              ],
+              "mathjax": "//edx-static.s3.amazonaws.com/mathjax-MathJax-727332c/MathJax.js?config=TeX-MML-AM_HTMLorMML-full&delayStartupUntil=configured",
+              "youtube": [
+                // youtube URL does not end in ".js". We add "?noext" to the path so
+                // that require.js adds the ".js" to the query component of the URL,
+                // and leaves the path component intact.
+                "//www.youtube.com/player_api?noext",
+                // if youtube fails to load, fallback on a local file
+                // so that require doesn't fall over
+                "js/src/youtube_fallback"
+              ]
+            },
+            map: {
+              "*": {
+                "coffee/src/ajax_prefix": "xmodule_js/common_static/coffee/src/ajax_prefix",
+                "coffee/src/logger": "xmodule_js/common_static/coffee/src/logger",
+                "xblock/cms.runtime.v1": "coffee/src/xblock/cms.runtime.v1",
+                "xblock/core": "xmodule_js/common_static/coffee/src/xblock/core",
+                "jquery.immediateDescendents": "xmodule_js/common_static/coffee/src/jquery.immediateDescendents",
+              }
+            },
+            shim: {
+              "gettext": {
+                  exports: "gettext"
+              },
+              "tender": {
+                exports: 'Tender'
+              },
+              "youtube": {
+                exports: "YT"
+              },
+              "mathjax": {
+                exports: "MathJax",
+                init: function() {
+                  MathJax.Hub.Config({
+                    tex2jax: {
+                      inlineMath: [
+                        ["\\(","\\)"],
+                        ['[mathjaxinline]','[/mathjaxinline]']
+                      ],
+                      displayMath: [
+                        ["\\[","\\]"],
+                        ['[mathjax]','[/mathjax]']
+                      ]
+                    }
+                  });
+                  MathJax.Hub.Configured();
+                }
+              }
+            }
         };
     </script>
     <script type="text/javascript" data-main="js/require_pages/base" src="${static.url("js/vendor/require.js")}"></script>
