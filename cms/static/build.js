@@ -298,7 +298,7 @@
     dir: "../build",
     waitSeconds: 60,
     findNestedDependencies: true,
-    optimize: "none",
+    // optimize: "none",
     modules: [
         {name: 'js/require_pages/base'},
         {name: 'js/require_pages/course', exclude: ["backbone", "jquery", "underscore"]}, // Course
