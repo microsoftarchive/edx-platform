@@ -53,15 +53,11 @@
       <%static:include path="js/system-feedback.underscore" />
     </script>
 
-    <script type="text/javascript">
-        ## require(['domReady!', 'jquery', 'js/require_pages/base']);
-    </script>
-
     % if context_course:
         <script type="text/javascript">
         require(['js/require_pages/base',], function () {
-            require(['js/models/course'], function(Course) {
-                window.course = new Course({
+            require(['js/require_pages/course'], function(Course) {
+                Course({
                   id: "${context_course.id | escapejs}",
                   name: "${context_course.display_name_with_default | h}",
                   url_name: "${context_course.location.name | h}",

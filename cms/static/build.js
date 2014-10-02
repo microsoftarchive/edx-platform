@@ -229,11 +229,11 @@
         },
 
         "coffee/src/main": {
-            deps: ["coffee/src/ajax_prefix"]
+            deps: ["xmodule_js/common_static/coffee/src/ajax_prefix"]
         },
         "coffee/src/logger": {
             exports: "Logger",
-            deps: ["coffee/src/ajax_prefix"]
+            deps: ["xmodule_js/common_static/coffee/src/ajax_prefix"]
         },
 
         // the following are all needed for annotation tools
@@ -298,8 +298,10 @@
     dir: "../build",
     waitSeconds: 60,
     findNestedDependencies: true,
+    optimize: "none",
     modules: [
         {name: 'js/require_pages/base'},
+        {name: 'js/require_pages/course', exclude: ["backbone", "jquery", "underscore"]}, // Course
         {name: 'js/require_pages/index', exclude: ["backbone", "jquery", "underscore"]}, // Course
         {name: 'js/require_pages/login', exclude: ["backbone", "jquery", "underscore"]}, // Login
         {name: 'js/require_pages/outline', exclude: ["backbone", "jquery", "underscore"]}, // Outline
