@@ -22,7 +22,7 @@
     //file should be skipped because it has no dependencies.
     paths: {
         "domReady": "xmodule_js/common_static/js/vendor/domReady",
-        "gettext": "js/i18n",
+        "gettext": "empty:",
         "mustache": "xmodule_js/common_static/js/vendor/mustache",
         "codemirror": "xmodule_js/common_static/js/vendor/codemirror-compressed",
         "codemirror/stex": "xmodule_js/common_static/js/vendor/CodeMirror/stex",
@@ -52,7 +52,7 @@
         "backbone.paginator": "xmodule_js/common_static/js/vendor/backbone.paginator.min",
         "tinymce": "xmodule_js/common_static/js/vendor/tinymce/js/tinymce/tinymce.full.min",
         "jquery.tinymce": "xmodule_js/common_static/js/vendor/tinymce/js/tinymce/jquery.tinymce.min",
-        "xmodule": "xmodule_js/src/xmodule",
+        "xmodule": "empty:",
         "xblock": "xmodule_js/common_static/coffee/src/xblock",
         "utility": "xmodule_js/common_static/js/src/utility",
         "accessibility": "xmodule_js/common_static/js/src/accessibility_tools",
@@ -81,29 +81,11 @@
         "catch": 'xmodule_js/common_static/js/vendor/ova/catch/js/catch',
         "handlebars": 'xmodule_js/common_static/js/vendor/ova/catch/js/handlebars-1.1.2',
         // end of Annotation tool files
-
-        // // externally hosted files
-        // "tender": [
-        //     "//edxedge.tenderapp.com/tender_widget",
-        //     // if tender fails to load, fallback on a local file
-        //     // so that require doesn't fall over
-        //     "js/src/tender_fallback"
-        // ],
-        // "mathjax": "//edx-static.s3.amazonaws.com/mathjax-MathJax-727332c/MathJax.js?config=TeX-MML-AM_HTMLorMML-full&delayStartupUntil=configured",
-        // "youtube": [
-        //     // youtube URL does not end in ".js". We add "?noext" to the path so
-            // that require.js adds the ".js" to the query component of the URL,
-            // and leaves the path component intact.
-            // "//www.youtube.com/player_api?noext",
-            // // if youtube fails to load, fallback on a local file
-            // // so that require doesn't fall over
-            // "js/src/youtube_fallback"
-        // ]
+        "mathjax": "empty:",
+        "tender": "empty:",
+        "youtube": "empty:"
     },
     shim: {
-        "gettext": {
-            exports: "gettext"
-        },
         "date": {
             exports: "Date"
         },
@@ -177,12 +159,6 @@
             deps: ["backbone"],
             exports: "Backbone.Paginator"
         },
-        // "tender": {
-        //     exports: 'Tender'
-        // },
-        // "youtube": {
-        //     exports: "YT"
-        // },
         "codemirror": {
             exports: "CodeMirror"
         },
@@ -191,24 +167,6 @@
         },
         "tinymce": {
             exports: "tinymce"
-        },
-        "mathjax": {
-            exports: "MathJax",
-            init: function() {
-              MathJax.Hub.Config({
-                tex2jax: {
-                  inlineMath: [
-                    ["\\(","\\)"],
-                    ['[mathjaxinline]','[/mathjaxinline]']
-                  ],
-                  displayMath: [
-                    ["\\[","\\]"],
-                    ['[mathjax]','[/mathjax]']
-                  ]
-                }
-              });
-              MathJax.Hub.Configured();
-            }
         },
         "URI": {
             exports: "URI"
@@ -223,9 +181,17 @@
             exports: "XBlock",
             deps: ["jquery", "jquery.immediateDescendents"]
         },
+        "xmodule": {
+            deps: [
+                "jquery", "underscore", "mathjax", "codemirror", "tinymce",
+                "jquery.tinymce", "jquery.qtip", "jquery.scrollTo", "jquery.flot",
+                "jquery.cookie",
+                "utility"
+            ]
+        },
         "xblock/runtime.v1": {
             exports: "XBlock",
-            deps: ["xblock/core"]
+            deps: ["xblock/core", "jquery.immediateDescendents"]
         },
 
         "coffee/src/main": {
@@ -301,11 +267,10 @@
     // optimize: "none",
     modules: [
         {name: 'js/require_pages/base'},
+        {name: 'js/require_pages/index', exclude: ["backbone", "jquery", "underscore"]}, // Home
         {name: 'js/require_pages/course', exclude: ["backbone", "jquery", "underscore"]}, // Course
-        {name: 'js/require_pages/index', exclude: ["backbone", "jquery", "underscore"]}, // Course
         {name: 'js/require_pages/login', exclude: ["backbone", "jquery", "underscore"]}, // Login
         {name: 'js/require_pages/outline', exclude: ["backbone", "jquery", "underscore"]}, // Outline
         {name: 'js/require_pages/container', exclude: ["backbone", "jquery", "underscore"]} // Container
-        // {name: 'js/require_pages/container'}, // Advanced Settings
     ]
 })
