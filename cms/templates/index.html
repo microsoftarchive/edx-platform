@@ -5,14 +5,10 @@
 <%block name="title">${_("My Courses")}</%block>
 <%block name="bodyclass">is-signedin index view-dashboard</%block>
 
-<%block name="jsextra">
-<script type="text/javascript">
-require(['js/require_pages/base'], function () {
+<%block name="requirejs">
   require(["js/require_pages/index"], function(Index) {
       Index();
   });
-});
-</script>
 </%block>
 
 <%block name="content">

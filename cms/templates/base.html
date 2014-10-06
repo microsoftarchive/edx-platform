@@ -104,29 +104,12 @@
             }
         };
     </script>
-    <script type="text/javascript" data-main="js/require_pages/base" src="${static.url("js/vendor/require.js")}"></script>
+    <script type="text/javascript" src="${static.url("js/vendor/require.js")}"></script>
 
     ## js templates
     <script id="system-feedback-tpl" type="text/template">
       <%static:include path="js/system-feedback.underscore" />
     </script>
-
-    % if context_course:
-        <script type="text/javascript">
-        require(['js/require_pages/base',], function () {
-            require(['js/require_pages/course'], function(Course) {
-                Course({
-                    id: "${context_course.id | escapejs}",
-                    name: "${context_course.display_name_with_default | h}",
-                    url_name: "${context_course.location.name | h}",
-                    org: "${context_course.location.org | h}",
-                    num: "${context_course.location.course | h}",
-                    revision: "${context_course.location.revision | h}"
-                });
-            });
-        });
-        </script>
-    % endif
 
     <!-- view -->
     <div class="wrapper wrapper-view">
@@ -142,14 +125,8 @@
       </div>
 
       % if user.is_authenticated():
-      <script type="text/javascript">
-        require(['js/require_pages/base'], function () {
-            require(['js/sock']);
-        });
-      </script>
-      <%include file="widgets/sock.html" args="online_help_token=online_help_token" />
+        <%include file="widgets/sock.html" args="online_help_token=online_help_token" />
       % endif
-
       <%include file="widgets/footer.html" />
       <%include file="widgets/tender.html" />
 
@@ -158,6 +135,26 @@
 
     <div id="page-prompt"></div>
     <%block name="jsextra"></%block>
+    <script type="text/javascript">
+      require(['js/require_pages/base'], function () {
+        % if context_course:
+          require(['js/require_pages/course'], function(Course) {
+              Course({
+                  id: "${context_course.id | escapejs}",
+                  name: "${context_course.display_name_with_default | h}",
+                  url_name: "${context_course.location.name | h}",
+                  org: "${context_course.location.org | h}",
+                  num: "${context_course.location.course | h}",
+                  revision: "${context_course.location.revision | h}"
+              });
+          });
+        % endif
+        % if user.is_authenticated():
+            require(['js/sock']);
+        % endif
+        <%block name='requirejs'></%block>
+      });
+    </script>
     <div class="modal-cover"></div>
   </body>
 </html>
