@@ -264,7 +264,7 @@
     dir: "../build",
     waitSeconds: 60,
     skipDirOptimize: true,
-    // optimize: "none",
+    optimize: "none",
     optimizeCss: "none",
     modules: [
         {name: 'js/require_pages/base'},
