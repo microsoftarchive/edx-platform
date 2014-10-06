@@ -263,8 +263,9 @@
 
     dir: "../build",
     waitSeconds: 60,
-    findNestedDependencies: true,
+    skipDirOptimize: true,
     // optimize: "none",
+    optimizeCss: "none",
     modules: [
         {name: 'js/require_pages/base'},
         {name: 'js/require_pages/index', exclude: ["backbone", "jquery", "underscore"]}, // Home
