@@ -12,14 +12,10 @@ from contentstore.utils import reverse_usage_url
 
 <%namespace name='static' file='static_content.html'/>
 
-<%block name="jsextra">
-<script type="text/javascript">
-require(['js/require_pages/base'], function () {
+<%block name="requirejs">
     require(["js/require_pages/outline"], function (CourseOutline) {
         CourseOutline(${json.dumps(course_structure) | n}, ${json.dumps(initial_state) | n});
     });
-});
-</script>
 </%block>
 
 <%block name="header_extras">
