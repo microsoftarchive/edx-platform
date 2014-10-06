@@ -1,85 +1,64 @@
 ({
-    //The top level directory that contains your app. If this option is used
-    //then it assumed your scripts are in a subdirectory under this path.
-    //This option is not required. If it is not specified, then baseUrl
-    //below is the anchor point for finding things. If this option is specified,
-    //then all the files from the app directory will be copied to the dir:
-    //output area, and baseUrl will assume to be a relative path under
-    //this directory.
-    appDir: "./",
-
-    //By default, all modules are located relative to this path. If baseUrl
-    //is not explicitly set, then all modules are loaded relative to
-    //the directory that holds the build file. If appDir is set, then
-    //baseUrl should be specified as relative to the appDir.
-    baseUrl: "./",
-    //Set paths for modules. If relative paths, set relative to baseUrl above.
-    //If a special value of "empty:" is used for the path value, then that
-    //acts like mapping the path to an empty file. It allows the optimizer to
-    //resolve the dependency to path, but then does not include it in the output.
-    //Useful to map module names that are to resources on a CDN or other
-    //http: URL when running in the browser and during an optimization that
-    //file should be skipped because it has no dependencies.
     paths: {
-        "domReady": "xmodule_js/common_static/js/vendor/domReady",
+        "domReady": "js/vendor/domReady",
         "gettext": "empty:",
-        "mustache": "xmodule_js/common_static/js/vendor/mustache",
-        "codemirror": "xmodule_js/common_static/js/vendor/codemirror-compressed",
-        "codemirror/stex": "xmodule_js/common_static/js/vendor/CodeMirror/stex",
-        "jquery": "xmodule_js/common_static/js/vendor/jquery.min",
-        "jquery.ui": "xmodule_js/common_static/js/vendor/jquery-ui.min",
-        "jquery.form": "xmodule_js/common_static/js/vendor/jquery.form",
-        "jquery.markitup": "xmodule_js/common_static/js/vendor/markitup/jquery.markitup",
-        "jquery.leanModal": "xmodule_js/common_static/js/vendor/jquery.leanModal.min",
-        "jquery.ajaxQueue": "xmodule_js/common_static/js/vendor/jquery.ajaxQueue",
-        "jquery.smoothScroll": "xmodule_js/common_static/js/vendor/jquery.smooth-scroll.min",
-        "jquery.timepicker": "xmodule_js/common_static/js/vendor/timepicker/jquery.timepicker",
-        "jquery.cookie": "xmodule_js/common_static/js/vendor/jquery.cookie",
-        "jquery.qtip": "xmodule_js/common_static/js/vendor/jquery.qtip.min",
-        "jquery.scrollTo": "xmodule_js/common_static/js/vendor/jquery.scrollTo-1.4.2-min",
-        "jquery.flot": "xmodule_js/common_static/js/vendor/flot/jquery.flot.min",
-        "jquery.fileupload": "xmodule_js/common_static/js/vendor/jQuery-File-Upload/js/jquery.fileupload",
-        "jquery.iframe-transport": "xmodule_js/common_static/js/vendor/jQuery-File-Upload/js/jquery.iframe-transport",
-        "jquery.inputnumber": "xmodule_js/common_static/js/vendor/html5-input-polyfills/number-polyfill",
-        "jquery.immediateDescendents": "xmodule_js/common_static/coffee/src/jquery.immediateDescendents",
-        "datepair": "xmodule_js/common_static/js/vendor/timepicker/datepair",
-        "date": "xmodule_js/common_static/js/vendor/date",
-        "tzAbbr": "xmodule_js/common_static/js/vendor/tzAbbr",
-        "underscore": "xmodule_js/common_static/js/vendor/underscore-min",
-        "underscore.string": "xmodule_js/common_static/js/vendor/underscore.string.min",
-        "backbone": "xmodule_js/common_static/js/vendor/backbone-min",
-        "backbone.associations": "xmodule_js/common_static/js/vendor/backbone-associations-min",
-        "backbone.paginator": "xmodule_js/common_static/js/vendor/backbone.paginator.min",
-        "tinymce": "xmodule_js/common_static/js/vendor/tinymce/js/tinymce/tinymce.full.min",
-        "jquery.tinymce": "xmodule_js/common_static/js/vendor/tinymce/js/tinymce/jquery.tinymce.min",
+        "mustache": "js/vendor/mustache",
+        "codemirror": "js/vendor/codemirror-compressed",
+        "codemirror/stex": "js/vendor/CodeMirror/stex",
+        "jquery": "js/vendor/jquery.min",
+        "jquery.ui": "js/vendor/jquery-ui.min",
+        "jquery.form": "js/vendor/jquery.form",
+        "jquery.markitup": "js/vendor/markitup/jquery.markitup",
+        "jquery.leanModal": "js/vendor/jquery.leanModal.min",
+        "jquery.ajaxQueue": "js/vendor/jquery.ajaxQueue",
+        "jquery.smoothScroll": "js/vendor/jquery.smooth-scroll.min",
+        "jquery.timepicker": "js/vendor/timepicker/jquery.timepicker",
+        "jquery.cookie": "js/vendor/jquery.cookie",
+        "jquery.qtip": "js/vendor/jquery.qtip.min",
+        "jquery.scrollTo": "js/vendor/jquery.scrollTo-1.4.2-min",
+        "jquery.flot": "js/vendor/flot/jquery.flot.min",
+        "jquery.fileupload": "js/vendor/jQuery-File-Upload/js/jquery.fileupload",
+        "jquery.iframe-transport": "js/vendor/jQuery-File-Upload/js/jquery.iframe-transport",
+        "jquery.inputnumber": "js/vendor/html5-input-polyfills/number-polyfill",
+        "jquery.immediateDescendents": "coffee/src/jquery.immediateDescendents",
+        "datepair": "js/vendor/timepicker/datepair",
+        "date": "js/vendor/date",
+        "tzAbbr": "js/vendor/tzAbbr",
+        "underscore": "js/vendor/underscore-min",
+        "underscore.string": "js/vendor/underscore.string.min",
+        "backbone": "js/vendor/backbone-min",
+        "backbone.associations": "js/vendor/backbone-associations-min",
+        "backbone.paginator": "js/vendor/backbone.paginator.min",
+        "tinymce": "js/vendor/tinymce/js/tinymce/tinymce.full.min",
+        "jquery.tinymce": "js/vendor/tinymce/js/tinymce/jquery.tinymce.min",
         "xmodule": "empty:",
-        "xblock": "xmodule_js/common_static/coffee/src/xblock",
-        "utility": "xmodule_js/common_static/js/src/utility",
-        "accessibility": "xmodule_js/common_static/js/src/accessibility_tools",
-        "draggabilly": "xmodule_js/common_static/js/vendor/draggabilly.pkgd",
-        "URI": "xmodule_js/common_static/js/vendor/URI.min",
-        "ieshim": "xmodule_js/common_static/js/src/ie_shim",
-        "tooltip_manager": "xmodule_js/common_static/js/src/tooltip_manager",
+        "xblock": "coffee/src/xblock",
+        "utility": "js/src/utility",
+        "accessibility": "js/src/accessibility_tools",
+        "draggabilly": "js/vendor/draggabilly.pkgd",
+        "URI": "js/vendor/URI.min",
+        "ieshim": "js/src/ie_shim",
+        "tooltip_manager": "js/src/tooltip_manager",
 
         // Files needed for Annotations feature
-        "annotator": "xmodule_js/common_static/js/vendor/ova/annotator-full",
-        "annotator-harvardx": "xmodule_js/common_static/js/vendor/ova/annotator-full-firebase-auth",
-        "video.dev": "xmodule_js/common_static/js/vendor/ova/video.dev",
-        "vjs.youtube": 'xmodule_js/common_static/js/vendor/ova/vjs.youtube',
-        "rangeslider": 'xmodule_js/common_static/js/vendor/ova/rangeslider',
-        "share-annotator": 'xmodule_js/common_static/js/vendor/ova/share-annotator',
-        "richText-annotator": 'xmodule_js/common_static/js/vendor/ova/richText-annotator',
-        "reply-annotator": 'xmodule_js/common_static/js/vendor/ova/reply-annotator',
-        "grouping-annotator": 'xmodule_js/common_static/js/vendor/ova/grouping-annotator',
-        "tags-annotator": 'xmodule_js/common_static/js/vendor/ova/tags-annotator',
-        "diacritic-annotator": 'xmodule_js/common_static/js/vendor/ova/diacritic-annotator',
-        "flagging-annotator": 'xmodule_js/common_static/js/vendor/ova/flagging-annotator',
-        "jquery-Watch": 'xmodule_js/common_static/js/vendor/ova/jquery-Watch',
-        "openseadragon": 'xmodule_js/common_static/js/vendor/ova/openseadragon',
-        "osda": 'xmodule_js/common_static/js/vendor/ova/OpenSeaDragonAnnotation',
-        "ova": 'xmodule_js/common_static/js/vendor/ova/ova',
-        "catch": 'xmodule_js/common_static/js/vendor/ova/catch/js/catch',
-        "handlebars": 'xmodule_js/common_static/js/vendor/ova/catch/js/handlebars-1.1.2',
+        "annotator": "js/vendor/ova/annotator-full",
+        "annotator-harvardx": "js/vendor/ova/annotator-full-firebase-auth",
+        "video.dev": "js/vendor/ova/video.dev",
+        "vjs.youtube": 'js/vendor/ova/vjs.youtube',
+        "rangeslider": 'js/vendor/ova/rangeslider',
+        "share-annotator": 'js/vendor/ova/share-annotator',
+        "richText-annotator": 'js/vendor/ova/richText-annotator',
+        "reply-annotator": 'js/vendor/ova/reply-annotator',
+        "grouping-annotator": 'js/vendor/ova/grouping-annotator',
+        "tags-annotator": 'js/vendor/ova/tags-annotator',
+        "diacritic-annotator": 'js/vendor/ova/diacritic-annotator',
+        "flagging-annotator": 'js/vendor/ova/flagging-annotator',
+        "jquery-Watch": 'js/vendor/ova/jquery-Watch',
+        "openseadragon": 'js/vendor/ova/openseadragon',
+        "osda": 'js/vendor/ova/OpenSeaDragonAnnotation',
+        "ova": 'js/vendor/ova/ova',
+        "catch": 'js/vendor/ova/catch/js/catch',
+        "handlebars": 'js/vendor/ova/catch/js/handlebars-1.1.2',
         // end of Annotation tool files
         "mathjax": "empty:",
         "tender": "empty:",
@@ -195,11 +174,11 @@
         },
 
         "coffee/src/main": {
-            deps: ["xmodule_js/common_static/coffee/src/ajax_prefix"]
+            deps: ["coffee/src/ajax_prefix"]
         },
         "coffee/src/logger": {
             exports: "Logger",
-            deps: ["xmodule_js/common_static/coffee/src/ajax_prefix"]
+            deps: ["coffee/src/ajax_prefix"]
         },
 
         // the following are all needed for annotation tools
@@ -249,22 +228,8 @@
         },
         // end of annotation tool files
     },
-
-    map: {
-        "*": {
-            "coffee/src/ajax_prefix": "xmodule_js/common_static/coffee/src/ajax_prefix",
-            "coffee/src/logger": "xmodule_js/common_static/coffee/src/logger",
-            "xblock/cms.runtime.v1": "coffee/src/xblock/cms.runtime.v1",
-            "xblock/core": "xmodule_js/common_static/coffee/src/xblock/core"
-        }
-    },
-
-    deps: ["jquery"],
-
-    dir: "../build",
     waitSeconds: 60,
     skipDirOptimize: true,
-    optimize: "none",
     optimizeCss: "none",
     modules: [
         {name: 'js/require_pages/base'},
