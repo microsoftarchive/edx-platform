@@ -1,6 +1,6 @@
 define([
-    'domReady!', 'jquery', 'js/views/settings/grading', 'js/models/settings/course_grading_policy'
-], function(doc, $, GradingView, CourseGradingPolicyModel) {
+    'jquery', 'js/views/settings/grading', 'js/models/settings/course_grading_policy'
+], function($, GradingView, CourseGradingPolicyModel) {
     'use strict';
     return function (courseDetails, gradingUrl) {
         var model, editor;

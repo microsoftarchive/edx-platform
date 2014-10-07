@@ -1,6 +1,6 @@
 define([
-    'domReady!', 'jquery', 'gettext', 'js/models/settings/advanced', 'js/views/settings/advanced'
-], function(doc, $, gettext, AdvancedSettingsModel, AdvancedSettingsView) {
+    'jquery', 'gettext', 'js/models/settings/advanced', 'js/views/settings/advanced'
+], function($, gettext, AdvancedSettingsModel, AdvancedSettingsView) {
     'use strict';
     return function (advancedDict, advancedSettingsUrl) {
         var advancedModel, editor;
