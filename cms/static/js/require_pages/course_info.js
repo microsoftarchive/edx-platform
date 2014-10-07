@@ -1,7 +1,7 @@
 define([
-    'domReady!', 'jquery', 'js/collections/course_update', 'js/models/module_info',
+    'jquery', 'js/collections/course_update', 'js/models/module_info',
     'js/models/course_info', 'js/views/course_info_edit'
-], function(doc, $, CourseUpdateCollection, ModuleInfoModel, CourseInfoModel, CourseInfoEditView) {
+], function($, CourseUpdateCollection, ModuleInfoModel, CourseInfoModel, CourseInfoEditView) {
     'use strict';
     return function (updatesUrl, handoutsLocator, baseAssetUrl) {
         var course_updates = new CourseUpdateCollection(),

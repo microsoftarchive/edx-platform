@@ -1,6 +1,6 @@
 define([
-    'domReady!', 'jquery', 'js/models/settings/course_details', 'js/views/settings/main'
-], function(doc, $, CourseDetailsModel, MainView) {
+    'jquery', 'js/models/settings/course_details', 'js/views/settings/main'
+], function($, CourseDetailsModel, MainView) {
     'use strict';
     return function (detailsUrl) {
         var model;

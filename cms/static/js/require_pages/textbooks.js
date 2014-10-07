@@ -1,6 +1,6 @@
 define([
-    'domReady!', 'gettext', 'js/models/section', 'js/collections/textbook', 'js/views/list_textbooks'
-], function(doc, gettext, Section, TextbookCollection, ListTextbooksView) {
+    'gettext', 'js/models/section', 'js/collections/textbook', 'js/views/list_textbooks'
+], function(gettext, Section, TextbookCollection, ListTextbooksView) {
     'use strict';
     return function (textbooksJson) {
         var textbooks = new TextbookCollection(textbooksJson, {parse: true}),

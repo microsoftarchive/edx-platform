@@ -1,6 +1,6 @@
 define([
-    'domReady!', 'js/collections/group_configuration', 'js/views/pages/group_configurations'
-], function(doc, GroupConfigurationCollection, GroupConfigurationsPage) {
+    'js/collections/group_configuration', 'js/views/pages/group_configurations'
+], function(GroupConfigurationCollection, GroupConfigurationsPage) {
     'use strict';
     return function (configurations, groupConfigurationUrl, courseOutlineUrl) {
         var collection = new GroupConfigurationCollection(configurations, { parse: true }),

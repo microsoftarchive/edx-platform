@@ -1,4 +1,4 @@
-define(['domReady!', 'jquery', 'underscore', 'gettext', 'js/views/feedback_prompt'], function(doc, $, _, gettext, PromptView) {
+define(['jquery', 'underscore', 'gettext', 'js/views/feedback_prompt'], function($, _, gettext, PromptView) {
     'use strict';
     return function (staffEmails, tplUserURL) {
         var unknownErrorMessage = gettext('Unknown'),

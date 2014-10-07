@@ -1,4 +1,4 @@
-define(['domReady!', 'gettext', 'js/views/feedback_prompt'], function(doc, gettext, PromptView) {
+define(['gettext', 'js/views/feedback_prompt'], function(gettext, PromptView) {
     'use strict';
     return function (hasUnit, editUnitUrl, courseHomeUrl, errMsg) {
         var dialog;
