@@ -58,7 +58,7 @@ from django.utils.translation import ugettext as _
 </%block>
 
 <%block name="requirejs">
-  require(["js/require_pages/login"], function(LogIn) {
+  require(["js/pages/login"], function(LogIn) {
       LogIn("${reverse('homepage')}");
   });
 </%block>

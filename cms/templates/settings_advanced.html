@@ -18,7 +18,7 @@
 </%block>
 
 <%block name="requirejs">
-    require(["js/require_pages/settings_advanced"], function(AdvancedSettings) {
+    require(["js/pages/settings_advanced"], function(AdvancedSettings) {
         AdvancedSettings(${advanced_dict | n}, "${advanced_settings_url}");
     });
 </%block>

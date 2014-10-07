@@ -16,7 +16,7 @@
       courseHomeUrl = "${course_home_url or ""}",
       errMsg = ${json.dumps(raw_err_msg or "")};
 
-  require(["js/require_pages/export"], function(Export) {
+  require(["js/pages/export"], function(Export) {
       Export(hasUnit, editUnitUrl, courseHomeUrl, errMsg);
   });
 %endif

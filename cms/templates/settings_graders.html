@@ -21,7 +21,7 @@
   <link rel="stylesheet" type="text/css" href="${static.url('js/vendor/timepicker/jquery.timepicker.css')}" />
 </%block>
 <%block name="requirejs">
-    require(["js/require_pages/settings_graders"], function(CourseGrading) {
+    require(["js/pages/settings_graders"], function(CourseGrading) {
         CourseGrading(${course_details|n}, "${grading_url}");
     });
 </%block>

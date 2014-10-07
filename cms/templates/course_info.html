@@ -20,7 +20,7 @@
 </%block>
 
 <%block name="requirejs">
-  require(["js/require_pages/course_info"], function(CourseInfo) {
+  require(["js/pages/course_info"], function(CourseInfo) {
       CourseInfo("${updates_url}", "${handouts_locator | escapejs}", "${base_asset_url}");
   });
 </%block>

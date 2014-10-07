@@ -19,7 +19,7 @@
 </%block>
 
 <%block name="requirejs">
-    require(["js/require_pages/edit_tabs"], function (EditTabs) {
+    require(["js/pages/edit_tabs"], function (EditTabs) {
         EditTabs("${context_course.location | escapejs}", "${reverse('contentstore.views.tabs_handler', kwargs={'course_key_string': context_course.id})}");
     });
 </%block>

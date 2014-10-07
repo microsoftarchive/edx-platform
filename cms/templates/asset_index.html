@@ -18,7 +18,7 @@
 </%block>
 
 <%block name="requirejs">
-    require(["js/require_pages/asset_index"], function (AssetIndex) {
+    require(["js/pages/asset_index"], function (AssetIndex) {
         AssetIndex("${asset_callback_url}");
     });
 </%block>
