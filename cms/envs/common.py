@@ -323,8 +323,7 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 EMBARGO_SITE_REDIRECT_URL = None
 
 ############################### Pipeline #######################################
-
-STATICFILES_STORAGE = 'cms.envs.staticstorage.OptimizedCachedRequireJSStorage'
+STATICFILES_STORAGE = 'cms.lib.django_require.staticstorage.OptimizedCachedRequireJSStorage'
 
 from rooted_paths import rooted_glob
 
@@ -439,6 +438,8 @@ STATICFILES_IGNORE_PATTERNS = (
 
 PIPELINE_YUI_BINARY = 'yui-compressor'
 
+################################# DJANGO-REQUIRE ###############################
+
 # The baseUrl to pass to the r.js optimizer, relative to STATIC_ROOT.
 REQUIRE_BASE_URL = "./"
 
@@ -452,11 +453,10 @@ REQUIRE_BUILD_PROFILE = "build.js"
 REQUIRE_JS = "js/vendor/require.js"
 
 # A dictionary of standalone modules to build with almond.js.
-# See the section on Standalone Modules, below.
 REQUIRE_STANDALONE_MODULES = {}
 
 # Whether to run django-require in debug mode.
-REQUIRE_DEBUG = DEBUG
+REQUIRE_DEBUG = False
 
 # A tuple of files to exclude from the compilation result of r.js.
 REQUIRE_EXCLUDE = STATICFILES_IGNORE_PATTERNS
