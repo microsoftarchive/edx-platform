@@ -1,4 +1,5 @@
-define(["jquery.cookie", "utility"], function() {
+define(['jquery.cookie', 'utility'], function() {
+    'use strict';
     return function (homepageURL) {
         function postJSON(url, data, callback) {
             $.ajax({
@@ -24,6 +25,7 @@ define(["jquery.cookie", "utility"], function() {
                         else location.href = homepageURL;
                     } else if($('#login_error').length == 0) {
                         $('#login_form').prepend('<div id="login_error" class="message message-status error">' + json.value + '</span></div>');
+                        'use strict';
                         $('#login_error').addClass('is-shown');
                     } else {
                         $('#login_error')
