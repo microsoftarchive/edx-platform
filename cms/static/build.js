@@ -11,7 +11,8 @@
     skipDirOptimize: true,
     optimizeCss: "none",
     modules: [
-        {name: 'js/pages/base'},
+        {name: 'js/pages/deps'},
+        {name: 'js/pages/base', exclude: ["domReady", "domReady!", "backbone", "jquery", "underscore"]},
         {name: 'js/pages/index', exclude: ["domReady", "domReady!", "backbone", "jquery", "underscore"]},
         {name: 'js/pages/course', exclude: ["domReady", "domReady!", "backbone", "jquery", "underscore"]},
         {name: 'js/pages/login', exclude: ["domReady", "domReady!", "backbone", "jquery", "underscore"]},

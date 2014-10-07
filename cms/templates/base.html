@@ -81,23 +81,25 @@
     <div id="page-prompt"></div>
     <%block name="jsextra"></%block>
     <script type="text/javascript">
-      require(['js/pages/base'], function () {
-        % if context_course:
-          require(['js/pages/course'], function(Course) {
-              Course({
-                  id: "${context_course.id | escapejs}",
-                  name: "${context_course.display_name_with_default | h}",
-                  url_name: "${context_course.location.name | h}",
-                  org: "${context_course.location.org | h}",
-                  num: "${context_course.location.course | h}",
-                  revision: "${context_course.location.revision | h}"
+      require(['js/pages/deps'], function () {
+          require(['js/pages/base'], function () {
+            % if context_course:
+              require(['js/pages/course'], function(Course) {
+                  Course({
+                      id: "${context_course.id | escapejs}",
+                      name: "${context_course.display_name_with_default | h}",
+                      url_name: "${context_course.location.name | h}",
+                      org: "${context_course.location.org | h}",
+                      num: "${context_course.location.course | h}",
+                      revision: "${context_course.location.revision | h}"
+                  });
               });
+            % endif
+            % if user.is_authenticated():
+                require(['js/sock']);
+            % endif
+            <%block name='requirejs'></%block>
           });
-        % endif
-        % if user.is_authenticated():
-            require(['js/sock']);
-        % endif
-        <%block name='requirejs'></%block>
       });
     </script>
     <div class="modal-cover"></div>
