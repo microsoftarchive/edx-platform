@@ -42,14 +42,14 @@
     <a class="nav-skip" href="#content">${_("Skip to this view's content")}</a>
 
     <script type="text/javascript" src="${static.url("js/vendor/require.js")}"></script>
-    % if settings.DEBUG:
-    <script type="text/javascript" src="${static.url("require-config.js")}"></script>
-    % endif
-    <script type="text/javascript" src="${static.url("require-config-external.js")}"></script>
     <script type="text/javascript">
       window.baseUrl = "${settings.STATIC_URL}";
       require.config({baseUrl : window.baseUrl});
     </script>
+    % if settings.DEBUG:
+    <script type="text/javascript" src="${static.url("require-config.js")}"></script>
+    % endif
+    <script type="text/javascript" src="${static.url("require-config-external.js")}"></script>
 
     ## js templates
     <script id="system-feedback-tpl" type="text/template">

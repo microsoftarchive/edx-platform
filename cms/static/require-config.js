@@ -3,7 +3,6 @@ require.config({
     waitSeconds: 60,
     paths: {
         "domReady": "js/vendor/domReady",
-        "gettext": "/i18n",
         "mustache": "js/vendor/mustache",
         "codemirror": "js/vendor/codemirror-compressed",
         "codemirror/stex": "js/vendor/CodeMirror/stex",
@@ -32,7 +31,6 @@ require.config({
         "backbone.paginator": "js/vendor/backbone.paginator.min",
         "tinymce": "js/vendor/tinymce/js/tinymce/tinymce.full.min",
         "jquery.tinymce": "js/vendor/tinymce/js/tinymce/jquery.tinymce.min",
-        "xmodule": "/xmodule/xmodule",
         "xblock": "coffee/src/xblock",
         "utility": "js/src/utility",
         "accessibility": "js/src/accessibility_tools",
@@ -61,29 +59,8 @@ require.config({
         "catch": 'js/vendor/ova/catch/js/catch',
         "handlebars": 'js/vendor/ova/catch/js/handlebars-1.1.2',
         // end of Annotation tool files
-
-        // externally hosted files
-        "tender": [
-            "//edxedge.tenderapp.com/tender_widget",
-            // if tender fails to load, fallback on a local file
-            // so that require doesn't fall over
-            "js/src/tender_fallback"
-        ],
-        "mathjax": "//edx-static.s3.amazonaws.com/mathjax-MathJax-727332c/MathJax.js?config=TeX-MML-AM_HTMLorMML-full&delayStartupUntil=configured",
-        "youtube": [
-            // youtube URL does not end in ".js". We add "?noext" to the path so
-            // that require.js adds the ".js" to the query component of the URL,
-            // and leaves the path component intact.
-            "//www.youtube.com/player_api?noext",
-            // if youtube fails to load, fallback on a local file
-            // so that require doesn't fall over
-            "js/src/youtube_fallback"
-        ]
     },
     shim: {
-        "gettext": {
-            exports: "gettext"
-        },
         "date": {
             exports: "Date"
         },
@@ -157,12 +134,6 @@ require.config({
             deps: ["backbone"],
             exports: "Backbone.Paginator"
         },
-        "tender": {
-            exports: 'Tender'
-        },
-        "youtube": {
-            exports: "YT"
-        },
         "codemirror": {
             exports: "CodeMirror"
         },
@@ -171,24 +142,6 @@ require.config({
         },
         "tinymce": {
             exports: "tinymce"
-        },
-        "mathjax": {
-            exports: "MathJax",
-            init: function() {
-                MathJax.Hub.Config({
-                    tex2jax: {
-                        inlineMath: [
-                            ["\\(","\\)"],
-                            ['[mathjaxinline]','[/mathjaxinline]']
-                        ],
-                        displayMath: [
-                            ["\\[","\\]"],
-                            ['[mathjax]','[/mathjax]']
-                        ]
-                    }
-                });
-                MathJax.Hub.Configured();
-            }
         },
         "URI": {
             exports: "URI"
@@ -260,7 +213,7 @@ require.config({
         "osda":{
             exports: "osda",
             deps: ["annotator", "annotator-harvardx", "video.dev", "vjs.youtube", "rangeslider", "share-annotator", "richText-annotator", "reply-annotator", "tags-annotator", "flagging-annotator", "grouping-annotator", "diacritic-annotator", "openseadragon", "jquery-Watch", "catch", "handlebars", "URI"]
-        },
+        }
         // end of annotation tool files
     }
 });

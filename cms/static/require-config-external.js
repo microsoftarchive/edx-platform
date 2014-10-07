@@ -18,5 +18,34 @@ require.config({
             // so that require doesn't fall over
             "js/src/youtube_fallback"
         ]
+    },
+    shim: {
+        "gettext": {
+            exports: "gettext"
+        },
+        "tender": {
+            exports: 'Tender'
+        },
+        "youtube": {
+            exports: "YT"
+        },
+        "mathjax": {
+            exports: "MathJax",
+            init: function() {
+                MathJax.Hub.Config({
+                    tex2jax: {
+                        inlineMath: [
+                            ["\\(","\\)"],
+                            ['[mathjaxinline]','[/mathjaxinline]']
+                        ],
+                        displayMath: [
+                            ["\\[","\\]"],
+                            ['[mathjax]','[/mathjax]']
+                        ]
+                    }
+                });
+                MathJax.Hub.Configured();
+            }
+        },
     }
 });
