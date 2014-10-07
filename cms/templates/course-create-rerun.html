@@ -7,16 +7,9 @@
 <%block name="title">${_("Create a Course Rerun of:")}</%block>
 <%block name="bodyclass">is-signedin view-course-create view-course-create-rerun</%block>
 
-<%block name="jsextra">
-<script type="text/javascript">
-require(["domReady!", "jquery", "jquery.form", "js/views/course_rerun"], function(doc, $) {
-
-});
-</script>
-<script type="text/javascript">
-    var source_course_key = "${source_course_key | escapejs}"
-</script>
-
+<%block name="requirejs">
+  var source_course_key = "${source_course_key | escapejs}"
+  require(["js/require_pages/course_create_rerun"]);
 </%block>
 
 <%block name="content">
