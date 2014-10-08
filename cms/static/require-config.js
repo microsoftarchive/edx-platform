@@ -60,7 +60,6 @@ require.config({
         "handlebars": 'js/vendor/ova/catch/js/handlebars-1.1.2',
         // end of Annotation tool files
 
-        ,
         "gettext": "/i18n",
         "xmodule": "/xmodule/xmodule",
         "tender": [

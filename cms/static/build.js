@@ -15,7 +15,7 @@
                 "jquery.cookie", "utility"
             ]
         }
-    }
+    },
     waitSeconds: 60,
     skipDirOptimize: true,
     optimizeCss: "none",
