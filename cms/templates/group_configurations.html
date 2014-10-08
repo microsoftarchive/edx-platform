@@ -21,7 +21,7 @@
 <%block name="requirejs">
 % if configurations is not None:
 require(["js/pages/group_configurations"], function(GroupConfigurations) {
-    GroupConfigurations(${json.dumps(configurations), "${group_configuration_url}", "${course_outline_url}");
+    GroupConfigurations(${json.dumps(configurations)}, "${group_configuration_url}", "${course_outline_url}");
 });
 % endif
 </%block>
