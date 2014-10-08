@@ -46,10 +46,10 @@
       window.baseUrl = "${settings.STATIC_URL}";
       require.config({baseUrl : window.baseUrl});
     </script>
-    % if settings.DEBUG:
+    ## % if settings.DEBUG:
     <script type="text/javascript" src="${static.url("require-config.js")}"></script>
-    % endif
-    <script type="text/javascript" src="${static.url("require-config-external.js")}"></script>
+    ## % endif
+    ## <script type="text/javascript" src="${static.url("require-config-external.js")}"></script>
 
     ## js templates
     <script id="system-feedback-tpl" type="text/template">

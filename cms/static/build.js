@@ -7,6 +7,15 @@
         "tender": "empty:",
         "youtube": "empty:"
     },
+    shim: {
+        "xmodule": {
+            deps: [
+                "jquery", "underscore", "mathjax", "codemirror", "tinymce",
+                "jquery.tinymce", "jquery.qtip", "jquery.scrollTo", "jquery.flot",
+                "jquery.cookie", "utility"
+            ]
+        }
+    }
     waitSeconds: 60,
     skipDirOptimize: true,
     optimizeCss: "none",
