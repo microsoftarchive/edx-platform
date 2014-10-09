@@ -103,6 +103,10 @@
          * files.
          */
         skipDirOptimize: true,
+        // Unfortunately, we cannot have these two enabled at the same time:
+        // http://requirejs.org/docs/errors.html#sourcemapcomments
+        generateSourceMaps: true,
+        preserveLicenseComments: false,
         /**
          * Allow CSS optimizations. Allowed values:
          * - "standard": @import inlining and removal of comments, unnecessary
