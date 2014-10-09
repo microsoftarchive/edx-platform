@@ -6,14 +6,14 @@
         };
 
         if (!excludeCommonDeps) {
-            module.exclude = ['js/pages/common_deps'];
+            module.exclude = ['js/factories/common_deps'];
         }
 
         return module;
     };
 
     var getModulesList = function (modules) {
-        var result = [getModule('js/pages/common_deps', true)];
+        var result = [getModule('js/factories/common_deps', true)];
         return result.concat(modules.map(function (moduleName) {
             return getModule(moduleName);
         }));
@@ -26,26 +26,26 @@
          * done.
          */
         modules: getModulesList([
-            'js/pages/asset_index',
-            'js/pages/base',
-            'js/pages/checklists',
-            'js/pages/container',
-            'js/pages/course',
-            'js/pages/course_create_rerun',
-            'js/pages/course_info',
-            'js/pages/edit_tabs',
-            'js/pages/export',
-            'js/pages/group_configurations',
-            'js/pages/import',
-            'js/pages/index',
-            'js/pages/login',
-            'js/pages/manage_users',
-            'js/pages/outline',
-            'js/pages/register',
-            'js/pages/settings',
-            'js/pages/settings_advanced',
-            'js/pages/settings_graders',
-            'js/pages/textbooks'
+            'js/factories/asset_index',
+            'js/factories/base',
+            'js/factories/checklists',
+            'js/factories/container',
+            'js/factories/course',
+            'js/factories/course_create_rerun',
+            'js/factories/course_info',
+            'js/factories/edit_tabs',
+            'js/factories/export',
+            'js/factories/group_configurations',
+            'js/factories/import',
+            'js/factories/index',
+            'js/factories/login',
+            'js/factories/manage_users',
+            'js/factories/outline',
+            'js/factories/register',
+            'js/factories/settings',
+            'js/factories/settings_advanced',
+            'js/factories/settings_graders',
+            'js/factories/textbooks'
         ]),
         /**
          * By default all the configuration for optimization happens from the command

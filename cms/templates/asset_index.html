@@ -18,8 +18,8 @@
 </%block>
 
 <%block name="requirejs">
-    require(["js/pages/asset_index"], function (AssetIndex) {
-        AssetIndex("${asset_callback_url}");
+    require(["js/factories/asset_index"], function (Factory) {
+        Factory("${asset_callback_url}");
     });
 </%block>
 

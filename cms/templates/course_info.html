@@ -20,8 +20,8 @@
 </%block>
 
 <%block name="requirejs">
-  require(["js/pages/course_info"], function(CourseInfo) {
-      CourseInfo("${updates_url}", "${handouts_locator | escapejs}", "${base_asset_url}");
+  require(["js/factories/course_info"], function(Factory) {
+      Factory("${updates_url}", "${handouts_locator | escapejs}", "${base_asset_url}");
   });
 </%block>
 
