@@ -178,6 +178,7 @@ def track_segmentio_event(request):
         event = {
             "username": user.username,
             "event_type": event_type,
+            "name": segment_event.get('name', ''),
             # Will be either "mobile", "browser" or "server". These names happen to be identical to the names we already
             # use so no mapping is necessary.
             "event_source": channel,

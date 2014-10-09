@@ -107,7 +107,8 @@ class SegmentIOTrackingTestCase(TestCase):
                 'event': kwargs.get('event', {}),
                 'context': {
                     'course_id': kwargs.get('course_id') or '',
-                }
+                },
+                'name': str(sentinel.name),
             },
             "channel": kwargs.get('channel', 'mobile'),
             "context": {
@@ -169,6 +170,7 @@ class SegmentIOTrackingTestCase(TestCase):
                 'ip': '',
                 'event_source': 'mobile',
                 'event_type': str(sentinel.event_type),
+                'name': str(sentinel.name),
                 'event': {'foo': 'bar'},
                 'agent': str(sentinel.user_agent),
                 'page': None,
