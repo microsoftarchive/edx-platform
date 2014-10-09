@@ -82,11 +82,11 @@
     <div id="page-prompt"></div>
     <%block name="jsextra"></%block>
     <script type="text/javascript">
-      require(['js/pages/common_deps'], function () {
-          require(['js/pages/base'], function () {
+      require(['js/factories/common_deps'], function () {
+          require(['js/factories/base'], function () {
             % if context_course:
-              require(['js/pages/course'], function(Course) {
-                  Course({
+              require(['js/factories/course'], function(CourseFactory) {
+                  CourseFactory({
                       id: "${context_course.id | escapejs}",
                       name: "${context_course.display_name_with_default | h}",
                       url_name: "${context_course.location.name | h}",

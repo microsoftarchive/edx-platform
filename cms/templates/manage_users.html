@@ -162,7 +162,7 @@
 </%block>
 
 <%block name="requirejs">
-  require(["js/pages/manage_users"], function(ManageUsers) {
-      ManageUsers(${json.dumps([user.email for user in staff])}, "${reverse('contentstore.views.course_team_handler', kwargs={'course_key_string': unicode(context_course.id), 'email': '@@EMAIL@@'})}");
+  require(["js/factories/manage_users"], function(Factory) {
+      Factory(${json.dumps([user.email for user in staff])}, "${reverse('contentstore.views.course_team_handler', kwargs={'course_key_string': unicode(context_course.id), 'email': '@@EMAIL@@'})}");
   });
 </%block>

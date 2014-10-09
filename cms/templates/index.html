@@ -6,9 +6,7 @@
 <%block name="bodyclass">is-signedin index view-dashboard</%block>
 
 <%block name="requirejs">
-  require(["js/pages/index"], function(Index) {
-      Index();
-  });
+  require(["js/factories/index"]);
 </%block>
 
 <%block name="content">

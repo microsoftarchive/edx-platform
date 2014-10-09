@@ -20,8 +20,8 @@
 
 <%block name="requirejs">
 % if configurations is not None:
-  require(["js/pages/group_configurations"], function(GroupConfigurations) {
-      GroupConfigurations(${json.dumps(configurations)}, "${group_configuration_url}", "${course_outline_url}");
+  require(["js/factories/group_configurations"], function(Factory) {
+      Factory(${json.dumps(configurations)}, "${group_configuration_url}", "${course_outline_url}");
   });
 % endif
 </%block>

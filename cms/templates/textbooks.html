@@ -25,8 +25,8 @@ CMS.URL.LMS_BASE = "${settings.LMS_BASE}"
 </script>
 </%block>
 <%block name="requirejs">
-    require(["js/pages/textbooks"], function(Textbooks) {
-        Textbooks(${json.dumps(textbooks)});
+    require(["js/factories/textbooks"], function(Factory) {
+        Factory(${json.dumps(textbooks)});
     });
 </%block>
 
