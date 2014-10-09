@@ -105,7 +105,7 @@ def track_segmentio_event(request):
     # Selectively listen to particular channels, note that the client can set the "event_source" field in the
     # "properties" dict to override the channel provided by segment.io. This is necessary because there is a bug in some
     # segment.io client libraries that prevented them from sending correct channel fields.
-    channel = segment_event.get('event_source', full_segment_event.get('channel'))
+    channel = segment_event.get('event_source')
     allowed_channels = [c.lower() for c in getattr(settings, 'TRACKING_SEGMENTIO_ALLOWED_CHANNELS', [])]
     if not channel or channel.lower() not in allowed_channels:
         return response(WARNING_IGNORED_CHANNEL, committed=False)
