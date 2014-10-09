@@ -18,6 +18,7 @@
     },
     waitSeconds: 60,
     skipDirOptimize: true,
+    generateSourceMaps: true,
     optimizeCss: "none",
     modules: [
         {name: 'js/pages/deps'},
