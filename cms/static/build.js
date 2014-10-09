@@ -104,19 +104,6 @@
          */
         skipDirOptimize: true,
         /**
-         * Introduced in 2.1.2 and considered experimental.
-         * If the minifier specified in the "optimize" option supports generating
-         * source maps for the minified code, then generate them. The source maps
-         * generated only translate minified JS to non-minified JS, it does not do
-         * anything magical for translating minified JS to transpiled source code.
-         * Currently only optimize: "uglify2" is supported when running in node or
-         * rhino, and if running in rhino, "closure" with a closure compiler jar
-         * build after r1592 (20111114 release).
-         * The source files will show up in a browser developer tool that supports
-         * source maps as ".js.src" files.
-         */
-        generateSourceMaps: true,
-        /**
          * Allow CSS optimizations. Allowed values:
          * - "standard": @import inlining and removal of comments, unnecessary
          * whitespace and line returns.
