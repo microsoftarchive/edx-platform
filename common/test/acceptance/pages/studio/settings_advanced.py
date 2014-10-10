@@ -2,6 +2,7 @@
 Course Advanced Settings page
 """
 
+from bok_choy.promise import Promise
 from .course_page import CoursePage
 from .utils import press_the_notification_button, type_in_codemirror, get_codemirror_value
 
@@ -13,6 +14,7 @@ MODAL_SELECTOR = ".validation-error-modal-content"
 ERROR_ITEM_NAME_SELECTOR = ".error-item-title strong"
 ERROR_ITEM_CONTENT_SELECTOR = ".error-item-message"
 
+
 class AdvancedSettingsPage(CoursePage):
     """
     Course Advanced Settings page.
@@ -21,7 +23,14 @@ class AdvancedSettingsPage(CoursePage):
     url_path = "settings/advanced"
 
     def is_browser_on_page(self):
-        return self.q(css='body.advanced').present
+        def _is_finished_loading():
+            is_done = len(self.q(css='.course-advanced-policy-list-item')) > 0
+            return (is_done, is_done)
+
+        return (
+            self.q(css='body.advanced').present and
+            Promise(_is_finished_loading, 'Finished rendering the advanced policy items.').fulfill()
+        )
 
     def wait_for_modal_load(self):
         """
