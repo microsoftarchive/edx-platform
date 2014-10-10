@@ -18,7 +18,6 @@
 -e git+https://github.com/appliedsec/pygeoip.git@95e69341cebf5a6a9fbf7c4f5439d458898bdc3b#egg=pygeoip
 -e git+https://github.com/jazkarta/edx-jsme.git@c5bfa5d361d6685d8c643838fc0055c25f8b7999#egg=edx-jsme
 -e git+https://github.com/pmitros/django-pyfs.git@d175715e0fe3367ec0f1ee429c242d603f6e8b10#egg=djpyfs
--e git+https://github.com/etianen/django-require.git@7c1934d2aeba07591c0a37fd9a3278da4d90c4bf#egg=django-require
 
 # Our libraries:
 -e git+https://github.com/edx/XBlock.git@246811773c67a84fdb17614a8e9f7ec7b1890574#egg=XBlock
