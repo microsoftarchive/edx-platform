@@ -295,7 +295,7 @@ nav.sequence-nav {
 
       &.prev {
         @include left(-10px);
-        @include border-radius(35px 0 0 35px);
+        @include border-radius(35px, 0, 0, 35px);
 
         a {
           background-position: center 15px;
@@ -312,7 +312,7 @@ nav.sequence-nav {
 
       &.next {
         @include right(-10px);
-        @include border-radius(0 35px 35px 0);
+        @include border-radius(0, 35px, 35px, 0);
 
         a {
           @include margin-left(30px);
@@ -383,7 +383,7 @@ nav.sequence-bottom {
       }
 
       &.prev {
-        @include border-radius(35px 0 0 35px);
+        @include border-radius(35px, 0, 0, 35px);
 
         a {
           background-position: center 15px;
@@ -399,7 +399,7 @@ nav.sequence-bottom {
       }
 
       &.next {
-        @include border-radius(0 35px 35px 0);
+        @include border-radius(0, 35px, 35px, 0);
         @include border-left(none);
 
         a {

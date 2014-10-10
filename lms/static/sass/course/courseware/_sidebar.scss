@@ -2,7 +2,7 @@
   @extend .sidebar;
   @extend .tran;
   @include border-right(1px solid $border-color-2);
-  @include border-radius(3px 0 0 3px);
+  @include border-radius(3px, 0, 0, 3px);
 
   #open_close_accordion {
     display: none;
