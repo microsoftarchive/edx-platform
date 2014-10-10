@@ -479,7 +479,7 @@ REQUIRE_STANDALONE_MODULES = {}
 REQUIRE_DEBUG = False
 
 # A tuple of files to exclude from the compilation result of r.js.
-REQUIRE_EXCLUDE = STATICFILES_IGNORE_PATTERNS
+REQUIRE_EXCLUDE = ("build.txt",)
 
 # The execution environment in which to run r.js: auto, node or rhino.
 # auto will autodetect the environment and make use of node if available and rhino if not.

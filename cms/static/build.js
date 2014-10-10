@@ -104,6 +104,19 @@
          */
         skipDirOptimize: true,
         /**
+         * When the optimizer copies files from the source location to the
+         * destination directory, it will skip directories and files that start
+         * with a ".". If you want to copy .directories or certain .files, for
+         * instance if you keep some packages in a .packages directory, or copy
+         * over .htaccess files, you can set this to null. If you want to change
+         * the exclusion rules, change it to a different regexp. If the regexp
+         * matches, it means the directory will be excluded. This used to be
+         * called dirExclusionRegExp before the 1.0.2 release.
+         * As of 1.0.3, this value can also be a string that is converted to a
+         * RegExp via new RegExp().
+         */
+        fileExclusionRegExp: /^\.|spec/,
+        /**
          * Allow CSS optimizations. Allowed values:
          * - "standard": @import inlining and removal of comments, unnecessary
          * whitespace and line returns.
@@ -137,6 +150,6 @@
          * SILENT: 4
          * Default is 0.
          */
-        logLevel: 4
+        logLevel: 0
     };
 } ())
