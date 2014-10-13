@@ -599,14 +599,13 @@ def show_receipt(request, ordernum):
     shoppingcart_items = []
     course_names_list = []
     for order_item in order_items:
-        if hasattr(order_item, 'paidcourseregistration'):
-            course_key = order_item.paidcourseregistration.course_id
-        else:
-            course_key = order_item.certificateitem.course_id
+        if hasattr(order_item, 'course_id'):
+            course_key = order_item.course_id
 
-        course = get_course_by_id(course_key, depth=0)
-        shoppingcart_items.append((order_item, course))
-        course_names_list.append(course.display_name)
+        if course_key:
+            course = get_course_by_id(course_key, depth=0)
+            shoppingcart_items.append((order_item, course))
+            course_names_list.append(course.display_name)
 
     course_names = ", ".join(course_names_list)
     any_refunds = any(i.status == "refunded" for i in order_items)
