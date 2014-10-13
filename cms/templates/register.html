@@ -100,5 +100,7 @@
 </%block>
 
 <%block name="requirejs">
-    require(["js/factories/register"]);
+    require(["js/factories/register"], function (Factory) {
+        Factory();
+    });
 </%block>
