@@ -1,4 +1,4 @@
-// studio - css architecture
+// studio - xmodule architecture
 // ====================
 
 // libs and resets *do not edit*
@@ -29,16 +29,9 @@
 @import 'elements/typography';
 @import 'elements/icons'; // references to icons used
 @import 'elements/controls'; // buttons, link styles, sliders, etc.
-@import 'elements/modules'; //  content module patterns
 @import 'elements/navigation'; // all archetypes of navigation
-@import 'elements/layout'; // various standard layouts
-@import 'elements/forms';
-@import 'elements/header';
-@import 'elements/footer';
-@import 'elements/sock';
-@import 'elements/tender-widget';
-@import 'elements/system-feedback'; // alerts, notifications, states
-@import 'elements/system-help'; // help UI
-@import 'elements/modal'; // interstitial UI, dialogs, modal windows
-@import 'elements/vendor'; // overrides to vendor-provided styling
-@import 'elements/modal-window';
+
+// xmodule
+@import 'xmodule/modules/css/module-styles.scss';
+@import 'xmodule/descriptors/css/module-styles.scss';
+@import 'elements/xmodules'; // styling for Studio-specific contexts
