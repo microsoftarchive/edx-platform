@@ -276,6 +276,7 @@ nav.sequence-nav {
           height: 100%;
           width: 40px;
           text-indent: -9999px;
+          overflow: hidden;
           @include transition(all .2s $ease-in-out-quad 0s);
 
 /*          &:focus {
