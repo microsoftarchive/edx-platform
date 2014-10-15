@@ -115,7 +115,7 @@
          * As of 1.0.3, this value can also be a string that is converted to a
          * RegExp via new RegExp().
          */
-        fileExclusionRegExp: /^\.|spec|fonts\/|\.(eot|woff|otf|svg|ttf|scss|coffee|py|pyc)$/,
+        fileExclusionRegExp: /^\.|spec/,
         /**
          * Allow CSS optimizations. Allowed values:
          * - "standard": @import inlining and removal of comments, unnecessary
