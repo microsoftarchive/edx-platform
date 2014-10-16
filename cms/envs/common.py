@@ -329,8 +329,6 @@ STATICFILES_STORAGE = 'cms.lib.django_require.staticstorage.OptimizedCachedRequi
 
 from rooted_paths import rooted_glob
 
-STATICFILES_EXCLUDED_APPS = []
-
 PIPELINE_CSS = {
     'style-vendor': {
         'source_filenames': [
