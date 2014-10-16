@@ -2,7 +2,7 @@
 Course Advanced Settings page
 """
 
-from bok_choy.promise import Promise
+from bok_choy.promise import EmptyPromise
 from .course_page import CoursePage
 from .utils import press_the_notification_button, type_in_codemirror, get_codemirror_value
 
@@ -24,13 +24,10 @@ class AdvancedSettingsPage(CoursePage):
 
     def is_browser_on_page(self):
         def _is_finished_loading():
-            is_done = len(self.q(css='.course-advanced-policy-list-item')) > 0
-            return (is_done, is_done)
+            return len(self.q(css='.course-advanced-policy-list-item')) > 0
 
-        return (
-            self.q(css='body.advanced').present and
-            Promise(_is_finished_loading, 'Finished rendering the advanced policy items.').fulfill()
-        )
+        EmptyPromise(_is_finished_loading, 'Finished rendering the advanced policy items.').fulfill()
+        return self.q(css='body.advanced').present
 
     def wait_for_modal_load(self):
         """
