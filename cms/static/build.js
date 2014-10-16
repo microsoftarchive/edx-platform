@@ -5,7 +5,7 @@
             name: moduleName
         };
 
-        if (!excludeCommonDeps) {
+        if (excludeCommonDeps) {
             module.exclude = ['js/factories/common_deps'];
         }
 
@@ -13,9 +13,9 @@
     };
 
     var getModulesList = function (modules) {
-        var result = [getModule('js/factories/common_deps', true)];
+        var result = [getModule('js/factories/common_deps')];
         return result.concat(modules.map(function (moduleName) {
-            return getModule(moduleName);
+            return getModule(moduleName, true);
         }));
     };
 
