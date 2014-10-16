@@ -82,7 +82,9 @@ cms/static/css/
 cms/static/sass/*.css
 cms/static/sass/*.css.map
 
-
+### Pipeline Requirejs artifacts
+lms/static/build.js
+cms/static/build.js
 
 ### Logging artifacts
 log/

@@ -139,6 +139,7 @@ MAKO_TEMPLATES['main'] = [
     COMMON_ROOT / 'templates',
     COMMON_ROOT / 'djangoapps' / 'pipeline_mako' / 'templates',
     COMMON_ROOT / 'djangoapps' / 'pipeline_js' / 'templates',
+    COMMON_ROOT / 'djangoapps' / 'pipeline_requirejs' / 'templates',
 ]
 
 for namespace, template_dirs in lms.envs.common.MAKO_TEMPLATES.iteritems():
@@ -196,6 +197,7 @@ STATICFILES_FINDERS = (
     'staticfiles.finders.FileSystemFinder',
     'staticfiles.finders.AppDirectoriesFinder',
     'pipeline.finders.PipelineFinder',
+    'pipeline_requirejs.finders.PipelineRequirejsFinder',
 )
 
 # List of callables that know how to import templates from various sources.
@@ -325,7 +327,7 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 EMBARGO_SITE_REDIRECT_URL = None
 
 ############################### Pipeline #######################################
-STATICFILES_STORAGE = 'cms.lib.django_require.staticstorage.OptimizedCachedRequireJsStorage'
+STATICFILES_STORAGE = 'pipeline_requirejs.staticstorage.OptimizedCachedRequireJsStorage'
 
 from rooted_paths import rooted_glob
 
@@ -451,7 +453,7 @@ STATICFILES_IGNORE_PATTERNS = (
 
     # Symlinks used by js-test-tool
     "xmodule_js",
-    "common_static",
+    "common_static"
 )
 
 PIPELINE_YUI_BINARY = 'yui-compressor'
@@ -483,6 +485,15 @@ REQUIRE_EXCLUDE = ("build.txt",)
 # auto will autodetect the environment and make use of node if available and rhino if not.
 # It can also be a path to a custom class that subclasses require.environments.Environment and defines some "args" function that returns a list with the command arguments to execute.
 REQUIRE_ENVIRONMENT = "node"
+
+############################ PIPELINE_REQUIREJS ###############################
+# Creates the build profiles into REQUIRE_BUILD_PROFILES_ROOT
+REQUIRE_BUILD_PROFILES_ROOT = PROJECT_ROOT / "static"
+REQUIRE_STATIC_DIR = PROJECT_ROOT / "static"
+# The directory to the page factories, relative to STATIC_ROOT.
+REQUIRE_PAGE_FACTORIES_ROOT = "js/factories"
+# A tuple of common dependencies, relative to STATIC_ROOT.
+REQUIRE_COMMON_DEPENDENCIES = ("js/factories/common_deps",)
 
 ################################# CELERY ######################################
 
