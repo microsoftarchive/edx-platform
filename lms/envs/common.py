@@ -287,6 +287,15 @@ FEATURES = {
 
     # Enable the new dashboard, account, and profile pages
     'ENABLE_NEW_DASHBOARD': False,
+
+    # Broadcast score changes to the rest of the system
+    'SIGNAL_ON_SCORE_CHANGED': False,
+
+    # Enable the Student Gradebook, which is essentially a cache of calculated grades
+    # In order to use the gradebook, you must add it to the list of INSTALLED_APPS in
+    # addition to setting the flag to True here.  A reference is available in aws.py
+    'STUDENT_GRADEBOOK': False,
+    'STUDENT_GRADEBOOK_CALCULATE_ON_SCORE_CHANGED': False,
 }
 
 # Ignore static asset files on import which match this pattern
