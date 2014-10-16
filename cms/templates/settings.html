@@ -28,8 +28,8 @@ CMS.URL.UPLOAD_ASSET = '${upload_asset_url}';
   </script>
 </%block>
 <%block name="requirejs">
-    require(["js/factories/settings"], function(Factory) {
-        Factory("${details_url}");
+    require(["js/factories/settings"], function(SettingsFactory) {
+        SettingsFactory("${details_url}");
     });
 </%block>
 

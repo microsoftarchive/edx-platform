@@ -148,7 +148,7 @@
 </%block>
 
 <%block name="requirejs">
-  require(["js/factories/import"], function(Factory) {
-      Factory("${import_status_url}");
+  require(["js/factories/import"], function(ImportFactory) {
+      ImportFactory("${import_status_url}");
   });
 </%block>

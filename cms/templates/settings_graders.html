@@ -21,8 +21,8 @@
   <link rel="stylesheet" type="text/css" href="${static.url('js/vendor/timepicker/jquery.timepicker.css')}" />
 </%block>
 <%block name="requirejs">
-    require(["js/factories/settings_graders"], function(Factory) {
-        Factory(${course_details|n}, "${grading_url}");
+    require(["js/factories/settings_graders"], function(SettingsGradersFactory) {
+        SettingsGradersFactory(${course_details|n}, "${grading_url}");
     });
 </%block>
 

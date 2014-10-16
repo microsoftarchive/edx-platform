@@ -18,8 +18,8 @@
 </%block>
 
 <%block name="requirejs">
-  require(["js/factories/checklists"], function (Factory) {
-    Factory("${handler_url}");
+  require(["js/factories/checklists"], function (ChecklistsFactory) {
+    ChecklistsFactory("${handler_url}");
   });
 </%block>
 

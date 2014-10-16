@@ -18,8 +18,8 @@
 </%block>
 
 <%block name="requirejs">
-    require(["js/factories/settings_advanced"], function(Factory) {
-        Factory(${advanced_dict | n}, "${advanced_settings_url}");
+    require(["js/factories/settings_advanced"], function(SettingsAdvancedFactory) {
+        SettingsAdvancedFactory(${advanced_dict | n}, "${advanced_settings_url}");
     });
 </%block>
 
