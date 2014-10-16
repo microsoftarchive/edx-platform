@@ -377,3 +377,9 @@ MONGODB_LOG = {
     'password': '',
     'db': 'xlog',
 }
+
+
+############# Student Progress #################
+FEATURES['STUDENT_PROGRESS'] = True
+if FEATURES.get('STUDENT_PROGRESS', False) and "'progress'" not in INSTALLED_APPS:
+    INSTALLED_APPS += ('progress',)
