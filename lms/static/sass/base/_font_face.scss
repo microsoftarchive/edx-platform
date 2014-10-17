@@ -3,11 +3,63 @@
 
 // No subsetting.
 
-@include font-face('Open Sans', '../fonts/OpenSans/OpenSans-Light-webfont', 300);
-@include font-face('Open Sans', '../fonts/OpenSans/OpenSans-LightItalic-webfont', 300, italic);
-@include font-face('Open Sans', '../fonts/OpenSans/OpenSans-Regular-webfont', 400);
-@include font-face('Open Sans', '../fonts/OpenSans/OpenSans-Italic-webfont', 400, italic);
-@include font-face('Open Sans', '../fonts/OpenSans/OpenSans-Semibold-webfont', 600);
-@include font-face('Open Sans', '../fonts/OpenSans/OpenSans-SemiboldItalic-webfont', 600, italic);
-@include font-face('Open Sans', '../fonts/OpenSans/OpenSans-Bold-webfont', 700);
-@include font-face('Open Sans', '../fonts/OpenSans/OpenSans-BoldItalic-webfont', 700, italic);
+@font-face {
+    font-family: 'Open Sans';
+    src: url('../fonts/OpenSans/OpenSans-Light-webfont') format('woff');
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    src: url('../fonts/OpenSans/OpenSans-LightItalic-webfont') format('woff');
+    font-weight: 300;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    src: url('../fonts/OpenSans/OpenSans-Regular-webfont') format('woff');
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    src: url('../fonts/OpenSans/OpenSans-Italic-webfont') format('woff');
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    src: url('../fonts/OpenSans/OpenSans-Semibold-webfont') format('woff');
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    src: url('../fonts/OpenSans/OpenSans-SemiboldItalic-webfont') format('woff');
+    font-weight: 600;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    src: url('../fonts/OpenSans/OpenSans-Bold-webfont') format('woff');
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    src: url('../fonts/OpenSans/OpenSans-BoldItalic-webfont') format('woff');
+    font-weight: 700;
+    font-style: italic;
+}
+
+// @include font-face('Open Sans', '../fonts/OpenSans/OpenSans-Light-webfont', 300);
+// @include font-face('Open Sans', '../fonts/OpenSans/OpenSans-LightItalic-webfont', 300, italic);
+// @include font-face('Open Sans', '../fonts/OpenSans/OpenSans-Regular-webfont', 400);
+// @include font-face('Open Sans', '../fonts/OpenSans/OpenSans-Italic-webfont', 400, italic);
+// @include font-face('Open Sans', '../fonts/OpenSans/OpenSans-Semibold-webfont', 600);
+// @include font-face('Open Sans', '../fonts/OpenSans/OpenSans-SemiboldItalic-webfont', 600, italic);
+// @include font-face('Open Sans', '../fonts/OpenSans/OpenSans-Bold-webfont', 700);
+// @include font-face('Open Sans', '../fonts/OpenSans/OpenSans-BoldItalic-webfont', 700, italic);
