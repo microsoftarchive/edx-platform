@@ -488,7 +488,7 @@ REQUIRE_ENVIRONMENT = "node"
 
 ############################ PIPELINE_REQUIREJS ###############################
 # Creates the build profiles into REQUIRE_BUILD_PROFILES_ROOT
-REQUIRE_BUILD_PROFILES_ROOT = PROJECT_ROOT / "static"
+REQUIRE_BUILD_PROFILES_ROOT = os.path.join(tempfile.gettempdir(), 'build_profiles')
 REQUIRE_STATIC_DIR = PROJECT_ROOT / "static"
 # The directory to the page factories, relative to STATIC_ROOT.
 REQUIRE_PAGE_FACTORIES_ROOT = "js/factories"
