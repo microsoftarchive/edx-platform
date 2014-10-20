@@ -139,13 +139,14 @@ MAKO_TEMPLATES['main'] = [
     COMMON_ROOT / 'templates',
     COMMON_ROOT / 'djangoapps' / 'pipeline_mako' / 'templates',
     COMMON_ROOT / 'djangoapps' / 'pipeline_js' / 'templates',
-    COMMON_ROOT / 'djangoapps' / 'pipeline_requirejs' / 'templates',
 ]
 
 for namespace, template_dirs in lms.envs.common.MAKO_TEMPLATES.iteritems():
     MAKO_TEMPLATES['lms.' + namespace] = template_dirs
 
-TEMPLATE_DIRS = MAKO_TEMPLATES['main']
+TEMPLATE_DIRS = MAKO_TEMPLATES['main'] + [
+    COMMON_ROOT / 'djangoapps' / 'pipeline_requirejs' / 'templates',
+]
 
 EDX_ROOT_URL = ''
 
