@@ -9,10 +9,12 @@ import logging
 from contextlib import contextmanager
 import itertools
 import functools
+from contracts import contract, new_contract
 
 from opaque_keys import InvalidKeyError
-from opaque_keys.edx.keys import CourseKey
+from opaque_keys.edx.keys import CourseKey, AssetKey
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
+from xmodule.assetstore import AssetMetadata, AssetThumbnailMetadata
 
 from . import ModuleStoreWriteBase
 from . import ModuleStoreEnum
@@ -20,6 +22,10 @@ from .exceptions import ItemNotFoundError, DuplicateCourseError
 from .draft_and_published import ModuleStoreDraftAndPublished
 from .split_migrator import SplitMigrator
 
+new_contract('CourseKey', CourseKey)
+new_contract('AssetKey', AssetKey)
+new_contract('AssetMetadata', AssetMetadata)
+new_contract('AssetThumbnailMetadata', AssetThumbnailMetadata)
 
 log = logging.getLogger(__name__)
 
@@ -309,6 +315,7 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         store = self._get_modulestore_for_courseid(course_key)
         return store.delete_course(course_key, user_id)
 
+    @contract(course_key='CourseKey', asset_metadata='AssetMetadata')
     def save_asset_metadata(self, course_key, asset_metadata):
         """
         Saves the asset metadata for a particular course's asset.
@@ -320,11 +327,10 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         Returns:
             bool: True if metadata save was successful, else False
         """
-        assert(isinstance(course_key, CourseKey))
-        assert(isinstance(asset_metadata, AssetMetadata))
         store = self._get_modulestore_for_courseid(course_key)
         return store.save_asset_metadata(course_key, asset_metadata)
 
+    @contract(course_key='CourseKey', asset_thumbnail_metadata='AssetThumbnailMetadata')
     def save_asset_thumbnail_metadata(self, course_key, asset_thumbnail_metadata):
         """
         Saves the asset thumbnail metadata for a particular course asset's thumbnail.
@@ -336,11 +342,10 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         Returns:
             True if thumbnail metadata save was successful, else False
         """
-        assert(isinstance(course_key, CourseKey))
-        assert(isinstance(asset_metadata, AssetThumbnailMetadata))
         store = self._get_modulestore_for_courseid(course_key)
         return store.save_asset_metadata(course_key, asset_thumbnail_metadata)
 
+    @contract(asset_key='AssetKey')
     def find_asset_metadata(self, asset_key):
         """
         Find the metadata for a particular course asset.
@@ -351,10 +356,10 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         Returns:
             asset metadata (AssetMetadata) -or- None if not found
         """
-        assert(isinstance(asset_key, AssetKey))
-        store = self._get_modulestore_for_courseid(course_key)
+        store = self._get_modulestore_for_courseid(asset_key.course_key)
         return store.find_asset_metadata(asset_key)
 
+    @contract(asset_key='AssetKey')
     def find_asset_thumbnail_metadata(self, asset_key):
         """
         Find the metadata for a particular course asset.
@@ -365,10 +370,10 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         Returns:
             asset metadata (AssetMetadata) -or- None if not found
         """
-        assert(isinstance(asset_key, AssetKey))
-        store = self._get_modulestore_for_courseid(course_key)
+        store = self._get_modulestore_for_courseid(asset_key.course_key)
         return store.find_asset_thumbnail_metadata(asset_key)
 
+    @contract(course_key='CourseKey', start=int, maxresults=int, sort='list | None')
     def get_all_asset_metadata(self, course_key, start=0, maxresults=-1, sort=None):
         """
         Returns a list of static assets for a course.
@@ -391,10 +396,10 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
                 contentType: The mimetype string of the asset
                 md5: An md5 hash of the asset content
         """
-        assert(isinstance(course_key, CourseKey))
         store = self._get_modulestore_for_courseid(course_key)
         return store.get_all_asset_metadata(course_key, start, maxresults, sort)
 
+    @contract(course_key='CourseKey')
     def get_all_asset_thumbnail_metadata(self, course_key):
         """
         Returns a list of thumbnails for all course assets.
@@ -405,10 +410,10 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         Returns:
             List of AssetThumbnailMetadata objects.
         """
-        assert(isinstance(course_key, CourseKey))
         store = self._get_modulestore_for_courseid(course_key)
         return store.get_all_asset_thumbnail_metadata(course_key)
 
+    @contract(asset_key='AssetKey')
     def delete_asset_metadata(self, asset_key):
         """
         Deletes a single asset's metadata.
@@ -419,10 +424,10 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         Returns:
             Number of asset metadata entries deleted (0 or 1)
         """
-        assert(isinstance(asset_key, AssetKey))
         store = self._get_modulestore_for_courseid(asset_key.course_key)
         return store.delete_asset_metadata(asset_key)
 
+    @contract(asset_key='AssetKey')
     def delete_asset_thumbnail_metadata(self, asset_key):
         """
         Deletes a single asset's metadata.
@@ -433,10 +438,10 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         Returns:
             Number of asset metadata entries deleted (0 or 1)
         """
-        assert(isinstance(asset_key, AssetKey))
         store = self._get_modulestore_for_courseid(asset_key.course_key)
         return store.delete_asset_metadata(asset_key)
 
+    @contract(course_key='CourseKey')
     def delete_all_asset_metadata(self, course_key):
         """
         Delete all of the assets which use this course_key as an identifier.
@@ -444,10 +449,10 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         Arguments:
             course_key (CourseKey): course_identifier
         """
-        assert(isinstance(course_key, CourseKey))
         store = self._get_modulestore_for_courseid(course_key)
         return store.delete_all_asset_metadata(course_key)
 
+    @contract(source_course_key='CourseKey', dest_course_key='CourseKey')
     def copy_all_asset_metadata(self, source_course_key, dest_course_key):
         """
         Copy all the course assets from source_course_key to dest_course_key.
@@ -459,11 +464,10 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         # When implementing this in https://openedx.atlassian.net/browse/PLAT-78 , consider this:
         #  Check the modulestores of both the source and dest course_keys. If in different modulestores,
         #  export all asset data from one modulestore and import it into the dest one.
-        assert(isinstance(source_course_key, CourseKey))
-        assert(isinstance(dest_course_key, CourseKey))
         store = self._get_modulestore_for_courseid(source_course_key)
         return store.copy_all_asset_metadata(source_course_key, dest_course_key)
 
+    @contract(asset_key='AssetKey', attr=str)
     def set_asset_metadata_attr(self, asset_key, attr, value=True):
         """
         Add/set the given attr on the asset at the given location. Value can be any type which pymongo accepts.
@@ -477,10 +481,10 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
             NotFoundError if no such item exists
             AttributeError is attr is one of the build in attrs.
         """
-        assert(isinstance(asset_key, AssetKey))
-        store = self._get_modulestore_for_courseid(course_key)
-        return store.set_asset_metadata_attrs(course_key, asset_key, attr, value)
+        store = self._get_modulestore_for_courseid(asset_key.course_key)
+        return store.set_asset_metadata_attrs(asset_key, attr, value)
 
+    @contract(asset_key='AssetKey', attr_dict=dict)
     def set_asset_metadata_attrs(self, asset_key, attr_dict):
         """
         Add/set the given dict of attrs on the asset at the given location. Value can be any type which pymongo accepts.
@@ -493,9 +497,8 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
             NotFoundError if no such item exists
             AttributeError is attr is one of the build in attrs.
         """
-        assert(isinstance(asset_key, AssetKey))
-        store = self._get_modulestore_for_courseid(course_key)
-        return store.set_asset_metadata_attrs(course_key, asset_key, attr_dict)
+        store = self._get_modulestore_for_courseid(asset_key.course_key)
+        return store.set_asset_metadata_attrs(asset_key, attr_dict)
 
     @strip_key
     def get_parent_location(self, location, **kwargs):

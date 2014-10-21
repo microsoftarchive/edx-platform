@@ -237,7 +237,6 @@ class TestMongoModuleStore(unittest.TestCase):
             self.draft_store.get_item(Location('edX', 'test_unicode', '2012_Fall', 'chapter', 'Overview')),
         )
 
-
     def test_find_one(self):
         assert_not_none(
             self.draft_store._find_one(Location('edX', 'toy', '2012_Fall', 'course', '2012_Fall')),
@@ -635,6 +634,7 @@ class TestMongoModuleStore(unittest.TestCase):
         finally:
             shutil.rmtree(root_dir)
 
+
 @ddt
 class TestMongoAssetMetadataStorage(TestMongoModuleStore):
     """
@@ -663,12 +663,12 @@ class TestMongoAssetMetadataStorage(TestMongoModuleStore):
         Set up a quantity of test asset metadata for testing purposes.
         """
         super(TestMongoAssetMetadataStorage, self).setUp()
-        ASSET_FIELDS = ('filename', 'internal_name', 'filepath', 'locked', 'edited_by', 'edited_on', 'curr_version', 'prev_version')
+        ASSET_FIELDS = ('filename', 'internal_name', 'basename', 'locked', 'edited_by', 'edited_on', 'curr_version', 'prev_version')
         ASSET1_VALS = ('pic1.jpg', 'EKMND332DDBK', 'pix/archive', False, 'Author1', datetime.now(), '14', '13')
         ASSET2_VALS = ('shout.ogg', 'KFMDONSKF39K', 'sounds', True, 'Author1', datetime.now(), '1', None)
         ASSET3_VALS = ('code.tgz', 'ZZB2333YBDMW', 'exercises/14', False, 'Author2', datetime.now(), 'AB', 'AA')
-        ASSET4_VALS = ('dog.png', 'PUPY4242X', 'pictures/animals', True, 'Author3', datetime.now(), 5, 4)
-        ASSET5_VALS = ('not_here.txt', 'JJJCCC747', '/dev/null', False, 'Author4', datetime.now(), 50, 49)
+        ASSET4_VALS = ('dog.png', 'PUPY4242X', 'pictures/animals', True, 'Author3', datetime.now(), '5', '4')
+        ASSET5_VALS = ('not_here.txt', 'JJJCCC747', '/dev/null', False, 'Author4', datetime.now(), '50', '49')
 
         ASSET1 = dict(zip(ASSET_FIELDS, ASSET1_VALS))
         ASSET2 = dict(zip(ASSET_FIELDS, ASSET2_VALS))
@@ -681,13 +681,19 @@ class TestMongoAssetMetadataStorage(TestMongoModuleStore):
         THUMBNAIL2_VALS = ('kitten_thumb.jpg', '123ABC123ABC')
         THUMBNAIL3_VALS = ('puppy_thumb.jpg', 'ADAM12ADAM12')
         THUMBNAIL4_VALS = ('meerkat_thumb.jpg', 'CHIPSPONCH14')
-        THUMBNAIL5_VALS = ('grimace_thumb.jpg', 'RON8LDXFFFF10')
+        THUMBNAIL5_VALS = ('corgi_thumb.jpg', 'RON8LDXFFFF10')
 
         THUMBNAIL1 = dict(zip(THUMBNAIL_FIELDS, THUMBNAIL1_VALS))
         THUMBNAIL2 = dict(zip(THUMBNAIL_FIELDS, THUMBNAIL2_VALS))
         THUMBNAIL3 = dict(zip(THUMBNAIL_FIELDS, THUMBNAIL3_VALS))
         THUMBNAIL4 = dict(zip(THUMBNAIL_FIELDS, THUMBNAIL4_VALS))
         NON_EXISTENT_THUMBNAIL = dict(zip(THUMBNAIL_FIELDS, THUMBNAIL5_VALS))
+
+        # The asset and thumbnail below have equivalent information on purpose.
+        ASSET6_VALS = ('asset.txt', 'JJJCCC747858', '/dev/null', False, 'Author4', datetime.now(), '50', '49')
+        THUMBNAIL6_VALS = ('asset.txt', 'JJJCCC747858')
+        ASSET6 = dict(zip(ASSET_FIELDS, ASSET6_VALS))
+        THUMBNAIL6 = dict(zip(THUMBNAIL_FIELDS, THUMBNAIL6_VALS))
 
         courses = self.draft_store.get_courses()
         self.course1 = courses[0]
@@ -698,36 +704,40 @@ class TestMongoAssetMetadataStorage(TestMongoModuleStore):
         asset3_key = self.course2.id.make_asset_key('asset', ASSET3['filename'])
         asset4_key = self.course2.id.make_asset_key('asset', ASSET4['filename'])
         asset5_key = self.course2.id.make_asset_key('asset', NON_EXISTENT_ASSET['filename'])
+        asset6_key = self.course2.id.make_asset_key('asset', ASSET6['filename'])
 
-        self.asset1_md = AssetMetadata(asset1_key, asset1_key.path, **ASSET1)
-        self.asset2_md = AssetMetadata(asset2_key, asset2_key.path, **ASSET2)
-        self.asset3_md = AssetMetadata(asset3_key, asset3_key.path, **ASSET3)
-        self.asset4_md = AssetMetadata(asset4_key, asset4_key.path, **ASSET4)
-        self.asset5_md = AssetMetadata(asset5_key, asset5_key.path, **NON_EXISTENT_ASSET)
+        self.asset1_md = AssetMetadata(asset1_key, **ASSET1)
+        self.asset2_md = AssetMetadata(asset2_key, **ASSET2)
+        self.asset3_md = AssetMetadata(asset3_key, **ASSET3)
+        self.asset4_md = AssetMetadata(asset4_key, **ASSET4)
+        self.asset5_md = AssetMetadata(asset5_key, **NON_EXISTENT_ASSET)
+        self.asset6_md = AssetMetadata(asset6_key, **ASSET6)
 
         self.assertTrue(self.draft_store.save_asset_metadata(self.course1.id, self.asset1_md))
         self.assertTrue(self.draft_store.save_asset_metadata(self.course1.id, self.asset2_md))
         self.assertTrue(self.draft_store.save_asset_metadata(self.course2.id, self.asset3_md))
         self.assertTrue(self.draft_store.save_asset_metadata(self.course2.id, self.asset4_md))
-        # asset5 is not saved on purpose!
+        # asset5 and asset6 are not saved on purpose!
 
-        thumb1_key = self.course1.id.make_asset_key('asset', THUMBNAIL1['filename'])
-        thumb2_key = self.course1.id.make_asset_key('asset', THUMBNAIL2['filename'])
-        thumb3_key = self.course2.id.make_asset_key('asset', THUMBNAIL3['filename'])
-        thumb4_key = self.course2.id.make_asset_key('asset', THUMBNAIL4['filename'])
-        thumb5_key = self.course2.id.make_asset_key('asset', NON_EXISTENT_THUMBNAIL['filename'])
+        thumb1_key = self.course1.id.make_asset_key('thumbnail', THUMBNAIL1['filename'])
+        thumb2_key = self.course1.id.make_asset_key('thumbnail', THUMBNAIL2['filename'])
+        thumb3_key = self.course2.id.make_asset_key('thumbnail', THUMBNAIL3['filename'])
+        thumb4_key = self.course2.id.make_asset_key('thumbnail', THUMBNAIL4['filename'])
+        thumb5_key = self.course2.id.make_asset_key('thumbnail', NON_EXISTENT_THUMBNAIL['filename'])
+        thumb6_key = self.course2.id.make_asset_key('thumbnail', THUMBNAIL6['filename'])
 
         self.thumb1_md = AssetThumbnailMetadata(thumb1_key, **THUMBNAIL1)
         self.thumb2_md = AssetThumbnailMetadata(thumb2_key, **THUMBNAIL2)
         self.thumb3_md = AssetThumbnailMetadata(thumb3_key, **THUMBNAIL3)
         self.thumb4_md = AssetThumbnailMetadata(thumb4_key, **THUMBNAIL4)
         self.thumb5_md = AssetThumbnailMetadata(thumb5_key, **NON_EXISTENT_THUMBNAIL)
+        self.thumb6_md = AssetThumbnailMetadata(thumb6_key, **THUMBNAIL6)
 
         self.assertTrue(self.draft_store.save_asset_thumbnail_metadata(self.course1.id, self.thumb1_md))
         self.assertTrue(self.draft_store.save_asset_thumbnail_metadata(self.course1.id, self.thumb2_md))
         self.assertTrue(self.draft_store.save_asset_thumbnail_metadata(self.course2.id, self.thumb3_md))
         self.assertTrue(self.draft_store.save_asset_thumbnail_metadata(self.course2.id, self.thumb4_md))
-        # thumb5 is not saved on purpose!
+        # thumb5 and thumb6 are not saved on purpose!
 
     def tearDown(self):
         self.draft_store.delete_all_asset_metadata(self.course1.id)
@@ -774,9 +784,6 @@ class TestMongoAssetMetadataStorage(TestMongoModuleStore):
         # Attempt to delete an asset that doesn't exist.
         self.assertEquals(self.draft_store.delete_asset_metadata(self.asset5_md.asset_id), 0)
         self.assertEquals(len(self.draft_store.get_all_asset_metadata(self.course1.id)), 1)
-
-    def test_get_all_assets_with_paging(self):
-        pass
 
     def test_find_existing_and_non_existing_assets(self):
         # Find existing asset metadata.
@@ -831,16 +838,16 @@ class TestMongoAssetMetadataStorage(TestMongoModuleStore):
         ('prev_version', 'v1.0'),
         ('edited_by', 'Mork'),
         ('edited_on', datetime(1969, 1, 1, tzinfo=UTC)),
-        )
+    )
 
     DISALLOWED_ATTRS = (
         ('asset_id', 'IAmBogus'),
-        )
+    )
 
     UNKNOWN_ATTRS = (
         ('lunch_order', 'burger_and_fries'),
         ('villain', 'Khan')
-        )
+    )
 
     @data(*ALLOWED_ATTRS)
     def test_set_all_attrs(self, attrPair):
@@ -902,6 +909,25 @@ class TestMongoAssetMetadataStorage(TestMongoModuleStore):
         self.assertEquals(len(self.draft_store.get_all_asset_thumbnail_metadata(self.course1.id)), 2)
         self.draft_store.delete_all_asset_metadata(self.course1.id)
         self.assertEquals(len(self.draft_store.get_all_asset_thumbnail_metadata(self.course1.id)), 0)
+
+    def test_asset_object_equivalence(self):
+        # Assets are not equivalent to thumbnails - even if all their info is the same.
+        self.assertTrue(self.asset6_md != self.thumb6_md)
+        # Ensure asset object ordering.
+        self.assertTrue(self.asset1_md < self.asset2_md)
+        self.assertFalse(self.asset1_md > self.asset2_md)
+        self.assertFalse(self.asset1_md == self.asset2_md)
+        self.assertTrue(self.asset3_md < self.asset4_md)
+        self.assertFalse(self.asset3_md > self.asset4_md)
+        self.assertFalse(self.asset3_md == self.asset4_md)
+        self.assertEquals(self.asset1_md, self.asset1_md)
+        # Ensure thumbnail object ordering.
+        self.assertTrue(self.thumb1_md < self.thumb2_md)
+        self.assertFalse(self.thumb1_md > self.thumb2_md)
+        self.assertFalse(self.thumb1_md == self.thumb2_md)
+
+    def test_get_all_assets_with_paging(self):
+        pass
 
     def test_copy_all_assets(self):
         pass

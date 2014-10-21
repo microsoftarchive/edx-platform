@@ -1,6 +1,13 @@
+"""
+Classes representing asset & asset thumbnail metadata.
+"""
 
-
+from datetime import datetime
+from contracts import contract, new_contract
 from opaque_keys.edx.keys import CourseKey, AssetKey
+
+new_contract('AssetKey', AssetKey)
+new_contract('datetime', datetime)
 
 
 class AssetMetadata(object):
@@ -13,11 +20,13 @@ class AssetMetadata(object):
     EDIT_INFO_ATTRS = ['curr_version', 'prev_version', 'edited_by', 'edited_on']
     ALLOWED_ATTRS = TOP_LEVEL_ATTRS + EDIT_INFO_ATTRS
 
+    @contract(asset_id='AssetKey', basename='str | unicode', internal_name='str | None', locked='bool | None', contenttype='str | unicode | None',
+              md5='str | None', curr_version='str | None', prev_version='str | None', edited_by='str | None', edited_on='datetime | None')
     def __init__(self, asset_id,
                  basename=None, internal_name=None,
                  locked=None, contenttype=None, md5=None,
                  curr_version=None, prev_version=None,
-                 edited_by=None, edited_on=None, **kwargs):
+                 edited_by=None, edited_on=None):
         """
         Construct a AssetMetadata object.
 
@@ -49,6 +58,9 @@ class AssetMetadata(object):
     def __ne__(self, other):
         return not self == other
 
+    def __lt__(self, other):
+        return self.asset_id < other.asset_id
+
     def __hash__(self):
         return hash(self.asset_id)
 
@@ -59,7 +71,7 @@ class AssetMetadata(object):
             self.locked, self.contenttype, self.md5,
             self.curr_version, self.prev_version,
             self.edited_by, self.edited_on
-            )
+        )
 
     def update(self, attr_dict):
         """
@@ -91,15 +103,15 @@ class AssetMetadata(object):
             }
         }
 
+    @contract(asset_doc='dict | None')
     def from_mongo(self, asset_doc):
         """
         Fill in all metadata fields from a MongoDB document.
 
-        The asset_id and upload_name props are initialized upon construction only.
+        The asset_id prop is initialized upon construction only.
         """
         if asset_doc is None:
             return
-        assert isinstance(asset_doc, dict)
         self.basename = asset_doc['basename']
         self.internal_name = asset_doc['internal_name']
         self.locked = asset_doc['locked']
@@ -117,7 +129,8 @@ class AssetThumbnailMetadata(object):
     Stores the metadata associated with the thumbnail of a course asset.
     """
 
-    def __init__(self, asset_id, internal_name=None, **kwargs):
+    @contract(asset_id='AssetKey', internal_name='str | None')
+    def __init__(self, asset_id, internal_name=None):
         """
         Construct a AssetThumbnailMetadata object.
 
@@ -129,10 +142,13 @@ class AssetThumbnailMetadata(object):
         self.internal_name = internal_name
 
     def __eq__(self, other):
-        return self.asset_id == other.asset_id
+        return other and self.asset_id == other.asset_id
 
     def __ne__(self, other):
         return not self == other
+
+    def __lt__(self, other):
+        return self.asset_id < other.asset_id
 
     def __hash__(self):
         return hash(self.asset_id)
@@ -141,11 +157,21 @@ class AssetThumbnailMetadata(object):
         return """AssetMetadata('{!r}', '{!r}')""".format(self.asset_id, self.internal_name)
 
     def to_mongo(self):
+        """
+        Converts metadata properties into a MongoDB-storable dict.
+        """
         return {
             'filename': self.asset_id.path,
             'internal_name': self.internal_name
         }
 
+    @contract(thumbnail_doc='dict | None')
     def from_mongo(self, thumbnail_doc):
-        assert isinstance(thumbnail_doc, dict)
+        """
+        Fill in all metadata fields from a MongoDB document.
+
+        The asset_id prop is initialized upon construction only.
+        """
+        if thumbnail_doc is None:
+            return
         self.internal_name = thumbnail_doc['internal_name']

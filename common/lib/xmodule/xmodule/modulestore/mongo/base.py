@@ -196,7 +196,6 @@ class CachingDescriptorSystem(MakoDescriptorSystem, EditInfoRuntimeMixin):
                 category = json_data['location']['category']
                 class_ = self.load_block_type(category)
 
-
                 definition = json_data.get('definition', {})
                 metadata = json_data.get('metadata', {})
                 for old_name, new_name in getattr(class_, 'metadata_translations', {}).items():
@@ -1457,7 +1456,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         course_assets = self.asset_collection.find_one(
             {'course_id': unicode(course_key)},
             fields={'_id': True, 'assets': True, 'thumbnails': True}
-            )
+        )
 
         if course_assets is None:
             # Not found, so create.
@@ -1636,7 +1635,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         else:
             all_assets = course_assets['assets']
         ret_assets = []
-        # Add start/maxresults/sort functionality as part of https://openedx.atlassian.net/browse/PLAT-74
+        # TODO: Add start/maxresults/sort functionality as part of https://openedx.atlassian.net/browse/PLAT-74
         for asset in all_assets:
             if get_thumbnails:
                 thumb = AssetThumbnailMetadata(course_key.make_asset_key('asset', asset['filename']),
@@ -1644,10 +1643,10 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
                 ret_assets.append(thumb)
             else:
                 asset = AssetMetadata(course_key.make_asset_key('asset', asset['filename']),
-                                      displayname=asset['filename'],
-                                      uploadDate=asset['edit_info']['edited_on'],
-                                      contentType=asset['contenttype'],
-                                      md5=asset['md5'])
+                                      basename=asset['filename'],
+                                      edited_on=asset['edit_info']['edited_on'],
+                                      contenttype=asset['contenttype'],
+                                      md5=str(asset['md5']))
                 ret_assets.append(asset)
         return ret_assets
 
