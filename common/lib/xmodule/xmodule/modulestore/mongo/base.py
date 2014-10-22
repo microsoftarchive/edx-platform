@@ -1502,6 +1502,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
 
         return course_assets, None
 
+    @contract(course_key='CourseKey')
     def _save_asset_info(self, course_key, asset_metadata, thumbnail=False):
         """
         Saves the info for a particular course's asset/thumbnail.
@@ -1514,7 +1515,6 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         Returns:
             True if info save was successful, else False
         """
-        assert isinstance(course_key, CourseKey)
         if self.asset_collection is None:
             return False
 
@@ -1567,6 +1567,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         """
         return self._save_asset_info(course_key, asset_thumbnail_metadata, thumbnail=True)
 
+    @contract(asset_key='AssetKey')
     def _find_asset_info(self, asset_key, thumbnail=False):
         """
         Find the info for a particular course asset/thumbnail.
@@ -1578,7 +1579,6 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         Returns:
             asset/thumbnail metadata (AssetMetadata/AssetThumbnailMetadata) -or- None if not found
         """
-        assert isinstance(asset_key, AssetKey)
         if self.asset_collection is None:
             return None
 
@@ -1622,6 +1622,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         """
         return self._find_asset_info(asset_key, thumbnail=True)
 
+    @contract(course_key='CourseKey')
     def _get_all_asset_metadata(self, course_key, start=0, maxresults=-1, sort=None, get_thumbnails=False):
         """
         Returns a list of static asset (or thumbnail) metadata for a course.
@@ -1638,7 +1639,6 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         Returns:
             List of AssetMetadata or AssetThumbnailMetadata objects.
         """
-        assert isinstance(course_key, CourseKey)
         if self.asset_collection is None:
             return None
 
@@ -1747,6 +1747,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
 
         self.asset_collection.update({'_id': course_assets['_id']}, {"$set": {'assets': all_assets}})
 
+    @contract(asset_key='AssetKey')
     def _delete_asset_data(self, asset_key, thumbnail=False):
         """
         Internal; deletes a single asset's metadata -or- thumbnail.
@@ -1758,7 +1759,6 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         Returns:
             Number of asset metadata/thumbnail entries deleted (0 or 1)
         """
-        assert isinstance(asset_key, AssetKey)
         if self.asset_collection is None:
             return 0
 
