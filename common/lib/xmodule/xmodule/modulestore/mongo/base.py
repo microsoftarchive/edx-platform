@@ -1466,7 +1466,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
 
         if course_assets is None:
             # Not found, so create.
-            course_assets = {'course_id': unicode(course_key), 'storage': 'TODO', 'assets': [], 'thumbnails': []}
+            course_assets = {'course_id': unicode(course_key), 'storage': 'FILLMEIN-TMP', 'assets': [], 'thumbnails': []}
             self.asset_collection.insert(course_assets)
 
         return course_assets
