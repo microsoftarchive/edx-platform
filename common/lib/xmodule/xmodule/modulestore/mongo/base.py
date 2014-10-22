@@ -1474,34 +1474,6 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
 
         return course_assets
 
-    def _find_course_asset(self, course_key, filename, get_thumbnail=False):
-        """
-        Internal; finds or creates course asset info -and- finds existing asset (or thumbnail) metadata.
-
-        Arguments:
-            course_key (CourseKey): course identifier
-            filename (str): filename of the asset or thumbnail
-            get_thumbnail (bool): True gets thumbnail data, False gets asset data
-
-        Returns:
-            Asset info for the course, index of asset/thumbnail in list (None if asset/thumbnail does not exist)
-        """
-        course_assets = self._find_course_assets(course_key)
-
-        if get_thumbnail:
-            all_assets = course_assets['thumbnails']
-        else:
-            all_assets = course_assets['assets']
-
-        # See if this asset already exists by checking the external_filename.
-        # Studio doesn't currently support using multiple course assets with the same filename.
-        # So use the filename as the unique identifier.
-        for idx, a in enumerate(all_assets):
-            if a['filename'] == filename:
-                return course_assets, idx
-
-        return course_assets, None
-
     @contract(course_key='CourseKey')
     def _save_asset_info(self, course_key, asset_metadata, thumbnail=False):
         """
@@ -1519,10 +1491,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
             return False
 
         course_assets, asset_idx = self._find_course_asset(course_key, asset_metadata.asset_id.path, thumbnail)
-        if thumbnail:
-            info = 'thumbnails'
-        else:
-            info = 'assets'
+        info = 'thumbnails' if thumbnail else 'assets'
         all_assets = course_assets[info]
 
         # Translate metadata to Mongo format.
@@ -1538,183 +1507,6 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         # Update the document.
         self.asset_collection.update({'_id': course_assets['_id']}, {'$set': {info: all_assets}})
         return True
-
-    @contract(course_key='CourseKey', asset_metadata='AssetMetadata')
-    def save_asset_metadata(self, course_key, asset_metadata):
-        """
-        Saves the asset metadata for a particular course's asset.
-
-        Arguments:
-            course_key (CourseKey): course identifier
-            asset_metadata (AssetMetadata): data about the course asset data
-
-        Returns:
-            True if metadata save was successful, else False
-        """
-        return self._save_asset_info(course_key, asset_metadata, thumbnail=False)
-
-    @contract(course_key='CourseKey', asset_thumbnail_metadata='AssetThumbnailMetadata')
-    def save_asset_thumbnail_metadata(self, course_key, asset_thumbnail_metadata):
-        """
-        Saves the asset thumbnail metadata for a particular course asset's thumbnail.
-
-        Arguments:
-            course_key (CourseKey): course identifier
-            asset_thumbnail_metadata (AssetThumbnailMetadata): data about the course asset thumbnail
-
-        Returns:
-            True if thumbnail metadata save was successful, else False
-        """
-        return self._save_asset_info(course_key, asset_thumbnail_metadata, thumbnail=True)
-
-    @contract(asset_key='AssetKey')
-    def _find_asset_info(self, asset_key, thumbnail=False):
-        """
-        Find the info for a particular course asset/thumbnail.
-
-        Arguments:
-            asset_key (AssetKey): key containing original asset filename
-            thumbnail (bool): True if finding thumbnail, False if finding asset metadata
-
-        Returns:
-            asset/thumbnail metadata (AssetMetadata/AssetThumbnailMetadata) -or- None if not found
-        """
-        if self.asset_collection is None:
-            return None
-
-        course_assets, asset_idx = self._find_course_asset(asset_key.course_key, asset_key.path, thumbnail)
-        if asset_idx is None:
-            return None
-
-        if thumbnail:
-            info = 'thumbnails'
-            md = AssetThumbnailMetadata(asset_key, asset_key.path)
-        else:
-            info = 'assets'
-            md = AssetMetadata(asset_key, asset_key.path)
-        all_assets = course_assets[info]
-        md.from_mongo(all_assets[asset_idx])
-        return md
-
-    @contract(asset_key='AssetKey')
-    def find_asset_metadata(self, asset_key):
-        """
-        Find the metadata for a particular course asset.
-
-        Arguments:
-            asset_key (AssetKey): key containing original asset filename
-
-        Returns:
-            asset metadata (AssetMetadata) -or- None if not found
-        """
-        return self._find_asset_info(asset_key, thumbnail=False)
-
-    @contract(asset_key='AssetKey')
-    def find_asset_thumbnail_metadata(self, asset_key):
-        """
-        Find the metadata for a particular course asset.
-
-        Arguments:
-            asset_key (AssetKey): key containing original asset filename
-
-        Returns:
-            asset metadata (AssetMetadata) -or- None if not found
-        """
-        return self._find_asset_info(asset_key, thumbnail=True)
-
-    @contract(course_key='CourseKey')
-    def _get_all_asset_metadata(self, course_key, start=0, maxresults=-1, sort=None, get_thumbnails=False):
-        """
-        Returns a list of static asset (or thumbnail) metadata for a course.
-
-        Args:
-            course_key (CourseKey): course identifier
-            start (int): optional - start at this asset number
-            maxresults (int): optional - return at most this many, -1 means no limit
-            sort (array): optional - None means no sort
-                (sort_by (str), sort_order (str))
-                sort_by - one of 'uploadDate' or 'displayname'
-                sort_order - one of 'ascending' or 'descending'
-
-        Returns:
-            List of AssetMetadata or AssetThumbnailMetadata objects.
-        """
-        if self.asset_collection is None:
-            return None
-
-        course_assets = self._find_course_assets(course_key)
-        if get_thumbnails:
-            all_assets = course_assets['thumbnails']
-        else:
-            all_assets = course_assets['assets']
-
-        # DO_NEXT: Add start/maxresults/sort functionality as part of https://openedx.atlassian.net/browse/PLAT-74
-        if start and maxresults and sort:
-            pass
-
-        ret_assets = []
-        for asset in all_assets:
-            if get_thumbnails:
-                thumb = AssetThumbnailMetadata(course_key.make_asset_key('thumbnail', asset['filename']),
-                                               internal_name=asset['filename'])
-                ret_assets.append(thumb)
-            else:
-                asset = AssetMetadata(course_key.make_asset_key('asset', asset['filename']),
-                                      basename=asset['filename'],
-                                      edited_on=asset['edit_info']['edited_on'],
-                                      contenttype=asset['contenttype'],
-                                      md5=str(asset['md5']))
-                ret_assets.append(asset)
-        return ret_assets
-
-    @contract(course_key='CourseKey', start='int | None', maxresults='int | None', sort='list | None')
-    def get_all_asset_metadata(self, course_key, start=0, maxresults=-1, sort=None):
-        """
-        Returns a list of static assets for a course.
-        By default all assets are returned, but start and maxresults can be provided to limit the query.
-
-        Args:
-            course_key (CourseKey): course identifier
-            start (int): optional - start at this asset number
-            maxresults (int): optional - return at most this many, -1 means no limit
-            sort (array): optional - None means no sort
-                (sort_by (str), sort_order (str))
-                sort_by - one of 'uploadDate' or 'displayname'
-                sort_order - one of 'ascending' or 'descending'
-
-        Returns:
-            List of AssetMetadata objects.
-        """
-        return self._get_all_asset_metadata(course_key, start, maxresults, sort, get_thumbnails=False)
-
-    @contract(course_key='CourseKey')
-    def get_all_asset_thumbnail_metadata(self, course_key):
-        """
-        Returns a list of thumbnails for all course assets.
-
-        Args:
-            course_key (CourseKey): course identifier
-
-        Returns:
-            List of AssetThumbnailMetadata objects.
-        """
-        return self._get_all_asset_metadata(course_key, get_thumbnails=True)
-
-    @contract(asset_key='AssetKey', attr=str)
-    def set_asset_metadata_attr(self, asset_key, attr, value=True):
-        """
-        Add/set the given attr on the asset at the given location. Value can be any type which pymongo accepts.
-
-        Arguments:
-            asset_key (AssetKey): asset identifier
-            attr (str): which attribute to set
-            value: the value to set it to (any type pymongo accepts such as datetime, number, string)
-
-        Raises:
-            ItemNotFoundError if no such item exists
-            AttributeError is attr is one of the build in attrs.
-        """
-        return self.set_asset_metadata_attrs(asset_key, {attr: value})
 
     @contract(asset_key='AssetKey', attr_dict=dict)
     def set_asset_metadata_attrs(self, asset_key, attr_dict):
@@ -1766,10 +1558,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         if asset_idx is None:
             return 0
 
-        if thumbnail:
-            info = 'thumbnails'
-        else:
-            info = 'assets'
+        info = 'thumbnails' if thumbnail else 'assets'
 
         all_asset_info = course_assets[info]
         all_asset_info.pop(asset_idx)
@@ -1777,32 +1566,6 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         # Update the document.
         self.asset_collection.update({'_id': course_assets['_id']}, {'$set': {info: all_asset_info}})
         return 1
-
-    @contract(asset_key='AssetKey')
-    def delete_asset_metadata(self, asset_key):
-        """
-        Deletes a single asset's metadata.
-
-        Arguments:
-            asset_key (AssetKey): locator containing original asset filename
-
-        Returns:
-            Number of asset metadata entries deleted (0 or 1)
-        """
-        return self._delete_asset_data(asset_key, thumbnail=False)
-
-    @contract(asset_key='AssetKey')
-    def delete_asset_thumbnail_metadata(self, asset_key):
-        """
-        Deletes a single asset's metadata.
-
-        Arguments:
-            asset_key (AssetKey): locator containing original asset filename
-
-        Returns:
-            Number of asset metadata entries deleted (0 or 1)
-        """
-        return self._delete_asset_data(asset_key, thumbnail=True)
 
     @contract(course_key='CourseKey')
     def delete_all_asset_metadata(self, course_key):
@@ -1819,17 +1582,6 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         # A single document exists per course to store the course asset metadata.
         course_assets = self._find_course_assets(course_key)
         self.asset_collection.remove(course_assets['_id'])
-
-    @contract(source_course_key='CourseKey', dest_course_key='CourseKey')
-    def copy_all_asset_metadata(self, source_course_key, dest_course_key):
-        """
-        Copy all the course assets from source_course_key to dest_course_key.
-
-        Arguments:
-            source_course_key (CourseKey): identifier of course to copy from
-            dest_course_key (CourseKey): identifier of course to copy to
-        """
-        pass
 
     def heartbeat(self):
         """
