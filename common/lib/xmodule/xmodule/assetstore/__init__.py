@@ -129,7 +129,7 @@ class AssetThumbnailMetadata(object):
     Stores the metadata associated with the thumbnail of a course asset.
     """
 
-    @contract(asset_id='AssetKey', internal_name='str | None')
+    @contract(asset_id='AssetKey', internal_name='str | unicode | None')
     def __init__(self, asset_id, internal_name=None):
         """
         Construct a AssetThumbnailMetadata object.

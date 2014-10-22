@@ -24,6 +24,7 @@ from fs.osfs import OSFS
 from path import path
 from datetime import datetime
 from pytz import UTC
+from contracts import contract, new_contract
 
 from importlib import import_module
 from xmodule.errortracker import null_error_tracker, exc_info_to_str
@@ -47,6 +48,11 @@ from xmodule.modulestore.edit_info import EditInfoRuntimeMixin
 from xmodule.assetstore import AssetMetadata, AssetThumbnailMetadata
 
 log = logging.getLogger(__name__)
+
+new_contract('CourseKey', CourseKey)
+new_contract('AssetKey', AssetKey)
+new_contract('AssetMetadata', AssetMetadata)
+new_contract('AssetThumbnailMetadata', AssetThumbnailMetadata)
 
 # sort order that returns DRAFT items first
 SORT_REVISION_FAVOR_DRAFT = ('_id.revision', pymongo.DESCENDING)
@@ -1461,7 +1467,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         if course_assets is None:
             # Not found, so create.
             course_assets = {'course_id': unicode(course_key), 'storage': 'TODO', 'assets': [], 'thumbnails': []}
-            asset_id = self.asset_collection.insert(course_assets)
+            self.asset_collection.insert(course_assets)
 
         return course_assets
 
@@ -1530,6 +1536,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         self.asset_collection.update({'_id': course_assets['_id']}, {'$set': {info: all_assets}})
         return True
 
+    @contract(course_key='CourseKey', asset_metadata='AssetMetadata')
     def save_asset_metadata(self, course_key, asset_metadata):
         """
         Saves the asset metadata for a particular course's asset.
@@ -1543,6 +1550,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         """
         return self._save_asset_info(course_key, asset_metadata, thumbnail=False)
 
+    @contract(course_key='CourseKey', asset_thumbnail_metadata='AssetThumbnailMetadata')
     def save_asset_thumbnail_metadata(self, course_key, asset_thumbnail_metadata):
         """
         Saves the asset thumbnail metadata for a particular course asset's thumbnail.
@@ -1585,6 +1593,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         md.from_mongo(all_assets[asset_idx])
         return md
 
+    @contract(asset_key='AssetKey')
     def find_asset_metadata(self, asset_key):
         """
         Find the metadata for a particular course asset.
@@ -1597,6 +1606,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         """
         return self._find_asset_info(asset_key, thumbnail=False)
 
+    @contract(asset_key='AssetKey')
     def find_asset_thumbnail_metadata(self, asset_key):
         """
         Find the metadata for a particular course asset.
@@ -1634,8 +1644,12 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
             all_assets = course_assets['thumbnails']
         else:
             all_assets = course_assets['assets']
+
+        # DO_NEXT: Add start/maxresults/sort functionality as part of https://openedx.atlassian.net/browse/PLAT-74
+        if start and maxresults and sort:
+            pass
+
         ret_assets = []
-        # TODO: Add start/maxresults/sort functionality as part of https://openedx.atlassian.net/browse/PLAT-74
         for asset in all_assets:
             if get_thumbnails:
                 thumb = AssetThumbnailMetadata(course_key.make_asset_key('asset', asset['filename']),
@@ -1691,7 +1705,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
             value: the value to set it to (any type pymongo accepts such as datetime, number, string)
 
         Raises:
-            NotFoundError if no such item exists
+            ItemNotFoundError if no such item exists
             AttributeError is attr is one of the build in attrs.
         """
         return self.set_asset_metadata_attrs(asset_key, {attr: value})
@@ -1705,7 +1719,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
             attr_dict (dict): attribute: value pairs to set
 
         Raises:
-            NotFoundError if no such item exists
+            ItemNotFoundError if no such item exists
             AttributeError is attr is one of the build in attrs.
         """
         assert(isinstance(asset_key, AssetKey))
@@ -1714,7 +1728,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
 
         course_assets, asset_idx = self._find_course_asset(asset_key.course_key, asset_key.path)
         if asset_idx is None:
-            raise NotFoundError(asset_key)
+            raise ItemNotFoundError(asset_key)
 
         # Form an AssetMetadata.
         all_assets = course_assets['assets']
