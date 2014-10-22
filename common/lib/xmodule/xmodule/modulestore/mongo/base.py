@@ -1664,6 +1664,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
                 ret_assets.append(asset)
         return ret_assets
 
+    @contract(course_key='CourseKey', start='int | None', maxresults='int | None', sort='list | None')
     def get_all_asset_metadata(self, course_key, start=0, maxresults=-1, sort=None):
         """
         Returns a list of static assets for a course.
@@ -1683,6 +1684,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         """
         return self._get_all_asset_metadata(course_key, start, maxresults, sort, get_thumbnails=False)
 
+    @contract(course_key='CourseKey')
     def get_all_asset_thumbnail_metadata(self, course_key):
         """
         Returns a list of thumbnails for all course assets.
@@ -1695,6 +1697,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         """
         return self._get_all_asset_metadata(course_key, get_thumbnails=True)
 
+    @contract(asset_key='AssetKey', attr=str)
     def set_asset_metadata_attr(self, asset_key, attr, value=True):
         """
         Add/set the given attr on the asset at the given location. Value can be any type which pymongo accepts.
@@ -1710,6 +1713,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         """
         return self.set_asset_metadata_attrs(asset_key, {attr: value})
 
+    @contract(asset_key='AssetKey', attr_dict=dict)
     def set_asset_metadata_attrs(self, asset_key, attr_dict):
         """
         Add/set the given dict of attrs on the asset at the given location. Value can be any type which pymongo accepts.
@@ -1772,6 +1776,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         self.asset_collection.update({'_id': course_assets['_id']}, {'$set': {info: all_asset_info}})
         return 1
 
+    @contract(asset_key='AssetKey')
     def delete_asset_metadata(self, asset_key):
         """
         Deletes a single asset's metadata.
@@ -1784,6 +1789,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         """
         return self._delete_asset_data(asset_key, thumbnail=False)
 
+    @contract(asset_key='AssetKey')
     def delete_asset_thumbnail_metadata(self, asset_key):
         """
         Deletes a single asset's metadata.
@@ -1796,6 +1802,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         """
         return self._delete_asset_data(asset_key, thumbnail=True)
 
+    @contract(course_key='CourseKey')
     def delete_all_asset_metadata(self, course_key):
         """
         Delete all of the assets which use this course_key as an identifier.
@@ -1812,6 +1819,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         course_assets = self._find_course_assets(course_key)
         self.asset_collection.remove(course_assets['_id'])
 
+    @contract(source_course_key='CourseKey', dest_course_key='CourseKey')
     def copy_all_asset_metadata(self, source_course_key, dest_course_key):
         """
         Copy all the course assets from source_course_key to dest_course_key.
