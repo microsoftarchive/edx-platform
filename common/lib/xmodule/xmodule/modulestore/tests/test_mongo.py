@@ -63,8 +63,10 @@ class ReferenceTestXBlock(XBlock, XModuleMixin):
     reference_dict = ReferenceValueDict(scope=Scope.settings)
 
 
-class TestMongoModuleStore(unittest.TestCase):
-    '''Tests!'''
+class TestMongoModuleStoreBase(unittest.TestCase):
+    '''
+    Basic setup for all tests
+    '''
     # Explicitly list the courses to load (don't want the big one)
     courses = ['toy', 'simple', 'simple_with_draft', 'test_unicode']
 
@@ -91,6 +93,11 @@ class TestMongoModuleStore(unittest.TestCase):
             cls.connection.close()
 
     @classmethod
+    def add_asset_collection(cls, doc_store_config):
+        # No asset collection.
+        pass
+
+    @classmethod
     def initdb(cls):
         # connect to the db
         doc_store_config = {
@@ -98,8 +105,10 @@ class TestMongoModuleStore(unittest.TestCase):
             'port': PORT,
             'db': DB,
             'collection': COLLECTION,
-            'asset_collection': ASSET_COLLECTION,
+            #'asset_collection': ASSET_COLLECTION,
         }
+        cls.add_asset_collection(doc_store_config)
+
         # since MongoModuleStore and MongoContentStore are basically assumed to be together, create this class
         # as well
         content_store = MongoContentStore(HOST, DB, port=PORT)
@@ -147,6 +156,23 @@ class TestMongoModuleStore(unittest.TestCase):
     @classmethod
     def tearDown(cls):
         pass
+
+
+class TestMongoModuleStore(TestMongoModuleStoreBase):
+    '''Module store tests'''
+
+    @classmethod
+    def add_asset_collection(cls, doc_store_config):
+        # No asset collection - it's not used in the tests below.
+        pass
+
+    @classmethod
+    def setupClass(cls):
+        super(TestMongoModuleStore, cls).setupClass()
+
+    @classmethod
+    def teardownClass(cls):
+        super(TestMongoModuleStore, cls).teardownClass()
 
     def test_init(self):
         '''Make sure the db loads'''
@@ -657,6 +683,11 @@ class TestMongoAssetMetadataStorage(TestMongoModuleStore):
         return AssetThumbnailMetadata(asset_key, internal_name='ABC39XJUDN2')
 
     @classmethod
+    def add_asset_collection(cls, doc_store_config):
+        # Valid asset collection.
+        doc_store_config['asset_collection'] = ASSET_COLLECTION
+
+    @classmethod
     def setupClass(cls):
         super(TestMongoAssetMetadataStorage, cls).setupClass()
 
@@ -955,6 +986,35 @@ class TestMongoAssetMetadataStorage(TestMongoModuleStore):
 
     def test_copy_all_assets(self):
         pass
+
+
+class TestMongoModuleStoreWithNoAssetCollection(TestMongoModuleStore):
+    '''
+    Tests a situation where no asset_collection is specified.
+    '''
+
+    @classmethod
+    def add_asset_collection(cls, doc_store_config):
+        # No asset collection.
+        pass
+
+    @classmethod
+    def setupClass(cls):
+        super(TestMongoModuleStoreWithNoAssetCollection, cls).setupClass()
+
+    @classmethod
+    def teardownClass(cls):
+        super(TestMongoModuleStoreWithNoAssetCollection, cls).teardownClass()
+
+    def test_no_asset_collection(self):
+        courses = self.draft_store.get_courses()
+        course = courses[0]
+        # Confirm that no asset collection means no asset metadata.
+        self.assertEquals(self.draft_store.get_all_asset_metadata(course.id), None)
+        # Now delete the non-existent asset metadata.
+        self.draft_store.delete_all_asset_metadata(course.id)
+        # Should still be nothing.
+        self.assertEquals(self.draft_store.get_all_asset_metadata(course.id), None)
 
 
 class TestMongoKeyValueStore(object):

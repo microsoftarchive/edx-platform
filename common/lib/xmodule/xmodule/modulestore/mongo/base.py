@@ -1457,17 +1457,20 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         Returns:
             Asset info for the course
         """
+        if self.asset_collection is None:
+            return None
+
         # Using the course_key, find or insert the course asset metadata document.
         # A single document exists per course to store the course asset metadata.
         course_assets = self.asset_collection.find_one(
             {'course_id': unicode(course_key)},
-            fields={'_id': True, 'assets': True, 'thumbnails': True}
+            fields=('course_id', 'storage', 'assets', 'thumbnails')
         )
 
         if course_assets is None:
             # Not found, so create.
             course_assets = {'course_id': unicode(course_key), 'storage': 'FILLMEIN-TMP', 'assets': [], 'thumbnails': []}
-            self.asset_collection.insert(course_assets)
+            course_assets['_id'] = self.asset_collection.insert(course_assets)
 
         return course_assets
 
@@ -1493,12 +1496,11 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         # See if this asset already exists by checking the external_filename.
         # Studio doesn't currently support using multiple course assets with the same filename.
         # So use the filename as the unique identifier.
-        asset_idx = None
         for idx, a in enumerate(all_assets):
             if a['filename'] == filename:
-                asset_idx = idx
+                return course_assets, idx
 
-        return course_assets, asset_idx
+        return course_assets, None
 
     def _save_asset_info(self, course_key, asset_metadata, thumbnail=False):
         """
@@ -1527,6 +1529,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         metadata_to_insert = asset_metadata.to_mongo()
         if asset_idx is None:
             # Append new metadata.
+            # Future optimization: Insert in order & binary search to retrieve.
             all_assets.append(metadata_to_insert)
         else:
             # Replace existing metadata.
@@ -1652,7 +1655,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         ret_assets = []
         for asset in all_assets:
             if get_thumbnails:
-                thumb = AssetThumbnailMetadata(course_key.make_asset_key('asset', asset['filename']),
+                thumb = AssetThumbnailMetadata(course_key.make_asset_key('thumbnail', asset['filename']),
                                                internal_name=asset['filename'])
                 ret_assets.append(thumb)
             else:
@@ -1726,7 +1729,6 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
             ItemNotFoundError if no such item exists
             AttributeError is attr is one of the build in attrs.
         """
-        assert(isinstance(asset_key, AssetKey))
         if self.asset_collection is None:
             return
 
@@ -1810,7 +1812,6 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         Arguments:
             course_key (CourseKey): course_identifier
         """
-        assert isinstance(course_key, CourseKey)
         if self.asset_collection is None:
             return
 
@@ -1828,8 +1829,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
             source_course_key (CourseKey): identifier of course to copy from
             dest_course_key (CourseKey): identifier of course to copy to
         """
-        assert isinstance(source_course_key, CourseKey)
-        assert isinstance(dest_course_key, CourseKey)
+        pass
 
     def heartbeat(self):
         """

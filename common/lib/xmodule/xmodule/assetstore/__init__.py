@@ -10,6 +10,14 @@ new_contract('AssetKey', AssetKey)
 new_contract('datetime', datetime)
 
 
+class IncorrectAssetIdType(Exception):
+    """
+    Raised when the asset ID passed-in to create an AssetMetadata or
+    AssetThumbnailMetadata is of the wrong type.
+    """
+    pass
+
+
 class AssetMetadata(object):
     """
     Stores the metadata associated with a particular course asset. The asset metadata gets stored
@@ -19,6 +27,9 @@ class AssetMetadata(object):
     TOP_LEVEL_ATTRS = ['basename', 'internal_name', 'locked', 'contenttype', 'md5']
     EDIT_INFO_ATTRS = ['curr_version', 'prev_version', 'edited_by', 'edited_on']
     ALLOWED_ATTRS = TOP_LEVEL_ATTRS + EDIT_INFO_ATTRS
+
+    # All AssetMetadata objects should have AssetLocators with this type.
+    ASSET_TYPE = 'asset'
 
     @contract(asset_id='AssetKey', basename='str | unicode', internal_name='str | None', locked='bool | None', contenttype='str | unicode | None',
               md5='str | None', curr_version='str | None', prev_version='str | None', edited_by='str | None', edited_on='datetime | None')
@@ -41,6 +52,8 @@ class AssetMetadata(object):
             edited_by (str): Username of last user to upload this asset.
             edited_on (datetime): Datetime of last upload of this asset.
         """
+        if asset_id.asset_type != self.ASSET_TYPE:
+            raise IncorrectAssetIdType()
         self.asset_id = asset_id
         self.basename = basename  # Path w/o filename.
         self.internal_name = internal_name
@@ -65,13 +78,13 @@ class AssetMetadata(object):
         return hash(self.asset_id)
 
     def __repr__(self):
-        return """AssetMetadata('{!r}', '{!r}', '{!r}', '{!r}', '{!r}', '{!r}', '{!r}', '{!r}', '{!r}', '{!r}')""".format(
+        return """AssetMetadata{!r}""".format((
             self.asset_id,
             self.basename, self.internal_name,
             self.locked, self.contenttype, self.md5,
             self.curr_version, self.prev_version,
             self.edited_by, self.edited_on
-        )
+        ))
 
     def update(self, attr_dict):
         """
@@ -129,6 +142,9 @@ class AssetThumbnailMetadata(object):
     Stores the metadata associated with the thumbnail of a course asset.
     """
 
+    # All AssetThumbnailMetadata objects should have AssetLocators with this type.
+    ASSET_TYPE = 'thumbnail'
+
     @contract(asset_id='AssetKey', internal_name='str | unicode | None')
     def __init__(self, asset_id, internal_name=None):
         """
@@ -138,6 +154,8 @@ class AssetThumbnailMetadata(object):
             asset_id (AssetKey): Key identifying this particular asset.
             internal_name (str): Name under which the file is stored internally.
         """
+        if asset_id.asset_type != self.ASSET_TYPE:
+            raise IncorrectAssetIdType()
         self.asset_id = asset_id
         self.internal_name = internal_name
 
@@ -154,7 +172,7 @@ class AssetThumbnailMetadata(object):
         return hash(self.asset_id)
 
     def __repr__(self):
-        return """AssetMetadata('{!r}', '{!r}')""".format(self.asset_id, self.internal_name)
+        return """AssetMetadata{!r}""".format((self.asset_id, self.internal_name))
 
     def to_mongo(self):
         """
