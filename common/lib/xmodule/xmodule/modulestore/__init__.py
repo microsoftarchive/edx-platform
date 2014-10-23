@@ -1060,7 +1060,7 @@ class ModuleStoreWriteBase(ModuleStoreReadBase, ModuleStoreWrite):
         return self._get_all_asset_metadata(course_key, get_thumbnails=True)
 
     @contract(asset_key='AssetKey', attr=str)
-    def set_asset_metadata_attr(self, asset_key, attr, value=True):
+    def set_asset_metadata_attr(self, asset_key, user_id, attr, value=True):
         """
         Add/set the given attr on the asset at the given location. Value can be any type which pymongo accepts.
 
@@ -1073,10 +1073,10 @@ class ModuleStoreWriteBase(ModuleStoreReadBase, ModuleStoreWrite):
             ItemNotFoundError if no such item exists
             AttributeError is attr is one of the build in attrs.
         """
-        return self.set_asset_metadata_attrs(asset_key, {attr: value})
+        return self.set_asset_metadata_attrs(asset_key, {attr: value}, user_id)
 
     @contract(asset_key='AssetKey')
-    def delete_asset_metadata(self, asset_key):
+    def delete_asset_metadata(self, asset_key, user_id):
         """
         Deletes a single asset's metadata.
 
@@ -1086,10 +1086,10 @@ class ModuleStoreWriteBase(ModuleStoreReadBase, ModuleStoreWrite):
         Returns:
             Number of asset metadata entries deleted (0 or 1)
         """
-        return self._delete_asset_data(asset_key, thumbnail=False)
+        return self._delete_asset_data(asset_key, user_id, thumbnail=False)
 
     @contract(asset_key='AssetKey')
-    def delete_asset_thumbnail_metadata(self, asset_key):
+    def delete_asset_thumbnail_metadata(self, asset_key, user_id):
         """
         Deletes a single asset's metadata.
 
@@ -1099,10 +1099,10 @@ class ModuleStoreWriteBase(ModuleStoreReadBase, ModuleStoreWrite):
         Returns:
             Number of asset metadata entries deleted (0 or 1)
         """
-        return self._delete_asset_data(asset_key, thumbnail=True)
+        return self._delete_asset_data(asset_key, user_id, thumbnail=True)
 
     @contract(source_course_key='CourseKey', dest_course_key='CourseKey')
-    def copy_all_asset_metadata(self, source_course_key, dest_course_key):
+    def copy_all_asset_metadata(self, source_course_key, dest_course_key, user_id):
         """
         Copy all the course assets from source_course_key to dest_course_key.
 

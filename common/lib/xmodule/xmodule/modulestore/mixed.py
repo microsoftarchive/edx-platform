@@ -414,7 +414,7 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         return store.get_all_asset_thumbnail_metadata(course_key)
 
     @contract(asset_key='AssetKey')
-    def delete_asset_metadata(self, asset_key):
+    def delete_asset_metadata(self, asset_key, user_id):
         """
         Deletes a single asset's metadata.
 
@@ -425,10 +425,10 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
             Number of asset metadata entries deleted (0 or 1)
         """
         store = self._get_modulestore_for_courseid(asset_key.course_key)
-        return store.delete_asset_metadata(asset_key)
+        return store.delete_asset_metadata(asset_key, user_id)
 
     @contract(asset_key='AssetKey')
-    def delete_asset_thumbnail_metadata(self, asset_key):
+    def delete_asset_thumbnail_metadata(self, asset_key, user_id):
         """
         Deletes a single asset's metadata.
 
@@ -439,7 +439,7 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
             Number of asset metadata entries deleted (0 or 1)
         """
         store = self._get_modulestore_for_courseid(asset_key.course_key)
-        return store.delete_asset_metadata(asset_key)
+        return store.delete_asset_thumbnail_metadata(asset_key, user_id)
 
     @contract(course_key='CourseKey')
     def delete_all_asset_metadata(self, course_key):
@@ -453,7 +453,7 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         return store.delete_all_asset_metadata(course_key)
 
     @contract(source_course_key='CourseKey', dest_course_key='CourseKey')
-    def copy_all_asset_metadata(self, source_course_key, dest_course_key):
+    def copy_all_asset_metadata(self, source_course_key, dest_course_key, user_id):
         """
         Copy all the course assets from source_course_key to dest_course_key.
 
@@ -465,10 +465,10 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
         #  Check the modulestores of both the source and dest course_keys. If in different modulestores,
         #  export all asset data from one modulestore and import it into the dest one.
         store = self._get_modulestore_for_courseid(source_course_key)
-        return store.copy_all_asset_metadata(source_course_key, dest_course_key)
+        return store.copy_all_asset_metadata(source_course_key, dest_course_key, user_id)
 
     @contract(asset_key='AssetKey', attr=str)
-    def set_asset_metadata_attr(self, asset_key, attr, value=True):
+    def set_asset_metadata_attr(self, asset_key, user_id, attr, value=True):
         """
         Add/set the given attr on the asset at the given location. Value can be any type which pymongo accepts.
 
@@ -482,10 +482,10 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
             AttributeError is attr is one of the build in attrs.
         """
         store = self._get_modulestore_for_courseid(asset_key.course_key)
-        return store.set_asset_metadata_attrs(asset_key, attr, value)
+        return store.set_asset_metadata_attrs(asset_key, {attr: value}, user_id)
 
     @contract(asset_key='AssetKey', attr_dict=dict)
-    def set_asset_metadata_attrs(self, asset_key, attr_dict):
+    def set_asset_metadata_attrs(self, asset_key, attr_dict, user_id):
         """
         Add/set the given dict of attrs on the asset at the given location. Value can be any type which pymongo accepts.
 
@@ -498,7 +498,7 @@ class MixedModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase):
             AttributeError is attr is one of the build in attrs.
         """
         store = self._get_modulestore_for_courseid(asset_key.course_key)
-        return store.set_asset_metadata_attrs(asset_key, attr_dict)
+        return store.set_asset_metadata_attrs(asset_key, attr_dict, user_id)
 
     @strip_key
     def get_parent_location(self, location, **kwargs):

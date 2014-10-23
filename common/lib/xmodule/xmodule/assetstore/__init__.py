@@ -32,7 +32,7 @@ class AssetMetadata(object):
     ASSET_TYPE = 'asset'
 
     @contract(asset_id='AssetKey', basename='str | unicode', internal_name='str | None', locked='bool | None', contenttype='str | unicode | None',
-              md5='str | None', curr_version='str | None', prev_version='str | None', edited_by='str | None', edited_on='datetime | None')
+              md5='str | None', curr_version='str | None', prev_version='str | None', edited_by='int | None', edited_on='datetime | None')
     def __init__(self, asset_id,
                  basename=None, internal_name=None,
                  locked=None, contenttype=None, md5=None,

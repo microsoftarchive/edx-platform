@@ -1509,7 +1509,7 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         return True
 
     @contract(asset_key='AssetKey', attr_dict=dict)
-    def set_asset_metadata_attrs(self, asset_key, attr_dict):
+    def set_asset_metadata_attrs(self, asset_key, attr_dict, user_id):
         """
         Add/set the given dict of attrs on the asset at the given location. Value can be any type which pymongo accepts.
 
