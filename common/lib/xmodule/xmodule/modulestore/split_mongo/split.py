@@ -2122,35 +2122,6 @@ class SplitMongoModuleStore(SplitBulkWriteMixin, ModuleStoreWriteBase):
         """
         return ModuleStoreEnum.Type.split
 
-    # TODO most of these are identical to the impls in base.py and should be pulled into a common mixin
-    @contract(course_key='CourseKey', asset_metadata='AssetMetadata')
-    def save_asset_metadata(self, course_key, asset_metadata):
-        """
-        Saves the asset metadata for a particular course's asset.
-
-        Arguments:
-            course_key (CourseKey): course identifier
-            asset_metadata (AssetMetadata): data about the course asset data
-
-        Returns:
-            True if metadata save was successful, else False
-        """
-        return self._save_asset_info(course_key, asset_metadata, thumbnail=False)
-
-    @contract(course_key='CourseKey', asset_thumbnail_metadata='AssetThumbnailMetadata')
-    def save_asset_thumbnail_metadata(self, course_key, asset_thumbnail_metadata):
-        """
-        Saves the asset thumbnail metadata for a particular course asset's thumbnail.
-
-        Arguments:
-            course_key (CourseKey): course identifier
-            asset_thumbnail_metadata (AssetThumbnailMetadata): data about the course asset thumbnail
-
-        Returns:
-            True if thumbnail metadata save was successful, else False
-        """
-        return self._save_asset_info(course_key, asset_thumbnail_metadata, thumbnail=True)
-
     @contract(asset_key='AssetKey')
     def _find_asset_info(self, asset_key, thumbnail=False):
         """
@@ -2177,32 +2148,6 @@ class SplitMongoModuleStore(SplitBulkWriteMixin, ModuleStoreWriteBase):
         all_assets = original_structure[info]
         md.from_mongo(all_assets[asset_idx])
         return md
-
-    @contract(asset_key='AssetKey')
-    def find_asset_metadata(self, asset_key):
-        """
-        Find the metadata for a particular course asset.
-
-        Arguments:
-            asset_key (AssetKey): key containing original asset filename
-
-        Returns:
-            asset metadata (AssetMetadata) -or- None if not found
-        """
-        return self._find_asset_info(asset_key, thumbnail=False)
-
-    @contract(asset_key='AssetKey')
-    def find_asset_thumbnail_metadata(self, asset_key):
-        """
-        Find the metadata for a particular course asset.
-
-        Arguments:
-            asset_key (AssetKey): key containing original asset filename
-
-        Returns:
-            asset metadata (AssetMetadata) -or- None if not found
-        """
-        return self._find_asset_info(asset_key, thumbnail=True)
 
     @contract(course_key='CourseKey')
     def _get_all_asset_metadata(self, course_key, start=0, maxresults=-1, sort=None, get_thumbnails=False):
@@ -2245,55 +2190,6 @@ class SplitMongoModuleStore(SplitBulkWriteMixin, ModuleStoreWriteBase):
                                       md5=str(asset['md5']))
                 ret_assets.append(asset)
         return ret_assets
-
-    @contract(course_key='CourseKey', start='int | None', maxresults='int | None', sort='list | None')
-    def get_all_asset_metadata(self, course_key, start=0, maxresults=-1, sort=None):
-        """
-        Returns a list of static assets for a course.
-        By default all assets are returned, but start and maxresults can be provided to limit the query.
-
-        Args:
-            course_key (CourseKey): course identifier
-            start (int): optional - start at this asset number
-            maxresults (int): optional - return at most this many, -1 means no limit
-            sort (array): optional - None means no sort
-                (sort_by (str), sort_order (str))
-                sort_by - one of 'uploadDate' or 'displayname'
-                sort_order - one of 'ascending' or 'descending'
-
-        Returns:
-            List of AssetMetadata objects.
-        """
-        return self._get_all_asset_metadata(course_key, start, maxresults, sort, get_thumbnails=False)
-
-    @contract(course_key='CourseKey')
-    def get_all_asset_thumbnail_metadata(self, course_key):
-        """
-        Returns a list of thumbnails for all course assets.
-
-        Args:
-            course_key (CourseKey): course identifier
-
-        Returns:
-            List of AssetThumbnailMetadata objects.
-        """
-        return self._get_all_asset_metadata(course_key, get_thumbnails=True)
-
-    @contract(asset_key='AssetKey', attr=str)
-    def set_asset_metadata_attr(self, asset_key, attr, value=True):
-        """
-        Add/set the given attr on the asset at the given location. Value can be any type which pymongo accepts.
-
-        Arguments:
-            asset_key (AssetKey): asset identifier
-            attr (str): which attribute to set
-            value: the value to set it to (any type pymongo accepts such as datetime, number, string)
-
-        Raises:
-            ItemNotFoundError if no such item exists
-            AttributeError is attr is one of the build in attrs.
-        """
-        return self.set_asset_metadata_attrs(asset_key, {attr: value})
 
     def _find_course_asset(self, structure, filename, get_thumbnail=False):
         """
@@ -2399,32 +2295,6 @@ class SplitMongoModuleStore(SplitBulkWriteMixin, ModuleStoreWriteBase):
             return 1
         except ItemNotFoundError:
             return 0
-
-    @contract(asset_key='AssetKey')
-    def delete_asset_metadata(self, asset_key):
-        """
-        Deletes a single asset's metadata.
-
-        Arguments:
-            asset_key (AssetKey): locator containing original asset filename
-
-        Returns:
-            Number of asset metadata entries deleted (0 or 1)
-        """
-        return self._delete_asset_data(asset_key, thumbnail=False)
-
-    @contract(asset_key='AssetKey')
-    def delete_asset_thumbnail_metadata(self, asset_key):
-        """
-        Deletes a single asset's metadata.
-
-        Arguments:
-            asset_key (AssetKey): locator containing original asset filename
-
-        Returns:
-            Number of asset metadata entries deleted (0 or 1)
-        """
-        return self._delete_asset_data(asset_key, thumbnail=True)
 
     @contract(course_key='CourseKey')
     def delete_all_asset_metadata(self, course_key, user_id):
