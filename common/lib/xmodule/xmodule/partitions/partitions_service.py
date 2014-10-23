@@ -28,7 +28,7 @@ class PartitionService(object):
         self._course_id = course_id
         self._track_function = track_function
 
-    def get_user_group_for_partition(self, user_partition_id):
+    def get_user_group_id_for_partition(self, user_partition_id):
         """
         If the user is already assigned to a group in user_partition_id, return the
         group_id.
@@ -56,9 +56,9 @@ class PartitionService(object):
                 "in course {1}".format(user_partition_id, self._course_id)
             )
 
-        group_id = self._get_group(user_partition)
+        group = self._get_group(user_partition)
 
-        return group_id
+        return group.id
 
     def _get_user_partition(self, user_partition_id):
         """
@@ -90,16 +90,24 @@ class PartitionService(object):
         key = self._key_for_partition(user_partition)
         scope = self._user_tags_service.COURSE_SCOPE
 
+        # If a valid group id has been saved already, return it
         group_id = self._user_tags_service.get_tag(scope, key)
         if group_id is not None:
-            group_id = int(group_id)
+            group = user_partition.get_group(int(group_id))
+            if group:
+                return group
 
-        partition_group_ids = [group.id for group in user_partition.groups]
+        # Choose a group for the user, and if this is not a dynamic scheme then persist the choice.
+        group = user_partition.scheme.get_group_for_user(user_partition)
+        if not user_partition.scheme.is_dynamic:
+            self._persist_user_group(user_partition, group)
 
-        # If a valid group id has been saved already, return it
-        if group_id is not None and group_id in partition_group_ids:
-            return group_id
+        return group
 
+    def _persist_user_group(self, user_partition, group):
+        """
+        Persists the specified group for the current user.
+        """
         # TODO: what's the atomicity of the get above and the save here?  If it's not in a
         # single transaction, we could get a situation where the user sees one state in one
         # thread, but then that decision gets overwritten--low probability, but still bad.
@@ -110,16 +118,8 @@ class PartitionService(object):
         # process runs the transaction, we have a problem again: could read empty,
         # have the first transaction finish, and pick a different group in a
         # different process.)
-
-        # If a group id hasn't yet been saved, or the saved group id is invalid,
-        # we need to pick one, save it, then return it
-
-        # TODO: had a discussion in arch council about making randomization more
-        # deterministic (e.g. some hash).  Could do that, but need to be careful not
-        # to introduce correlation between users or bias in generation.
-
-        # See note above for explanation of local_random()
-        group = self.random.choice(user_partition.groups)
+        key = self._key_for_partition(user_partition)
+        scope = self._user_tags_service.COURSE_SCOPE
         self._user_tags_service.set_tag(scope, key, group.id)
 
         # emit event for analytics

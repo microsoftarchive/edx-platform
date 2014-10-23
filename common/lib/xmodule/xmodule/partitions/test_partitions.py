@@ -109,7 +109,8 @@ class TestUserPartition(TestCase):
             "name": upname,
             "description": updesc,
             "groups": [group.to_json() for group in groups],
-            "version": user_partition.VERSION
+            "version": user_partition.VERSION,
+            "scheme": UserPartition.DEFAULT_SCHEME.scheme_id
         }
         self.assertEqual(jsonified, act_jsonified)
 
@@ -124,7 +125,8 @@ class TestUserPartition(TestCase):
             "name": upname,
             "description": updesc,
             "groups": [group.to_json() for group in groups],
-            "version": UserPartition.VERSION
+            "version": UserPartition.VERSION,
+            "scheme": "random",
         }
         user_partition = UserPartition.from_json(jsonified)
         self.assertEqual(user_partition.id, upid)
@@ -135,6 +137,23 @@ class TestUserPartition(TestCase):
             exp_group = groups[act_group.id]
             self.assertEqual(exp_group.id, act_group.id)
             self.assertEqual(exp_group.name, act_group.name)
+
+    def test_version_upgrade(self):
+        groups = [Group(0, 'Group 1'), Group(1, 'Group 2')]
+        upid = 1
+        upname = "Test Partition"
+        updesc = "For Testing Purposes"
+
+        # Version 1 partitions did not have a scheme specified
+        jsonified = {
+            "id": upid,
+            "name": upname,
+            "description": updesc,
+            "groups": [group.to_json() for group in groups],
+            "version": 1,
+        }
+        user_partition = UserPartition.from_json(jsonified)
+        self.assertEqual(user_partition.scheme, UserPartition.DEFAULT_SCHEME)    # pylint: disable=no-member
 
     def test_from_json_broken(self):
         groups = [Group(0, 'Group 1'), Group(1, 'Group 2')]
@@ -147,7 +166,18 @@ class TestUserPartition(TestCase):
             "name": upname,
             "description": updesc,
             "groups": [group.to_json() for group in groups],
-            "version": UserPartition.VERSION
+            "version": UserPartition.VERSION,
+            "scheme": "random",
+        }
+        with self.assertRaisesRegexp(TypeError, "missing value key 'id'"):
+            user_partition = UserPartition.from_json(jsonified)
+
+        # Missing scheme
+        jsonified = {
+            "name": upname,
+            "description": updesc,
+            "groups": [group.to_json() for group in groups],
+            "version": UserPartition.VERSION,
         }
         with self.assertRaisesRegexp(TypeError, "missing value key 'id'"):
             user_partition = UserPartition.from_json(jsonified)
@@ -158,7 +188,8 @@ class TestUserPartition(TestCase):
             "name": upname,
             "description": updesc,
             "groups": [group.to_json() for group in groups],
-            "version": 9001
+            "version": 9001,
+            "scheme": "random",
         }
         with self.assertRaisesRegexp(TypeError, "has unexpected version"):
             user_partition = UserPartition.from_json(jsonified)
@@ -170,7 +201,8 @@ class TestUserPartition(TestCase):
             "description": updesc,
             "groups": [group.to_json() for group in groups],
             "version": UserPartition.VERSION,
-            "programmer": "Cale"
+            "scheme": "random",
+            "programmer": "Cale",
         }
         user_partition = UserPartition.from_json(jsonified)
         self.assertNotIn("programmer", user_partition.to_json())
@@ -229,22 +261,22 @@ class TestPartitionsService(TestCase):
             track_function=Mock()
         )
 
-    def test_get_user_group_for_partition(self):
+    def test_get_user_group_id_for_partition(self):
         # get a group assigned to the user
-        group1 = self.partitions_service.get_user_group_for_partition(self.partition_id)
+        group1 = self.partitions_service.get_user_group_id_for_partition(self.partition_id)
 
-        # make sure we get the same group back out if we try a second time
-        group2 = self.partitions_service.get_user_group_for_partition(self.partition_id)
-
-        self.assertEqual(group1, group2)
+        # make sure we get the same group back out every time
+        for __ in range(0, 10):
+            group2 = self.partitions_service.get_user_group_id_for_partition(self.partition_id)
+            self.assertEqual(group1, group2)
 
         # test that we error if given an invalid partition id
         with self.assertRaises(ValueError):
-            self.partitions_service.get_user_group_for_partition(3)
+            self.partitions_service.get_user_group_id_for_partition(3)
 
     def test_user_in_deleted_group(self):
         # get a group assigned to the user - should be group 0 or 1
-        old_group = self.partitions_service.get_user_group_for_partition(self.partition_id)
+        old_group = self.partitions_service.get_user_group_id_for_partition(self.partition_id)
         self.assertIn(old_group, [0, 1])
 
         # Change the group definitions! No more group 0 or 1
@@ -258,18 +290,18 @@ class TestPartitionsService(TestCase):
         )
 
         # Now, get a new group using the same call - should be 3 or 4
-        new_group = self.partitions_service.get_user_group_for_partition(self.partition_id)
+        new_group = self.partitions_service.get_user_group_id_for_partition(self.partition_id)
         self.assertIn(new_group, [3, 4])
 
         # We should get the same group over multiple calls
-        new_group_2 = self.partitions_service.get_user_group_for_partition(self.partition_id)
+        new_group_2 = self.partitions_service.get_user_group_id_for_partition(self.partition_id)
         self.assertEqual(new_group, new_group_2)
 
     def test_change_group_name(self):
         # Changing the name of the group shouldn't affect anything
         # get a group assigned to the user - should be group 0 or 1
-        old_group = self.partitions_service.get_user_group_for_partition(self.partition_id)
-        self.assertIn(old_group, [0, 1])
+        old_group_id = self.partitions_service.get_user_group_id_for_partition(self.partition_id)
+        self.assertIn(old_group_id, [0, 1])
 
         # Change the group names
         groups = [Group(0, 'Group 0'), Group(1, 'Group 1')]
@@ -282,5 +314,5 @@ class TestPartitionsService(TestCase):
         )
 
         # Now, get a new group using the same call
-        new_group = self.partitions_service.get_user_group_for_partition(self.partition_id)
-        self.assertEqual(old_group, new_group)
+        new_group_id = self.partitions_service.get_user_group_id_for_partition(self.partition_id)
+        self.assertEqual(old_group_id, new_group_id)

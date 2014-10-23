@@ -1,5 +1,8 @@
 """Defines ``Group`` and ``UserPartition`` models for partitioning"""
+
+import random
 from collections import namedtuple
+
 # We use ``id`` in this file as the IDs of our Groups and UserPartitions,
 # which Pylint disapproves of.
 # pylint: disable=invalid-name, redefined-builtin
@@ -57,21 +60,82 @@ class Group(namedtuple("Group", "id name")):
         return Group(value["id"], value["name"])
 
 
-class UserPartition(namedtuple("UserPartition", "id name description groups")):
+class UserPartitionScheme(object):
+    """
+    The base class for a user partition's scheme. The scheme gets to decide which group
+    to put each student into.
+    """
+
+    is_dynamic = False
+
+    def __eq__(self, other):
+        return type(self) == type(other) and self.scheme_id == other.scheme_id    # pylint: disable=no-member
+
+    def __hash__(self):
+        return hash(self.scheme_id)    # pylint: disable=no-member
+
+
+class RandomUserPartitionScheme(UserPartitionScheme):
+    """
+    This scheme randomly assigns users into the partition's groups.
+    """
+    scheme_id = 'random'
+
+    def __init__(self):
+        self.random = random.Random()
+
+    def get_group_for_user(self, user_partition):
+        """
+        Returns the group to which the current user should be assigned.
+        """
+        # pylint: disable=fixme
+        # TODO: had a discussion in arch council about making randomization more
+        # deterministic (e.g. some hash).  Could do that, but need to be careful not
+        # to introduce correlation between users or bias in generation.
+        return self.random.choice(user_partition.groups)
+
+
+class CohortedUserPartitionScheme(UserPartitionScheme):
+    """
+    This scheme assigns users into the partition's groups based upon their cohort.
+    """
+    scheme_id = 'cohorted'
+
+    # Specify dynamic to be true because the mapping from cohort to group can change.
+    is_dynamic = True
+
+    def get_group_for_user(self, user_partition):    # pylint: disable=unused-argument
+        """
+        Returns the group that has been configured to be shown for the user's cohort.
+        """
+        # pylint: disable=fixme
+        # TODO: implement this!
+        return None
+
+
+USER_PARTITION_SCHEMES = {
+    RandomUserPartitionScheme.scheme_id: RandomUserPartitionScheme(),
+    CohortedUserPartitionScheme.scheme_id: CohortedUserPartitionScheme(),
+}
+
+
+class UserPartition(namedtuple("UserPartition", "id name description groups scheme")):
     """
     A named way to partition users into groups, primarily intended for running
     experiments.  It is expected that each user will be in at most one group in a
     partition.
 
-    A Partition has an id, name, description, and a list of groups.
+    A Partition has an id, name, scheme, description, and a list of groups.
     The id is intended to be unique within the context where these are used. (e.g. for
-    partitions of users within a course, the ids should be unique per-course)
+    partitions of users within a course, the ids should be unique per-course).
+    The scheme is used to assign users into groups.
     """
-    VERSION = 1
+    VERSION = 2
+    DEFAULT_SCHEME = USER_PARTITION_SCHEMES[RandomUserPartitionScheme.scheme_id]
 
-    def __new__(cls, id, name, description, groups):
+    def __new__(cls, id, name, description, groups, scheme=DEFAULT_SCHEME):
         # pylint: disable=super-on-old-class
-        return super(UserPartition, cls).__new__(cls, int(id), name, description, groups)
+        return super(UserPartition, cls).__new__(cls, int(id), name, description, groups, scheme)
 
     def to_json(self):
         """
@@ -84,6 +148,7 @@ class UserPartition(namedtuple("UserPartition", "id name description groups")):
         return {
             "id": self.id,
             "name": self.name,
+            "scheme": self.scheme.scheme_id,
             "description": self.description,
             "groups": [g.to_json() for g in self.groups],
             "version": UserPartition.VERSION
@@ -96,6 +161,7 @@ class UserPartition(namedtuple("UserPartition", "id name description groups")):
 
         Args:
             value: a dictionary with keys for the properties of the group.
+            version: the version of JSON to be expected (defaults to being supplied as a field of the value)
 
         Raises TypeError if the value doesn't have the right keys.
         """
@@ -104,12 +170,18 @@ class UserPartition(namedtuple("UserPartition", "id name description groups")):
 
         for key in ('id', 'name', 'description', 'version', 'groups'):
             if key not in value:
-                raise TypeError("UserPartition dict {0} missing value key '{1}'"
-                                .format(value, key))
+                raise TypeError("UserPartition dict {0} missing value key '{1}'".format(value, key))
 
-        if value["version"] != UserPartition.VERSION:
-            raise TypeError("UserPartition dict {0} has unexpected version"
-                            .format(value))
+        if value["version"] == 1:
+            # If no scheme was provided, set it to the default ('random')
+            scheme = UserPartition.DEFAULT_SCHEME
+        elif value["version"] != UserPartition.VERSION:
+            raise TypeError("UserPartition dict {0} has unexpected version".format(value))
+        else:
+            scheme_id = value["scheme"]
+            scheme = USER_PARTITION_SCHEMES.get(scheme_id)
+            if not scheme:
+                raise TypeError("UserPartition dict {0} has unrecognized scheme {1}".format(value, scheme_id))
 
         groups = [Group.from_json(g) for g in value["groups"]]
 
@@ -117,5 +189,15 @@ class UserPartition(namedtuple("UserPartition", "id name description groups")):
             value["id"],
             value["name"],
             value["description"],
-            groups
+            groups,
+            scheme,
         )
+
+    def get_group(self, group_id):
+        """
+        Returns the group with the specified id.
+        """
+        for group in self.groups:    # pylint: disable=no-member
+            if group.id == group_id:
+                return group
+        return None

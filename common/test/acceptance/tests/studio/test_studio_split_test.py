@@ -80,8 +80,18 @@ class SplitTest(ContainerBase, SplitTestMixin):
         self.course_fixture._update_xblock(self.course_fixture._course_location, {
             "metadata": {
                 u"user_partitions": [
-                    UserPartition(0, 'Configuration alpha,beta', 'first', [Group("0", 'alpha'), Group("1", 'beta')]).to_json(),
-                    UserPartition(1, 'Configuration 0,1,2', 'second', [Group("0", 'Group 0'), Group("1", 'Group 1'), Group("2", 'Group 2')]).to_json()
+                    UserPartition(
+                        0,
+                        'Configuration alpha,beta',
+                        'first',
+                        [Group("0", 'alpha'), Group("1", 'beta')]
+                    ).to_json(),
+                    UserPartition(
+                        1,
+                        'Configuration 0,1,2',
+                        'second',
+                        [Group("0", 'Group 0'), Group("1", 'Group 1'), Group("2", 'Group 2')]
+                    ).to_json(),
                 ],
             },
         })
@@ -124,8 +134,12 @@ class SplitTest(ContainerBase, SplitTestMixin):
         self.course_fixture._update_xblock(self.course_fixture._course_location, {
             "metadata": {
                 u"user_partitions": [
-                    UserPartition(0, 'Configuration alpha,beta', 'first',
-                                  [Group("0", 'alpha'), Group("2", 'gamma')]).to_json()
+                    UserPartition(
+                        0,
+                        'Configuration alpha,beta',
+                        'first',
+                        [Group("0", 'alpha'), Group("2", 'gamma')]
+                    ).to_json()
                 ],
             },
         })
@@ -189,7 +203,7 @@ class SplitTest(ContainerBase, SplitTestMixin):
 @attr('shard_1')
 class SettingsMenuTest(StudioCourseTest):
     """
-    Tests that Setting menu is rendered correctly in Studio
+    Tests that Settings menu is rendered correctly in Studio
     """
 
     def setUp(self):
@@ -208,30 +222,7 @@ class SettingsMenuTest(StudioCourseTest):
         Settings menu.
         """
         link_css = 'li.nav-course-settings-group-configurations a'
-        self.assertFalse(self.advanced_settings.q(css=link_css).present)
-
-        self.advanced_settings.set('Advanced Module List', '["split_test"]')
-
-        self.browser.refresh()
-        self.advanced_settings.wait_for_page()
-
-        self.assertIn(
-            "split_test",
-            json.loads(self.advanced_settings.get('Advanced Module List')),
-        )
-
         self.assertTrue(self.advanced_settings.q(css=link_css).present)
-
-    def test_link_does_not_exist_if_split_test_disabled(self):
-        """
-        Ensure that the link to the "Group Configurations" page does not exist
-        in the Settings menu.
-        """
-        link_css = 'li.nav-course-settings-group-configurations a'
-        self.advanced_settings.set('Advanced Module List', '[]')
-        self.browser.refresh()
-        self.advanced_settings.wait_for_page()
-        self.assertFalse(self.advanced_settings.q(css=link_css).present)
 
 
 @attr('shard_1')
@@ -610,8 +601,18 @@ class GroupConfigurationsTest(ContainerBase, SplitTestMixin):
         self.course_fixture._update_xblock(self.course_fixture._course_location, {
             "metadata": {
                 u"user_partitions": [
-                    UserPartition(0, 'Name of the Group Configuration', 'Description of the group configuration.', [Group("0", 'Group 0'), Group("1", 'Group 1')]).to_json(),
-                    UserPartition(1, 'Name of second Group Configuration', 'Second group configuration.', [Group("0", 'Alpha'), Group("1", 'Beta'), Group("2", 'Gamma')]).to_json(),
+                    UserPartition(
+                        0,
+                        'Name of the Group Configuration',
+                        'Description of the group configuration.',
+                        [Group("0", 'Group 0'), Group("1", 'Group 1')]
+                    ).to_json(),
+                    UserPartition(
+                        1,
+                        'Name of second Group Configuration',
+                        'Second group configuration.',
+                        [Group("0", 'Alpha'), Group("1", 'Beta'), Group("2", 'Gamma')]
+                    ).to_json(),
                 ],
             },
         })
