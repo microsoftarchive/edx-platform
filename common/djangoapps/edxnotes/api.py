@@ -68,11 +68,11 @@ def _now():
 
 
 def get_prefix():
-    return '/edxnotes/api'
+    return 'http://127.0.0.1:5000'
 
 
 def get_user_id():
-    return 'edx_user'
+    return 'alice'
 
 
 def get_usage_id():
