@@ -88,11 +88,26 @@ class MockUserPartitionScheme(UserPartitionScheme):
     Mock user partition scheme
     """
 
-    scheme_id = "mock"
+    def __init__(self, current_group=None, **kwargs):
+        super(MockUserPartitionScheme, self).__init__(**kwargs)
+        self.current_group = current_group
+
+    @property
+    def scheme_id(self):
+        """
+        Returns the id that identifies this scheme.
+        """
+        return "mock"
 
     @property
     def is_dynamic(self):
         return True
+
+    def get_group_for_user(self, user_partition):    # pylint: disable=unused-argument
+        """
+        Returns the group to which the current user should be assigned.
+        """
+        return self.current_group
 
 
 class TestUserPartitionScheme(TestCase):
@@ -126,16 +141,16 @@ class TestUserPartition(TestCase):
         user_partition = UserPartition(
             self.MOCK_ID, self.MOCK_NAME, self.MOCK_DESCRIPTION, self.MOCK_GROUPS
         )
-        self.assertEqual(user_partition.id, self.MOCK_ID)
+        self.assertEqual(user_partition.id, self.MOCK_ID)    # pylint: disable=no-member
         self.assertEqual(user_partition.name, self.MOCK_NAME)
-        self.assertEqual(user_partition.description, self.MOCK_DESCRIPTION)
-        self.assertEqual(user_partition.groups, self.MOCK_GROUPS)
+        self.assertEqual(user_partition.description, self.MOCK_DESCRIPTION)    # pylint: disable=no-member
+        self.assertEqual(user_partition.groups, self.MOCK_GROUPS)    # pylint: disable=no-member
 
     def test_string_id(self):
         user_partition = UserPartition(
             "70", self.MOCK_NAME, self.MOCK_DESCRIPTION, self.MOCK_GROUPS
         )
-        self.assertEqual(user_partition.id, 70)
+        self.assertEqual(user_partition.id, 70)    # pylint: disable=no-member
 
     def test_to_json(self):
         user_partition = UserPartition(
@@ -163,10 +178,10 @@ class TestUserPartition(TestCase):
             "scheme": self.MOCK_SCHEME,
         }
         user_partition = UserPartition.from_json(jsonified)
-        self.assertEqual(user_partition.id, self.MOCK_ID)
-        self.assertEqual(user_partition.name, self.MOCK_NAME)
-        self.assertEqual(user_partition.description, self.MOCK_DESCRIPTION)
-        for act_group in user_partition.groups:
+        self.assertEqual(user_partition.id, self.MOCK_ID)    # pylint: disable=no-member
+        self.assertEqual(user_partition.name, self.MOCK_NAME)    # pylint: disable=no-member
+        self.assertEqual(user_partition.description, self.MOCK_DESCRIPTION)    # pylint: disable=no-member
+        for act_group in user_partition.groups:    # pylint: disable=no-member
             self.assertIn(act_group.id, [0, 1])
             exp_group = self.MOCK_GROUPS[act_group.id]
             self.assertEqual(exp_group.id, act_group.id)
@@ -198,13 +213,13 @@ class TestUserPartition(TestCase):
 
         # Missing scheme
         jsonified = {
+            'id': self.MOCK_ID,
             "name": self.MOCK_NAME,
             "description": self.MOCK_DESCRIPTION,
             "groups": [group.to_json() for group in self.MOCK_GROUPS],
             "version": UserPartition.VERSION,
-            "scheme": self.MOCK_SCHEME,
         }
-        with self.assertRaisesRegexp(TypeError, "missing value key 'id'"):
+        with self.assertRaisesRegexp(TypeError, "missing value key 'scheme'"):
             UserPartition.from_json(jsonified)
 
         # Invalid scheme
@@ -290,10 +305,19 @@ class TestPartitionsService(TestCase):
         self.partition_id = 0
 
         self.user_tags_service = MemoryUserTagsService()
-
         user_partition = UserPartition(self.partition_id, 'Test Partition', 'for testing purposes', groups)
+
+        self.mock_partition_id = 1
+        self.mock_partition = UserPartition(
+            self.mock_partition_id,
+            'Mock Partition',
+            'Mock partition for testing',
+            [Group(0, 'Group 1'), Group(1, 'Group 2')],
+            MockUserPartitionScheme()
+        )
+
         self.partitions_service = StaticPartitionService(
-            [user_partition],
+            [user_partition, self.mock_partition],
             user_tags_service=self.user_tags_service,
             course_id=Mock(),
             track_function=Mock()
@@ -311,6 +335,20 @@ class TestPartitionsService(TestCase):
         # test that we error if given an invalid partition id
         with self.assertRaises(ValueError):
             self.partitions_service.get_user_group_id_for_partition(3)
+
+    def test_get_dynamic_user_group_id_for_partition(self):
+        # assign the first group to be returned
+        groups = self.mock_partition.groups    # pylint: disable=no-member
+        self.mock_partition.scheme.current_group = groups[0]    # pylint: disable=no-member
+
+        # get a group assigned to the user
+        group1_id = self.partitions_service.get_user_group_id_for_partition(self.mock_partition_id)
+        self.assertEqual(group1_id, groups[0].id)
+
+        # switch to the second group and verify that it is returned for the user
+        self.mock_partition.scheme.current_group = groups[1]    # pylint: disable=no-member
+        group2_id = self.partitions_service.get_user_group_id_for_partition(self.mock_partition_id)
+        self.assertEqual(group2_id, groups[1].id)
 
     def test_user_in_deleted_group(self):
         # get a group assigned to the user - should be group 0 or 1

@@ -48,7 +48,7 @@ class Group(namedtuple("Group", "id name")):
         if isinstance(value, Group):
             return value
 
-        for key in ('id', 'name', 'version'):
+        for key in ("id", "name", "version"):
             if key not in value:
                 raise TypeError("Group dict {0} missing value key '{1}'".format(
                     value, key))
@@ -66,10 +66,12 @@ class UserPartitionScheme(object):
     to put each student into.
     """
 
-    # A scheme is dynamic if a user's group assignment is determined every time. The default
-    # is static which means that the group is assigned once and is persisted for the user.
     @property
     def is_dynamic(self):
+        """
+        Returns true if this schema dynamically assigns a user's group. The default is static
+        which means that the group is assigned once is then persisted for the user.
+        """
         return False
 
     def __eq__(self, other):
@@ -86,10 +88,16 @@ class RandomUserPartitionScheme(UserPartitionScheme):
     """
     This scheme randomly assigns users into the partition's groups.
     """
-    scheme_id = 'random'
 
     def __init__(self):
         self.random = random.Random()
+
+    @property
+    def scheme_id(self):
+        """
+        Returns the id that identifies this scheme.
+        """
+        return "random"
 
     def get_group_for_user(self, user_partition):
         """
@@ -104,7 +112,7 @@ class RandomUserPartitionScheme(UserPartitionScheme):
 
 # The mapping of user partition scheme ids to their implementations.
 USER_PARTITION_SCHEMES = {
-    RandomUserPartitionScheme.scheme_id: RandomUserPartitionScheme(),
+    "random": RandomUserPartitionScheme(),
 }
 
 
@@ -120,7 +128,7 @@ class UserPartition(namedtuple("UserPartition", "id name description groups sche
     The scheme is used to assign users into groups.
     """
     VERSION = 2
-    DEFAULT_SCHEME = USER_PARTITION_SCHEMES[RandomUserPartitionScheme.scheme_id]
+    DEFAULT_SCHEME = USER_PARTITION_SCHEMES["random"]
 
     def __new__(cls, id, name, description, groups, scheme=DEFAULT_SCHEME):
         # pylint: disable=super-on-old-class
@@ -156,7 +164,7 @@ class UserPartition(namedtuple("UserPartition", "id name description groups sche
         if isinstance(value, UserPartition):
             return value
 
-        for key in ('id', 'name', 'description', 'version', 'groups'):
+        for key in ("id", "name", "description", "version", "groups"):
             if key not in value:
                 raise TypeError("UserPartition dict {0} missing value key '{1}'".format(value, key))
 

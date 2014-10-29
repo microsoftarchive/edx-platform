@@ -56,7 +56,6 @@ from .component import (
     ADVANCED_COMPONENT_TYPES,
 )
 from contentstore.tasks import rerun_course
-from .helpers import should_show_group_configurations_page
 from .item import create_xblock_info
 from course_creators.views import get_course_creator_status, add_user_with_status_unrequested
 from contentstore import utils
@@ -1412,6 +1411,16 @@ def group_configurations_detail_handler(request, course_key_string, group_config
             course.user_partitions.pop(index)
             store.update_item(course, request.user.id)
             return JsonResponse(status=204)
+
+
+def should_show_group_configurations_page(course):
+    """
+    Returns true if Studio should show the "Group Configurations" page for the specified course.
+    """
+    return (
+        SPLIT_TEST_COMPONENT_TYPE in ADVANCED_COMPONENT_TYPES and
+        SPLIT_TEST_COMPONENT_TYPE in course.advanced_modules
+    )
 
 
 def _get_course_creator_status(user):

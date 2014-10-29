@@ -3,7 +3,6 @@ This is a service-like API that assigns tracks which groups users are in for var
 user partitions.  It uses the user_service key/value store provided by the LMS runtime to
 persist the assignments.
 """
-import random
 from abc import ABCMeta, abstractproperty
 
 
@@ -23,7 +22,6 @@ class PartitionService(object):
         raise NotImplementedError('Subclasses must implement course_partition')
 
     def __init__(self, user_tags_service, course_id, track_function):
-        self.random = random.Random()
         self._user_tags_service = user_tags_service
         self._course_id = course_id
         self._track_function = track_function

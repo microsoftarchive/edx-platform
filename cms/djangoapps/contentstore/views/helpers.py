@@ -151,13 +151,3 @@ def xblock_primary_child_category(xblock):
     elif category == 'sequential':
         return 'vertical'
     return None
-
-
-def should_show_group_configurations_page(course):
-    """
-    Returns true if Studio should show the "Group Configurations" page for the specified course.
-    """
-    return (
-        SPLIT_TEST_COMPONENT_TYPE in ADVANCED_COMPONENT_TYPES and
-        SPLIT_TEST_COMPONENT_TYPE in course.advanced_modules
-    )
