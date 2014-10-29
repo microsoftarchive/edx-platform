@@ -7,7 +7,9 @@ from collections import defaultdict
 from unittest import TestCase
 from mock import Mock
 
-from xmodule.partitions.partitions import Group, UserPartition
+from xmodule.partitions.partitions import (
+    Group, UserPartition, RandomUserPartitionScheme, USER_PARTITION_SCHEMES, UserPartitionScheme
+)
 from xmodule.partitions.partitions_service import PartitionService
 
 
@@ -60,7 +62,7 @@ class TestGroup(TestCase):
             "version": 9001
         }
         with self.assertRaisesRegexp(TypeError, "has unexpected version"):
-            group = Group.from_json(jsonified)
+            Group.from_json(jsonified)
 
         # Missing key "id"
         jsonified = {
@@ -68,7 +70,7 @@ class TestGroup(TestCase):
             "version": Group.VERSION
         }
         with self.assertRaisesRegexp(TypeError, "missing value key 'id'"):
-            group = Group.from_json(jsonified)
+            Group.from_json(jsonified)
 
         # Has extra key - should not be a problem
         jsonified = {
@@ -81,127 +83,163 @@ class TestGroup(TestCase):
         self.assertNotIn("programmer", group.to_json())
 
 
+class MockUserPartitionScheme(UserPartitionScheme):
+    """
+    Mock user partition scheme
+    """
+
+    scheme_id = "mock"
+
+    @property
+    def is_dynamic(self):
+        return True
+
+
+class TestUserPartitionScheme(TestCase):
+    """
+    Tests for UserPartitionScheme.
+    """
+
+    def test_equality(self):
+        self.assertEqual(RandomUserPartitionScheme(), USER_PARTITION_SCHEMES["random"])
+        self.assertNotEqual(MockUserPartitionScheme(), USER_PARTITION_SCHEMES["random"])
+
+    def test_hash(self):
+        self.assertEqual(RandomUserPartitionScheme().__hash__(), USER_PARTITION_SCHEMES["random"].__hash__())
+        self.assertNotEqual(MockUserPartitionScheme().__hash__(), USER_PARTITION_SCHEMES["random"].__hash__())
+
+    def test_is_dynamic(self):
+        self.assertFalse(USER_PARTITION_SCHEMES["random"].is_dynamic)
+        self.assertTrue(MockUserPartitionScheme().is_dynamic)
+
+
 class TestUserPartition(TestCase):
     """Test constructing UserPartitions"""
+
+    MOCK_ID = 1
+    MOCK_NAME = "Mock Partition"
+    MOCK_DESCRIPTION = "for testing purposes"
+    MOCK_GROUPS = [Group(0, 'Group 1'), Group(1, 'Group 2')]
+    MOCK_SCHEME = "random"
+
     def test_construct(self):
-        groups = [Group(0, 'Group 1'), Group(1, 'Group 2')]
-        user_partition = UserPartition(0, 'Test Partition', 'for testing purposes', groups)
-        self.assertEqual(user_partition.id, 0)
-        self.assertEqual(user_partition.name, "Test Partition")
-        self.assertEqual(user_partition.description, "for testing purposes")
-        self.assertEqual(user_partition.groups, groups)
+        user_partition = UserPartition(
+            self.MOCK_ID, self.MOCK_NAME, self.MOCK_DESCRIPTION, self.MOCK_GROUPS
+        )
+        self.assertEqual(user_partition.id, self.MOCK_ID)
+        self.assertEqual(user_partition.name, self.MOCK_NAME)
+        self.assertEqual(user_partition.description, self.MOCK_DESCRIPTION)
+        self.assertEqual(user_partition.groups, self.MOCK_GROUPS)
 
     def test_string_id(self):
-        groups = [Group(0, 'Group 1'), Group(1, 'Group 2')]
-        user_partition = UserPartition("70", 'Test Partition', 'for testing purposes', groups)
+        user_partition = UserPartition(
+            "70", self.MOCK_NAME, self.MOCK_DESCRIPTION, self.MOCK_GROUPS
+        )
         self.assertEqual(user_partition.id, 70)
 
     def test_to_json(self):
-        groups = [Group(0, 'Group 1'), Group(1, 'Group 2')]
-        upid = 0
-        upname = "Test Partition"
-        updesc = "for testing purposes"
-        user_partition = UserPartition(upid, upname, updesc, groups)
+        user_partition = UserPartition(
+            self.MOCK_ID, self.MOCK_NAME, self.MOCK_DESCRIPTION, self.MOCK_GROUPS
+        )
 
         jsonified = user_partition.to_json()
         act_jsonified = {
-            "id": upid,
-            "name": upname,
-            "description": updesc,
-            "groups": [group.to_json() for group in groups],
+            "id": self.MOCK_ID,
+            "name": self.MOCK_NAME,
+            "description": self.MOCK_DESCRIPTION,
+            "groups": [group.to_json() for group in self.MOCK_GROUPS],
             "version": user_partition.VERSION,
-            "scheme": UserPartition.DEFAULT_SCHEME.scheme_id
+            "scheme": self.MOCK_SCHEME
         }
         self.assertEqual(jsonified, act_jsonified)
 
     def test_from_json(self):
-        groups = [Group(0, 'Group 1'), Group(1, 'Group 2')]
-        upid = 1
-        upname = "Test Partition"
-        updesc = "For Testing Purposes"
-
         jsonified = {
-            "id": upid,
-            "name": upname,
-            "description": updesc,
-            "groups": [group.to_json() for group in groups],
+            "id": self.MOCK_ID,
+            "name": self.MOCK_NAME,
+            "description": self.MOCK_DESCRIPTION,
+            "groups": [group.to_json() for group in self.MOCK_GROUPS],
             "version": UserPartition.VERSION,
-            "scheme": "random",
+            "scheme": self.MOCK_SCHEME,
         }
         user_partition = UserPartition.from_json(jsonified)
-        self.assertEqual(user_partition.id, upid)
-        self.assertEqual(user_partition.name, upname)
-        self.assertEqual(user_partition.description, updesc)
+        self.assertEqual(user_partition.id, self.MOCK_ID)
+        self.assertEqual(user_partition.name, self.MOCK_NAME)
+        self.assertEqual(user_partition.description, self.MOCK_DESCRIPTION)
         for act_group in user_partition.groups:
             self.assertIn(act_group.id, [0, 1])
-            exp_group = groups[act_group.id]
+            exp_group = self.MOCK_GROUPS[act_group.id]
             self.assertEqual(exp_group.id, act_group.id)
             self.assertEqual(exp_group.name, act_group.name)
 
     def test_version_upgrade(self):
-        groups = [Group(0, 'Group 1'), Group(1, 'Group 2')]
-        upid = 1
-        upname = "Test Partition"
-        updesc = "For Testing Purposes"
-
         # Version 1 partitions did not have a scheme specified
         jsonified = {
-            "id": upid,
-            "name": upname,
-            "description": updesc,
-            "groups": [group.to_json() for group in groups],
+            "id": self.MOCK_ID,
+            "name": self.MOCK_NAME,
+            "description": self.MOCK_DESCRIPTION,
+            "groups": [group.to_json() for group in self.MOCK_GROUPS],
             "version": 1,
         }
         user_partition = UserPartition.from_json(jsonified)
         self.assertEqual(user_partition.scheme, UserPartition.DEFAULT_SCHEME)    # pylint: disable=no-member
 
     def test_from_json_broken(self):
-        groups = [Group(0, 'Group 1'), Group(1, 'Group 2')]
-        upid = 1
-        upname = "Test Partition"
-        updesc = "For Testing Purposes"
-
         # Missing field
         jsonified = {
-            "name": upname,
-            "description": updesc,
-            "groups": [group.to_json() for group in groups],
+            "name": self.MOCK_NAME,
+            "description": self.MOCK_DESCRIPTION,
+            "groups": [group.to_json() for group in self.MOCK_GROUPS],
             "version": UserPartition.VERSION,
-            "scheme": "random",
+            "scheme": self.MOCK_SCHEME,
         }
         with self.assertRaisesRegexp(TypeError, "missing value key 'id'"):
-            user_partition = UserPartition.from_json(jsonified)
+            UserPartition.from_json(jsonified)
 
         # Missing scheme
         jsonified = {
-            "name": upname,
-            "description": updesc,
-            "groups": [group.to_json() for group in groups],
+            "name": self.MOCK_NAME,
+            "description": self.MOCK_DESCRIPTION,
+            "groups": [group.to_json() for group in self.MOCK_GROUPS],
             "version": UserPartition.VERSION,
+            "scheme": self.MOCK_SCHEME,
         }
         with self.assertRaisesRegexp(TypeError, "missing value key 'id'"):
-            user_partition = UserPartition.from_json(jsonified)
+            UserPartition.from_json(jsonified)
+
+        # Invalid scheme
+        jsonified = {
+            'id': self.MOCK_ID,
+            "name": self.MOCK_NAME,
+            "description": self.MOCK_DESCRIPTION,
+            "groups": [group.to_json() for group in self.MOCK_GROUPS],
+            "version": UserPartition.VERSION,
+            "scheme": "no_such_scheme",
+        }
+        with self.assertRaisesRegexp(TypeError, "has unrecognized scheme"):
+            UserPartition.from_json(jsonified)
 
         # Wrong version (it's over 9000!)
+        # Wrong version (it's over 9000!)
         jsonified = {
-            'id': upid,
-            "name": upname,
-            "description": updesc,
-            "groups": [group.to_json() for group in groups],
+            'id': self.MOCK_ID,
+            "name": self.MOCK_NAME,
+            "description": self.MOCK_DESCRIPTION,
+            "groups": [group.to_json() for group in self.MOCK_GROUPS],
             "version": 9001,
-            "scheme": "random",
+            "scheme": self.MOCK_SCHEME,
         }
         with self.assertRaisesRegexp(TypeError, "has unexpected version"):
             user_partition = UserPartition.from_json(jsonified)
 
         # Has extra key - should not be a problem
         jsonified = {
-            'id': upid,
-            "name": upname,
-            "description": updesc,
-            "groups": [group.to_json() for group in groups],
+            'id': self.MOCK_ID,
+            "name": self.MOCK_NAME,
+            "description": self.MOCK_DESCRIPTION,
+            "groups": [group.to_json() for group in self.MOCK_GROUPS],
             "version": UserPartition.VERSION,
-            "scheme": "random",
+            "scheme": self.MOCK_SCHEME,
             "programmer": "Cale",
         }
         user_partition = UserPartition.from_json(jsonified)
@@ -263,12 +301,12 @@ class TestPartitionsService(TestCase):
 
     def test_get_user_group_id_for_partition(self):
         # get a group assigned to the user
-        group1 = self.partitions_service.get_user_group_id_for_partition(self.partition_id)
+        group1_id = self.partitions_service.get_user_group_id_for_partition(self.partition_id)
 
         # make sure we get the same group back out every time
         for __ in range(0, 10):
-            group2 = self.partitions_service.get_user_group_id_for_partition(self.partition_id)
-            self.assertEqual(group1, group2)
+            group2_id = self.partitions_service.get_user_group_id_for_partition(self.partition_id)
+            self.assertEqual(group1_id, group2_id)
 
         # test that we error if given an invalid partition id
         with self.assertRaises(ValueError):
@@ -276,8 +314,8 @@ class TestPartitionsService(TestCase):
 
     def test_user_in_deleted_group(self):
         # get a group assigned to the user - should be group 0 or 1
-        old_group = self.partitions_service.get_user_group_id_for_partition(self.partition_id)
-        self.assertIn(old_group, [0, 1])
+        old_group_id = self.partitions_service.get_user_group_id_for_partition(self.partition_id)
+        self.assertIn(old_group_id, [0, 1])
 
         # Change the group definitions! No more group 0 or 1
         groups = [Group(3, 'Group 3'), Group(4, 'Group 4')]
@@ -290,12 +328,12 @@ class TestPartitionsService(TestCase):
         )
 
         # Now, get a new group using the same call - should be 3 or 4
-        new_group = self.partitions_service.get_user_group_id_for_partition(self.partition_id)
-        self.assertIn(new_group, [3, 4])
+        new_group_id = self.partitions_service.get_user_group_id_for_partition(self.partition_id)
+        self.assertIn(new_group_id, [3, 4])
 
         # We should get the same group over multiple calls
         new_group_2 = self.partitions_service.get_user_group_id_for_partition(self.partition_id)
-        self.assertEqual(new_group, new_group_2)
+        self.assertEqual(new_group_id, new_group_2)
 
     def test_change_group_name(self):
         # Changing the name of the group shouldn't affect anything

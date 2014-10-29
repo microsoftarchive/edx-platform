@@ -66,10 +66,17 @@ class UserPartitionScheme(object):
     to put each student into.
     """
 
-    is_dynamic = False
+    # A scheme is dynamic if a user's group assignment is determined every time. The default
+    # is static which means that the group is assigned once and is persisted for the user.
+    @property
+    def is_dynamic(self):
+        return False
 
     def __eq__(self, other):
         return type(self) == type(other) and self.scheme_id == other.scheme_id    # pylint: disable=no-member
+
+    def __ne__(self, other):
+        return not self == other
 
     def __hash__(self):
         return hash(self.scheme_id)    # pylint: disable=no-member
@@ -95,27 +102,9 @@ class RandomUserPartitionScheme(UserPartitionScheme):
         return self.random.choice(user_partition.groups)
 
 
-class CohortedUserPartitionScheme(UserPartitionScheme):
-    """
-    This scheme assigns users into the partition's groups based upon their cohort.
-    """
-    scheme_id = 'cohorted'
-
-    # Specify dynamic to be true because the mapping from cohort to group can change.
-    is_dynamic = True
-
-    def get_group_for_user(self, user_partition):    # pylint: disable=unused-argument
-        """
-        Returns the group that has been configured to be shown for the user's cohort.
-        """
-        # pylint: disable=fixme
-        # TODO: implement this!
-        return None
-
-
+# The mapping of user partition scheme ids to their implementations.
 USER_PARTITION_SCHEMES = {
     RandomUserPartitionScheme.scheme_id: RandomUserPartitionScheme(),
-    CohortedUserPartitionScheme.scheme_id: CohortedUserPartitionScheme(),
 }
 
 
@@ -161,7 +150,6 @@ class UserPartition(namedtuple("UserPartition", "id name description groups sche
 
         Args:
             value: a dictionary with keys for the properties of the group.
-            version: the version of JSON to be expected (defaults to being supplied as a field of the value)
 
         Raises TypeError if the value doesn't have the right keys.
         """
@@ -178,6 +166,8 @@ class UserPartition(namedtuple("UserPartition", "id name description groups sche
         elif value["version"] != UserPartition.VERSION:
             raise TypeError("UserPartition dict {0} has unexpected version".format(value))
         else:
+            if not "scheme" in value:
+                raise TypeError("UserPartition dict {0} missing value key 'scheme'".format(value))
             scheme_id = value["scheme"]
             scheme = USER_PARTITION_SCHEMES.get(scheme_id)
             if not scheme:

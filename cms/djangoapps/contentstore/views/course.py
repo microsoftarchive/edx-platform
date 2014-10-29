@@ -56,6 +56,7 @@ from .component import (
     ADVANCED_COMPONENT_TYPES,
 )
 from contentstore.tasks import rerun_course
+from .helpers import should_show_group_configurations_page
 from .item import create_xblock_info
 from course_creators.views import get_course_creator_status, add_user_with_status_unrequested
 from contentstore import utils
@@ -1329,14 +1330,12 @@ def group_configurations_list_handler(request, course_key_string):
         if 'text/html' in request.META.get('HTTP_ACCEPT', 'text/html'):
             group_configuration_url = reverse_course_url('group_configurations_list_handler', course_key)
             course_outline_url = reverse_course_url('course_handler', course_key)
-
             configurations = GroupConfiguration.add_usage_info(course, store)
-
             return render_to_response('group_configurations.html', {
                 'context_course': course,
                 'group_configuration_url': group_configuration_url,
                 'course_outline_url': course_outline_url,
-                'configurations': configurations,
+                'configurations': configurations if should_show_group_configurations_page(course) else None,
             })
         elif "application/json" in request.META.get('HTTP_ACCEPT'):
             if request.method == 'POST':
