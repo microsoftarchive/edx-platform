@@ -1001,6 +1001,10 @@ main_vendor_js = base_vendor_js + [
     'js/vendor/jquery.qtip.min.js',
     'js/vendor/swfobject/swfobject.js',
     'js/vendor/jquery.ba-bbq.min.js',
+    'js/vendor/URI.min.js',
+]
+
+ova_js = [
     'js/vendor/ova/annotator-full.js',
     'js/vendor/ova/annotator-full-firebase-auth.js',
     'js/vendor/ova/video.dev.js',
@@ -1018,8 +1022,7 @@ main_vendor_js = base_vendor_js + [
     'js/vendor/ova/OpenSeaDragonAnnotation.js',
     'js/vendor/ova/ova.js',
     'js/vendor/ova/catch/js/catch.js',
-    'js/vendor/ova/catch/js/handlebars-1.1.2.js',
-    'js/vendor/URI.min.js',
+    'js/vendor/ova/catch/js/handlebars-1.1.2.js'
 ]
 
 dashboard_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'js/dashboard/**/*.js'))
@@ -1209,6 +1212,10 @@ PIPELINE_JS = {
     'student_profile': {
         'source_filenames': student_profile_js,
         'output_filename': 'js/student_profile.js'
+    },
+    'ova': {
+        'source_filenames': ova_js,
+        'output_filename': 'js/ova.js',
     },
 }
 
