@@ -41,7 +41,7 @@ from xmodule.modulestore.exceptions import ItemNotFoundError, DuplicateCourseErr
 from xmodule.modulestore.inheritance import InheritanceMixin, inherit_metadata, InheritanceKeyValueStore
 from xblock.core import XBlock
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
-from opaque_keys.edx.locator import CourseLocator
+from opaque_keys.edx.locator import CourseLocator, LibraryLocator
 from opaque_keys.edx.keys import UsageKey, CourseKey, AssetKey
 from xmodule.exceptions import HeartbeatFailure
 from xmodule.modulestore.edit_info import EditInfoRuntimeMixin
@@ -861,6 +861,8 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         otherwise, do a case sensitive search
         """
         assert(isinstance(course_key, CourseKey))
+        if isinstance(course_key, LibraryLocator):
+            return None  # Libraries require split mongo
         course_key = self.fill_in_run(course_key)
         location = course_key.make_usage_key('course', course_key.run)
         if ignore_case:
