@@ -412,6 +412,27 @@ PIPELINE_CSS = {
     },
 }
 
+ova_js = [
+    'js/vendor/ova/annotator-full.js',
+    'js/vendor/ova/annotator-full-firebase-auth.js',
+    'js/vendor/ova/video.dev.js',
+    'js/vendor/ova/vjs.youtube.js',
+    'js/vendor/ova/rangeslider.js',
+    'js/vendor/ova/share-annotator.js',
+    'js/vendor/ova/richText-annotator.js',
+    'js/vendor/ova/reply-annotator.js',
+    'js/vendor/ova/tags-annotator.js',
+    'js/vendor/ova/flagging-annotator.js',
+    'js/vendor/ova/diacritic-annotator.js',
+    'js/vendor/ova/grouping-annotator.js',
+    'js/vendor/ova/jquery-Watch.js',
+    'js/vendor/ova/openseadragon.js',
+    'js/vendor/ova/OpenSeaDragonAnnotation.js',
+    'js/vendor/ova/ova.js',
+    'js/vendor/ova/catch/js/catch.js',
+    'js/vendor/ova/catch/js/handlebars-1.1.2.js'
+]
+
 # test_order: Determines the position of this chunk of javascript on
 # the jasmine test page
 PIPELINE_JS = {
@@ -423,6 +444,10 @@ PIPELINE_JS = {
         ),
         'output_filename': 'js/cms-modules.js',
         'test_order': 1
+    },
+    'ova': {
+        'source_filenames': ova_js,
+        'output_filename': 'js/ova.js',
     },
 }
 
