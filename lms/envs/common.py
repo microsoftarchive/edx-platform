@@ -208,6 +208,10 @@ FEATURES = {
     'ENABLE_INSTRUCTOR_BACKGROUND_TASKS': True,
 
     # Enable instructor to assign individual due dates
+    # Note: In order for this feature to work, you must also add
+    # 'courseware.student_field_overrides.IndividualStudentOverrideProvider' to
+    # the setting FIELD_OVERRIDE_PROVIDERS, in addition to setting this flag to
+    # True.
     'INDIVIDUAL_DUE_DATES': False,
 
     # Enable legacy instructor dashboard
@@ -2188,3 +2192,9 @@ ACCOUNT_VISIBILITY_CONFIGURATION = {
 ECOMMERCE_API_URL = None
 ECOMMERCE_API_SIGNING_KEY = None
 ECOMMERCE_API_TIMEOUT = 5
+
+# For the fields override feature
+# If using FEATURES['INDIVIDUAL_DUE_DATES'], you should add
+# 'courseware.student_field_overrides.IndividualStudentOverrideProvider' to
+# this setting.
+FIELD_OVERRIDE_PROVIDERS = ()
