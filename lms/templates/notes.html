@@ -4,6 +4,7 @@
 ${static.css(group='style-vendor-tinymce-content', raw=True)}
 ${static.css(group='style-vendor-tinymce-skin', raw=True)}
 ${static.css(group='style-xmodule-annotations', raw=True)}
+${static.js(group='ova')}
 <script type="text/javascript" src="${static.url('js/vendor/tinymce/js/tinymce/tinymce.full.min.js', raw=True)}"></script>
  <script type="text/javascript" src="${static.url('js/vendor/tinymce/js/tinymce/jquery.tinymce.min.js', raw=True)}" ></script>
 <%inherit file="main.html" />
@@ -15,7 +16,6 @@ ${static.css(group='style-xmodule-annotations', raw=True)}
 <%static:css group='style-course-vendor'/>
 <%static:css group='style-course'/>
 <%static:js group='courseware'/>
-<%static:js group='ova'/>
 
 <style type="text/css">
     blockquote {
