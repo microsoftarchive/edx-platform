@@ -97,7 +97,7 @@ class PartitionService(object):
 
         # Choose a group for the user, and if this is not a dynamic scheme then persist the choice.
         group = user_partition.scheme.get_group_for_user(user_partition)
-        if not user_partition.scheme.is_dynamic:
+        if not user_partition.scheme.IS_DYNAMIC:
             self._persist_user_group(user_partition, group)
 
         return group

@@ -66,38 +66,28 @@ class UserPartitionScheme(object):
     to put each student into.
     """
 
-    @property
-    def is_dynamic(self):
-        """
-        Returns true if this schema dynamically assigns a user's group. The default is static
-        which means that the group is assigned once is then persisted for the user.
-        """
-        return False
+    # Set to true if this scheme dynamically assigns a user's group. The default is false
+    # which means that the group is assigned once is then persisted for the user.
+    IS_DYNAMIC = False
 
     def __eq__(self, other):
-        return type(self) == type(other) and self.scheme_id == other.scheme_id    # pylint: disable=no-member
+        return type(self) == type(other) and self.SCHEME_ID == other.SCHEME_ID    # pylint: disable=no-member
 
     def __ne__(self, other):
         return not self == other
 
     def __hash__(self):
-        return hash(self.scheme_id)    # pylint: disable=no-member
+        return hash(self.SCHEME_ID)    # pylint: disable=no-member
 
 
 class RandomUserPartitionScheme(UserPartitionScheme):
     """
     This scheme randomly assigns users into the partition's groups.
     """
+    SCHEME_ID = 'random'
 
     def __init__(self):
         self.random = random.Random()
-
-    @property
-    def scheme_id(self):
-        """
-        Returns the id that identifies this scheme.
-        """
-        return "random"
 
     def get_group_for_user(self, user_partition):
         """
@@ -112,7 +102,7 @@ class RandomUserPartitionScheme(UserPartitionScheme):
 
 # The mapping of user partition scheme ids to their implementations.
 USER_PARTITION_SCHEMES = {
-    "random": RandomUserPartitionScheme(),
+    RandomUserPartitionScheme.SCHEME_ID: RandomUserPartitionScheme(),
 }
 
 
@@ -128,7 +118,7 @@ class UserPartition(namedtuple("UserPartition", "id name description groups sche
     The scheme is used to assign users into groups.
     """
     VERSION = 2
-    DEFAULT_SCHEME = USER_PARTITION_SCHEMES["random"]
+    DEFAULT_SCHEME = USER_PARTITION_SCHEMES[RandomUserPartitionScheme.SCHEME_ID]
 
     def __new__(cls, id, name, description, groups, scheme=DEFAULT_SCHEME):
         # pylint: disable=super-on-old-class
@@ -145,7 +135,7 @@ class UserPartition(namedtuple("UserPartition", "id name description groups sche
         return {
             "id": self.id,
             "name": self.name,
-            "scheme": self.scheme.scheme_id,
+            "scheme": self.scheme.SCHEME_ID,
             "description": self.description,
             "groups": [g.to_json() for g in self.groups],
             "version": UserPartition.VERSION

@@ -92,16 +92,8 @@ class MockUserPartitionScheme(UserPartitionScheme):
         super(MockUserPartitionScheme, self).__init__(**kwargs)
         self.current_group = current_group
 
-    @property
-    def scheme_id(self):
-        """
-        Returns the id that identifies this scheme.
-        """
-        return "mock"
-
-    @property
-    def is_dynamic(self):
-        return True
+    SCHEME_ID = "mock"
+    IS_DYNAMIC = True
 
     def get_group_for_user(self, user_partition):    # pylint: disable=unused-argument
         """
@@ -124,8 +116,8 @@ class TestUserPartitionScheme(TestCase):
         self.assertNotEqual(MockUserPartitionScheme().__hash__(), USER_PARTITION_SCHEMES["random"].__hash__())
 
     def test_is_dynamic(self):
-        self.assertFalse(USER_PARTITION_SCHEMES["random"].is_dynamic)
-        self.assertTrue(MockUserPartitionScheme().is_dynamic)
+        self.assertFalse(USER_PARTITION_SCHEMES["random"].IS_DYNAMIC)
+        self.assertTrue(MockUserPartitionScheme().IS_DYNAMIC)
 
 
 class TestUserPartition(TestCase):
