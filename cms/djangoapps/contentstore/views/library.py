@@ -29,7 +29,7 @@ from .access import has_course_access
 from .component import get_component_templates
 from student.roles import CourseCreatorRole
 from student import auth
-from util.json_request import expect_json, JsonResponse
+from util.json_request import expect_json, JsonResponse, JsonResponseBadRequest
 
 __all__ = ['library_handler']
 
@@ -112,15 +112,15 @@ def _create_library(request):
                 fields={"display_name": display_name},
             )
     except KeyError as error:
-        return JsonResponse({
+        return JsonResponseBadRequest({
             "ErrMsg": _("Unable to create library - missing expected JSON key '{err}'").format(err=error.message)}
         )
     except InvalidKeyError as error:
-        return JsonResponse({
+        return JsonResponseBadRequest({
             "ErrMsg": _("Unable to create library - invalid data.\n\n{err}").format(name=display_name, err=error.message)}
         )
     except DuplicateCourseError as error:
-        return JsonResponse({
+        return JsonResponseBadRequest({
             "ErrMsg": _("Unable to create library - one already exists with that key.\n\n{err}").format(err=error.message)}
         )
 

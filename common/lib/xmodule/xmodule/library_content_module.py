@@ -162,6 +162,7 @@ def _get_library(modulestore, library_key):
     return library
 
 
+#pylint: disable=abstract-method
 class LibraryContentModule(LibraryContentFields, XModule, StudioEditableModule):
     """
     An XBlock whose children are chosen dynamically from a content library.

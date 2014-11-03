@@ -8,7 +8,7 @@ from xmodule.library_content_module import LibraryVersionReference
 from xmodule.modulestore import ModuleStoreEnum
 from xmodule.modulestore.django import modulestore
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
-from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
+from xmodule.modulestore.tests.factories import LibraryFactory, CourseFactory, ItemFactory
 from xmodule.tests import get_test_system
 from mock import Mock
 from opaque_keys.edx.locator import CourseKey, LibraryLocator
@@ -91,6 +91,37 @@ class TestLibraries(ModuleStoreTestCase):
         self.assertEqual(response.status_code, 200)
         return modulestore().get_item(lib_content_block.location)
 
+    def test_list_libraries(self):
+        """
+        Test that we can GET /library/ to list all libraries visible to the current user.
+        """
+        list_url = '/library/'
+        # Create some more libraries
+        libraries = [LibraryFactory.create() for _ in range(0, 3)]
+        libraries.append(self.library)
+        lib_dict = dict([(lib.location.library_key, lib) for lib in libraries])
+
+        response = self.client.get_json(list_url)
+        self.assertEqual(response.status_code, 200)
+        lib_list = parse_json(response)
+        self.assertEqual(len(lib_list), len(libraries))
+        for entry in lib_list:
+            self.assertIn("library_key", entry)
+            self.assertIn("display_name", entry)
+            key = CourseKey.from_string(entry["library_key"])
+            self.assertIn(key, lib_dict)
+            self.assertEqual(entry["display_name"], lib_dict[key].display_name)
+            del lib_dict[key]  # To ensure no duplicates are matched
+
+    def test_no_duplicate_libraries(self):
+        response = self.client.ajax_post('/library/', {
+            'org': self.lib_key.org,
+            'library': self.lib_key.library,
+            'display_name': "A Duplicate key, same as self.library",
+        })
+        self.assertIn('duplicate', parse_json(response)['ErrMsg'])
+        self.assertEqual(response.status_code, 400)
+
     @ddt.data(
         (2, 1, 1),
         (2, 2, 2),
@@ -150,7 +181,6 @@ class TestLibraries(ModuleStoreTestCase):
             for child_key in block.children:
                 if child_key.block_id == block_ids[0]:
                     return modulestore().get_item(child_key)
-            return None
 
         # bind the module for a student:
         lc_block.bind_for_student(module_system, lc_block._field_data)  # pylint: disable=protected-access

@@ -699,7 +699,7 @@ def create_xblock_info(xblock, data=None, metadata=None, include_ancestor_info=F
     has_changes = modulestore().has_changes(xblock) if (is_xblock_unit or course_outline) and not is_library_block else None
 
     if graders is None:
-        if xblock.category != "library":
+        if not is_library_block:
             graders = CourseGradingModel.fetch(xblock.location.course_key).graders
         else:
             graders = []

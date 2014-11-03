@@ -421,7 +421,7 @@
         <ul class="list-courses">
           %for library_info in sorted(libraries, key=lambda s: s['display_name'].lower() if s['display_name'] is not None else ''):
           <li class="course-item">
-            <a class="course-link" href="${library_info['url']}">
+            <a class="library-link" href="${library_info['url']}">
               <h3 class="course-title">${library_info['display_name']}</h3>
 
               <div class="course-metadata">
