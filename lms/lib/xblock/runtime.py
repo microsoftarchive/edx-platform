@@ -7,7 +7,7 @@ import xblock.reference.plugins
 
 from django.core.urlresolvers import reverse
 from django.conf import settings
-from user_api import user_service
+from openedx.core.djangoapps.user_api import user_service
 from xmodule.modulestore.django import modulestore
 from xmodule.x_module import ModuleSystem
 from xmodule.partitions.partitions_service import PartitionService

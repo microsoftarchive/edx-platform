@@ -1,7 +1,8 @@
 """Defines ``Group`` and ``UserPartition`` models for partitioning"""
 
-import random
+from abc import ABCMeta, abstractmethod
 from collections import namedtuple
+from stevedore.extension import ExtensionManager
 
 # We use ``id`` in this file as the IDs of our Groups and UserPartitions,
 # which Pylint disapproves of.
@@ -62,48 +63,31 @@ class Group(namedtuple("Group", "id name")):
 
 class UserPartitionScheme(object):
     """
-    The base class for a user partition's scheme. The scheme gets to decide which group
+    The abstract base class for a user partition's scheme. The scheme gets to decide which group
     to put each student into.
     """
+
+    __metaclass__ = ABCMeta
 
     # Set to true if this scheme dynamically assigns a user's group. The default is false
     # which means that the group is assigned once is then persisted for the user.
     IS_DYNAMIC = False
 
-    def __eq__(self, other):
-        return type(self) == type(other) and self.SCHEME_ID == other.SCHEME_ID    # pylint: disable=no-member
+    def __init__(self, extension=None):
+        self.extension = extension
 
-    def __ne__(self, other):
-        return not self == other
+    @property
+    def name(self):
+        """
+        Returns the name of this scheme.
+        """
+        return self.extension.name if self.extension else None
 
-    def __hash__(self):
-        return hash(self.SCHEME_ID)    # pylint: disable=no-member
-
-
-class RandomUserPartitionScheme(UserPartitionScheme):
-    """
-    This scheme randomly assigns users into the partition's groups.
-    """
-    SCHEME_ID = 'random'
-
-    def __init__(self):
-        self.random = random.Random()
-
+    @abstractmethod
     def get_group_for_user(self, user_partition):
         """
         Returns the group to which the current user should be assigned.
         """
-        # pylint: disable=fixme
-        # TODO: had a discussion in arch council about making randomization more
-        # deterministic (e.g. some hash).  Could do that, but need to be careful not
-        # to introduce correlation between users or bias in generation.
-        return self.random.choice(user_partition.groups)
-
-
-# The mapping of user partition scheme ids to their implementations.
-USER_PARTITION_SCHEMES = {
-    RandomUserPartitionScheme.SCHEME_ID: RandomUserPartitionScheme(),
-}
 
 
 class UserPartition(namedtuple("UserPartition", "id name description groups scheme")):
@@ -118,11 +102,38 @@ class UserPartition(namedtuple("UserPartition", "id name description groups sche
     The scheme is used to assign users into groups.
     """
     VERSION = 2
-    DEFAULT_SCHEME = USER_PARTITION_SCHEMES[RandomUserPartitionScheme.SCHEME_ID]
 
-    def __new__(cls, id, name, description, groups, scheme=DEFAULT_SCHEME):
+    # The collection of user partition scheme extensions.
+    _SCHEME_EXTENSIONS = None
+
+    # The collection of user partition schemes.
+    _SCHEMES = {}
+
+    # The default scheme to be used when upgrading version 1 partitions.
+    VERSION_1_SCHEME = "random"
+
+    def __new__(cls, id, name, description, groups, scheme=None, scheme_id=VERSION_1_SCHEME):
         # pylint: disable=super-on-old-class
+        if not scheme:
+            scheme = UserPartition.get_scheme(scheme_id)
         return super(UserPartition, cls).__new__(cls, int(id), name, description, groups, scheme)
+
+    @staticmethod
+    def get_scheme(name):
+        """
+        Returns the user partition scheme with the given name.
+        """
+        scheme = UserPartition._SCHEMES.get(name, None)
+        if not scheme:
+            if not UserPartition._SCHEME_EXTENSIONS:
+                UserPartition._SCHEME_EXTENSIONS = ExtensionManager(namespace='openedx.user_partition_scheme')
+            try:
+                extension = UserPartition._SCHEME_EXTENSIONS[name]
+            except KeyError:
+                raise TypeError("Unrecognized scheme {0}".format(name))
+            scheme = extension.plugin(extension=extension)
+            UserPartition._SCHEMES[name] = scheme
+        return scheme
 
     def to_json(self):
         """
@@ -135,7 +146,7 @@ class UserPartition(namedtuple("UserPartition", "id name description groups sche
         return {
             "id": self.id,
             "name": self.name,
-            "scheme": self.scheme.SCHEME_ID,
+            "scheme": self.scheme.name,
             "description": self.description,
             "groups": [g.to_json() for g in self.groups],
             "version": UserPartition.VERSION
@@ -160,18 +171,18 @@ class UserPartition(namedtuple("UserPartition", "id name description groups sche
 
         if value["version"] == 1:
             # If no scheme was provided, set it to the default ('random')
-            scheme = UserPartition.DEFAULT_SCHEME
-        elif value["version"] != UserPartition.VERSION:
-            raise TypeError("UserPartition dict {0} has unexpected version".format(value))
-        else:
+            scheme_id = UserPartition.VERSION_1_SCHEME
+        elif value["version"] == UserPartition.VERSION:
             if not "scheme" in value:
                 raise TypeError("UserPartition dict {0} missing value key 'scheme'".format(value))
             scheme_id = value["scheme"]
-            scheme = USER_PARTITION_SCHEMES.get(scheme_id)
-            if not scheme:
-                raise TypeError("UserPartition dict {0} has unrecognized scheme {1}".format(value, scheme_id))
+        else:
+            raise TypeError("UserPartition dict {0} has unexpected version".format(value))
 
         groups = [Group.from_json(g) for g in value["groups"]]
+        scheme = UserPartition.get_scheme(scheme_id)
+        if not scheme:
+            raise TypeError("UserPartition dict {0} has unrecognized scheme {1}".format(value, scheme_id))
 
         return UserPartition(
             value["id"],

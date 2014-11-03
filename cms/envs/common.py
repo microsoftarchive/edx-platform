@@ -608,7 +608,6 @@ INSTALLED_APPS = (
     'reverification',
 
     # User preferences
-    'user_api',
     'django_openid_auth',
 
     'embargo',

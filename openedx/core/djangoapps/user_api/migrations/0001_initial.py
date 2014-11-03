@@ -1,19 +1,30 @@
 # -*- coding: utf-8 -*-
-import datetime
+
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        db.rename_table('user_api_usercoursetags', 'user_api_usercoursetag')
+        # Adding model 'UserPreference'
+        db.create_table('user_api_userpreference', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('user', self.gf('django.db.models.fields.related.ForeignKey')(related_name='+', to=orm['auth.User'])),
+            ('key', self.gf('django.db.models.fields.CharField')(max_length=255, db_index=True)),
+            ('value', self.gf('django.db.models.fields.TextField')()),
+        ))
+        db.send_create_signal('user_api', ['UserPreference'])
 
+        # Adding unique constraint on 'UserPreference', fields ['user', 'key']
+        db.create_unique('user_api_userpreference', ['user_id', 'key'])
 
     def backwards(self, orm):
-        db.rename_table('user_api_usercoursetag', 'user_api_usercoursetags')
+        # Removing unique constraint on 'UserPreference', fields ['user', 'key']
+        db.delete_unique('user_api_userpreference', ['user_id', 'key'])
 
+        # Deleting model 'UserPreference'
+        db.delete_table('user_api_userpreference')
 
     models = {
         'auth.group': {
@@ -51,14 +62,6 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'user_api.usercoursetag': {
-            'Meta': {'unique_together': "(('user', 'course_id', 'key'),)", 'object_name': 'UserCourseTag'},
-            'course_id': ('django.db.models.fields.CharField', [], {'max_length': '255', 'db_index': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'key': ('django.db.models.fields.CharField', [], {'max_length': '255', 'db_index': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'to': "orm['auth.User']"}),
-            'value': ('django.db.models.fields.TextField', [], {})
         },
         'user_api.userpreference': {
             'Meta': {'unique_together': "(('user', 'key'),)", 'object_name': 'UserPreference'},

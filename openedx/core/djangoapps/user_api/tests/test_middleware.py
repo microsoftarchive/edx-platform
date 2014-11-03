@@ -6,8 +6,9 @@ from django.http import HttpResponse
 from django.test.client import RequestFactory
 
 from student.tests.factories import UserFactory, AnonymousUserFactory
-from user_api.tests.factories import UserCourseTagFactory
-from user_api.middleware import UserTagsEventContextMiddleware
+
+from ..tests.factories import UserCourseTagFactory
+from ..middleware import UserTagsEventContextMiddleware
 
 
 class TagsMiddlewareTest(TestCase):

@@ -8,7 +8,7 @@ from unittest import TestCase
 from mock import Mock
 
 from xmodule.partitions.partitions import (
-    Group, UserPartition, RandomUserPartitionScheme, USER_PARTITION_SCHEMES, UserPartitionScheme
+    Group, UserPartition, UserPartitionScheme
 )
 from xmodule.partitions.partitions_service import PartitionService
 
@@ -92,7 +92,7 @@ class MockUserPartitionScheme(UserPartitionScheme):
         super(MockUserPartitionScheme, self).__init__(**kwargs)
         self.current_group = current_group
 
-    SCHEME_ID = "mock"
+    name = "mock"
     IS_DYNAMIC = True
 
     def get_group_for_user(self, user_partition):    # pylint: disable=unused-argument
@@ -102,24 +102,6 @@ class MockUserPartitionScheme(UserPartitionScheme):
         return self.current_group
 
 
-class TestUserPartitionScheme(TestCase):
-    """
-    Tests for UserPartitionScheme.
-    """
-
-    def test_equality(self):
-        self.assertEqual(RandomUserPartitionScheme(), USER_PARTITION_SCHEMES["random"])
-        self.assertNotEqual(MockUserPartitionScheme(), USER_PARTITION_SCHEMES["random"])
-
-    def test_hash(self):
-        self.assertEqual(RandomUserPartitionScheme().__hash__(), USER_PARTITION_SCHEMES["random"].__hash__())
-        self.assertNotEqual(MockUserPartitionScheme().__hash__(), USER_PARTITION_SCHEMES["random"].__hash__())
-
-    def test_is_dynamic(self):
-        self.assertFalse(USER_PARTITION_SCHEMES["random"].IS_DYNAMIC)
-        self.assertTrue(MockUserPartitionScheme().IS_DYNAMIC)
-
-
 class TestUserPartition(TestCase):
     """Test constructing UserPartitions"""
 
@@ -127,7 +109,7 @@ class TestUserPartition(TestCase):
     MOCK_NAME = "Mock Partition"
     MOCK_DESCRIPTION = "for testing purposes"
     MOCK_GROUPS = [Group(0, 'Group 1'), Group(1, 'Group 2')]
-    MOCK_SCHEME = "random"
+    MOCK_SCHEME = "mock"
 
     def test_construct(self):
         user_partition = UserPartition(
@@ -146,7 +128,8 @@ class TestUserPartition(TestCase):
 
     def test_to_json(self):
         user_partition = UserPartition(
-            self.MOCK_ID, self.MOCK_NAME, self.MOCK_DESCRIPTION, self.MOCK_GROUPS
+            self.MOCK_ID, self.MOCK_NAME, self.MOCK_DESCRIPTION, self.MOCK_GROUPS,
+            scheme=MockUserPartitionScheme()
         )
 
         jsonified = user_partition.to_json()
@@ -167,7 +150,7 @@ class TestUserPartition(TestCase):
             "description": self.MOCK_DESCRIPTION,
             "groups": [group.to_json() for group in self.MOCK_GROUPS],
             "version": UserPartition.VERSION,
-            "scheme": self.MOCK_SCHEME,
+            "scheme": "random",
         }
         user_partition = UserPartition.from_json(jsonified)
         self.assertEqual(user_partition.id, self.MOCK_ID)    # pylint: disable=no-member
@@ -189,7 +172,7 @@ class TestUserPartition(TestCase):
             "version": 1,
         }
         user_partition = UserPartition.from_json(jsonified)
-        self.assertEqual(user_partition.scheme, UserPartition.DEFAULT_SCHEME)    # pylint: disable=no-member
+        self.assertEqual(user_partition.scheme.name, "random")    # pylint: disable=no-member
 
     def test_from_json_broken(self):
         # Missing field
@@ -223,7 +206,7 @@ class TestUserPartition(TestCase):
             "version": UserPartition.VERSION,
             "scheme": "no_such_scheme",
         }
-        with self.assertRaisesRegexp(TypeError, "has unrecognized scheme"):
+        with self.assertRaisesRegexp(TypeError, "Unrecognized scheme"):
             UserPartition.from_json(jsonified)
 
         # Wrong version (it's over 9000!)
@@ -246,7 +229,7 @@ class TestUserPartition(TestCase):
             "description": self.MOCK_DESCRIPTION,
             "groups": [group.to_json() for group in self.MOCK_GROUPS],
             "version": UserPartition.VERSION,
-            "scheme": self.MOCK_SCHEME,
+            "scheme": "random",
             "programmer": "Cale",
         }
         user_partition = UserPartition.from_json(jsonified)

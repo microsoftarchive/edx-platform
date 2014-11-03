@@ -69,5 +69,8 @@ setup(
         'console_scripts': [
             'xmodule_assets = xmodule.static_content:main',
         ],
+        'edx.user_partition_scheme': [
+            'random = common.lib.xmodule.xmodule.partitions.partitions:RandomUserPartitionScheme',
+        ],
     },
 )

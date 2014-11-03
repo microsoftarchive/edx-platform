@@ -4,7 +4,7 @@ Tests for helper functions.
 import mock
 from django.test import TestCase
 from nose.tools import raises
-from user_api.helpers import intercept_errors
+from ..helpers import intercept_errors
 
 
 class FakeInputException(Exception):
