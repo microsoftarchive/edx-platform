@@ -7,9 +7,7 @@ from collections import defaultdict
 from unittest import TestCase
 from mock import Mock
 
-from xmodule.partitions.partitions import (
-    Group, UserPartition, UserPartitionScheme
-)
+from xmodule.partitions.partitions import Group, UserPartition
 from xmodule.partitions.partitions_service import PartitionService
 
 
@@ -83,16 +81,15 @@ class TestGroup(TestCase):
         self.assertNotIn("programmer", group.to_json())
 
 
-class MockUserPartitionScheme(UserPartitionScheme):
+class MockUserPartitionScheme(object):
     """
     Mock user partition scheme
     """
-
     def __init__(self, current_group=None, **kwargs):
         super(MockUserPartitionScheme, self).__init__(**kwargs)
         self.current_group = current_group
 
-    name = "mock"
+    NAME = "mock"
     IS_DYNAMIC = True
 
     def get_group_for_user(self, user_partition):    # pylint: disable=unused-argument
@@ -172,7 +169,7 @@ class TestUserPartition(TestCase):
             "version": 1,
         }
         user_partition = UserPartition.from_json(jsonified)
-        self.assertEqual(user_partition.scheme.name, "random")    # pylint: disable=no-member
+        self.assertEqual(user_partition.scheme.NAME, "random")    # pylint: disable=no-member
 
     def test_from_json_broken(self):
         # Missing field

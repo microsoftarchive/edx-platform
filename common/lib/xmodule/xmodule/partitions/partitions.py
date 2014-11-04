@@ -61,35 +61,6 @@ class Group(namedtuple("Group", "id name")):
         return Group(value["id"], value["name"])
 
 
-class UserPartitionScheme(object):
-    """
-    The abstract base class for a user partition's scheme. The scheme gets to decide which group
-    to put each student into.
-    """
-
-    __metaclass__ = ABCMeta
-
-    # Set to true if this scheme dynamically assigns a user's group. The default is false
-    # which means that the group is assigned once is then persisted for the user.
-    IS_DYNAMIC = False
-
-    def __init__(self, extension=None):
-        self.extension = extension
-
-    @property
-    def name(self):
-        """
-        Returns the name of this scheme.
-        """
-        return self.extension.name if self.extension else None
-
-    @abstractmethod
-    def get_group_for_user(self, user_partition):
-        """
-        Returns the group to which the current user should be assigned.
-        """
-
-
 class UserPartition(namedtuple("UserPartition", "id name description groups scheme")):
     """
     A named way to partition users into groups, primarily intended for running
@@ -106,9 +77,6 @@ class UserPartition(namedtuple("UserPartition", "id name description groups sche
     # The collection of user partition scheme extensions.
     _SCHEME_EXTENSIONS = None
 
-    # The collection of user partition schemes.
-    _SCHEMES = {}
-
     # The default scheme to be used when upgrading version 1 partitions.
     VERSION_1_SCHEME = "random"
 
@@ -123,16 +91,13 @@ class UserPartition(namedtuple("UserPartition", "id name description groups sche
         """
         Returns the user partition scheme with the given name.
         """
-        scheme = UserPartition._SCHEMES.get(name, None)
-        if not scheme:
-            if not UserPartition._SCHEME_EXTENSIONS:
-                UserPartition._SCHEME_EXTENSIONS = ExtensionManager(namespace='openedx.user_partition_scheme')
-            try:
-                extension = UserPartition._SCHEME_EXTENSIONS[name]
-            except KeyError:
-                raise TypeError("Unrecognized scheme {0}".format(name))
-            scheme = extension.plugin(extension=extension)
-            UserPartition._SCHEMES[name] = scheme
+        if not UserPartition._SCHEME_EXTENSIONS:
+            UserPartition._SCHEME_EXTENSIONS = ExtensionManager(namespace='openedx.user_partition_scheme')
+        try:
+            scheme = UserPartition._SCHEME_EXTENSIONS[name].plugin
+        except KeyError:
+            raise TypeError("Unrecognized scheme {0}".format(name))
+        scheme.NAME = name
         return scheme
 
     def to_json(self):
@@ -146,7 +111,7 @@ class UserPartition(namedtuple("UserPartition", "id name description groups sche
         return {
             "id": self.id,
             "name": self.name,
-            "scheme": self.scheme.name,
+            "scheme": self.scheme.NAME,
             "description": self.description,
             "groups": [g.to_json() for g in self.groups],
             "version": UserPartition.VERSION

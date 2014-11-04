@@ -148,10 +148,6 @@ def install_python_prereqs():
     if os.environ.get("NO_PREREQ_INSTALL", False):
         return
 
-    # Always install the root package (Open-edX) as changes made to it do not appear as dirty.
-    # TODO: determine why this is needed and then fix the underlying problem.
-    sh("pip install -e .")
-
     prereq_cache("Python prereqs", PYTHON_REQ_FILES + [sysconfig.get_python_lib()], python_prereqs_installation)
 
 

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-
+import datetime
 from south.db import db
 from south.v2 import SchemaMigration
+from django.db import models
 
 
 class Migration(SchemaMigration):
@@ -19,12 +20,14 @@ class Migration(SchemaMigration):
         # Adding unique constraint on 'UserPreference', fields ['user', 'key']
         db.create_unique('user_api_userpreference', ['user_id', 'key'])
 
+
     def backwards(self, orm):
         # Removing unique constraint on 'UserPreference', fields ['user', 'key']
         db.delete_unique('user_api_userpreference', ['user_id', 'key'])
 
         # Deleting model 'UserPreference'
         db.delete_table('user_api_userpreference')
+
 
     models = {
         'auth.group': {

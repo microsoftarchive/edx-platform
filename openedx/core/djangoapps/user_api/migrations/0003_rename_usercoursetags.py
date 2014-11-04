@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-
+import datetime
 from south.db import db
 from south.v2 import SchemaMigration
+from django.db import models
 
 
 class Migration(SchemaMigration):
@@ -9,8 +10,10 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         db.rename_table('user_api_usercoursetags', 'user_api_usercoursetag')
 
+
     def backwards(self, orm):
         db.rename_table('user_api_usercoursetag', 'user_api_usercoursetags')
+
 
     models = {
         'auth.group': {
