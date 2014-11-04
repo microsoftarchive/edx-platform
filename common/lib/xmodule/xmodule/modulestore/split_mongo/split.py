@@ -881,6 +881,15 @@ class SplitMongoModuleStore(SplitBulkWriteMixin, ModuleStoreWriteBase):
         result = self._load_items(course_entry, [root], depth, lazy=True, **kwargs)
         return result[0]
 
+    def get_courselike(self, locator, depth=0, **kwargs):
+        """
+        Gets a course or a library.
+        """
+        if isinstance(locator, LibraryLocator):
+            return self.get_library(locator, depth, **kwargs)
+        else:
+            return self.get_course(locator, depth, **kwargs)
+
     def has_course(self, course_id, ignore_case=False, **kwargs):
         '''
         Does this course exist in this modulestore. This method does not verify that the branch &/or
@@ -1263,19 +1272,27 @@ class SplitMongoModuleStore(SplitBulkWriteMixin, ModuleStoreWriteBase):
 
         new_def_data = self._serialize_fields(old_definition['block_type'], new_def_data)
         if needs_saved():
-            # Do a deep copy so that we don't corrupt the cached version of the definition
-            new_definition = copy.deepcopy(old_definition)
-            new_definition['_id'] = ObjectId()
-            new_definition['fields'] = new_def_data
-            new_definition['edit_info']['edited_by'] = user_id
-            new_definition['edit_info']['edited_on'] = datetime.datetime.now(UTC)
-            # previous version id
-            new_definition['edit_info']['previous_version'] = definition_locator.definition_id
-            new_definition['schema_version'] = self.SCHEMA_VERSION
-            self.update_definition(course_key, new_definition)
-            return DefinitionLocator(new_definition['block_type'], new_definition['_id']), True
+            definition_locator = self._update_definition_from_data(course_key, old_definition, new_def_data, user_id)
+            return definition_locator, True
         else:
             return definition_locator, False
+
+    def _update_definition_from_data(self, course_key, old_definition, new_def_data, user_id):
+        """
+        Update the persisted version of the given definition and return the
+        locator of the new definition. Does not check if data differs from the
+        previous version.
+        """
+        new_definition = copy.deepcopy(old_definition)
+        new_definition['_id'] = ObjectId()
+        new_definition['fields'] = new_def_data
+        new_definition['edit_info']['edited_by'] = user_id
+        new_definition['edit_info']['edited_on'] = datetime.datetime.now(UTC)
+        # previous version id
+        new_definition['edit_info']['previous_version'] = old_definition['_id']
+        new_definition['schema_version'] = self.SCHEMA_VERSION
+        self.update_definition(course_key, new_definition)
+        return DefinitionLocator(new_definition['block_type'], new_definition['_id'])
 
     def _generate_block_key(self, course_blocks, category):
         """
@@ -1556,20 +1573,7 @@ class SplitMongoModuleStore(SplitBulkWriteMixin, ModuleStoreWriteBase):
         # if building a wholly new structure
         if versions_dict is None or master_branch not in versions_dict:
             # create new definition and structure
-            definition_id = ObjectId()
-            definition_entry = {
-                '_id': definition_id,
-                'block_type': root_category,
-                'fields': definition_fields,
-                'edit_info': {
-                    'edited_by': user_id,
-                    'edited_on': datetime.datetime.now(UTC),
-                    'previous_version': None,
-                    'original_version': definition_id,
-                },
-                'schema_version': self.SCHEMA_VERSION,
-            }
-            self.update_definition(locator, definition_entry)
+            definition_id = self.create_definition_from_data(locator, definition_fields, root_category, user_id).definition_id
 
             draft_structure = self._new_structure(
                 user_id,
@@ -1597,15 +1601,11 @@ class SplitMongoModuleStore(SplitBulkWriteMixin, ModuleStoreWriteBase):
             if block_fields is not None:
                 root_block['fields'].update(self._serialize_fields(root_category, block_fields))
             if definition_fields is not None:
-                definition = copy.deepcopy(self.get_definition(locator, root_block['definition']))
-                definition['fields'].update(definition_fields)
-                definition['edit_info']['previous_version'] = definition['_id']
-                definition['edit_info']['edited_by'] = user_id
-                definition['edit_info']['edited_on'] = datetime.datetime.now(UTC)
-                definition['_id'] = ObjectId()
-                definition['schema_version'] = self.SCHEMA_VERSION
-                self.update_definition(locator, definition)
-                root_block['definition'] = definition['_id']
+                old_def = self.get_definition(locator, root_block['definition'])
+                new_fields = old_def['fields']
+                new_fields.update(definition_fields)
+                definition_id = self._update_definition_from_data(locator, old_def, new_fields, user_id).definition_id
+                root_block['definition'] = definition_id
                 root_block['edit_info']['edited_on'] = datetime.datetime.now(UTC)
                 root_block['edit_info']['edited_by'] = user_id
                 root_block['edit_info']['previous_version'] = root_block['edit_info'].get('update_version')
@@ -1636,10 +1636,7 @@ class SplitMongoModuleStore(SplitBulkWriteMixin, ModuleStoreWriteBase):
             self.insert_course_index(locator, index_entry)
 
             # expensive hack to persist default field values set in __init__ method (e.g., wiki_slug)
-            if isinstance(locator, LibraryLocator):
-                course = self.get_library(locator, **kwargs)
-            else:
-                course = self.get_course(locator, **kwargs)
+            course = self.get_courselike(locator, **kwargs)
             return self.update_item(course, user_id, **kwargs)
 
     def create_library(self, org, library, user_id, fields, **kwargs):
