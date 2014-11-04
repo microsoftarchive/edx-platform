@@ -263,7 +263,7 @@
             },
             // edx notes
             'annotator': {
-                exports: 'annotator',
+                exports: 'Annotator',
                 deps: ['jquery']
             }
         },

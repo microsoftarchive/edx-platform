@@ -1,5 +1,5 @@
-define(['jquery', 'annotator', 'jasmine-jquery'],
-    function($, Annotator) {
+define(['jquery', 'annotator', 'js/edxnotes/notes', 'jasmine-jquery'],
+    function($, Annotator, Notes) {
         'use strict';
 
         describe('Test notes', function() {
@@ -13,8 +13,11 @@ define(['jquery', 'annotator', 'jasmine-jquery'],
             it('Tests if fixture has been loaded', function() {
                 expect(wrapper).toExist();
                 expect(wrapper).toHaveClass('edx-notes-wrapper');
-                // This fails, why?
-                expect(Annotator).not.toBeUndefined();
+            });
+
+            it('Tests if Annotator and Notes are defined', function() {
+                expect(Annotator).toBeDefined();
+                expect(Notes).toBeDefined();
             });
         });
     }
