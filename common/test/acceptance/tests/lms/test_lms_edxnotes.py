@@ -9,16 +9,16 @@ from ...pages.lms.edxnotes import EdxNotesUnitPage, EdxNotesPage
 from ...fixtures.edxnotes import EdxNotesFixture, Note, Range
 
 
-class EdxNotesTest(UniqueCourseTest):
+class EdxNotesTestMixin(UniqueCourseTest):
     """
-    Tests for annotation inside HTML components in LMS.
+    Creates a course with initial data and contains useful helper methods.
     """
-
     def setUp(self):
         """
         Initialize pages and install a course fixture.
         """
-        super(EdxNotesTest, self).setUp()
+        super(EdxNotesTestMixin, self).setUp()
+        self.courseware_page = CoursewarePage(self.browser, self.course_id)
         self.course_nav = CourseNavPage(self.browser)
         self.note_unit_page = EdxNotesUnitPage(self.browser, self.course_id)
         self.notes_page = EdxNotesPage(self.browser, self.course_id)
@@ -84,6 +84,11 @@ class EdxNotesTest(UniqueCourseTest):
         self.edxnotes_fixture.create_notes(notes_list)
         self.edxnotes_fixture.install()
 
+
+class EdxNotesDefaultInteractionsTest(EdxNotesTestMixin):
+    """
+    Tests for creation, editing, deleting annotations inside annotatable components in LMS.
+    """
     def create_notes(self, components, offset=0):
         self.assertGreater(len(components), 0)
         index = offset
@@ -122,12 +127,12 @@ class EdxNotesTest(UniqueCourseTest):
     def test_can_create_notes(self):
         """
         Scenario: User can create notes.
-        Given I have a course with 3 annotatatble components
-        And I open the unit with 2 annotatatble components
+        Given I have a course with 3 annotatable components
+        And I open the unit with 2 annotatable components
         When I add 2 notes for the first component and 1 note for the second
         Then I see that notes were correctly created
         When I change sequential position to "2"
-        And I add note for the annotatatble component on the page
+        And I add note for the annotatable component on the page
         Then I see that note was correctly created
         When I refresh the page
         Then I see that note was correctly stored
@@ -157,7 +162,7 @@ class EdxNotesTest(UniqueCourseTest):
         """
         Scenario: User can edit notes.
         Given I have a course with 3 components with notes
-        And I open the unit with 2 annotatatble components
+        And I open the unit with 2 annotatable components
         When I change text in the notes
         Then I see that notes were correctly changed
         When I change sequential position to "2"
@@ -192,7 +197,7 @@ class EdxNotesTest(UniqueCourseTest):
         """
         Scenario: User can delete notes.
         Given I have a course with 3 components with notes
-        And I open the unit with 2 annotatatble components
+        And I open the unit with 2 annotatable components
         When I remove all notes on the page
         Then I do not see any notes on the page
         When I change sequential position to "2"
@@ -223,167 +228,75 @@ class EdxNotesTest(UniqueCourseTest):
         self.assert_notes_are_removed(components)
 
 
-class EdxNotesPageTest(UniqueCourseTest):
+class EdxNotesToggleSingleNoteTest(EdxNotesTestMixin):
     """
-    Tests for Notes page.
+    Tests for toggling single annotation.
     """
+
     def setUp(self):
+        super(EdxNotesToggleSingleNoteTest, self).setUp()
+        self._add_notes()
+        self.note_page.visit()
+
+    def test_can_toggle_by_clicking_on_highlighted_text(self):
         """
-        Initialize pages and install a course fixture.
+        Scenario: User can toggle a single note by clicking on highlighted text.
+        Given I have a course with components with notes
+        When I click on highlighted text
+        And I move mouse out of the note
+        Then I see that the note is still shown
+        When I click outside the note
+        Then I see the the note is closed
         """
-        super(EdxNotesPageTest, self).setUp()
-        self.courseware_page = CoursewarePage(self.browser, self.course_id)
-        self.notes_page = EdxNotesPage(self.browser, self.course_id)
+        note = self.note_page.notes[0]
 
-        self.username = str(uuid4().hex)[:5]
-        self.email = "{}@email.com".format(self.username)
+        note.click_on_highlight()
+        self.note_page.move_mouse_to('body')
+        self.assertTrue(note.is_visible)
+        self.note_page.click('body')
+        self.assertFalse(note.is_visible)
 
-        self.edxnotes_fixture = EdxNotesFixture()
-        self.course_fixture = CourseFixture(
-            self.course_info["org"], self.course_info["number"],
-            self.course_info["run"], self.course_info["display_name"]
-        )
-
-        self.course_fixture.add_advanced_settings({
-            u"edxnotes": {u"value": True}
-        })
-
-        self.course_fixture.add_children(
-            XBlockFixtureDesc("chapter", "Test Section").add_children(
-                XBlockFixtureDesc("sequential", "Test Subsection").add_children(
-                    XBlockFixtureDesc('vertical', 'Test Unit 1').add_children(
-                        XBlockFixtureDesc(
-                            "html",
-                            "Test HTML 1",
-                            data="""<p>Annotate this text!</p>"""
-                        ),
-                    ),
-                    XBlockFixtureDesc('vertical', 'Test Unit 2').add_children(
-                        XBlockFixtureDesc('vertical', 'Test Unit 2').add_children(
-                            XBlockFixtureDesc(
-                                "html",
-                                "Test HTML 2",
-                                data="""<p>Third text!</p>"""
-                            ),
-                        ),
-                    ),
-                ),
-            )).install()
-
-        AutoAuthPage(self.browser, username=self.username, email=self.email, course_id=self.course_id).visit()
-
-    def tearDown(self):
-        self.edxnotes_fixture.cleanup()
-
-    def _add_notes(self, notes_list):
-        self.edxnotes_fixture.create_notes(notes_list)
-        self.edxnotes_fixture.install()
-
-    def test_no_content(self):
+    def test_can_toggle_by_clicking_on_the_note(self):
         """
-        Scenario: User can see `No content` message.
-        Given I have a course without notes
-        When I open Notes page
-        Then I see only "You do not have any notes within the course." message
+        Scenario: User can toggle a single note by clicking on the note.
+        Given I have a course with components with notes
+        When I click on the note
+        And I move mouse out of the note
+        Then I see that the note is still shown
+        When I click outside the note
+        Then I see the the note is closed
         """
-        self.notes_page.visit()
-        self.assertEqual('You do not have any notes within the course.', self.notes_page.no_content_text)
+        note = self.note_page.notes[0]
 
-    def test_recent_activity_view(self):
+        note.show().click_on_viewer()
+        self.note_page.move_mouse_to('body')
+        self.assertTrue(note.is_visible)
+        self.note_page.click('body')
+        self.assertFalse(note.is_visible)
+
+    def test_interaction_between_notes(self):
         """
-        Scenario: User can view all notes.
-        Given I have a course with 3 notes
-        When I open Notes page
-        Then I see 3 notes sorted by the day
-        And I see correct content in the notes
+        Scenario: Interactions between notes works well.
+        Given I have a course with components with notes
+        When I click on highlighted text in the first component
+        And I move mouse out of the note
+        Then I see that the note is still shown
+        When I click on highlighted text in the second component
+        Then I do not see any notes
+        When I click again on highlighted text in the second component
+        Then I see appropriate note
         """
-        xblocks = self.course_fixture.get_nested_xblocks(category="html")
-        self._add_notes([
-            Note(
-                usage_id=xblocks[0].locator,
-                user=self.username,
-                course_id=self.course_fixture._course_key,
-                text="Annotate this text!",
-                quote="Second note",
-                updated=datetime(2013, 1, 1, 1, 1, 1, 1).isoformat()
-            ),
-            Note(
-                usage_id=xblocks[1].locator,
-                user=self.username,
-                course_id=self.course_fixture._course_key,
-                text="",
-                quote="First note",
-                updated=datetime(2014, 1, 1, 1, 1, 1, 1).isoformat()
-            ),
-            Note(
-                usage_id=xblocks[1].locator,
-                user=self.username,
-                course_id=self.course_fixture._course_key,
-                text="Third text",
-                quote="",
-                updated=datetime(2012, 1, 1, 1, 1, 1, 1).isoformat()
-            )
-        ])
+        note_1 = self.note_page.notes[0]
+        note_2 = self.note_page.notes[1]
 
-        def assertContent(item, text=None, quote=None, unit_name=None, time_updated=None):
-            self.assertEqual(item.text, text)
-            self.assertEqual(item.quote, quote)
-            self.assertEqual(item.unit_name, unit_name)
-            self.assertEqual(item.time_updated, time_updated)
-            if text is not None and quote is not None:
-                self.assertEqual(item.title_highlighted, "HIGHLIGHTED & NOTED IN:")
-            elif text is not None:
-                self.assertEqual(item.title_highlighted, "HIGHLIGHTED IN:")
-            elif quote is not None:
-                self.assertEqual(item.title_highlighted, "NOTED IN:")
+        note_1.click_on_highlight()
+        self.note_page.move_mouse_to('body')
+        self.assertTrue(note_1.is_visible)
 
-        self.notes_page.visit()
-        items = self.notes_page.children
-        self.assertEqual(len(items), 3)
-        assertContent(
-            items[0],
-            quote=u"First note",
-            unit_name="Test Unit 2",
-            time_updated="Jan 01, 2014 at 01:01 UTC"
-        )
+        note_2.click_on_highlight()
+        self.assertFalse(note_1.is_visible)
+        self.assertFalse(note_2.is_visible)
 
-        assertContent(
-            items[1],
-            text="Annotate this text!",
-            quote=u"Second note",
-            unit_name="Test Unit 1",
-            time_updated="Jan 01, 2013 at 01:01 UTC"
-        )
-
-        assertContent(
-            items[2],
-            text=u"Third text",
-            unit_name="Test Unit 2",
-            time_updated="Jan 01, 2012 at 01:01 UTC"
-        )
-
-    def test_easy_access_from_notes_page(self):
-        """
-        Scenario: Ensure that the link to the Unit works correctly.
-        Given I have a course with a note
-        When I open Notes page
-        And I click on the unit link
-        Then I see correct text on the unit page
-        """
-        xblocks = self.course_fixture.get_nested_xblocks(category="html")
-        self._add_notes([
-            Note(
-                usage_id=xblocks[0].locator,
-                user=self.username,
-                course_id=self.course_fixture._course_key,
-                text="Annotate this text!",
-                ranges=[Range(startOffset=0, endOffset=20)]
-            ),
-        ])
-
-        self.notes_page.visit()
-        item = self.notes_page.children[0]
-        text = item.text
-        item.go_to_unit()
-        self.courseware_page.wait_for_page()
-        self.assertIn(text, self.courseware_page.xblock_component_html_content())
+        note_2.click_on_highlight()
+        self.assertTrue(note_2.is_visible)
+>>>>>>> TNL-660: Toggle single note visibility.

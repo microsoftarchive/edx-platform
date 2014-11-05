@@ -392,10 +392,19 @@
         'lms/include/js/spec/student_account/password_reset_spec.js',
         'lms/include/js/spec/student_account/enrollment_spec.js',
         'lms/include/js/spec/student_account/shoppingcart_spec.js',
+<<<<<<< HEAD
         'lms/include/js/spec/student_profile/profile_spec.js',
         'lms/include/js/spec/edxnotes/notes_spec.js',
         'lms/include/js/spec/edxnotes/utils/logger_spec.js',
         'lms/include/js/spec/edxnotes/views/notes_page_spec.js'
+=======
+        'lms/include/js/spec/student_profile/profile_spec.js'
+        'lms/include/js/spec/student_account/account.js',
+        'lms/include/js/spec/student_profile/profile.js',
+        'lms/include/js/spec/edxnotes/logger_spec.js',
+        'lms/include/js/spec/edxnotes/notes_spec.js',
+        'lms/include/js/spec/edxnotes/shim_spec.js'
+>>>>>>> TNL-660: Toggle single note visibility.
     ]);
 
 }).call(this, requirejs, define);
