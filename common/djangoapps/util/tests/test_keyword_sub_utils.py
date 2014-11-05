@@ -2,21 +2,20 @@
 Tests for keyword_substitution.py
 """
 
-from django.test import TestCase
 from student.tests.factories import UserFactory
 from xmodule.modulestore.tests.factories import CourseFactory
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from ddt import ddt, file_data
-from mock import Mock, patch
+from mock import patch
 
 
-from student.models import anonymous_id_for_user
 from util.date_utils import get_default_time_display
 from util import keyword_substitution as Ks
 
 
 @ddt
 class KeywordSubTest(ModuleStoreTestCase):
+    """ Tests for the keyword substitution feature """
 
     def setUp(self):
         self.user = UserFactory.create(
@@ -34,11 +33,14 @@ class KeywordSubTest(ModuleStoreTestCase):
         Ks.KEYWORD_FUNCTION_MAP = self.get_keyword_function_map()
 
     def get_keyword_function_map(self):
+        """ Generates a mapping from keywords to functions for testing """
 
-        def user_fullname_sub(user, course=None):
+        def user_fullname_sub(user, course): #pylint: disable=unused-argument
+            """ Returns the user's name """
             return user.profile.name
 
-        def course_display_name_sub(user, course):
+        def course_display_name_sub(user, course): #pylint: disable=unused-argument
+            """ Returns the course name """
             return course.display_name
 
         return {
@@ -137,8 +139,8 @@ class KeywordSubTest(ModuleStoreTestCase):
         """
         test_string = "This string should not be subbed here %%USER_ID%%"
 
-        result = Ks.substitute_keywords_given_user_and_course(test_string, course=self.course, user=None)
+        result = Ks.substitute_keywords(test_string, course=self.course, user=None)
         self.assertEqual(test_string, result)
 
-        result = Ks.substitute_keywords_given_user_and_course(test_string, self.user, None)
+        result = Ks.substitute_keywords(test_string, self.user, None)
         self.assertEqual(test_string, result)

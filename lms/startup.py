@@ -148,7 +148,7 @@ def enable_third_party_auth():
     auth_settings.apply_settings(settings.THIRD_PARTY_AUTH, settings)
 
 
-def get_keyword_function_map():
+def get_keyword_function_map(): #pylint: disable=unused-argument
     """
     Define the mapping of keywords and filtering functions
 
@@ -165,16 +165,23 @@ def get_keyword_function_map():
     from util.date_utils import get_default_time_display
 
     def user_id_sub(user, course):
-        # For compatibility with the existing anon_ids, return anon_id without course_id
+        """
+        Gives the anonymous id for the given user
+
+        For compatibility with the existing anon_ids, return anon_id without course_id
+        """
         return anonymous_id_for_user(user, None)
 
     def user_fullname_sub(user, course=None):
+        """ Returns the given user's name """
         return user.profile.name
 
     def course_display_name_sub(user, course):
+        """ Returns the course's display name """
         return course.display_name
 
     def course_end_date_sub(user, course):
+        """ Returns the course end date in the default display """
         return get_default_time_display(course.end)
 
     # Define keyword - function map

@@ -1,6 +1,3 @@
-from django.contrib.auth.models import User
-from xmodule.modulestore.django import modulestore
-
 """
 keyword_substitution.py
 
@@ -23,6 +20,9 @@ Usage:
         - CMS: Not called
 """
 
+from django.contrib.auth.models import User
+from xmodule.modulestore.django import modulestore
+
 KEYWORD_FUNCTION_MAP = {}
 
 
@@ -40,7 +40,7 @@ def add_keyword_function_map(mapping):
     KEYWORD_FUNCTION_MAP.update(mapping)
 
 
-def substitute_keywords_given_user_and_course(string, user=None, course=None):
+def substitute_keywords(string, user=None, course=None):
     """
     Replaces all %%-encoded words using KEYWORD_FUNCTION_MAP mapping functions
 
@@ -79,4 +79,4 @@ def substitute_keywords_with_data(string, user_id=None, course_id=None):
     user = User.objects.get(id=user_id)
     course = modulestore().get_course(course_id, depth=0)
 
-    return substitute_keywords_given_user_and_course(string, user, course)
+    return substitute_keywords(string, user, course)
