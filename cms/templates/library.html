@@ -26,27 +26,12 @@ templates = ["basic-modal", "modal-button", "edit-xblock-modal",
 <link rel="stylesheet" type="text/css" href="${static.url('js/vendor/timepicker/jquery.timepicker.css')}" />
 </%block>
 
-<%block name="jsextra">
-<script type='text/javascript'>
-    require(["domReady!", "jquery", "js/models/xblock_info", "js/views/pages/container",
-        "js/collections/component_template", "xmodule", "coffee/src/main", "xblock/cms.runtime.v1"],
-            function(doc, $, XBlockInfo, ContainerPage, ComponentTemplates, xmoduleLoader) {
-                var templates = new ComponentTemplates(${component_templates | n}, {parse: true});
-                var mainXBlockInfo = new XBlockInfo(${json.dumps(xblock_info) | n}, {parse: true});
-
-                xmoduleLoader.done(function () {
-                    var view = new ContainerPage({
-                        el: $('#content'),
-                        model: mainXBlockInfo,
-                        action: "${action}",
-                        templates: templates,
-                        isUnitPage: false
-                    });
-                    view.render();
-                });
-            });
-</script>
-
+<%block name="requirejs">
+    require(["js/factories/container"], function(ContainerFactory) {
+        ContainerFactory(
+            ${component_templates | n}, ${json.dumps(xblock_info) | n}, "${action}", false
+        );
+    });
 </%block>
 
 <%block name="content">
