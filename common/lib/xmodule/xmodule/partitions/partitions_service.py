@@ -21,8 +21,8 @@ class PartitionService(object):
         """
         raise NotImplementedError('Subclasses must implement course_partition')
 
-    def __init__(self, user_tags_service, course_id, track_function):
-        self._user_tags_service = user_tags_service
+    def __init__(self, runtime, course_id, track_function):
+        self.runtime = runtime
         self._course_id = course_id
         self._track_function = track_function
 
@@ -60,8 +60,7 @@ class PartitionService(object):
 
     def _get_user_partition(self, user_partition_id):
         """
-        Look for a user partition with a matching id in
-        in the course's partitions.
+        Look for a user partition with a matching id in the course's partitions.
 
         Returns:
             A UserPartition, or None if not found.
@@ -72,65 +71,13 @@ class PartitionService(object):
 
         return None
 
-    def _key_for_partition(self, user_partition):
-        """
-        Returns the key to use to look up and save the user's group for a particular
-        condition.  Always use this function rather than constructing the key directly.
-        """
-        return 'xblock.partition_service.partition_{0}'.format(user_partition.id)
-
     def _get_group(self, user_partition):
         """
-        Return the group of the current user in user_partition.  If they don't already have
-        one assigned, pick one and save it.  Uses the runtime's user_service service to look up
-        and persist the info.
+        Returns the group from the specified user position to which the user is assigned.
+        If the user has not yet been assigned, a group will be chosen for them based upon
+        the partition's scheme.
         """
-        key = self._key_for_partition(user_partition)
-        scope = self._user_tags_service.COURSE_SCOPE
-
-        # If a valid group id has been saved already, return it
-        group_id = self._user_tags_service.get_tag(scope, key)
-        if group_id is not None:
-            group = user_partition.get_group(int(group_id))
-            if group:
-                return group
-
-        # Choose a group for the user, and if this is not a dynamic scheme then persist the choice.
-        group = user_partition.scheme.get_group_for_user(user_partition)
-        if not user_partition.scheme.IS_DYNAMIC:
-            self._persist_user_group(user_partition, group)
-
-        return group
-
-    def _persist_user_group(self, user_partition, group):
-        """
-        Persists the specified group for the current user.
-        """
-        # TODO: what's the atomicity of the get above and the save here?  If it's not in a
-        # single transaction, we could get a situation where the user sees one state in one
-        # thread, but then that decision gets overwritten--low probability, but still bad.
-
-        # (If it is truly atomic, we should be fine--if one process is in the
-        # process of finding no group and making one, the other should block till it
-        # appears.  HOWEVER, if we allow reads by the second one while the first
-        # process runs the transaction, we have a problem again: could read empty,
-        # have the first transaction finish, and pick a different group in a
-        # different process.)
-        key = self._key_for_partition(user_partition)
-        scope = self._user_tags_service.COURSE_SCOPE
-        self._user_tags_service.set_tag(scope, key, group.id)
-
-        # emit event for analytics
-        # FYI - context is always user ID that is logged in, NOT the user id that is
-        # being operated on. If instructor can move user explicitly, then we should
-        # put in event_info the user id that is being operated on.
-        event_info = {
-            'group_id': group.id,
-            'group_name': group.name,
-            'partition_id': user_partition.id,
-            'partition_name': user_partition.name
-        }
-        # TODO: Use the XBlock publish api instead
-        self._track_function('xmodule.partitions.assigned_user_to_partition', event_info)
-
-        return group.id
+        user = self.runtime.get_real_user(self.runtime.anonymous_student_id)
+        return user_partition.scheme.get_group_for_user(
+            self.runtime.course_id, user, user_partition, track_function=self._track_function
+        )

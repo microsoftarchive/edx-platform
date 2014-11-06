@@ -45,12 +45,12 @@ class InterceptErrorsTest(TestCase):
     def test_ignores_expected_errors(self):
         intercepted_function(raise_error=ValueError)
 
-    @mock.patch('user_api.helpers.LOGGER')
+    @mock.patch('openedx.core.djangoapps.user_api.helpers.LOGGER')
     def test_logs_errors(self, mock_logger):
         expected_log_msg = (
             u"An unexpected error occurred when calling 'intercepted_function' "
             u"with arguments '()' and "
-            u"keyword arguments '{'raise_error': <class 'user_api.tests.test_helpers.FakeInputException'>}': "
+            u"keyword arguments '{'raise_error': <class 'openedx.core.djangoapps.user_api.tests.test_helpers.FakeInputException'>}': "
             u"FakeInputException()"
         )
 

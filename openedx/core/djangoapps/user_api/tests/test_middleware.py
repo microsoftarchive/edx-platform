@@ -30,7 +30,7 @@ class TagsMiddlewareTest(TestCase):
 
         self.response = Mock(spec=HttpResponse)
 
-        patcher = patch('user_api.middleware.tracker')
+        patcher = patch('openedx.core.djangoapps.user_api.middleware.tracker')
         self.tracker = patcher.start()
         self.addCleanup(patcher.stop)
 

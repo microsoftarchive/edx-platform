@@ -8,6 +8,13 @@ from stevedore.extension import ExtensionManager
 # pylint: disable=invalid-name, redefined-builtin
 
 
+class UserPartitionError(Exception):
+    """
+    An error was found regarding user partitions.
+    """
+    pass
+
+
 class Group(namedtuple("Group", "id name")):
     """
     An id and name for a group of students.  The id should be unique
@@ -95,8 +102,8 @@ class UserPartition(namedtuple("UserPartition", "id name description groups sche
         try:
             scheme = UserPartition._SCHEME_EXTENSIONS[name].plugin
         except KeyError:
-            raise TypeError("Unrecognized scheme {0}".format(name))
-        scheme.NAME = name
+            raise UserPartitionError("Unrecognized scheme {0}".format(name))
+        scheme.name = name
         return scheme
 
     def to_json(self):
@@ -110,7 +117,7 @@ class UserPartition(namedtuple("UserPartition", "id name description groups sche
         return {
             "id": self.id,
             "name": self.name,
-            "scheme": self.scheme.NAME,
+            "scheme": self.scheme.name,
             "description": self.description,
             "groups": [g.to_json() for g in self.groups],
             "version": UserPartition.VERSION

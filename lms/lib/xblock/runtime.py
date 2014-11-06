@@ -190,7 +190,7 @@ class LmsModuleSystem(LmsHandlerUrls, ModuleSystem):  # pylint: disable=abstract
         services = kwargs.setdefault('services', {})
         services['user_tags'] = UserTagsService(self)
         services['partitions'] = LmsPartitionService(
-            user_tags_service=services['user_tags'],
+            runtime=self,
             course_id=kwargs.get('course_id', None),
             track_function=kwargs.get('track_function', None),
         )

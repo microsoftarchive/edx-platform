@@ -7,8 +7,9 @@ from collections import defaultdict
 from unittest import TestCase
 from mock import Mock
 
-from xmodule.partitions.partitions import Group, UserPartition
+from xmodule.partitions.partitions import Group, UserPartition, UserPartitionError
 from xmodule.partitions.partitions_service import PartitionService
+from xmodule.tests import get_test_system
 
 
 class TestGroup(TestCase):
@@ -89,10 +90,10 @@ class MockUserPartitionScheme(object):
         super(MockUserPartitionScheme, self).__init__(**kwargs)
         self.current_group = current_group
 
-    NAME = "mock"
+    name = "mock"
     IS_DYNAMIC = True
 
-    def get_group_for_user(self, user_partition):    # pylint: disable=unused-argument
+    def get_group_for_user(self, runtime, user, user_partition, track_function=None):  # pylint: disable=unused-argument
         """
         Returns the group to which the current user should be assigned.
         """
@@ -169,7 +170,7 @@ class TestUserPartition(TestCase):
             "version": 1,
         }
         user_partition = UserPartition.from_json(jsonified)
-        self.assertEqual(user_partition.scheme.NAME, "random")    # pylint: disable=no-member
+        self.assertEqual(user_partition.scheme.name, "random")    # pylint: disable=no-member
 
     def test_from_json_broken(self):
         # Missing field
@@ -203,7 +204,7 @@ class TestUserPartition(TestCase):
             "version": UserPartition.VERSION,
             "scheme": "no_such_scheme",
         }
-        with self.assertRaisesRegexp(TypeError, "Unrecognized scheme"):
+        with self.assertRaisesRegexp(UserPartitionError, "Unrecognized scheme"):
             UserPartition.from_json(jsonified)
 
         # Wrong version (it's over 9000!)
@@ -217,7 +218,7 @@ class TestUserPartition(TestCase):
             "scheme": self.MOCK_SCHEME,
         }
         with self.assertRaisesRegexp(TypeError, "has unexpected version"):
-            user_partition = UserPartition.from_json(jsonified)
+            UserPartition.from_json(jsonified)
 
         # Has extra key - should not be a problem
         jsonified = {
@@ -246,28 +247,25 @@ class StaticPartitionService(PartitionService):
         return self._partitions
 
 
-class MemoryUserTagsService(object):
+class MemoryUserService(object):
     """
-    An implementation of a user_tags XBlock service that
-    uses an in-memory dictionary for storage
+    An implementation of a user service that uses an in-memory dictionary for storage
     """
     COURSE_SCOPE = 'course'
 
     def __init__(self):
         self._tags = defaultdict(dict)
 
-    def get_tag(self, scope, key):
+    def get_course_tag(self, __, course_id, key):
         """Sets the value of ``key`` to ``value``"""
-        print 'GETTING', scope, key, self._tags
-        return self._tags[scope].get(key)
+        return self._tags[course_id].get(key)
 
-    def set_tag(self, scope, key, value):
+    def set_course_tag(self, __, course_id, key, value):
         """Gets the value of ``key``"""
-        self._tags[scope][key] = value
-        print 'SET', scope, key, value, self._tags
+        self._tags[course_id][key] = value
 
 
-class TestPartitionsService(TestCase):
+class TestPartitionService(TestCase):
     """
     Test getting a user's group out of a partition
     """
@@ -276,7 +274,6 @@ class TestPartitionsService(TestCase):
         groups = [Group(0, 'Group 1'), Group(1, 'Group 2')]
         self.partition_id = 0
 
-        self.user_tags_service = MemoryUserTagsService()
         user_partition = UserPartition(self.partition_id, 'Test Partition', 'for testing purposes', groups)
 
         self.mock_partition_id = 1
@@ -288,79 +285,26 @@ class TestPartitionsService(TestCase):
             MockUserPartitionScheme()
         )
 
-        self.partitions_service = StaticPartitionService(
+        self.partition_service = StaticPartitionService(
             [user_partition, self.mock_partition],
-            user_tags_service=self.user_tags_service,
+            runtime=get_test_system(),
             course_id=Mock(),
             track_function=Mock()
         )
 
+        # Install MemoryUserService to persist choices
+        UserPartition.get_scheme("random").user_tags_service = MemoryUserService()
+
     def test_get_user_group_id_for_partition(self):
-        # get a group assigned to the user
-        group1_id = self.partitions_service.get_user_group_id_for_partition(self.partition_id)
-
-        # make sure we get the same group back out every time
-        for __ in range(0, 10):
-            group2_id = self.partitions_service.get_user_group_id_for_partition(self.partition_id)
-            self.assertEqual(group1_id, group2_id)
-
-        # test that we error if given an invalid partition id
-        with self.assertRaises(ValueError):
-            self.partitions_service.get_user_group_id_for_partition(3)
-
-    def test_get_dynamic_user_group_id_for_partition(self):
         # assign the first group to be returned
         groups = self.mock_partition.groups    # pylint: disable=no-member
         self.mock_partition.scheme.current_group = groups[0]    # pylint: disable=no-member
 
         # get a group assigned to the user
-        group1_id = self.partitions_service.get_user_group_id_for_partition(self.mock_partition_id)
+        group1_id = self.partition_service.get_user_group_id_for_partition(self.mock_partition_id)
         self.assertEqual(group1_id, groups[0].id)
 
         # switch to the second group and verify that it is returned for the user
         self.mock_partition.scheme.current_group = groups[1]    # pylint: disable=no-member
-        group2_id = self.partitions_service.get_user_group_id_for_partition(self.mock_partition_id)
+        group2_id = self.partition_service.get_user_group_id_for_partition(self.mock_partition_id)
         self.assertEqual(group2_id, groups[1].id)
-
-    def test_user_in_deleted_group(self):
-        # get a group assigned to the user - should be group 0 or 1
-        old_group_id = self.partitions_service.get_user_group_id_for_partition(self.partition_id)
-        self.assertIn(old_group_id, [0, 1])
-
-        # Change the group definitions! No more group 0 or 1
-        groups = [Group(3, 'Group 3'), Group(4, 'Group 4')]
-        user_partition = UserPartition(self.partition_id, 'Test Partition', 'for testing purposes', groups)
-        self.partitions_service = StaticPartitionService(
-            [user_partition],
-            user_tags_service=self.user_tags_service,
-            course_id=Mock(),
-            track_function=Mock()
-        )
-
-        # Now, get a new group using the same call - should be 3 or 4
-        new_group_id = self.partitions_service.get_user_group_id_for_partition(self.partition_id)
-        self.assertIn(new_group_id, [3, 4])
-
-        # We should get the same group over multiple calls
-        new_group_2 = self.partitions_service.get_user_group_id_for_partition(self.partition_id)
-        self.assertEqual(new_group_id, new_group_2)
-
-    def test_change_group_name(self):
-        # Changing the name of the group shouldn't affect anything
-        # get a group assigned to the user - should be group 0 or 1
-        old_group_id = self.partitions_service.get_user_group_id_for_partition(self.partition_id)
-        self.assertIn(old_group_id, [0, 1])
-
-        # Change the group names
-        groups = [Group(0, 'Group 0'), Group(1, 'Group 1')]
-        user_partition = UserPartition(self.partition_id, 'Test Partition', 'for testing purposes', groups)
-        self.partitions_service = StaticPartitionService(
-            [user_partition],
-            user_tags_service=self.user_tags_service,
-            course_id=Mock(),
-            track_function=Mock()
-        )
-
-        # Now, get a new group using the same call
-        new_group_id = self.partitions_service.get_user_group_id_for_partition(self.partition_id)
-        self.assertEqual(old_group_id, new_group_id)
