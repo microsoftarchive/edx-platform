@@ -2,21 +2,19 @@
 Test the partitions and partitions service
 
 """
-
 from collections import defaultdict
-from unittest import TestCase
+from mock import patch
 
 from openedx.core.djangoapps.user_api.partitions import RandomUserPartitionScheme, UserPartitionError
 from student.tests.factories import UserFactory
 from xmodule.partitions.partitions import Group, UserPartition
+from xmodule.tests.test_partitions import PartitionTestCase
 
 
 class MemoryUserService(object):
     """
     An implementation of a user service that uses an in-memory dictionary for storage
     """
-    COURSE_SCOPE = 'course'
-
     def __init__(self):
         self._tags = defaultdict(dict)
 
@@ -29,7 +27,7 @@ class MemoryUserService(object):
         self._tags[course_id][key] = value
 
 
-class TestRandomUserPartitionScheme(TestCase):
+class TestRandomUserPartitionScheme(PartitionTestCase):
     """
     Test getting a user's group out of a partition
     """
@@ -37,19 +35,19 @@ class TestRandomUserPartitionScheme(TestCase):
     MOCK_COURSE_ID = "mock-course-id"
 
     def setUp(self):
-        groups = [Group(0, 'Group 1'), Group(1, 'Group 2')]
-        self.partition_id = 0
-
-        RandomUserPartitionScheme.user_tags_service = MemoryUserService()
-        self.user_partition = UserPartition(
-            self.partition_id,
-            'Test Partition',
-            'for testing purposes',
-            groups,
-            scheme=RandomUserPartitionScheme
+        super(TestRandomUserPartitionScheme, self).setUp()
+        # Patch in a memory-based user service instead of using the persistent version
+        self.user_service = MemoryUserService()
+        self.user_service_patcher = patch(
+            'openedx.core.djangoapps.user_api.partitions.user_service', self.user_service
         )
+        self.user_service_patcher.start()
 
+        # Create a test user
         self.user = UserFactory.create()
+
+    def tearDown(self):
+        self.user_service_patcher.stop()
 
     def test_get_group_for_user(self):
         # get a group assigned to the user
@@ -62,7 +60,7 @@ class TestRandomUserPartitionScheme(TestCase):
 
     def test_empty_partition(self):
         empty_partition = UserPartition(
-            self.partition_id,
+            self.TEST_ID,
             'Test Partition',
             'for testing purposes',
             [],
@@ -79,7 +77,7 @@ class TestRandomUserPartitionScheme(TestCase):
 
         # Change the group definitions! No more group 0 or 1
         groups = [Group(3, 'Group 3'), Group(4, 'Group 4')]
-        user_partition = UserPartition(self.partition_id, 'Test Partition', 'for testing purposes', groups)
+        user_partition = UserPartition(self.TEST_ID, 'Test Partition', 'for testing purposes', groups)
 
         # Now, get a new group using the same call - should be 3 or 4
         new_group = RandomUserPartitionScheme.get_group_for_user(self.MOCK_COURSE_ID, self.user, user_partition)
@@ -98,7 +96,7 @@ class TestRandomUserPartitionScheme(TestCase):
         # Change the group names
         groups = [Group(0, 'Group 0'), Group(1, 'Group 1')]
         user_partition = UserPartition(
-            self.partition_id,
+            self.TEST_ID,
             'Test Partition',
             'for testing purposes',
             groups,

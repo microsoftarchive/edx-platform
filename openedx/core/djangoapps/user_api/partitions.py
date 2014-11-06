@@ -13,7 +13,6 @@ class RandomUserPartitionScheme(object):
     This scheme randomly assigns users into the partition's groups.
     """
     RANDOM = random.Random()
-    user_tags_service = user_service
 
     @classmethod
     def get_group_for_user(cls, course_id, user, user_partition, track_function=None):
@@ -22,7 +21,7 @@ class RandomUserPartitionScheme(object):
         If the user has not yet been assigned, a group will be randomly chosen for them.
         """
         partition_key = cls._key_for_partition(user_partition)
-        group_id = cls.user_tags_service.get_course_tag(user, course_id, partition_key)
+        group_id = user_service.get_course_tag(user, course_id, partition_key)
         group = user_partition.get_group(int(group_id)) if not group_id is None else None
         if group is None:
             if not user_partition.groups:
@@ -35,21 +34,21 @@ class RandomUserPartitionScheme(object):
             group = cls.RANDOM.choice(user_partition.groups)
 
             # persist the value as a course tag
-            cls.user_tags_service.set_course_tag(user, course_id, partition_key, group.id)
+            user_service.set_course_tag(user, course_id, partition_key, group.id)
 
-            # emit event for analytics
-            # FYI - context is always user ID that is logged in, NOT the user id that is
-            # being operated on. If instructor can move user explicitly, then we should
-            # put in event_info the user id that is being operated on.
-            event_info = {
-                'group_id': group.id,
-                'group_name': group.name,
-                'partition_id': user_partition.id,
-                'partition_name': user_partition.name
-            }
-            # pylint: disable=fixme
-            # TODO: Use the XBlock publish api instead
             if track_function:
+                # emit event for analytics
+                # FYI - context is always user ID that is logged in, NOT the user id that is
+                # being operated on. If instructor can move user explicitly, then we should
+                # put in event_info the user id that is being operated on.
+                event_info = {
+                    'group_id': group.id,
+                    'group_name': group.name,
+                    'partition_id': user_partition.id,
+                    'partition_name': user_partition.name
+                }
+                # pylint: disable=fixme
+                # TODO: Use the XBlock publish api instead
                 track_function('xmodule.partitions.assigned_user_to_partition', event_info)
 
         return group

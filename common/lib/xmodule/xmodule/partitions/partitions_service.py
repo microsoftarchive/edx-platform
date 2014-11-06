@@ -21,9 +21,8 @@ class PartitionService(object):
         """
         raise NotImplementedError('Subclasses must implement course_partition')
 
-    def __init__(self, runtime, course_id, track_function):
+    def __init__(self, runtime, track_function):
         self.runtime = runtime
-        self._course_id = course_id
         self._track_function = track_function
 
     def get_user_group_id_for_partition(self, user_partition_id):
@@ -51,12 +50,11 @@ class PartitionService(object):
         if user_partition is None:
             raise ValueError(
                 "Configuration problem!  No user_partition with id {0} "
-                "in course {1}".format(user_partition_id, self._course_id)
+                "in course {1}".format(user_partition_id, self.runtime.course_id)
             )
 
         group = self._get_group(user_partition)
-
-        return group.id
+        return group.id if group else None
 
     def _get_user_partition(self, user_partition_id):
         """

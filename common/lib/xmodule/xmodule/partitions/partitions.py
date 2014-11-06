@@ -67,6 +67,10 @@ class Group(namedtuple("Group", "id name")):
         return Group(value["id"], value["name"])
 
 
+# The Stevedore extension point namespace for user partition scheme plugins.
+USER_PARTITION_SCHEME_NAMESPACE = 'openedx.user_partition_scheme'
+
+
 class UserPartition(namedtuple("UserPartition", "id name description groups scheme")):
     """
     A named way to partition users into groups, primarily intended for running
@@ -81,7 +85,7 @@ class UserPartition(namedtuple("UserPartition", "id name description groups sche
     VERSION = 2
 
     # The collection of user partition scheme extensions.
-    _SCHEME_EXTENSIONS = None
+    scheme_extensions = None
 
     # The default scheme to be used when upgrading version 1 partitions.
     VERSION_1_SCHEME = "random"
@@ -97,10 +101,12 @@ class UserPartition(namedtuple("UserPartition", "id name description groups sche
         """
         Returns the user partition scheme with the given name.
         """
-        if not UserPartition._SCHEME_EXTENSIONS:
-            UserPartition._SCHEME_EXTENSIONS = ExtensionManager(namespace='openedx.user_partition_scheme')
+        # Note: we're creating the extension manager lazily to ensure that the Python path
+        # has been correctly set up. Trying to create this statically will fail, unfortunately.
+        if not UserPartition.scheme_extensions:
+            UserPartition.scheme_extensions = ExtensionManager(namespace=USER_PARTITION_SCHEME_NAMESPACE)
         try:
-            scheme = UserPartition._SCHEME_EXTENSIONS[name].plugin
+            scheme = UserPartition.scheme_extensions[name].plugin
         except KeyError:
             raise UserPartitionError("Unrecognized scheme {0}".format(name))
         scheme.name = name
