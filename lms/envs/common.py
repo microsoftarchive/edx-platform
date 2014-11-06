@@ -137,7 +137,7 @@ FEATURES = {
     #   for each course via django-admin interface.
     # If False and ENABLE_INSTRUCTOR_EMAIL: Email will be turned on by default
     #   for all Mongo-backed courses.
-    'REQUIRE_COURSE_EMAIL_AUTH': False,
+    'REQUIRE_COURSE_EMAIL_AUTH': True,
 
     # Analytics experiments - shows instructor analytics tab in LMS instructor dashboard.
     # Enabling this feature depends on installation of a separate analytics server.
