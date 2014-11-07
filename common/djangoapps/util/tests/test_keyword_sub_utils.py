@@ -35,11 +35,11 @@ class KeywordSubTest(ModuleStoreTestCase):
     def get_keyword_function_map(self):
         """ Generates a mapping from keywords to functions for testing """
 
-        def user_fullname_sub(user, course): #pylint: disable=unused-argument
+        def user_fullname_sub(user, course):  # pylint: disable=unused-argument
             """ Returns the user's name """
             return user.profile.name
 
-        def course_display_name_sub(user, course): #pylint: disable=unused-argument
+        def course_display_name_sub(user, course):  # pylint: disable=unused-argument
             """ Returns the course name """
             return course.display_name
 

@@ -2,6 +2,8 @@
 Module for code that should run during LMS startup
 """
 
+# pylint: disable=unused-argument
+
 from django.conf import settings
 
 # Force settings to run so that the python path is modified
@@ -148,7 +150,7 @@ def enable_third_party_auth():
     auth_settings.apply_settings(settings.THIRD_PARTY_AUTH, settings)
 
 
-def get_keyword_function_map(): #pylint: disable=unused-argument
+def get_keyword_function_map():
     """
     Define the mapping of keywords and filtering functions
 

@@ -113,7 +113,6 @@ class TestInstructorDashboardEmailView(ModuleStoreTestCase):
     def test_send_mail_unauthorized(self):
         """ Test 'Send email' action returns an error if course is not authorized to send email. """
 
-        import ipdb; ipdb.set_trace()
         response = self.client.post(
             self.url, {
                 'action': 'Send email',
