@@ -14,7 +14,8 @@ define(["jquery", "underscore", "gettext", "js/views/pages/base_page", "js/views
             // takes XBlockInfo as a model
 
             options: {
-                collapsedClass: 'is-collapsed'
+                collapsedClass: 'is-collapsed',
+                canEdit: true // If not specified, assume user has permission to make changes
             },
 
             view: 'container_preview',
@@ -98,7 +99,11 @@ define(["jquery", "underscore", "gettext", "js/views/pages/base_page", "js/views
                         xblockView.notifyRuntime('page-shown', self);
 
                         // Render the add buttons
-                        self.renderAddXBlockComponents();
+                        if (self.options.canEdit) {
+                            self.renderAddXBlockComponents();
+                        } else {
+                            self.$el.find('.add-xblock-component').remove();
+                        }
 
                         // Refresh the views now that the xblock is visible
                         self.onXBlockRefresh(xblockView);
@@ -143,14 +148,18 @@ define(["jquery", "underscore", "gettext", "js/views/pages/base_page", "js/views
                     event.preventDefault();
                     self.editComponent(self.findXBlockElement(event.target));
                 });
-                element.find('.duplicate-button').click(function(event) {
-                    event.preventDefault();
-                    self.duplicateComponent(self.findXBlockElement(event.target));
-                });
-                element.find('.delete-button').click(function(event) {
-                    event.preventDefault();
-                    self.deleteComponent(self.findXBlockElement(event.target));
-                });
+                if (self.options.canEdit) {
+                    element.find('.duplicate-button').click(function(event) {
+                        event.preventDefault();
+                        self.duplicateComponent(self.findXBlockElement(event.target));
+                    });
+                    element.find('.delete-button').click(function(event) {
+                        event.preventDefault();
+                        self.deleteComponent(self.findXBlockElement(event.target));
+                    });
+                } else {
+                    element.find('.action-duplicate, .action-delete, .action-drag').remove();
+                }
             },
 
             editComponent: function(xblockElement) {
