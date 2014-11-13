@@ -99,6 +99,7 @@ class OLIAnalyticsBackend(BaseBackend):
                 headers=headers
             )
             response.raise_for_status()
+            log.info(response.text)
         except RequestException:
             log.warning('Unable to send event to OLI analytics service', exc_info=True)
 
