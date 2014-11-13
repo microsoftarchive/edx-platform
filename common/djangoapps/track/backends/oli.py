@@ -90,8 +90,10 @@ class OLIAnalyticsBackend(BaseBackend):
             'Authorization': self._get_authorization_header()
         }
 
-        request_payload = {'request': json.dumps({'payload': json.dumps(payload)})}
+        request_payload_string = json.dumps({'payload': json.dumps(payload)})
+        request_payload = {'request': request_payload_string}
         try:
+            log.info(request_payload_string)
             response = requests.put(
                 self.endpoint,
                 data=request_payload,
