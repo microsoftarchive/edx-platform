@@ -10,6 +10,8 @@ from requests.exceptions import RequestException
 
 from django.contrib.auth.models import User
 
+from opaque_keys.edx.keys import CourseKey
+from courseware.courses import get_course_by_id
 from student.models import anonymous_id_for_user
 from track.backends import BaseBackend
 
@@ -19,29 +21,9 @@ log = logging.getLogger(__name__)
 
 class OLIAnalyticsBackend(BaseBackend):
 
-    def __init__(self, **kwargs):
-        """
-        Connect to an OLI analytics service.
-
-        :Parameters:
-
-          - `endpoint`: endpoint to put events
-          - `timeout_seconds`: timeout in seconds
-
-        """
-
-        super(OLIAnalyticsBackend, self).__init__(**kwargs)
-
-        self.endpoint = kwargs.get('endpoint')
-        self.timeout_seconds = kwargs.get('timeout_seconds', 0.100)
-        self.secret = kwargs.get('secret')
-
 
     def send(self, event):
         """Forward the event to the OLI analytics server"""
-
-        if not self.endpoint or not self.secret:
-            return
 
         if event.get('event_type', '') != 'problem_check':
             return
@@ -55,6 +37,12 @@ class OLIAnalyticsBackend(BaseBackend):
 
         course_id = context.get('course_id')
         if not course_id:
+            return
+
+        course_key = CourseKey.from_string(course_id)
+        course = get_course_by_id(course_key)
+
+        if not course or not course.oli_analytics_service_url or not course.oli_analytics_service_secret:
             return
 
         user_id = context.get('user_id')
@@ -87,7 +75,7 @@ class OLIAnalyticsBackend(BaseBackend):
             'result': is_correct
         }
         headers = {
-            'Authorization': self._get_authorization_header()
+            'Authorization': self._get_authorization_header(course.oli_analytics_service_secret)
         }
 
         request_payload_string = json.dumps({'payload': json.dumps(payload)})
@@ -95,9 +83,9 @@ class OLIAnalyticsBackend(BaseBackend):
         try:
             log.info(request_payload_string)
             response = requests.put(
-                self.endpoint,
+                course.oli_analytics_service_url,
                 data=request_payload,
-                timeout=self.timeout_seconds,
+                timeout=course.oli_analytics_service_timeout,
                 headers=headers
             )
             response.raise_for_status()
@@ -108,5 +96,5 @@ class OLIAnalyticsBackend(BaseBackend):
     def _get_student_id(self, user):
         return anonymous_id_for_user(user, None)
 
-    def _get_authorization_header(self):
-        return self.secret
+    def _get_authorization_header(self, secret):
+        return secret
