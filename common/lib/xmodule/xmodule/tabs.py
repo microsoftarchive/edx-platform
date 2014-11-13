@@ -190,6 +190,7 @@ class CourseTab(object):  # pylint: disable=incomplete-protocol
             'pdf_textbooks': PDFTextbookTabs,
             'html_textbooks': HtmlTextbookTabs,
             'progress': ProgressTab,
+            'skills': SkillsTab,
             'static_tab': StaticTab,
             'peer_grading': PeerGradingTab,
             'staff_grading': StaffGradingTab,
@@ -334,6 +335,17 @@ class ProgressTab(EnrolledOrStaffTab):
     @classmethod
     def validate(cls, tab_dict, raise_error=True):
         return super(ProgressTab, cls).validate(tab_dict, raise_error) and need_name(tab_dict, raise_error)
+
+
+class SkillsTab(ProgressTab):
+    type = 'skills'
+
+    def __init__(self, tab_dict=None):
+        super(ProgressTab, self).__init__(
+            name=tab_dict['name'] if tab_dict else _('Skills'),
+            tab_id=self.type,
+            link_func=link_reverse_func(self.type),
+        )
 
 
 class WikiTab(HideableTab):
@@ -745,6 +757,7 @@ class CourseTabList(List):
             discussion_tab,
             WikiTab(),
             ProgressTab(),
+            SkillsTab()
         ])
 
     @staticmethod

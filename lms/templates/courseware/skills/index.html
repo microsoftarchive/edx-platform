@@ -1,0 +1,56 @@
+<%! from django.utils.translation import ugettext as _ %>
+<%inherit file="/main.html" />
+<%namespace name='static' file='/static_content.html'/>
+
+
+<%block name="headextra">
+<%static:css group='style-course-vendor'/>
+<%static:css group='style-course'/>
+<style>
+th, td {
+  padding: 10px;
+}
+
+.cell-right{
+  text-align: right;
+}
+</style>
+</%block>
+
+<%block name="nav_skip">#course-info-progress</%block>
+
+<%include file="/dashboard/_dashboard_prompt_midcourse_reverify.html" />
+
+<%include file="/courseware/course_navigation.html" args="active_page='skills'" />
+
+
+<div class="container">
+  <div class="profile-wrapper">
+    <div class="course-info" id="course-info-skills">
+      <header>
+        <h1>Skills progress</h1>
+      </header>
+      <table class="table table-bordered'">
+        <thead>
+          <tr>
+            <th width="10%" class="cell-right">Mastery</th>
+            <th>Skill</th>
+          </tr>
+        </thead>
+        <tbody>
+          % for skill in skills:
+          <tr>
+            <td class="cell-right">${skill.value}</td>
+            <td>${skill.description}</td>
+          </tr>
+          % endfor
+        </tbody>
+      </table>
+      <div class="chapters">
+        <!-- <section> -->
+        <!--   <h2>Foo</h2> -->
+        <!-- </section> -->
+      </div>
+    </div>
+  </div>
+</div>
