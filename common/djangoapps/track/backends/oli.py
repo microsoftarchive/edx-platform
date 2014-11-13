@@ -21,6 +21,10 @@ log = logging.getLogger(__name__)
 
 class OLIAnalyticsBackend(BaseBackend):
 
+    def __init__(self, **kwargs):
+        super(OLIAnalyticsBackend, self).__init__(**kwargs)
+
+        self.path = kwargs.get('path', '')
 
     def send(self, event):
         """Forward the event to the OLI analytics server"""
@@ -80,10 +84,12 @@ class OLIAnalyticsBackend(BaseBackend):
 
         request_payload_string = json.dumps({'payload': json.dumps(payload)})
         request_payload = {'request': request_payload_string}
+        endpoint = course.oli_analytics_service_url + self.path
         try:
+            log.info(endpoint)
             log.info(request_payload_string)
             response = requests.put(
-                course.oli_analytics_service_url,
+                endpoint,
                 data=request_payload,
                 timeout=course.oli_analytics_service_timeout,
                 headers=headers
