@@ -1,17 +1,30 @@
 """
 Views for user API
 """
+from courseware.model_data import FieldDataCache
+from courseware.module_render import get_module_for_descriptor
+from util.json_request import JsonResponse
+
+from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
 
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, views
 from rest_framework.authentication import OAuth2Authentication, SessionAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 
+
 from courseware import access
+from courseware.views import get_current_child
+
+from opaque_keys.edx.keys import CourseKey
+
 from student.models import CourseEnrollment, User
 from student.roles import CourseBetaTesterRole
 from student import auth
+
+from xmodule.modulestore.django import modulestore
+
 
 from .serializers import CourseEnrollmentSerializer, UserSerializer
 
@@ -61,6 +74,65 @@ class UserDetail(generics.RetrieveAPIView):
     )
     serializer_class = UserSerializer
     lookup_field = 'username'
+
+class UserCourseStatus(views.APIView):
+
+    def _last_visited_module_id(self, request, course_key, course):
+        field_data_cache = FieldDataCache.cache_for_descriptor_descendents(
+            course_key, request.user, course, depth=2)
+
+        course_module = get_module_for_descriptor(request.user, request, course, field_data_cache, course_key)
+        result = course_module
+
+        chapter = None
+        if course_module:
+            chapter = get_current_child(course_module, min_depth=2)
+        
+        if chapter:
+            result = chapter
+
+
+    def get(self, request, course_id, **keywords):
+        course_key = None
+        if course_id:
+            course_key = CourseKey.from_string(course_id)
+            course = modulestore().get_course(course_key, depth=None)
+        else:
+            return HttpResponseBadRequest("Required argument 'course_id' not specified")
+
+        if not course_key:
+            return HttpResponseBadRequest("Course key could not be extracted for course_id")
+
+        current_module = self._last_visited_module_id(request, course_key, course)
+        if current_module:
+            return JsonResponse({"last_visited_module_id" : unicode(current_module.location)})
+        else:
+            return JsonResponse({})
+
+    def _update_last_visited_module_id(self, request, course_key, course, module_id):
+        field_data_cache = FieldDataCache.cache_for_descriptor_descendents(
+            course_key, request.user, course, depth=2)
+
+        course_module = get_module_for_descriptor(request.user, request, course, field_data_cache, course_key)
+
+    def post(self, request, course_id, username):
+
+        course_key = None
+        if course_id:
+            course_key = CourseKey.from_string(course_id)
+            course = modulestore().get_course(course_key, depth=None)
+        else:
+            return HttpResponseBadRequest("Required argument 'course_id' not specified")
+
+        if not course_key:
+            return HttpResponseBadRequest("Course key could not be extracted for course_id")
+
+        module_id = request.POST.get("last_visited_module_id")
+        if module_id:
+            self._update_last_visited_module_id(request, course_key, course, module_id)
+
+
+        return JsonResponse({"result" : "okay", "method" : "post"})
 
 
 class UserCourseEnrollmentsList(generics.ListAPIView):

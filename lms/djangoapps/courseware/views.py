@@ -128,6 +128,9 @@ def render_accordion(request, course, chapter, section, field_data_cache):
     return render_to_string('courseware/accordion.html', context)
 
 
+# def save_positions_from_leaf_module(xmodule):
+#     while xmodule.get
+
 def get_current_child(xmodule, min_depth=None):
     """
     Get the xmodule.position's display item of an xmodule that has a position and
@@ -210,6 +213,7 @@ def save_child_position(seq_module, child_name):
     """
     child_name: url_name of the child
     """
+    print "instance where child %s module %s" % (child_name, seq_module)
     for position, c in enumerate(seq_module.get_display_items(), start=1):
         if c.location.name == child_name:
             # Only save if position changed
@@ -449,6 +453,7 @@ def _index_bulk_op(request, user, course_key, chapter, section, position):
             # section is none, so display a message
             studio_url = get_studio_url(course, 'course')
             prev_section = get_current_child(chapter_module)
+            print "prev section is %s" % (unicode(prev_section.location))
             if prev_section is None:
                 # Something went wrong -- perhaps this chapter has no sections visible to the user.
                 # Clearing out the last-visited state and showing "first-time" view by redirecting
