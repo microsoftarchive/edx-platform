@@ -34,12 +34,13 @@ class OLIAnalyticsBackend(BaseBackend):
 
         self.endpoint = kwargs.get('endpoint')
         self.timeout_seconds = kwargs.get('timeout_seconds', 0.100)
+        self.secret = kwargs.get('secret')
 
 
     def send(self, event):
         """Forward the event to the OLI analytics server"""
 
-        if not self.endpoint:
+        if not self.endpoint or not self.secret:
             return
 
         if event.get('event_type', '') != 'problem_check':
@@ -85,13 +86,24 @@ class OLIAnalyticsBackend(BaseBackend):
             'student_id': self._get_student_id(user),
             'result': is_correct
         }
+        headers = {
+            'Authorization': self._get_authorization_header()
+        }
 
         request_payload = {'request': json.dumps({'payload': json.dumps(payload)})}
         try:
-            response = requests.put(self.endpoint, data=request_payload, timeout=self.timeout_seconds)
+            response = requests.put(
+                self.endpoint,
+                data=request_payload,
+                timeout=self.timeout_seconds,
+                headers=headers
+            )
             response.raise_for_status()
         except RequestException:
             log.warning('Unable to send event to OLI analytics service', exc_info=True)
 
     def _get_student_id(self, user):
         return anonymous_id_for_user(user, None)
+
+    def _get_authorization_header(self):
+        return self.secret
