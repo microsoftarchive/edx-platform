@@ -450,6 +450,7 @@ class XModuleMixin(XBlockMixin):
         # pylint: disable=attribute-defined-outside-init
         self.xmodule_runtime = xmodule_runtime
         self._field_data = field_data
+        self._field_data_cache.clear()
 
 
 class ProxyAttribute(object):

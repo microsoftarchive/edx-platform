@@ -127,9 +127,20 @@ def render_accordion(request, course, chapter, section, field_data_cache):
     ] + template_imports.items())
     return render_to_string('courseware/accordion.html', context)
 
+def save_child_position_recursively_from_leaf(user, request, field_data_cache, xmodule):
+    current_module = xmodule
 
-# def save_positions_from_leaf_module(xmodule):
-#     while xmodule.get
+    while current_module:
+        parent_location = modulestore().get_parent_location(current_module.location)
+        parent = None
+        if parent_location:
+            parent_descriptor = modulestore().get_item(parent_location)
+            parent = get_module_for_descriptor(user, request, parent_descriptor, field_data_cache, current_module.location.course_key)
+
+        if parent:
+            save_child_position(parent, current_module.location.name)
+
+        current_module = parent
 
 def get_current_child(xmodule, min_depth=None):
     """
@@ -213,7 +224,6 @@ def save_child_position(seq_module, child_name):
     """
     child_name: url_name of the child
     """
-    print "instance where child %s module %s" % (child_name, seq_module)
     for position, c in enumerate(seq_module.get_display_items(), start=1):
         if c.location.name == child_name:
             # Only save if position changed

@@ -1,6 +1,7 @@
 """
 Views for user API
 """
+from courseware.courses import get_course_with_access
 from courseware.model_data import FieldDataCache
 from courseware.module_render import get_module_for_descriptor
 from util.json_request import JsonResponse
@@ -15,9 +16,9 @@ from rest_framework.permissions import IsAuthenticated
 
 
 from courseware import access
-from courseware.views import get_current_child
+from courseware.views import get_current_child, save_child_position_recursively_from_leaf
 
-from opaque_keys.edx.keys import CourseKey
+from opaque_keys.edx.keys import CourseKey, UsageKey
 
 from student.models import CourseEnrollment, User
 from student.roles import CourseBetaTesterRole
@@ -28,6 +29,8 @@ from xmodule.modulestore.django import modulestore
 
 from .serializers import CourseEnrollmentSerializer, UserSerializer
 
+
+STANDARD_HIERARCHY_DEPTH = 2
 
 class IsUser(permissions.BasePermission):
     """
@@ -75,6 +78,8 @@ class UserDetail(generics.RetrieveAPIView):
     serializer_class = UserSerializer
     lookup_field = 'username'
 
+@authentication_classes((OAuth2Authentication, SessionAuthentication))
+@permission_classes((IsAuthenticated,))
 class UserCourseStatus(views.APIView):
 
     def _last_visited_module_id(self, request, course_key, course):
@@ -82,14 +87,20 @@ class UserCourseStatus(views.APIView):
             course_key, request.user, course, depth=2)
 
         course_module = get_module_for_descriptor(request.user, request, course, field_data_cache, course_key)
-        result = course_module
+        current = course_module
 
-        chapter = None
-        if course_module:
-            chapter = get_current_child(course_module, min_depth=2)
-        
-        if chapter:
-            result = chapter
+        for i in range(0, STANDARD_HIERARCHY_DEPTH):
+            child = None
+
+            if current:
+                child = get_current_child(current, min_depth=STANDARD_HIERARCHY_DEPTH - i)
+
+            if next:
+                current = child
+            else:
+                break
+
+        return current
 
 
     def get(self, request, course_id, **keywords):
@@ -109,11 +120,12 @@ class UserCourseStatus(views.APIView):
         else:
             return JsonResponse({})
 
-    def _update_last_visited_module_id(self, request, course_key, course, module_id):
+    def _update_last_visited_module_id(self, request, course_key, course, module_key):
         field_data_cache = FieldDataCache.cache_for_descriptor_descendents(
             course_key, request.user, course, depth=2)
-
-        course_module = get_module_for_descriptor(request.user, request, course, field_data_cache, course_key)
+        module = modulestore().get_item(module_key)
+        course_module = get_module_for_descriptor(request.user, request, module, field_data_cache, course_key)
+        save_child_position_recursively_from_leaf(request.user, request, field_data_cache, course_module)
 
     def post(self, request, course_id, username):
 
@@ -128,11 +140,12 @@ class UserCourseStatus(views.APIView):
             return HttpResponseBadRequest("Course key could not be extracted for course_id")
 
         module_id = request.POST.get("last_visited_module_id")
+
         if module_id:
-            self._update_last_visited_module_id(request, course_key, course, module_id)
+            module_key = UsageKey.from_string(module_id)
+            self._update_last_visited_module_id(request, course_key, course, module_key)
 
-
-        return JsonResponse({"result" : "okay", "method" : "post"})
+        return JsonResponse({"result" : "success"})
 
 
 class UserCourseEnrollmentsList(generics.ListAPIView):
