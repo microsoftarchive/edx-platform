@@ -15,13 +15,17 @@ from django.utils.translation import ugettext as _
 from django.views.decorators.http import require_http_methods
 
 from opaque_keys.edx.keys import CourseKey
+from edxval.api import create_video
 
 from xmodule.modulestore.django import modulestore
 from xmodule.assetstore import AssetMetadata
 from util.json_request import expect_json, JsonResponse
-from .access import has_course_access
 
-__all__ = ['videos_handler']
+from contentstore.utils import reverse_course_url
+from .course import get_course_and_check_access
+
+
+__all__ = ['videos_handler', 'videos_detail_handler']
 
 
 # String constant used in asset keys to identify video assets.
@@ -61,13 +65,11 @@ def videos_handler(request, course_key_string):
 
     # For now, assume all studio users that have access to the course can upload videos.
     # In the future, we plan to add a new org-level role for video uploaders.
-    if not has_course_access(request.user, course_key):
-        raise PermissionDenied()
+    course = get_course_and_check_access(course_key, request.user)
 
     # Check whether the video upload feature is configured for this course
-    course = modulestore().get_course(course_key)
     if not course.video_pipeline_configured:
-        return JsonResponse({"error": _("Course not configured properly for video upload.")}, status=400)
+        return JsonResponse({"error": _("Course not configured properly for video upload.")}, status=404)
 
     if 'application/json' in request.META.get('HTTP_ACCEPT', 'application/json'):
         if request.method == 'GET':
@@ -75,7 +77,22 @@ def videos_handler(request, course_key_string):
         else:
             return videos_post(course, request)
 
-    return HttpResponseNotFound()
+    return HttpResponse(status=406)
+
+
+@expect_json
+@login_required
+@require_http_methods(("POST"))
+def videos_detail_handler(request, course_key_string, edx_video_id):
+    """
+    JSON API endpoint for manipulating a video via its edx_video_id.
+
+    POST
+        json: update video based on provided information
+    """
+    course_key = CourseKey.from_string(course_key_string)
+    course = get_course_and_check_access(course_key, request.user)
+    return HttpResponse(status=406)
 
 
 def videos_index_json(course):
@@ -120,37 +137,40 @@ def videos_post(course, request):
     }
     """
     bucket = storage_service_bucket()
-    institute_name = course.video_upload_pipeline['institute_name']
+    course_video_upload_token = course.video_upload_pipeline['course_video_upload_token']
 
     video_files = request.json['files']
     for video_file in video_files:
         file_name = video_file['file_name']
 
         # 1. generate edx_video_id
-        edx_video_id = generate_edx_video_id(institute_name)
+        edx_video_id = generate_edx_video_id()
 
         # 2. generate key for uploading file
         key = storage_service_key(
             bucket,
-            folder_name=institute_name,
+            folder_name=settings.VIDEO_UPLOAD_PIPELINE['FOLDER'],
             file_name=edx_video_id,
         )
 
         # 3. set meta data for the file
+        video_handler_url = reverse_course_url(
+            'videos_detail_handler',
+            course.id,
+            kwargs={'edx_video_id': edx_video_id}
+        )
         for metadata_name, value in [
-            ('institute', course.video_upload_pipeline['institute_name']),
-            ('institute_token', course.video_upload_pipeline['access_token']),
+            ('course_video_upload_token', course_video_upload_token),
             ('user_supplied_file_name', file_name),
-            ('course_org', course.org),
-            ('course_number', course.number),
-            ('course_run', course.location.run),
+            ('video_handler_url', video_handler_url)
+
         ]:
             key.set_metadata(metadata_name, value)
 
         # 4. generate URL
         video_file['upload-url'] = key.generate_url(KEY_EXPIRATION_IN_SECONDS, 'PUT')
 
-        # 5. persist edx_video_id
+        # 5. persist edx_video_id Status
         video_meta_data = AssetMetadata(
             course.id.make_asset_key(VIDEO_ASSET_TYPE, edx_video_id),
             fields={
@@ -161,14 +181,21 @@ def videos_post(course, request):
         )
         modulestore().save_asset_metadata(video_meta_data, request.user.id)
 
+        # 6. persist edx_video_id in VAL
+        create_video({
+            'edx_video_id': edx_video_id,
+            'client_video_id': file_name,
+            'encoded_videos': [],
+        })
+
     return JsonResponse({'files': video_files}, status=200)
 
 
-def generate_edx_video_id(institute_name):
+def generate_edx_video_id():
     """
     Generates and returns an edx-video-id to uniquely identify a new logical video.
     """
-    return "vid-v1:{}-{}".format(institute_name, uuid4())
+    return "edx-vid-v1:{}".format(uuid4())
 
 
 def storage_service_bucket():

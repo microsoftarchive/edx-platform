@@ -11,6 +11,8 @@ from mock import patch
 from unittest import skip
 from django.test.utils import override_settings
 
+from edxval.api import get_video_info
+
 from contentstore.tests.utils import CourseTestCase
 from contentstore.utils import reverse_course_url
 from contentstore.views.videos import UploadStatus
@@ -29,7 +31,7 @@ class VideoUploadTestCase(CourseTestCase):
         response = self.client.ajax_post(
             self.url
         )
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 404)
 
     def test_non_staff_user(self):
         client, __ = self.create_non_staff_authed_user_client()
@@ -50,8 +52,7 @@ class VideoUploadTestCase(CourseTestCase):
             {'file_name': 'file2'},
         ]
         self.course.video_upload_pipeline = {
-            'institute_name': self.institute_name,
-            'access_token': 'xxx',
+            'course_video_upload_token': 'xxx',
         }
         self.store.update_item(self.course, self.user.id)
         response = self.client.ajax_post(
@@ -75,7 +76,7 @@ class VideoUploadTestCase(CourseTestCase):
     @skip("disable testing with live servers, but can enable locally with real values")
     @override_settings(AWS_ACCESS_KEY_ID="PUT_IN_TEST_ACCESS_KEY_ID_HERE")
     @override_settings(AWS_SECRET_ACCESS_KEY="PUT_IN_TEST_SECRET_ACCESS_KEY_HERE")
-    @override_settings(VIDEO_UPLOAD_PIPELINE={'BUCKET': 'edx-sandbox-test', 'ROOT_PATH': ''})
+    @override_settings(VIDEO_UPLOAD_PIPELINE={'BUCKET': 'edx-sandbox-test', 'ROOT_PATH': '', 'FOLDER': 'videos'})
     @patch('contentstore.views.videos.KEY_EXPIRATION_IN_SECONDS', 60)
     def test_success_test_storage_service(self):
         response = self.setup_and_post_video_uploads()
@@ -85,7 +86,11 @@ class VideoUploadTestCase(CourseTestCase):
             returned_file = self.find_in_list(file_name, returned_files)
             self.assertRegexpMatches(
                 returned_file['upload-url'],
-                'https://edx-sandbox-test.s3.amazonaws.com/{}/.*{}.*'.format(self.institute_name, file_name),
+                'https://{bucket}.s3.amazonaws.com/{folder}/.*{file}.*'.format(
+                    bucket=VIDEO_UPLOAD_PIPELINE['BUCKET'],
+                    folder=VIDEO_UPLOAD_PIPELINE['FOLDER'],
+                    file=file_name,
+                ),
             )
 
     def test_video_index(self):
@@ -102,3 +107,7 @@ class VideoUploadTestCase(CourseTestCase):
             # upload date
             upload_date = dateutil.parser.parse(video['date_uploaded'])
             self.assertEquals(upload_date.date(), datetime.datetime.now(UTC).date())
+
+            # ensure video is in VAL
+            self.assertIsNotNone(get_video_info(video['edx_video_id']))
+

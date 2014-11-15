@@ -40,3 +40,14 @@ def get_user_role(user, course_id):
         return 'instructor'
     else:
         return 'staff'
+
+
+def get_course_and_check_access(course_key, user, depth=0):
+    """
+    Internal method used to calculate and return the locator and course module
+    for the view functions in this file.
+    """
+    if not has_course_access(user, course_key):
+        raise PermissionDenied()
+    course_module = modulestore().get_course(course_key, depth=depth)
+    return course_module
