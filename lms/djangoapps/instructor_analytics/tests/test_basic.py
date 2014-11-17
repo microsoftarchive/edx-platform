@@ -5,6 +5,7 @@ Tests for instructor.basic
 from django.test import TestCase
 from student.models import CourseEnrollment
 from django.core.urlresolvers import reverse
+from mock import patch
 from student.tests.factories import UserFactory
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from shoppingcart.models import (
@@ -91,7 +92,7 @@ class TestAnalyticsBasic(ModuleStoreTestCase):
         self.assertEqual(len(AVAILABLE_FEATURES), len(STUDENT_FEATURES + PROFILE_FEATURES))
         self.assertEqual(set(AVAILABLE_FEATURES), set(STUDENT_FEATURES + PROFILE_FEATURES))
 
-
+@patch.dict('django.conf.settings.FEATURES', {'ENABLE_PAID_COURSE_REGISTRATION': True})
 class TestCourseSaleRecordsAnalyticsBasic(ModuleStoreTestCase):
     """ Test basic course sale records analytics functions. """
     def setUp(self):
