@@ -7,19 +7,25 @@ from ...pages.lms.courseware import CoursewarePage
 from ...pages.lms.edxnotes import EdxNotesUnitPage, EdxNotesPage
 from ...fixtures.edxnotes import EdxNotesFixture, Note, Range
 
+import uuid
+
 
 class EdxNotesTest(UniqueCourseTest):
     """
     Tests for annotation inside HTML components in LMS.
     """
-    username = 'test_student'
-    email = 'student101@example.com'
 
     def setUp(self):
         """
         Initialize pages and install a course fixture.
         """
         super(EdxNotesTest, self).setUp()
+
+        self.username = str(uuid.uuid4())
+        self.username = self.username.replace("-","")
+        self.username = self.username[:5]
+        self.email = "{}@email.com".format(self.username)
+
         self.course_nav = CourseNavPage(self.browser)
         self.note_unit_page = EdxNotesUnitPage(self.browser, self.course_id)
         self.notes_page = EdxNotesPage(self.browser, self.course_id)
@@ -226,14 +232,17 @@ class EdxNotesPageTest(UniqueCourseTest):
     """
     Tests for Notes page.
     """
-    username = 'test_student'
-    email = 'student101@example.com'
 
     def setUp(self):
         """
         Initialize pages and install a course fixture.
         """
         super(EdxNotesPageTest, self).setUp()
+        self.username = str(uuid.uuid4())
+        self.username = self.username.replace("-","")
+        self.username = self.username[:5]
+        self.email = "{}@email.com".format(self.username)
+
         self.courseware_page = CoursewarePage(self.browser, self.course_id)
         self.notes_page = EdxNotesPage(self.browser, self.course_id)
 
