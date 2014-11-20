@@ -63,6 +63,22 @@
 
     <div class="report-downloads-table" id="report-downloads-table" data-endpoint="${ section_data['list_report_downloads_url'] }" ></div>
   </div>
+
+  %if settings.FEATURES.get('ALLOW_COURSE_STAFF_GRADE_DOWNLOADS') or section_data['access']['admin']:
+    <p><b>${_("Issue Certificates from Grade Report")}</b></p>
+
+    <p>${_("Click to generate certificates from grade report.")}</p>
+
+    <p>
+    <label for="generate-certificates-from-grades-csv-selector">${_("Select an existing Grade Report:")}</label>
+    <select id="generate-certificates-from-grades-csv-selector" class="generate-certificates-from-grades-csv-selector">
+      <option> ${_("Getting reports...")} </option>
+    </select>
+    <br/>
+    <input type="button" name="generate-certificates-from-grades-csv" value="${_("Generate Certificates from Grade Report")}" data-endpoint="${ section_data['generate_certificates_from_grades_csv'] }"/>
+    </p>
+  %endif
+
 %endif
 
 %if settings.FEATURES.get('ENABLE_INSTRUCTOR_BACKGROUND_TASKS'):

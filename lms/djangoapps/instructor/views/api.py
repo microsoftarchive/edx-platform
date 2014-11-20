@@ -1567,11 +1567,11 @@ def list_report_downloads(_request, course_id):
     List grade CSV files that are available for download for this course.
     """
     course_id = SlashSeparatedCourseKey.from_deprecated_string(course_id)
-    report_store = ReportStore.from_config()
+    report_store = ReportStore.from_config()    
 
     response_payload = {
         'downloads': [
-            dict(name=name, url=url, link='<a href="{}">{}</a>'.format(url, name))
+            dict(name=name, url=url, link='<a href="{}" data-filename="{}">{}</a>'.format(url, name, name))
             for name, url in report_store.links_for(course_id)
         ]
     }
@@ -1596,6 +1596,34 @@ def calculate_grades_csv(request, course_id):
             "status": already_running_status
         })
 
+def _generate_certificates_from_grades_csv_task(course_id, filename):
+    """Assume this will be run async later."""
+    report_store = ReportStore.from_config()
+    grades_csv = report_store.get_as_string(CourseKey.from_string(course_id), filename)
+    print grades_csv
+
+
+@ensure_csrf_cookie
+@cache_control(no_cache=True, no_store=True, must_revalidate=True)
+@require_level('staff')
+@require_post_params(filename="Name of file to generate certificates from")
+def generate_certificates_from_grades_csv(request, course_id):
+    """
+    List grade CSV files that are available for download for this course.
+    """
+    # Make this celery later?
+    filename = request.POST['filename']
+    result = _generate_certificates_from_grades_csv_task(course_id, filename)
+
+    return JsonResponse({})
+
+ #   response_payload = {
+ #       'downloads': [
+ #           dict(name=name, url=url, link='<a href="{}" data-filename="{}">{}</a>'.format(url, name, name))
+ #           for name, url in report_store.links_for(course_id)
+ #       ]
+ #   }
+ #   return JsonResponse(response_payload)
 
 @ensure_csrf_cookie
 @cache_control(no_cache=True, no_store=True, must_revalidate=True)

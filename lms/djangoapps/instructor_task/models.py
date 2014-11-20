@@ -274,6 +274,10 @@ class S3ReportStore(ReportStore):
 
         return key
 
+    def get_as_string(self, course_id, filename):
+        key = self.key_for(course_id, filename)
+        return key.get_contents_as_string()
+
     def store(self, course_id, filename, buff):
         """
         Store the contents of `buff` in a directory determined by hashing
@@ -372,6 +376,11 @@ class LocalFSReportStore(ReportStore):
     def path_to(self, course_id, filename):
         """Return the full path to a given file for a given course."""
         return os.path.join(self.root_path, urllib.quote(course_id.to_deprecated_string(), safe=''), filename)
+
+    def get_as_string(self, course_id, filename):
+        full_path = self.path_to(course_id, filename)
+        with open(full_path, "rb") as report_file:
+            return report_file.read()
 
     def store(self, course_id, filename, buff):
         """

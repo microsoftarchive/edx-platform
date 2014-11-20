@@ -158,6 +158,24 @@ class ReportDownloads
       POLL_INTERVAL, => @reload_report_downloads()
     )
 
+    @$generate_certificates_from_grades_csv_selector = @$section.find("select#generate-certificates-from-grades-csv-selector")
+    @$generate_certificates_from_grades_csv_btn = @$section.find("input[name='generate-certificates-from-grades-csv']'")
+    @$generate_certificates_from_grades_csv_btn.attr("disabled", true)
+    @$generate_certificates_from_grades_csv_btn.click (e) =>
+      url = @$generate_certificates_from_grades_csv_btn.data 'endpoint'
+      $.ajax
+        dataType: 'json'
+        type: 'POST'
+        data:
+          filename: @$generate_certificates_from_grades_csv_selector.val()
+        url: url
+        error: (std_ajax_err) =>
+          @$reports_request_response_error.text gettext("Error generating certificates from grades report.")
+          $(".msg-error").css({"display":"block"})
+        success: (data) =>
+          @$reports_request_response.text data['status']
+          $(".msg-confirm").css({"display":"block"})
+
   reload_report_downloads: ->
     endpoint = @$report_downloads_table.data 'endpoint'
     $.ajax
@@ -166,6 +184,7 @@ class ReportDownloads
       success: (data) =>
         if data.downloads.length
           @create_report_downloads_table data.downloads
+          @populate_generate_certificates_from_grades_csv_selector data.downloads
         else
           console.log "No reports ready for download"
       error: (std_ajax_err) => console.error "Error finding report downloads"
@@ -195,6 +214,25 @@ class ReportDownloads
     @$report_downloads_table.append $table_placeholder
     grid = new Slick.Grid($table_placeholder, report_downloads_data, columns, options)
     grid.autosizeColumns()
+
+  populate_generate_certificates_from_grades_csv_selector: (report_downloads_data) ->
+    # If there are no reports available, disable the generate certs button
+    if report_downloads_data.length == 0
+      @$generate_certificates_from_grades_csv_btn.attr("disabled", true)
+      return
+    else
+      @$generate_certificates_from_grades_csv_btn.attr("disabled", false)
+
+    #if @$generate_certificates_from_grades_csv_selector.length > 0
+    #  return
+
+    @$generate_certificates_from_grades_csv_selector.empty()
+    for report_download in report_downloads_data
+      @$generate_certificates_from_grades_csv_selector.append $ '<option/>',
+        text: report_download["name"]
+        value: report_download["name"]
+    if report_downloads_data.length is 0
+      @$generate_certificates_from_grades_csv_selector.hide()
 
 
 # export for use

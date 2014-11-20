@@ -320,6 +320,7 @@ def _section_data_download(course, access):
         'list_instructor_tasks_url': reverse('list_instructor_tasks', kwargs={'course_id': course_key.to_deprecated_string()}),
         'list_report_downloads_url': reverse('list_report_downloads', kwargs={'course_id': course_key.to_deprecated_string()}),
         'calculate_grades_csv_url': reverse('calculate_grades_csv', kwargs={'course_id': course_key.to_deprecated_string()}),
+        'generate_certificates_from_grades_csv': reverse('generate_certificates_from_grades_csv', kwargs={'course_id': course_key.to_deprecated_string()})
     }
     return section_data
 
