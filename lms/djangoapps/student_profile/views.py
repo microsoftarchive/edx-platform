@@ -11,9 +11,11 @@ from django.views.decorators.http import require_http_methods
 from django_future.csrf import ensure_csrf_cookie
 from django.contrib.auth.decorators import login_required
 from edxmako.shortcuts import render_to_response
+from certificates.models import GeneratedCertificate
+from enrollment.api import get_enrollments
 from user_api.api import profile as profile_api
 from lang_pref import LANGUAGE_KEY, api as language_api
-from third_party_auth import pipeline
+import third_party_auth
 
 
 @login_required
@@ -60,8 +62,8 @@ def _get_profile(request):
         'disable_courseware_js': True
     }
 
-    if settings.FEATURES.get('ENABLE_THIRD_PARTY_AUTH'):
-        context['provider_user_states'] = pipeline.get_provider_user_states(user)
+    if third_party_auth.is_enabled():
+        context['provider_user_states'] = third_party_auth.pipeline.get_provider_user_states(user)
 
     return render_to_response('student_profile/index.html', context)
 
@@ -180,3 +182,18 @@ def preference_handler(request):
     # A 204 is intended to allow input for actions to take place
     # without causing a change to the user agent's active document view.
     return HttpResponse(status=204)
+
+
+@login_required
+def view_activity(request):
+
+    student = request.user
+    certificates_earned = GeneratedCertificate.objects.filter(user=student, status='downloadable')
+    course_enrollments = get_enrollments(student.username)
+
+    context = {
+        'certificates': certificates_earned,
+        'course_enrollments': course_enrollments
+    }
+
+    return render_to_response('student_profile/activity.html', context)
