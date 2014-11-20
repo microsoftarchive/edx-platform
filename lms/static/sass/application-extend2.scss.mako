@@ -46,6 +46,7 @@
 // base - specific views
 @import 'views/verification';
 @import 'views/shoppingcart';
+@import 'views/profile-account';
 
 // applications
 @import "discussion/utilities/variables";

@@ -8,6 +8,8 @@ var edx = edx || {};
 
     edx.student.account.AccountModel = Backbone.Model.extend({
         // These should be the same length limits enforced by the server
+        FULL_NAME_MIN_LENGTH: 3,
+        FULL_NAME_MAX_LENGTH: 254,
         EMAIL_MIN_LENGTH: 3,
         EMAIL_MAX_LENGTH: 254,
         PASSWORD_MIN_LENGTH: 2,
