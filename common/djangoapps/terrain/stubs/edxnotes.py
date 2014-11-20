@@ -18,20 +18,20 @@ class StubEdxNotesServiceHandler(StubHttpRequestHandler):
     """
     URL_HANDLERS = {
         "GET": {
-            "/api/v1/annotations$": "_collection",
-            "/api/v1/annotations/(?P<note_id>[0-9A-Fa-f]+)$": "_read",
+            "/api/v1/$": "_collection",
+            "/api/v1/read/(?P<note_id>[0-9A-Fa-f]+)$": "_read",
             "/api/v1/search$": "_search",
         },
         "POST": {
-            "/api/v1/annotations$": "_create",
+            "/api/v1/create$": "_create",
             "/create_notes": "_create_notes",
         },
         "PUT": {
-            "/api/v1/annotations/(?P<note_id>[0-9A-Fa-f]+)$": "_update",
+            "/api/v1/update/(?P<note_id>[0-9A-Fa-f]+)$": "_update",
             "/cleanup$": "_cleanup",
         },
         "DELETE": {
-            "/api/v1/annotations/(?P<note_id>[0-9A-Fa-f]+)$": "_delete",
+            "/api/v1/delete/(?P<note_id>[0-9A-Fa-f]+)$": "_delete",
         },
     }
 
@@ -191,21 +191,21 @@ class StubEdxNotesServiceHandler(StubHttpRequestHandler):
         """
         Search for a notes by user id, course_id and usage_id.
         """
-        user = self.get_params.get("user", None)
-        usage_id = self.get_params.get("usage_id", None)
-        course_id = self.get_params.get("course_id", None)
-        if user is None or course_id is None:
-            self.respond(400, "Bad Request")
-            return
+        # user = self.get_params.get("user", None)
+        # usage_id = self.get_params.get("usage_id", None)
+        # course_id = self.get_params.get("course_id", None)
+        # if user is None or course_id is None:
+        #     self.respond(400, "Bad Request")
+        #     return
 
         notes = self.server.get_notes()
-        results = self.server.filter_by_user(notes, user)
-        results = self.server.filter_by_course_id(results, course_id)
-        if usage_id is not None:
-            results = self.server.filter_by_usage_id(results, usage_id)
+        # results = self.server.filter_by_user(notes, user)
+        # results = self.server.filter_by_course_id(results, course_id)
+        # if usage_id is not None:
+        #     results = self.server.filter_by_usage_id(results, usage_id)
         self.respond(content={
-            "total": len(results),
-            "rows": results,
+            "total": len(notes),
+            "rows": notes,
         })
 
     def _collection(self):
