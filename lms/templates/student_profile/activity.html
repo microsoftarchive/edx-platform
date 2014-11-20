@@ -1,0 +1,9 @@
+<h2>Certificates</h2>
+    % for certificate in certificates:
+        <p>${certificate.course_id}</p>
+    % endfor
+
+<h2>Course Enrollments</h2>
+    %for enrollment in course_enrollments:
+        <p>${enrollment['course']['course_id']}</p>
+    %endfor
