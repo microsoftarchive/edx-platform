@@ -28,8 +28,6 @@
   @import '${env.get('THEME_NAME')}';
 % endif
 
-@import 'base/base';
-
 // base - assets
 @import 'base/font_face';
 @import 'base/extends';

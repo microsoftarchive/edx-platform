@@ -28,8 +28,6 @@
   @import '${env.get('THEME_NAME')}';
 % endif
 
-@import 'base/base';
-
 // base - assets
 @import 'base/font_face';
 @import 'base/extends';
@@ -56,6 +54,7 @@
 @import 'multicourse/help';
 @import 'multicourse/edge';
 @import 'multicourse/survey-page';
+@import 'views/profile-activity';
 
 @import 'developer'; // used for any developer-created scss that needs further polish/refactoring
 @import 'shame';     // used for any bad-form/orphaned scss

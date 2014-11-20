@@ -278,7 +278,7 @@ FEATURES = {
     'ENABLE_MOBILE_REST_API': False,
 
     # Enable the new dashboard, account, and profile pages
-    'ENABLE_NEW_DASHBOARD': False,
+    'ENABLE_NEW_DASHBOARD': True,
 
     # Enable the combined login/registration form
     'ENABLE_COMBINED_LOGIN_REGISTRATION': False,

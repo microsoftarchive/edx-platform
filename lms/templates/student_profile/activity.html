@@ -1,9 +1,92 @@
-<h2>Certificates</h2>
-    % for certificate in certificates:
-        <p>${certificate.course_id}</p>
-    % endfor
+<%! from django.utils.translation import ugettext as _ %>
+<%! from django.template import RequestContext %>
+<%! import third_party_auth %>
+<%! from third_party_auth import pipeline %>
+<%! from microsite_configuration import microsite %>
 
-<h2>Course Enrollments</h2>
-    %for enrollment in course_enrollments:
-        <p>${enrollment['course']['course_id']}</p>
-    %endfor
+<%!
+  from django.core.urlresolvers import reverse
+%>
+
+<%
+  cert_name_short = settings.CERT_NAME_SHORT
+  cert_name_long = settings.CERT_NAME_LONG
+%>
+
+<%inherit file="../main.html" />
+
+<%namespace name='static' file='../static_content.html'/>
+
+<%block name="pagetitle">${_("Your Activity on edX")}</%block>
+<%block name="bodyclass">view-profile-activity is-authenticated</%block>
+<%block name="nav_skip">#content-main</%block>
+
+
+<div class="container" id="content-main">
+
+  <section class="content-main">
+
+  <h2 class="title title-page">Your History on edX</h2>
+
+    <div class="certificates-wrapper">
+      <h3 class="title title-certs">Certificates</h3>
+
+      <div class="cert cert-verified">
+        <img class="cert-image" src="../static/images/cert-placeholder-verified.png" />
+        <h4 class="title title-cert">
+          <span class="org">BUx</span>
+          <span class="course-num">INTL301x</span>
+          <span class="course-name">War for the Greater Middle East</span>
+          <span class="cert-type">Verified Certificate</span>
+        </h4>
+        <p class="meta">earned December 2014</p>
+        <div class="cert-actions">
+         <ul>
+           <li class="online-cert action action-primary"><a href="">View verification page</a></li>
+           <li class="download-cert action action-secondary"><a href="">Download PDF certificate</a></li>
+         </ul>
+        </div>
+      </div>
+
+      <div class="cert cert-verified">
+        <img class="cert-image" src="../static/images/cert-placeholder-honor.png" />
+        <h4 class="title title-cert">
+        <span class="org">UTokyoX</span>
+          <span class="course-num">UTokyo001x</span>
+          <span class="course-name">Visualizing Postwar Tokyo, Part 1</span>
+          <span class="cert-type">Honor Code Certificate</span>
+        </h4>
+        <p class="meta">earned December 2014</p>
+        <div class="cert-actions">
+         <ul>
+           <li class="online-cert action action-primary"><a href="">View verification page</a></li>
+           <li class="download-cert action action-secondary"><a href="">Download PDF certificate</a></li>
+         </ul>
+        </div>
+      </div>
+
+          % for certificate in certificates:
+              <p>${certificate.course_id}</p>
+          % endfor
+    </div>
+
+    <div class="enrollments-wrapper">
+      <h3 class="title title-enrolls">Course Enrollments</h3>
+          %for enrollment in course_enrollments:
+              <p>${enrollment['course']['course_id']}</p>
+          %endfor
+    </div>
+
+  </section>
+
+  <section class="content-supplementary">
+    <h2 class="title title-sup">Related</h2>
+    <p>Complete your <a href="">edX Profile</a>!</p>
+
+
+
+
+
+  </section>
+
+</div>
