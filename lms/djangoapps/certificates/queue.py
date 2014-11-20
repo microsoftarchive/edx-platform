@@ -125,7 +125,7 @@ class XQueueCertInterface(object):
 
         raise NotImplementedError
 
-    def add_cert(self, student, course_id, course=None, forced_grade=None, template_file=None, title='None'):
+    def add_cert(self, student, course_id, course=None, forced_grade=None, template_file=None, title='None', forced_percentage_grade=None):
         """
         Request a new certificate for a student.
 
@@ -135,7 +135,9 @@ class XQueueCertInterface(object):
           forced_grade - a string indicating a grade parameter to pass with
                          the certificate request. If this is given, grading
                          will be skipped.
-
+          forced_percentage_grade - Value between 0 and 1 that is the overall
+                                    percentage grade that the student got for 
+                                    this course.
         Will change the certificate status to 'generating'.
 
         Certificate must be in the 'unavailable', 'error',
@@ -179,7 +181,13 @@ class XQueueCertInterface(object):
 
             course_name = course.display_name or course_id.to_deprecated_string()
             is_whitelisted = self.whitelist.filter(user=student, course_id=course_id, whitelist=True).exists()
-            grade = grades.grade(student, self.request, course)
+            if forced_percentage_grade is None:
+                grade = grades.grade(student, self.request, course)
+            else:
+                grade = dict(
+                    percent=forced_percentage_grade,
+                    grade=grades.grade_for_percentage(course.grade_cutoffs, forced_percentage_grade)
+                )
             enrollment_mode, __ = CourseEnrollment.enrollment_mode_for_user(student, course_id)
             mode_is_verified = (enrollment_mode == GeneratedCertificate.MODES.verified)
             user_is_verified = SoftwareSecurePhotoVerification.user_is_verified(student)

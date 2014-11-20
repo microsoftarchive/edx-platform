@@ -86,6 +86,8 @@ from opaque_keys.edx.keys import CourseKey
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from opaque_keys import InvalidKeyError
 from student.models import UserProfile, Registration
+from certificates.queue import XQueueCertInterface
+
 
 log = logging.getLogger(__name__)
 
@@ -1599,8 +1601,16 @@ def calculate_grades_csv(request, course_id):
 def _generate_certificates_from_grades_csv_task(course_id, filename):
     """Assume this will be run async later."""
     report_store = ReportStore.from_config()
-    grades_csv = report_store.get_as_string(CourseKey.from_string(course_id), filename)
-    print grades_csv
+    course_key = CourseKey.from_string(course_id)
+    grades_csv = report_store.get(course_key, filename)
+    course = get_course_by_id(course_key, depth=2)
+
+    csv_reader = csv.DictReader(grades_csv)
+    xq = XQueueCertInterface()
+    for row in csv_reader:
+        student = User.objects.get(username=row['username'])
+        percentage_grade = float(row['grade'])
+        xq.add_cert(student, course_key, course=course, forced_percentage_grade=percentage_grade)
 
 
 @ensure_csrf_cookie
