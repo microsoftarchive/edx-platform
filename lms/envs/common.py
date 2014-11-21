@@ -305,6 +305,12 @@ FEATURES = {
 
     # Separate the verification flow from the payment flow
     'SEPARATE_VERIFICATION_FROM_PAYMENT': False,
+
+    # Turn off milestones app by default
+    'MILESTONES_APP': True,
+
+    # Turn of pre-requisite course by default
+    'ENABLE_PREREQUISITE_COURSES': True,
 }
 
 # Ignore static asset files on import which match this pattern
@@ -1607,6 +1613,16 @@ if FEATURES.get('AUTH_USE_CAS'):
     )
     INSTALLED_APPS += ('django_cas',)
     MIDDLEWARE_CLASSES += ('django_cas.middleware.CASMiddleware',)
+
+############## Milestones ##############
+# Turn off milestones app by default
+FEATURES['MILESTONES_APP'] = False
+if FEATURES['MILESTONES_APP']:
+    INSTALLED_APPS += ('milestones',)
+
+############## Pre-requisite Courses ##############
+# Turn of pre-requisite course by default
+FEATURES['ENABLE_PREREQUISITE_COURSES'] = False
 
 ###################### Registration ##################################
 

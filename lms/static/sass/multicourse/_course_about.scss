@@ -540,6 +540,23 @@
         margin-bottom: $baseline;
         padding-bottom: ($baseline/2);
 
+        &.prerequisite-course {
+          .tip {
+            margin: $baseline 0 ($baseline/2);
+            font-size: 0.8em;
+          }
+        }
+
+        &.prerequisites {
+          border: 1px solid $border-color-2;
+          margin: 0 -($baseline/2) 0;
+          padding: ($baseline/2);
+
+          p {
+            margin-right: ($baseline/2);
+          }
+        }
+
         &:hover, &:focus {
           .icon {
             opacity: 1.0;

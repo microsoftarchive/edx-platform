@@ -20,6 +20,7 @@ from shoppingcart.models import Order, PaidCourseRegistration
 from xmodule.course_module import CATALOG_VISIBILITY_ABOUT, CATALOG_VISIBILITY_NONE
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
+from util.milestones_helpers import set_prerequisite_course
 
 from .helpers import LoginEnrollmentTestCase
 
@@ -119,6 +120,18 @@ class AboutTestCase(LoginEnrollmentTestCase, ModuleStoreTestCase):
         target_url = resp.redirect_chain[-1][0]
         info_url = reverse('info', args=[self.course.id.to_deprecated_string()])
         self.assertTrue(target_url.endswith(info_url))
+
+    @patch.dict(settings.FEATURES, {'MILESTONES_APP': True, 'ENABLE_PREREQUISITE_COURSES': True})
+    def test_pre_requisite_course(self):
+        pre_requisite_course = CourseFactory.create(org='edX', course='900', display_name='pre requisite course')
+        set_prerequisite_course(unicode(self.course.id), unicode(pre_requisite_course.id))
+        url = reverse('about_course', args=[self.course.id.to_deprecated_string()])
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("<li class=\"prerequisite-course\"><div class=\"icon icon-list-ul\">"
+                      "</div><p>Requirements</p><span>{} {}</span>".format(pre_requisite_course.location.course,
+                                                                           pre_requisite_course.location.run),
+                      resp.content)
 
 
 @override_settings(MODULESTORE=TEST_DATA_MIXED_CLOSED_MODULESTORE)
