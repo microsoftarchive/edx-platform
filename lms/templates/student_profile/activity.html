@@ -36,15 +36,15 @@
       <div class="cert cert-verified">
         <a class="cert-link" href="">
         <img class="cert-image" src="../static/images/cert-placeholder-verified.png" />
-        <h4 class="title title-cert">
+        <h4 class="title title-course">
           <span class="org">BUx</span>
           <span class="course-num">INTL301x</span>
           <span class="course-name">War for the Greater Middle East</span>
-          <span class="cert-type">Verified Certificate</span>
+          <span class="enroll-type">Verified Certificate</span>
         </h4>
         </a>
         <p class="meta">earned December 2014</p>
-       <ul class="cert-actions">
+       <ul class="course-actions">
          <li class="online-cert action action-primary"><a href="">View verification page</a></li>
          <li class="download-cert action action-secondary"><a href="">Download PDF certificate</a></li>
        </ul>
@@ -53,15 +53,15 @@
       <div class="cert cert-honor">
         <a class="cert-link" href="">
         <img class="cert-image" src="../static/images/cert-placeholder-honor.png" />
-        <h4 class="title title-cert">
-        <span class="org">UTokyoX</span>
+        <h4 class="title title-course">
+          <span class="org">UTokyoX</span>
           <span class="course-num">UTokyo001x</span>
           <span class="course-name">Visualizing Postwar Tokyo, Part 1</span>
-          <span class="cert-type">Honor Code Certificate</span>
+          <span class="enroll-type">Honor Code Certificate</span>
         </h4>
         </a>
         <p class="meta">earned December 2014</p>
-        <ul class="cert-actions">
+        <ul class="course-actions">
          <li class="online-cert action action-primary"><a href="">View verification page</a></li>
          <li class="download-cert action action-secondary"><a href="">Download PDF certificate</a></li>
         </ul>
@@ -70,15 +70,15 @@
       <div class="cert cert-profed">
         <a class="cert-link" href="">
         <img class="cert-image" src="../static/images/cert-placeholder-profed.png" />
-        <h4 class="title title-cert">
-        <span class="org">UTokyoX</span>
+        <h4 class="title title-course">
+          <span class="org">UTokyoX</span>
           <span class="course-num">UTokyo001x</span>
           <span class="course-name">Visualizing Postwar Tokyo, Part 1</span>
-          <span class="cert-type">Honor Code Certificate</span>
+          <span class="enroll-type">Honor Code Certificate</span>
         </h4>
         </a>
         <p class="meta">earned December 2014</p>
-        <ul class="cert-actions">
+        <ul class="course-actions">
          <li class="online-cert action action-primary"><a href="">View verification page</a></li>
          <li class="download-cert action action-secondary"><a href="">Download PDF certificate</a></li>
         </ul>
@@ -87,15 +87,15 @@
       <div class="cert cert-profed">
         <a class="cert-link" href="">
         <img class="cert-image" src="../static/images/cert-placeholder-profed.png" />
-        <h4 class="title title-cert">
-        <span class="org">BerkeleyX</span>
+        <h4 class="title title-course">
+          <span class="org">BerkeleyX</span>
           <span class="course-num">GG101x</span>
           <span class="course-name">The Science of Happiness</span>
-          <span class="cert-type">Honor Code Certificate</span>
+          <span class="enroll-type">Honor Code Certificate</span>
         </h4>
         </a>
         <p class="meta">earned December 2014</p>
-        <ul class="cert-actions">
+        <ul class="course-actions">
          <li class="online-cert action action-primary"><a href="">View verification page</a></li>
          <li class="download-cert action action-secondary"><a href="">Download PDF certificate</a></li>
         </ul>
@@ -108,6 +108,25 @@
 
     <div class="enrollments-wrapper">
       <h3 class="title title-enrolls">Course enrollments</h3>
+      <ul class="enrollments-list">
+        <li class="title-course">
+          <a class="course-link" href="">
+            <span class="org">BerkeleyX</span>
+            <span class="course-num">GG101x</span>
+            <span class="course-name">The Science of Happiness</span>
+            <span class="enroll-type">Honor Code track</span>
+          </a>
+        </li>
+        <li class="title-course">
+          <a class="course-link" href="">
+            <span class="org">UTokyoX</span>
+            <span class="course-num">UTokyo001x</span>
+            <span class="course-name">Visualizing Postwar Tokyo, Part 1</span>
+            <span class="enroll-type">Honor Code track</span>
+          </a>
+        </li>
+      </ul>
+
           %for enrollment in course_enrollments:
               <p>${enrollment['course']['course_id']}</p>
           %endfor

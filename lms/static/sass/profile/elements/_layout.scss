@@ -3,7 +3,13 @@
 .view-profile {
 
   .global {
-    @include box-sizing(border-box);
+    border-bottom: 1px solid $gray-l3;
+
+    nav {
+      @include box-sizing(border-box);
+      padding-left: ($baseline*2);
+      padding-right: ($baseline*2);
+    }
   }
 
   // basic setup
@@ -65,7 +71,7 @@
 
   // ====================
 
-  // page setup 
+  // page setup
   .container {
     width: flex-grid(12);
     padding: ($baseline*2);
