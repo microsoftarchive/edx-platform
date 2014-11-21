@@ -33,7 +33,7 @@
     // UI: Learner Labels
     .learner-username {
       display: inline-block;
-      margin: ($baseline/2) 0 ($baseline/2) ($baseline*8);
+      margin: ($baseline/2) 0 ($baseline/2) ($baseline*7);
       color: $white;
       text-transform: lowercase;
       font-weight: 300;
@@ -52,13 +52,35 @@
 
   }
 
+  .profile-status {
+
+    .container {
+      padding: $baseline;
+    }
+
+    .about-category {
+      @include margin-left(flex-gutter(1));
+      display: inline-block;
+      width: flex-grid(8,12);
+
+      .about-header {
+        @extend %t-title7;
+        @extend %t-strong;
+      }
+    }
+    .wrapper-actions {
+      width: flex-grid(2,12);
+      display: inline-block;
+    }
+  }
+
 
   .profile-about {
 
     .container {
       border-top: 1px solid $gray-l3;
       border-bottom: 1px solid $gray-l3;
-      padding: ($baseline/2)
+      padding: ($baseline/2);
     }
 
     .about-category {
