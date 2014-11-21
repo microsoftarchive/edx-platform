@@ -39,6 +39,7 @@ class CourseDetails(object):
         self.effort = None  # int hours/week
         self.course_image_name = ""
         self.course_image_asset_path = ""  # URL of the course image
+        self.pre_requisite_course = ""  # pre-requisite course course key
 
     @classmethod
     def _fetch_about_attribute(cls, course_key, attribute):

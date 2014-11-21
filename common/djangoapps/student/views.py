@@ -89,7 +89,9 @@ import dogstats_wrapper as dog_stats_api
 from util.db import commit_on_success_with_read_committed
 from util.json_request import JsonResponse
 from util.bad_request_rate_limiter import BadRequestRateLimiter
-
+from util.milestones_helpers import (
+    get_prc_not_completed,
+)
 from microsite_configuration import microsite
 
 from util.password_policy_validators import (
@@ -673,12 +675,17 @@ def dashboard(request):
         'platform_name': settings.PLATFORM_NAME,
         'enrolled_courses_either_paid': enrolled_courses_either_paid,
         'provider_states': [],
-        'order_history_list': order_history_list
+        'order_history_list': order_history_list,
+        'courses_requirements_not_met': {},
     }
 
     if third_party_auth.is_enabled():
         context['duplicate_provider'] = pipeline.get_duplicate_provider(messages.get_messages(request))
         context['provider_user_states'] = pipeline.get_provider_user_states(user)
+
+    # if milestones app and pre-requisite course feature is enabled compute list of courses having pre-requisites
+    if settings.FEATURES.get('MILESTONES_APP') and settings.FEATURES.get('ENABLE_PREREQUISITE_COURSES'):
+        context['courses_requirements_not_met'] = get_prc_not_completed(user, enrolled_course_ids)
 
     return render_to_response('dashboard.html', context)
 

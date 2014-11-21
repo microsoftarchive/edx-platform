@@ -56,9 +56,11 @@ import shoppingcart
 from shoppingcart.models import CourseRegistrationCode
 from shoppingcart.utils import is_shopping_cart_enabled
 from opaque_keys import InvalidKeyError
+from util.milestones_helpers import get_prerequisite_course_key
 
 from microsite_configuration import microsite
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
+from opaque_keys.edx.keys import CourseKey
 from instructor.enrollment import uses_shib
 
 from util.db import commit_on_success_with_read_committed
@@ -792,6 +794,15 @@ def course_about(request, course_id):
 
     is_shib_course = uses_shib(course)
 
+    # get prerequisite course from milestones app
+    pre_requisite_course = ''
+    if settings.FEATURES.get('MILESTONES_APP', False) and settings.FEATURES.get('ENABLE_PREREQUISITE_COURSES', False):
+        pre_requisite_course_key_string = get_prerequisite_course_key(course_key)
+        # check if course has pre-requisite course
+        if pre_requisite_course_key_string:
+            pre_requisite_course_key = CourseKey.from_string(pre_requisite_course_key_string)
+            pre_requisite_course = ' '.join([pre_requisite_course_key.org, pre_requisite_course_key.course])
+
     return render_to_response('courseware/course_about.html', {
         'course': course,
         'staff_access': staff_access,
@@ -813,6 +824,7 @@ def course_about(request, course_id):
         'disable_courseware_header': True,
         'is_shopping_cart_enabled': _is_shopping_cart_enabled,
         'cart_link': reverse('shoppingcart.views.show_cart'),
+        'pre_requisite_course': pre_requisite_course
     })
 
 
