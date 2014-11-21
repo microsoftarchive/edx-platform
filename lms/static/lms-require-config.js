@@ -13,7 +13,7 @@ var require = {
         'underscore.string':    'js/vendor/underscore.string.min',
 
         // Bundles
-        'common':               'js/student_account/common'
+        'common':               'js/common'
     },
     shim: {
         'backbone': {
