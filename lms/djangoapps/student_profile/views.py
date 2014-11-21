@@ -61,14 +61,15 @@ def _get_profile(request):
     """
     user = request.user
 
-    default = "http://example.com/static/images/defaultavatar.jpg"
+    # default = "http://example.com/static/images/defaultavatar.jpg"
     size = 40
 
     gravatar_url = "http://www.gravatar.com/avatar/" + hashlib.md5(user.email.lower()).hexdigest() + "?"
-    gravatar_url += urllib.urlencode({'d':default, 's':str(size)})
+    # gravatar_url += urllib.urlencode({'d':default, 's':str(size)})
+    gravatar_url += urllib.urlencode({'s':str(size)})
 
     try:
-        f = urllib2.urlopen(urllib2.Request(url))
+        f = urllib2.urlopen(urllib2.Request(gravatar_url))
     except:
         gravatar_url = "/static/images/profile-default.png"
 
