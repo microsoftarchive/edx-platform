@@ -1,6 +1,6 @@
 import unittest
 
-from cassandra.cluster import Cluster, Session
+from cassandra.cluster import Cluster
 from mock import patch
 from opaque_keys.edx.locator import CourseKey, BlockUsageLocator
 from xblock.fields import Scope

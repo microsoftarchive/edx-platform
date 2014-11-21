@@ -328,7 +328,6 @@ class DjangoKeyValueStore(KeyValueStore):
           xblock.KvsFieldData._key : value
 
         """
-        log.warn("set many: %r", kv_dict)
         saved_fields = []
         # field_objects maps a field_object to a list of associated fields
         field_objects = dict()
