@@ -1165,22 +1165,27 @@ PIPELINE_CSS = {
 common_js = set(rooted_glob(COMMON_ROOT / 'static', 'coffee/src/**/*.js')) - set(courseware_js + discussion_js + staff_grading_js + open_ended_js + notes_js + instructor_dash_js)
 project_js = set(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/**/*.js')) - set(courseware_js + discussion_js + staff_grading_js + open_ended_js + notes_js + instructor_dash_js)
 
+base_application_js = [
+    'js/form.ext.js',
+    'js/my_courses_dropdown.js',
+    'js/toggle_login_modal.js',
+    'js/sticky_filter.js',
+    'js/query-params.js',
+    'js/src/utility.js',
+    'js/src/accessibility_tools.js',
+    'js/src/ie_shim.js',
+    'js/src/string_utils.js',
+]
 
 PIPELINE_JS = {
-    'application': {
-
+    'base_application': {
         # Application will contain all paths not in courseware_only_js
-        'source_filenames': sorted(common_js) + sorted(project_js) + [
-            'js/form.ext.js',
-            'js/my_courses_dropdown.js',
-            'js/toggle_login_modal.js',
-            'js/sticky_filter.js',
-            'js/query-params.js',
-            'js/src/utility.js',
-            'js/src/accessibility_tools.js',
-            'js/src/ie_shim.js',
-            'js/src/string_utils.js',
-        ],
+        'source_filenames': sorted(base_application_js),
+        'output_filename': 'js/lms-base-application.js',
+    },
+    'application': {
+        # Application will contain all paths not in courseware_only_js
+        'source_filenames': sorted(common_js) + sorted(project_js) + sorted(base_application_js),
         'output_filename': 'js/lms-application.js',
     },
     'courseware': {
