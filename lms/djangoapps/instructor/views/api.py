@@ -11,6 +11,7 @@ import logging
 import re
 import time
 import requests
+from celery.task import task
 from django.conf import settings
 from django_future.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST
@@ -1598,6 +1599,7 @@ def calculate_grades_csv(request, course_id):
             "status": already_running_status
         })
 
+@task()
 def _generate_certificates_from_grades_csv_task(course_id, filename):
     """Assume this will be run async later."""
     report_store = ReportStore.from_config()
@@ -1608,9 +1610,15 @@ def _generate_certificates_from_grades_csv_task(course_id, filename):
     csv_reader = csv.DictReader(grades_csv)
     xq = XQueueCertInterface()
     for row in csv_reader:
-        student = User.objects.get(username=row['username'])
-        percentage_grade = float(row['grade'])
-        xq.add_cert(student, course_key, course=course, forced_percentage_grade=percentage_grade)
+        try:
+            student = User.objects.get(username=row['username'])
+            percentage_grade = float(row['grade'])
+            xq.add_cert(student, course_key, course=course, forced_percentage_grade=percentage_grade)
+        except Exception as exc:
+            log.exception(
+                "Error requesting certificate for user {} in course {} with file {}"
+                .format(row['username'], course_id, filename)
+            )
 
 
 @ensure_csrf_cookie
@@ -1625,15 +1633,7 @@ def generate_certificates_from_grades_csv(request, course_id):
     filename = request.POST['filename']
     result = _generate_certificates_from_grades_csv_task(course_id, filename)
 
-    return JsonResponse({})
-
- #   response_payload = {
- #       'downloads': [
- #           dict(name=name, url=url, link='<a href="{}" data-filename="{}">{}</a>'.format(url, name, name))
- #           for name, url in report_store.links_for(course_id)
- #       ]
- #   }
- #   return JsonResponse(response_payload)
+    return JsonResponse({"status": "success"})
 
 @ensure_csrf_cookie
 @cache_control(no_cache=True, no_store=True, must_revalidate=True)

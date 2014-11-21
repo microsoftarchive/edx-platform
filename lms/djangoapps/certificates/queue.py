@@ -247,6 +247,7 @@ class XQueueCertInterface(object):
                     new_status = status.generating
                     cert.status = new_status
                     cert.save()
+                    logger.info("Requesting certificate generation for course {course_id}, user {username}".format(**contents))
                     self._send_to_xqueue(contents, key)
             else:
                 cert_status = status.notpassing
