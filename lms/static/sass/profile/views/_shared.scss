@@ -1,5 +1,7 @@
 // lms student profile - shared
 
+// static page for hackathon
+
 .profile-shared {
 
   .content-wrapper {
@@ -59,8 +61,8 @@
     }
 
     .about-category {
-      @include margin-left(flex-gutter(1));
       display: inline-block;
+      margin-left: 11%;
       width: flex-grid(8,12);
 
       .about-header {
@@ -69,8 +71,9 @@
       }
     }
     .wrapper-actions {
-      width: flex-grid(2,12);
       display: inline-block;
+      float: right;
+      margin-top: ($baseline/2);
     }
   }
 
@@ -97,9 +100,38 @@
   }
 
   .profile-courses {
-
     background-color: $white;
-    margin-top: ($baseline*2);
+    margin-top: $baseline;
+    min-height:400px;
 
+
+    .container {
+      padding: 0;
+    }
+
+    .profile-course-nav {
+      border-bottom: 1px solid $gray-l3;
+
+      .about-header {
+        @extend %t-title6;
+        text-transform: uppercase;
+        display: inline-block;
+        margin-right: $baseline;
+        padding: $baseline 0 ($baseline/2);
+      }
+
+      .nav-option {
+        display: inline-block;
+        padding: ($baseline/2) 0;
+        margin-right: $baseline;
+        color: $blue;
+
+
+        &.active {
+          border-bottom: 4px solid $blue;
+          color: $black;
+        }
+      }
+    }
   }
 }
