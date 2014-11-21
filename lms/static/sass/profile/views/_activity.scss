@@ -2,59 +2,6 @@
 
 .view-profile-activity {
 
-  .global {
-    @include box-sizing(border-box);
-    border-bottom: 1px solid $gray-l3;
-  }
-
-  // page setup
-  .container {
-    width: flex-grid(12);
-    padding: ($baseline*2);
-
-    .page-header {
-      margin-bottom: $baseline;
-
-      .title {
-        @extend %t-title4;
-        text-transform: uppercase;
-      }
-
-      .subtitle {
-        @extend %t-title7;
-        margin-bottom: 0;
-        color: $gray-l2;
-      }
-    }
-
-    .content-main {
-      @include box-sizing(border-box);
-      @include float(left);
-      @include margin-right(flex-gutter());
-      width: flex-grid(9,12);
-
-    }
-
-    .content-supplementary {
-      @include box-sizing(border-box);
-      @include float(left);
-      width: flex-grid(3,12);
-    }
-
-    p {
-      @extend %t-copy-base;
-    }
-  }
-
-  // general resets
-  .title {
-    @extend %t-title;
-    @extend %t-weight4;
-    margin-bottom: .5em;
-    color: $base-font-color;
-    text-transform: none;
-    letter-spacing: 0;
-  }
 
   // things that will just be on this page
   .certificates-wrapper {
