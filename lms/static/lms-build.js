@@ -8,7 +8,18 @@
          * done.
          */
         modules: [
-            { name: "js/student_account/accessApp" }
+            {
+                name: 'common',
+                include: [
+                    'backbone',
+                    'gettext',
+                    'jquery',
+                    'underscore'
+                ]
+            }, {
+                name: 'js/student_account/accessApp',
+                exclude: ['common']
+            }
         ],
 
         /**
@@ -111,4 +122,4 @@
          */
         logLevel: 0
     };
-} ())
+} ());
