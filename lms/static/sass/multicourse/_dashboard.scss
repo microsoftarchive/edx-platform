@@ -9,9 +9,8 @@
     background: transparent;
     @include float(right);
     @include margin-left(flex-gutter());
-    width: flex-grid(2);
+    width: flex-grid(4);
     background: transparent;
-    box-shadow: 0 0 1px $shadow-l1;
 
     header.profile {
       @include box-sizing(border-box);
@@ -281,7 +280,7 @@
   .my-courses {
     @include float(left);
     margin: 0px;
-    width: flex-grid(12);
+    width: flex-grid(8);
 
     > header {
       border-bottom: 1px solid $border-color-2;
