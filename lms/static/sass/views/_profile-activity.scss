@@ -12,27 +12,37 @@
     width: flex-grid(12);
     padding: ($baseline*2);
 
+    .page-header {
+      margin-bottom: $baseline;
+
+      .title {
+        @extend %t-title4;
+        text-transform: uppercase;
+      }
+
+      .subtitle {
+        @extend %t-title7;
+        margin-bottom: 0;
+        color: $gray-l2;
+      }
+    }
+
     .content-main {
       @include box-sizing(border-box);
       @include float(left);
       @include margin-right(flex-gutter());
       width: flex-grid(9,12);
 
-      .title-page {
-        @extend %t-title4;
-        text-transform: none;
-        letter-spacing: 0;
-      }
-
-      p {
-        @extend %t-copy-base;
-      }
     }
 
     .content-supplementary {
       @include box-sizing(border-box);
       @include float(left);
       width: flex-grid(3,12);
+    }
+
+    p {
+      @extend %t-copy-base;
     }
   }
 
@@ -42,35 +52,65 @@
     @extend %t-weight4;
     margin-bottom: .5em;
     color: $base-font-color;
+    text-transform: none;
+    letter-spacing: 0;
   }
 
   // things that will just be on this page
   .certificates-wrapper {
-    margin: $baseline 0;
-    border: 2px solid $gray-l2;
-    padding: ($baseline*1.5);
+    margin: 0 0 $baseline 0;
 
     .cert {
+      @include margin(0, $baseline,  $baseline*1.5, 0);
       width: 30%;
+      min-width: 250px;
       vertical-align: top;
       display: inline-block;
-      text-align: center;
-      margin: 0 $baseline;
+    }
 
-      &:first-child {
-        margin: 0;
+    .cert-link:link,
+    .cert-link:visited {
+      display: block;
+
+      &:hover,
+      &:hover span {
+        color: $blue;
+        text-decoration: none;
       }
     }
 
     .cert-image {
-      border: 1px solid $gray-l2;
+      @include transition(background-color .15s ease-in-out 0s);
       margin: ($baseline/2) 0;
+      border: 1px solid $gray-l2;
+      padding: ($baseline/3);
+
+      &:hover {
+        background-color: $gray-l3;
+      }
     }
 
     .title-cert {
       @extend %t-title5;
 
-      .course {
+      .org {
+        @extend %t-copy-sub2;
+        display: inline-block;
+        color: $gray-l2;
+
+        &:after {
+          content: " : "
+        }
+      }
+
+      .course-num {
+        @extend %t-copy-sub2;
+        display: inline-block;
+        color: $gray-l2;
+      }
+
+      .course-name {
+        @extend %t-title6;
         display: block;
       }
 
@@ -85,6 +125,24 @@
     .cert .meta {
       @extend %t-copy-sub2;
       color: $gray-l2;
+    }
+
+    .cert-actions {
+      @extend %ui-no-list;
+
+      .action-primary a {
+        @extend %btn-primary-blue;
+        margin: ($baseline/2) 0;
+        color: $white;
+
+        &:hover {
+          text-decoration: none;
+        }
+      }
+
+      .action-secondary {
+        @extend %t-copy-sub2;
+      }
     }
   }
 
