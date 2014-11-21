@@ -158,6 +158,9 @@ class ReportDownloads
       POLL_INTERVAL, => @reload_report_downloads()
     )
 
+    @$generate_certificates_from_grades_csv_response = @$section.find 'div#generate-certificates-from-grades-csv-response'
+    @$generate_certificates_from_grades_csv_error = @$section.find 'div#generate-certificates-from-grades-csv-error'
+
     @$generate_certificates_from_grades_csv_selector = @$section.find("select#generate-certificates-from-grades-csv-selector")
     @$generate_certificates_from_grades_csv_btn = @$section.find("input[name='generate-certificates-from-grades-csv']'")
     @$generate_certificates_from_grades_csv_btn.attr("disabled", true)
@@ -173,7 +176,7 @@ class ReportDownloads
           @$reports_request_response_error.text gettext("Error generating certificates from grades report.")
           $(".msg-error").css({"display":"block"})
         success: (data) =>
-          @$reports_request_response.text data['status']
+          @$generate_certificates_from_grades_csv_response.text data['status']
           $(".msg-confirm").css({"display":"block"})
 
   reload_report_downloads: ->
