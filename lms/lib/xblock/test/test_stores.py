@@ -1,22 +1,17 @@
 import unittest
 
-from cassandra.cluster import Cluster
 from mock import patch
 from opaque_keys.edx.locator import CourseKey, BlockUsageLocator
 from xblock.fields import Scope
 from xblock.runtime import KeyValueStore
 
-from lms.lib.cassandra_driver import CassandraDriver
+from lms.lib.cassandra_driver import get_driver
 from lms.lib.xblock.stores import CassandraUserStateKeyValueStore
 
 class CassandraUserStateKeyValueStoreTestCase(unittest.TestCase):
 
     def setUp(self):
-        cluster = Cluster()
-        self.session = cluster.connect()
-        self.session.set_keyspace('mykeyspace')
-        self.table_name = 'user_state'
-        self.driver = CassandraDriver(self.session, self.table_name)
+        self.driver = get_driver()
         self.kvs = CassandraUserStateKeyValueStore(self.driver)
         self.course_key = CourseKey.from_string('test/course/key')
         self.block_type = 'test_block_type'
@@ -24,7 +19,7 @@ class CassandraUserStateKeyValueStoreTestCase(unittest.TestCase):
         self._truncate_table()
 
     def _truncate_table(self):
-        self.session.execute("TRUNCATE {}".format(self.table_name))
+        self.driver._session.execute("TRUNCATE {}".format(self.driver._table_name))
 
     def _make_key(
             self,
@@ -48,7 +43,7 @@ class CassandraUserStateKeyValueStoreTestCase(unittest.TestCase):
 
     def test_get(self):
         key = self._make_key(1, 'hello')
-        with patch('cassandra.cluster.Session.execute', wraps=self.session.execute) as mock_execute:
+        with patch('cassandra.cluster.Session.execute', wraps=self.driver._session.execute) as mock_execute:
             result = self.kvs.get(key)
             self.assertIsNone(result)
             self.assertTrue(mock_execute.called)
@@ -58,7 +53,7 @@ class CassandraUserStateKeyValueStoreTestCase(unittest.TestCase):
         key = self._make_key(1, 'hello')
         result = self.kvs.get(key)
         self.assertIsNone(result)
-        with patch('cassandra.cluster.Session.execute', wraps=self.session.execute) as mock_execute:
+        with patch('cassandra.cluster.Session.execute', wraps=self.driver._session.execute) as mock_execute:
             self.kvs.set(key, 'world')
             self.assertTrue(mock_execute.called)
             self.assertTrue(mock_execute.call_args[0][0].lower().startswith('insert'))
@@ -70,7 +65,7 @@ class CassandraUserStateKeyValueStoreTestCase(unittest.TestCase):
         self.kvs.set(key, 'world')
         result = self.kvs.get(key)
         self.assertEqual(result, 'world')
-        with patch('cassandra.cluster.Session.execute', wraps=self.session.execute) as mock_execute:
+        with patch('cassandra.cluster.Session.execute', wraps=self.driver._session.execute) as mock_execute:
             self.kvs.delete(key)
             self.assertTrue(mock_execute.called)
             self.assertTrue(mock_execute.call_args[0][0].lower().startswith('delete'))

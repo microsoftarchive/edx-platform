@@ -1,6 +1,9 @@
 import json
 import logging
 
+from cassandra.cluster import Cluster
+
+
 log = logging.getLogger(__name__)
 
 
@@ -123,3 +126,11 @@ class CassandraDriver(object):
 
     # TODO: need accessor method(s) for student_module history.  Not yet sure
     # what that should look like.
+
+
+_session = Cluster().connect()
+_session.set_keyspace('mykeyspace')
+
+def get_driver():
+    return CassandraDriver(_session, 'user_state')
+
