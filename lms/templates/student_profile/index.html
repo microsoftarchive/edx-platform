@@ -20,11 +20,31 @@
 % endfor
 </%block>
 
-<h1>Student Profile</h1>
+<%block name="bodyclass">view-profile profile-shared is-authenticated</%block>
+<%block name="nav_skip">#content-main</%block>
+<section class="learner-profile-header">
+	<div class="container" id="content-header">
+		<header>
+			<div class="learner-image">Profile Image Here</div>
+			<div class="learner-username">Username</div>
+			<div class="header-label">Learner Profile</div>
+			<div class="header-actions">None for now</div>
+		</header>
+		<article>Current Learning Goal Section
+		</article>
+		<article>Additional Learner Details
+		</article>
+	</div>
+</section>
+<div class="container" id="content-main">
+	<section class="learner-profile-content">
+		<article>Current Learning Goal Section
+		</article>
+		<article>Additional Learner Details
+		</article>
+	</section>
+</div>
 
-<p>This is a placeholder for the student's profile page.</p>
-
-<div id="profile-container"></div>
 
 % if third_party_auth.is_enabled():
     <%include file="third_party_auth.html" />

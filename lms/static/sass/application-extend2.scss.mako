@@ -46,9 +46,14 @@
 @import 'views/login-register';
 @import 'views/verification';
 @import 'views/shoppingcart';
-@import 'views/profile-account';
 
-// applications
+// applications - profile
+@import 'profile/elements/layout'; 
+@import 'profile/views/activity';
+@import 'profile/views/account';
+@import 'profile/views/shared';
+
+// applications - discussion
 @import "discussion/utilities/variables";
 @import "discussion/mixins";
 @import 'discussion/discussion'; // Process old file after definitions but before everything else

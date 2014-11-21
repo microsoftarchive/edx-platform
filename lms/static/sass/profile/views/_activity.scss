@@ -1,48 +1,6 @@
 // lms student profile - activity
 
-.view-profile-activity {
-
-  .global {
-    @include box-sizing(border-box);
-    border-bottom: 1px solid $gray-l3;
-  }
-
-  // page setup
-  .container {
-    width: flex-grid(12);
-    padding: ($baseline*2);
-
-    .content-main {
-      @include box-sizing(border-box);
-      @include float(left);
-      @include margin-right(flex-gutter());
-      width: flex-grid(9,12);
-
-      .title-page {
-        @extend %t-title4;
-        text-transform: none;
-        letter-spacing: 0;
-      }
-
-      p {
-        @extend %t-copy-base;
-      }
-    }
-
-    .content-supplementary {
-      @include box-sizing(border-box);
-      @include float(left);
-      width: flex-grid(3,12);
-    }
-  }
-
-  // general resets
-  .title {
-    @extend %t-title;
-    @extend %t-weight4;
-    margin-bottom: .5em;
-    color: $base-font-color;
-  }
+.profile-activity {
 
   // things that will just be on this page
   .certificates-wrapper {
