@@ -1,32 +1,45 @@
 <form id="email-change-form" method="post">
-    <div id="personal" class="col-1-3">
-        <h2>Personal info</h2>
+    <div id="personal" class="col-1-3 personal-settings">
+        <h2 class="title">Personal info</h2>
+
+        <ul class="list-input">
+        <li class="field text">
         <label for="full-name"><%- gettext("Full Name") %></label>
         <input id="full-name" type="text" name="full-name" value="" data-validate="required"/>
         <div id="full-name-status" />
+        </li>
 
+        <li class="field text">
         <label for="gender"><%- gettext("Gender") %></label>
         <select id="gender" name="gender">
         </select>
         <div id="gender-status" />
+        </li>
 
+        <li class="field text">
         <label for="year-of-birth"><%- gettext("Year of Birth") %></label>
         <select id="year-of-birth" name="year-of-birth">
         </select>
         <div id="year-of-birth-status" />
+        </li>
 
+        <li class="field text">
         <label for="level-of-education"><%- gettext("Level of Education") %></label>
         <select id="level-of-education" name="level-of-education">
         </select>
         <div id="level-of-education-status" />
+        </li>
 
+        <li class="field text">
         <label for="reason-for-edx"><%- gettext("Your reason for using edX") %></label>
         <textarea id="reason-for-edx" name="reason-for-edx"></textarea>
         <div id="reason-for-edx-status" />
+        </li>
+        </ul>
     </div>
 
-    <div id="location" class="col-1-3">
-        <h2>Location info</h2>
+    <div id="location" class="col-1-3 location-settings">
+        <h2 class="title">Location info</h2>
         <label for="country"><%- gettext("Country") %></label>
         <select id="country" name="country">
         </select>
@@ -48,8 +61,8 @@
 
     </div>
 
-    <div id="login" class="col-1-3">
-        <h2>Login info</h2>
+    <div id="login" class="col-1-3 login-settings">
+        <h2 class="title">Login info</h2>
         <label for="new-email"><%- gettext("New Address") %></label>
         <input id="new-email" type="text" name="new-email" value="" placeholder="xsy@edx.org" data-validate="required email"/>
         <div id="new-email-status" />
