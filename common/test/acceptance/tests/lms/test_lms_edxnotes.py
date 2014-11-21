@@ -118,11 +118,13 @@ class EdxNotesDefaultInteractionsTest(EdxNotesTestMixin):
 
     def assert_text_in_notes(self, components, offset=0):
         index = offset
+        actual = list()
+        expected = list()
         for component in components:
-            actual = [note.text for note in component.notes]
-            expected = ["TEST TEXT {}".format(i + index) for i in xrange(len(actual))]
+            actual.extend([note.text for note in component.notes])
+            expected.extend(["TEST TEXT {}".format(i + index) for i in xrange(len(component.notes))])
             index += len(actual)
-            self.assertEqual(set(expected), set(actual))
+        self.assertSetEqual(set(expected), set(actual))
 
     def test_can_create_notes(self):
         """
