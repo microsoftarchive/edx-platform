@@ -1,4 +1,3 @@
-import json
 import logging
 
 from xblock.exceptions import KeyValueMultiSaveError, InvalidScopeError
@@ -16,11 +15,10 @@ class CassandraUserStateKeyValueStore(KeyValueStore):
     Access to any other scopes will raise an InvalidScopeError
     """
 
-    def __init__(self, session, table_name):
+    def __init__(self, driver):
         """
         """
-        self._session = session
-        self._table_name = table_name
+        self._driver = driver
 
     _allowed_scopes = (
         Scope.user_state,
@@ -32,7 +30,7 @@ class CassandraUserStateKeyValueStore(KeyValueStore):
             raise InvalidScopeError(key)
 
     @staticmethod
-    def _selectors_from_key(key):
+    def _criteria_from_key(key):
         """
         parses a kvs key to retrieve the values we need as a dict:
             student_id
@@ -49,50 +47,20 @@ class CassandraUserStateKeyValueStore(KeyValueStore):
             'field_name': key.field_name,
         }
 
-    @staticmethod
-    def _serialize_field_value(value):
-        """
-        """
-        return json.dumps(value)
-
-    @staticmethod
-    def _deserialize_field_value(value):
-        """
-        """
-        return json.loads(value)
-
     def get(self, key):
         """
         """
         self._check_scope(key)
-
-        selectors = self._selectors_from_key(key)
-        where = ' AND '.join(('{}=%({})s'.format(k, k) for k in selectors))
-        query = "SELECT field_value FROM {} WHERE {}".format(
-            self._table_name,
-            where,
-        )
-        log.info(query)
-        log.info(selectors)
-        rows = list(self._session.execute(query, selectors))
-        return self._deserialize_field_value(rows[0].field_value) if len(rows) else None
+        criteria = self._criteria_from_key(key)
+        return self._driver.get_current_field_value(**criteria)
 
     def set(self, key, value):
         """
         Set a single value in the KeyValueStore
         """
         self._check_scope(key)
-
-        values = self._selectors_from_key(key)
-        values.update({'field_value': self._serialize_field_value(value)})
-        query = "INSERT INTO {} ({}) VALUES ({})".format(
-            self._table_name,
-            ', '.join(values.keys()),
-            ', '.join(('%({})s'.format(k) for k in values))
-        )
-        log.info(query)
-        log.info(values)
-        self._session.execute(query, values)
+        criteria = self._criteria_from_key(key)
+        return self._driver.set_current_field_value(field_value=value, **criteria)
 
     def set_many(self, kv_dict):
         """
@@ -119,16 +87,8 @@ class CassandraUserStateKeyValueStore(KeyValueStore):
         """
         """
         self._check_scope(key)
-
-        selectors = self._selectors_from_key(key)
-        where = ' AND '.join(('{}=%({})s'.format(k, k) for k in selectors))
-        self._session.execute(
-            "DELETE FROM {} WHERE {}".format(
-                self._table_name,
-                where,
-            ),
-            selectors,
-        )
+        criteria = self._criteria_from_key(key)
+        return self._driver.delete_current_field_value(**criteria)
 
     def has(self, key):
         """

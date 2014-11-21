@@ -6,6 +6,7 @@ from opaque_keys.edx.locator import CourseKey, BlockUsageLocator
 from xblock.fields import Scope
 from xblock.runtime import KeyValueStore
 
+from lms.lib.cassandra_driver import CassandraDriver
 from lms.lib.xblock.stores import CassandraUserStateKeyValueStore
 
 class CassandraUserStateKeyValueStoreTestCase(unittest.TestCase):
@@ -15,7 +16,8 @@ class CassandraUserStateKeyValueStoreTestCase(unittest.TestCase):
         self.session = cluster.connect()
         self.session.set_keyspace('mykeyspace')
         self.table_name = 'user_state'
-        self.kvs = CassandraUserStateKeyValueStore(self.session, self.table_name)
+        self.driver = CassandraDriver(self.session, self.table_name)
+        self.kvs = CassandraUserStateKeyValueStore(self.driver)
         self.course_key = CourseKey.from_string('test/course/key')
         self.block_type = 'test_block_type'
         self.block_id = 'test_block_id'

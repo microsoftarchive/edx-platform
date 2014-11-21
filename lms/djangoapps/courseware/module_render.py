@@ -56,12 +56,15 @@ from util.sandboxing import can_execute_unsafe_code, get_python_lib_zip
 
 # hackathon
 from cassandra.cluster import Cluster
+from lms.lib.cassandra_driver import CassandraDriver
 from lms.lib.xblock.stores import CassandraUserStateKeyValueStore
 _session = Cluster().connect()
 _session.set_keyspace('mykeyspace')
 def _get_student_module_data():
     #return None
-    return KvsFieldData(CassandraUserStateKeyValueStore(_session, 'user_state'))
+    return KvsFieldData(
+        CassandraUserStateKeyValueStore(CassandraDriver(_session, 'user_state'))
+    )
 
 log = logging.getLogger(__name__)
 
