@@ -22,30 +22,57 @@
 
 <%block name="bodyclass">view-profile profile-shared is-authenticated</%block>
 <%block name="nav_skip">#content-main</%block>
-<section class="learner-profile-header">
-	<div class="container" id="content-header">
+
+
+<section class="profile-header">
+	<div class="container container-header">
 		<header>
-			<div class="learner-image">Profile Image Here</div>
-			<div class="learner-username">Username</div>
-			<div class="header-label">Learner Profile</div>
-			<div class="header-actions">None for now</div>
+			<div class="learner-image">
+				<img src="${static.url('images/profile-default.png')}" width=100 height=100>
+			</div>
+			<h1 class="learner-username">HappyXsy</h1>
+			<h2 class="header-label">Learner Profile</h2>
 		</header>
-		<article>Current Learning Goal Section
-		</article>
-		<article>Additional Learner Details
-		</article>
 	</div>
 </section>
-<div class="container" id="content-main">
-	<section class="learner-profile-content">
-		<article>Current Learning Goal Section
-		</article>
-		<article>Additional Learner Details
-		</article>
-	</section>
-</div>
-
-
-% if third_party_auth.is_enabled():
-    <%include file="third_party_auth.html" />
-% endif
+<section class="profile-status">
+	<div class="container">
+		<section class="">
+			<div>Current Learning Goal 
+			</div>
+			<div>Actual learning goal input view here.  
+			</div>
+			<div class="wrapper-actions">
+				Tweet/Facebook share icons
+			</div>
+		</section>
+	</div>
+</section>
+<section class="profile-about">
+	<div class="container">
+		<section class="wrapper-about">
+			<div class="about-category">
+				<h3 class="about-header">Learning From:</h3>
+				<span class="about-location">Cambridge, MA</span>
+			</div>
+			<div class="about-category">
+				<h3 class="about-header">Field of Study:</h3>
+				<span class="about-study">Education</span>
+			</div>
+			<div class="about-category">
+				<h3 class="about-header">Find Me Online:</h3>
+				<span class="about-social">Facebook, Twitter, LinkedIn</span>
+			</div>
+		</section>
+	</div>
+</section>
+<section class="profile-courses">
+	<div class="container">
+		<section class="">
+			<article>Current Learning Goal Section
+			</article>
+			<article>Additional Learner Details
+			</article>
+		</section>
+	</div>
+</section>
