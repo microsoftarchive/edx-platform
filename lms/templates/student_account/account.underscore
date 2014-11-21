@@ -1,88 +1,132 @@
 <form id="email-change-form" method="post">
-    <div id="personal" class="col-1-3 personal-settings">
-        <h2 class="title">Personal info</h2>
+  <div class="settings-form-wrapper">
+      <div id="personal" class="col-1-3 personal-settings">
+        <h3 class="title">Personal info</h3>
 
         <ul class="list-input">
-        <li class="field text">
-        <label for="full-name"><%- gettext("Full Name") %></label>
-        <input id="full-name" type="text" name="full-name" value="" data-validate="required"/>
-        <div id="full-name-status" />
-        </li>
+          <li class="field text">
+            <label for="full-name"><%- gettext("Full Name") %></label>
+            <input id="full-name" type="text" name="full-name" value="" data-validate="required"/>
+            <div id="full-name-status" />
+          </li>
 
-        <li class="field text">
-        <label for="gender"><%- gettext("Gender") %></label>
-        <select id="gender" name="gender">
-        </select>
-        <div id="gender-status" />
-        </li>
+          <li class="field text">
+            <label for="gender"><%- gettext("Gender") %></label>
+            <select id="gender" name="gender">
+            </select>
+            <div id="gender-status" />
+          </li>
 
-        <li class="field text">
-        <label for="year-of-birth"><%- gettext("Year of Birth") %></label>
-        <select id="year-of-birth" name="year-of-birth">
-        </select>
-        <div id="year-of-birth-status" />
-        </li>
+          <li class="field text">
+            <label for="year-of-birth"><%- gettext("Year of Birth") %></label>
+            <select id="year-of-birth" name="year-of-birth">
+            </select>
+            <div id="year-of-birth-status" />
+          </li>
 
-        <li class="field text">
-        <label for="level-of-education"><%- gettext("Level of Education") %></label>
-        <select id="level-of-education" name="level-of-education">
-        </select>
-        <div id="level-of-education-status" />
-        </li>
+          <li class="field text">
+            <label for="level-of-education"><%- gettext("Level of Education") %></label>
+            <select id="level-of-education" name="level-of-education">
+            </select>
+            <div id="level-of-education-status" />
+          </li>
 
-        <li class="field text">
-        <label for="reason-for-edx"><%- gettext("Your reason for using edX") %></label>
-        <textarea id="reason-for-edx" name="reason-for-edx"></textarea>
-        <div id="reason-for-edx-status" />
-        </li>
+          <li class="field text">
+            <label for="reason-for-edx"><%- gettext("Your reason for using edX") %></label>
+            <textarea id="reason-for-edx" name="reason-for-edx"></textarea>
+            <div id="reason-for-edx-status" />
+          </li>
         </ul>
+      </div>
+
+            <div id="login" class="col-1-3 login-settings">
+                <h3 class="title">Login info</h3>
+
+                <ul class="list-input">
+
+                  <li class="field text">
+                  <label for="new-email"><%- gettext("New Address") %></label>
+                  <input id="new-email" type="text" name="new-email" value="" placeholder="xsy@edx.org" data-validate="required email"/>
+                  <div id="new-email-status" />
+                  </li>
+
+                  <li class="field text">
+                  <label for="password"><%- gettext("Password") %></label>
+                  <input id="password" type="password" name="password" value="" data-validate="required"/>
+                  <div id="password-status" />
+                  </li>
+
+
+                  <div id="password-reset">
+                      <a href="#"><%- gettext("Reset Password") %></a>
+                  </div>
+                  <div id="password-reset-status" />
+                  </li>
+                </ul>
+
+      <!-- TODO: hook this up -->
+                <div class="social-auth-links">
+                  <h2 class="title">Connected Accounts</h3>
+                  <ul>
+                    <li><i class="icon-link"></i> <a href="">Facebook</a></li>
+                    <li><i class="icon-link"></i> <a href="">Google</a></li>
+                  </ul>
+                </div>
+
+      <!-- TODO: hook this up -->
+                <div class="verification-status">
+                  <h2 class="title">Verification Status</h3>
+
+                  <p class="verified">Verified</p>
+                  <p class="meta">expires June 2015</p>
+
+                </div>
+            </div>
+
+      <div id="location" class="col-1-3 location-settings">
+        <h3 class="title">Location info</h3>
+
+        <ul class="list-input">
+
+          <li class="field text">
+            <label for="country"><%- gettext("Country") %></label>
+            <select id="country" name="country">
+            </select>
+            <div id="country-status" />
+          </li>
+
+          <li class="field text">
+            <label for="city"><%- gettext("City") %></label>
+            <input id="city" type="text" name="city" value=""/>
+            <div id="city-status" />
+          </li>
+
+          <li class="field text">
+            <label for="language-preference"><%- gettext("Language Preference") %></label>
+            <select id="language-preference" name="language-preference">
+            </select>
+            <div id="language-preference-status" />
+          </li>
+
+          <li class="field text">
+            <label for="timezone"><%- gettext("Timezone") %></label>
+            <select id="timezone" name="timezone">
+            </select>
+            <div id="timezone-status" />
+          </li>
+        </ul>
+      </div>
+
     </div>
 
-    <div id="location" class="col-1-3 location-settings">
-        <h2 class="title">Location info</h2>
-        <label for="country"><%- gettext("Country") %></label>
-        <select id="country" name="country">
-        </select>
-        <div id="country-status" />
-
-        <label for="city"><%- gettext("City") %></label>
-        <input id="city" type="text" name="city" value=""/>
-        <div id="city-status" />
-
-        <label for="language-preference"><%- gettext("Language Preference") %></label>
-        <select id="language-preference" name="language-preference">
-        </select>
-        <div id="language-preference-status" />
-
-        <label for="timezone"><%- gettext("Timezone") %></label>
-        <select id="timezone" name="timezone">
-        </select>
-        <div id="timezone-status" />
-
-    </div>
-
-    <div id="login" class="col-1-3 login-settings">
-        <h2 class="title">Login info</h2>
-        <label for="new-email"><%- gettext("New Address") %></label>
-        <input id="new-email" type="text" name="new-email" value="" placeholder="xsy@edx.org" data-validate="required email"/>
-        <div id="new-email-status" />
-
-        <label for="password"><%- gettext("Password") %></label>
-        <input id="password" type="password" name="password" value="" data-validate="required"/>
-        <div id="password-status" />
-
-        <div id="password-reset">
-            <a href="#"><%- gettext("Reset Password") %></a>
-        </div>
-        <div id="password-reset-status" />
-    </div>
-
-    <hr>
-
-    <div id="save">
-        <div class="submit-button">
-            <input type="submit" id="account-change-submit" value="<%- gettext("Save changes") %>">
-        </div>
-        <div id="request-email-status" />
+    <div id="save" class="form-actions">
+      <ul class="actions-list">
+        <li class="action action-primary">
+          <input class="submit-button" type="submit" id="account-change-submit" value="<%- gettext("Save changes") %>">
+          <!--<div class="submit-button"></div>-->
+          <div id="request-email-status" />
+        </li>
+        <li class="action action-cancel"><a href="">Cancel and return to Dashboard</a></li>
+      </ul>
     </div>
 </form>

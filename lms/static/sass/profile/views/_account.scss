@@ -1,49 +1,237 @@
 // lms student profile - account
 
-.profile-account {
+.view-profile-settings {
 
-}
-
-// TO-DO:  move styles below into the .profile-account class
-#account-container {
-  [class*='col-'] {
-    float: left;
+  .container .content-main {
+      width: flex-grid(12);
   }
 
-  .col-1-3 {
-    width: 32%;
-    height: 450px;
-  }
+  .settings-form-wrapper {
+    @include clearfix();
+    margin-bottom: ($baseline*2);
 
-  .grid:after {
-    content: "";
-    display: table;
-    clear: both;
-  }
+    .col-1-3 {
+      width: 28%;
+      display: inline-block;
+      vertical-align: top;
+      margin-right: $baseline;
+      border-right: 1px solid $gray-l3;
+      padding-right: $baseline;
 
-  .personal-settings,
-  .location-settings {
-    border-right: 1px solid $gray-l3;
-  }
+      &:last-child {
+        margin-right: 0;
+        border-right: none;
+        padding-right: 0;
+      }
+    }
 
-  .list-input {
-    @extend %ui-no-list;
+    .social-auth-links,
+    .verification-status {
+      margin-top: ($baseline*1.5);
 
-    .field {
-      margin-bottom: 10px;
+      ul {
+        @extend %ui-no-list;
+      }
+
+      p {
+        margin: 0 0 5px 0;
+      }
+
+      .verified {
+        @extend %t-title6;
+        color: $green;
+      }
+
+      .not-verified {
+        @extend %t-title6;
+        color: $gray;
+      }
+
+      .verified-expired {
+        @extend %t-title6;
+        color: $red;
+      }
+
+      .meta {
+        @extend %t-copy-sub2;
+        color: $gray-l2;
+      }
+    }
+
+
+    .actions-list {
+      @extend %ui-no-list;
+      text-align: center;
+
+      .action {
+        margin: ($baseline/2) 0;
+      }
+    }
+
+    .submit-button {
+      @extend %btn-primary-blue;
+      width: 325px;
+    }
+
+    // form styles borrowed from main _account.scss
+    // TODO: these should be made global
+    .list-input {
+      @extend %ui-no-list;
+
+      .field {
+        margin: 0 0 $baseline 0;
+
+        // elements
+        label, input, textarea {
+          border-radius: 0;
+          display: block;
+          height: auto;
+          font-family: $sans-serif;
+          font-style: normal;
+          font-weight: 600;
+          color: $base-font-color;
+        }
+
+        label {
+          @include transition(color 0.15s ease-in-out 0s);
+          margin: 0 0 ($baseline/4) 0;
+          color: tint($black, 20%);
+        }
+
+        .tip {
+          @include transition(color 0.15s ease-in-out 0s);
+          display: block;
+          margin-top: ($baseline/4);
+          color: $lighter-base-font-color;
+          font-size: em(13);
+        }
+
+        &.password {
+          position: relative;
+
+          .tip {
+            position: absolute;
+            top: 0;
+            @include right(0);
+          }
+        }
+
+        input, textarea {
+          width: 100%;
+          margin: 0;
+          padding: ($baseline/2) ($baseline*.75);
+
+          &.long {
+            width: 100%;
+          }
+
+          &.short {
+            width: 25%;
+          }
+        }
+
+        textarea.long {
+          height: ($baseline*5);
+        }
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        select {
+          width: 100%;
+        }
+
+        // types - checkboxes/radio buttons
+        &.checkbox {
+
+          input[type="checkbox"] {
+            display: inline-block;
+            width: auto;
+            @include margin-right($baseline/4);
+          }
+
+          label {
+            display: inline-block;
+          }
+        }
+
+        // states - all
+        &.disabled, &.submitted {
+          color: rgba(0,0,0,.25);
+
+          label {
+            cursor: text;
+
+            &:after {
+              margin-left: ($baseline/4);
+            }
+          }
+
+          textarea, input {
+            background: $container-bg;
+            color: rgba(0,0,0,.25);
+          }
+        }
+
+        // states - focused
+        &.is-focused {
+
+          label {
+            color: saturate($link-color-d1,15%);
+          }
+
+          .tip {
+            color: saturate($link-color-d1,15%);
+          }
+        }
+
+        // states - disabled
+        &.disabled {
+          label:after {
+            color: rgba(0,0,0,.35);
+            content: "(Disabled Currently)";
+          }
+        }
+
+        &.error {
+
+          label {
+            color: $red;
+          }
+
+          input, textarea {
+            border-color: tint($red,50%);
+          }
+        }
+
+        &.required {
+
+          label {
+            font-weight: 600;
+
+            a {
+              font-weight: 600 !important;
+            }
+          }
+
+          label:after {
+            margin-left: ($baseline/4);
+            content: "*";
+          }
+        }
+      }
+
+
+    }
+
+    input, textarea, select {
+      display: block;
+    }
+
+    input, textarea {
+      width: 80%;
     }
   }
-
-  input, textarea, select {
-    display: block;
-  }
-
-  input, textarea {
-    width: 80%;
-  }
-
-  #account-change-submit {
-    @extend %btn-primary-blue;
-    width: 325px;
-  }
 }
+
