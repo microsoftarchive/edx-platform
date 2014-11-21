@@ -109,33 +109,28 @@
     <div class="enrollments-wrapper">
       <h3 class="title title-enrolls">Course enrollments</h3>
       <ul class="enrollments-list">
-        <li class="enrollment">
-          <h3 class="title-course">
-            <a class="course-link" href="">
-              <span class="org">BerkeleyX</span>
-              <span class="course-num">GG101x</span>
-              <span class="course-name">The Science of Happiness</span>
-              <span class="enroll-type">Honor Code track</span>
-            </a>
-          </h3>
-          <p class="meta">Start date: October 17, 2014</p>
-        </li>
-        <li class="enrollment">
-          <h3 class="title-course">
-            <a class="course-link" href="">
-              <span class="org">UTokyoX</span>
-              <span class="course-num">UTokyo001x</span>
-              <span class="course-name">Visualizing Postwar Tokyo, Part 1</span>
-              <span class="enroll-type">Honor Code track</span>
-            </a>
-          </h3>
-          <p class="meta">Start date: October 17, 2014</p>
-        </li>
-      </ul>
 
-          %for enrollment in course_enrollments:
-              <!--<p>${enrollment['course']['course_id']}</p>-->
-          %endfor
+        % for enrollment in enrollments:
+          <li class="enrollment">
+            <h3 class="title-course">
+              <a class="course-link" href="">
+                <span class="org">${enrollment[1].org}</span>
+                <span class="course-num">${enrollment[1].number}</span>
+                <span class="course-name">${enrollment[1].display_name}</span>
+                
+                % for mode in enrollment[0]['course']['course_modes']:
+                  % if mode['slug'] == enrollment[0]['mode']:
+                    <span class="enroll-type">${mode['name']}</span>
+                  % endif
+                % endfor
+              
+              </a>
+            </h3>
+            <p class="meta">${enrollment[1].start.strftime("Start date: %B %-d, %Y")}</p>
+          </li>
+        % endfor
+
+      </ul>
     </div>
 
   </section>
