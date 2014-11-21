@@ -1,3 +1,4 @@
+import json
 import logging
 
 from xblock.exceptions import KeyValueMultiSaveError, InvalidScopeError
@@ -48,6 +49,18 @@ class CassandraUserStateKeyValueStore(KeyValueStore):
             'field_name': key.field_name,
         }
 
+    @staticmethod
+    def _serialize_field_value(value):
+        """
+        """
+        return json.dumps(value)
+
+    @staticmethod
+    def _deserialize_field_value(value):
+        """
+        """
+        return json.loads(value)
+
     def get(self, key):
         """
         """
@@ -60,8 +73,9 @@ class CassandraUserStateKeyValueStore(KeyValueStore):
             where,
         )
         log.info(query)
+        log.info(selectors)
         rows = list(self._session.execute(query, selectors))
-        return rows[0].field_value if len(rows) else None
+        return self._deserialize_field_value(rows[0].field_value) if len(rows) else None
 
     def set(self, key, value):
         """
@@ -70,13 +84,14 @@ class CassandraUserStateKeyValueStore(KeyValueStore):
         self._check_scope(key)
 
         values = self._selectors_from_key(key)
-        values.update({'field_value': value})
+        values.update({'field_value': self._serialize_field_value(value)})
         query = "INSERT INTO {} ({}) VALUES ({})".format(
             self._table_name,
             ', '.join(values.keys()),
             ', '.join(('%({})s'.format(k) for k in values))
         )
         log.info(query)
+        log.info(values)
         self._session.execute(query, values)
 
     def set_many(self, kv_dict):
