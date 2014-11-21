@@ -21,16 +21,17 @@
     clear: both;
   }
 
-  #personal, #location {
-    border-right: 1px inset;
+  .personal-settings,
+  .location-settings {
+    border-right: 1px solid $gray-l3;
   }
 
-  h2 {
-    text-align: center;
-  }
+  .list-input {
+    @extend %ui-no-list;
 
-  label, input, textarea, select, a {
-    margin: 10px;
+    .field {
+      margin-bottom: 10px;
+    }
   }
 
   input, textarea, select {
@@ -42,6 +43,7 @@
   }
 
   #account-change-submit {
+    @extend %btn-primary-blue;
     width: 325px;
   }
 }

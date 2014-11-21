@@ -2,9 +2,6 @@
 
 .view-profile-activity {
 
-
-  // things that will just be on this page
-
   // general course info styles
   .title-course {
     @extend %t-title5;
@@ -127,6 +124,36 @@
     &:hover span {
       color: $blue;
       text-decoration: none;
+    }
+  }
+
+  // notification stream
+  .notification-block {
+    margin-bottom: $baseline;
+    border-top: 2px solid $blue;
+    padding: $baseline;
+    background-color: $gray-d4;
+
+    .notice-date {
+      @extend %t-copy-sub2;
+      margin-top: ($baseline/4);
+      color: $gray;
+    }
+
+    .title {
+      @extend %t-title6;
+      color: $gray-l3;
+    }
+
+    p {
+      @extend %t-copy-sub1;
+      margin-top: 0;
+      margin-bottom: ($baseline/4);
+      color: $white;
+    }
+
+    a {
+      @extend %t-copy-sub1;
     }
   }
 
