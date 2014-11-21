@@ -1,9 +1,23 @@
 <%! from django.utils.translation import ugettext as _ %>
 <%namespace name='static' file='/static_content.html'/>
+<%! from django.template import RequestContext %>
+<%! import third_party_auth %>
+<%! from third_party_auth import pipeline %>
+<%! from microsite_configuration import microsite %>
+<%! from student.models import UserProfile %>
+
+<%!
+  from django.core.urlresolvers import reverse
+%>
 
 <%inherit file="../main.html" />
 
-<%block name="pagetitle">${_("Student Account")}</%block>
+<%namespace name='static' file='/static_content.html'/>
+
+<%block name="pagetitle">${_("Account Settings")}</%block>
+<%block name="bodyclass">view-profile view-profile-settings is-authenticated</%block>
+<%block name="nav_skip">#content-main</%block>
+
 
 <%block name="js_extra">
     <script type="text/javascript" src="${static.url('js/vendor/underscore-min.js')}"></script>
@@ -19,6 +33,22 @@
 % endfor
 </%block>
 
-<h1>Student Account</h1>
+<div class="container" id="content-main">
 
-<div id="account-container" class="grid"></div>
+  <div class="page-header">
+    <h3 class="subtitle">Profile</h3>
+    <h2 class="title title-page">Account Settings</h2>
+  </div>
+
+  <section class="content-main">
+
+    <div id="account-container" class="grid"></div>
+
+  </section>
+
+
+  <aside class="content-supplementary">
+
+  </aside>
+
+</div>

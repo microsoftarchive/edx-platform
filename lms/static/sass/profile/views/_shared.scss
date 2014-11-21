@@ -1,10 +1,137 @@
 // lms student profile - shared
 
+// static page for hackathon
+
 .profile-shared {
 
-  .learner-profile-header {
-    background-color: $blue;
+  .content-wrapper {
+    background-color: $gray-l6;
   }
 
 
+  // UI: 
+  .profile-header{
+    background-color: $header-border;
+
+    .container-header {
+      padding: 0;
+    }
+
+    // UI: Learner Image
+    .learner-image {
+      display: inline-block;
+
+      img {
+        border-radius: ($baseline*3);
+        position: absolute;
+        top: ($baseline*4.5);
+        margin-left: $baseline;
+        background-color: $white;
+        box-shadow: 0 2px 1px $gray;
+      } 
+
+    }
+
+    // UI: Learner Labels
+    .learner-username {
+      display: inline-block;
+      margin: ($baseline/2) 0 ($baseline/2) ($baseline*7);
+      color: $white;
+      text-transform: lowercase;
+      font-weight: 300;
+
+      
+    }
+
+    .header-label {
+      display: inline-block;
+      margin: $baseline 0 ;
+      float: right;
+      text-transform: uppsercase;
+      color: $white;
+      font-family: 'Avenir Next', 'Open Sans';
+    }
+
+  }
+
+  .profile-status {
+
+    .container {
+      padding: $baseline;
+    }
+
+    .about-category {
+      display: inline-block;
+      margin-left: 11%;
+      width: flex-grid(8,12);
+
+      .about-header {
+        @extend %t-title7;
+        @extend %t-strong;
+      }
+    }
+    .wrapper-actions {
+      display: inline-block;
+      float: right;
+      margin-top: ($baseline/2);
+    }
+  }
+
+
+  .profile-about {
+
+    .container {
+      border-top: 1px solid $gray-l3;
+      border-bottom: 1px solid $gray-l3;
+      padding: ($baseline/2);
+    }
+
+    .about-category {
+      display: inline-block;
+      width: flex-grid(3,12);
+
+      .about-header {
+        @extend %t-title7;
+        @extend %t-strong;
+      }
+
+    }
+
+  }
+
+  .profile-courses {
+    background-color: $white;
+    margin-top: $baseline;
+    min-height:400px;
+
+
+    .container {
+      padding: 0;
+    }
+
+    .profile-course-nav {
+      border-bottom: 1px solid $gray-l3;
+
+      .about-header {
+        @extend %t-title6;
+        text-transform: uppercase;
+        display: inline-block;
+        margin-right: $baseline;
+        padding: $baseline 0 ($baseline/2);
+      }
+
+      .nav-option {
+        display: inline-block;
+        padding: ($baseline/2) 0;
+        margin-right: $baseline;
+        color: $blue;
+
+
+        &.active {
+          border-bottom: 4px solid $blue;
+          color: $black;
+        }
+      }
+    }
+  }
 }

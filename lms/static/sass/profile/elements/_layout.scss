@@ -3,9 +3,73 @@
 .view-profile {
 
   .global {
-    @include box-sizing(border-box);
     border-bottom: 1px solid $gray-l3;
+
+    nav {
+      @include box-sizing(border-box);
+      padding-left: ($baseline*2);
+      padding-right: ($baseline*2);
+    }
   }
+
+  // basic setup
+  .wrapper {
+    @include clearfix();
+    @include box-sizing(border-box);
+    width: 100%;
+  }
+
+  .content-wrapper {
+    width: flex-grid(12);
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  // ====================
+
+  // typography - basic
+  .page-header {
+    margin-bottom: $baseline;
+
+    .title {
+      @extend %t-title4;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      @extend %t-title7;
+      margin-bottom: 0;
+      color: $gray-l2;
+    }
+  }
+
+  .section-header {
+    //@extend %t-title4;
+    //@extend %t-strong;
+
+    .subtitle {
+    //  @extend %t-title7;
+    }
+    .area-header {
+    //  @extend %t-title6;
+    //  @extend %t-strong;
+
+      .subtitle {
+    //    @extend %t-title8;
+      }
+    }
+
+    .area-subheader {
+      //@extend %t-title7;
+      //@extend %t-strong;
+
+      .subtitle {
+   //     @extend %t-title9;
+      }
+    }
+  }
+
+  // ====================
 
   // page setup
   .container {

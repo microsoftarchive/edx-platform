@@ -22,30 +22,69 @@
 
 <%block name="bodyclass">view-profile profile-shared is-authenticated</%block>
 <%block name="nav_skip">#content-main</%block>
-<section class="learner-profile-header">
-	<div class="container" id="content-header">
+
+
+<section class="profile-header">
+	<div class="container container-header">
 		<header>
-			<div class="learner-image"><img src="${gravatar_url}"></div>
-			<div class="learner-username">Username</div>
-			<div class="header-label">Learner Profile</div>
-			<div class="header-actions">None for now</div>
+			<div class="learner-image">
+				<img src="${gravatar_url}" width=100 height=100>
+			</div>
+			<h1 class="learner-username">HappyXsy</h1>
+			<h2 class="header-label">Learner Profile</h2>
 		</header>
-		<article>Current Learning Goal Section
-		</article>
-		<article>Additional Learner Details
-		</article>
 	</div>
 </section>
-<div class="container" id="content-main">
-	<section class="learner-profile-content">
-		<article>Current Learning Goal Section
-		</article>
-		<article>Additional Learner Details
-		</article>
-	</section>
-</div>
-
-
-% if third_party_auth.is_enabled():
-    <%include file="third_party_auth.html" />
-% endif
+<section class="profile-status">
+	<div class="container">
+		<section>
+			<div class="about-category">
+				<h3 class="about-header">Current Learning Goal:</h3>
+				<span class="about-goal">I would like to learn about education and other things.</span>
+			</div>
+			<div class="wrapper-actions">
+				<span class="action-twitter">
+					<a href="https://twitter.com/share" class="twitter-share-button" data-text="My @edxonline learning goal: This is the student's learning goal" data-via="edxonline" data-count="none">Tweet</a>
+					<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+					</script>
+				</span>
+				<span class="action-facebook">
+				<img src="${static.url('images/temp-fb-share.png')}" width=56 height=20 style="margin-bottom:12px;">
+				</span>
+			</div>
+		</section>
+	</div>
+</section>
+<section class="profile-about">
+	<div class="container">
+		<section class="wrapper-about">
+			<div class="about-category">
+				<h3 class="about-header">Learning From:</h3>
+				<span class="about-location">Cambridge, MA</span>
+			</div>
+			<div class="about-category">
+				<h3 class="about-header">Field of Study:</h3>
+				<span class="about-study">Education</span>
+			</div>
+			<div class="about-category">
+				<h3 class="about-header">Find Me Online:</h3>
+				<span class="about-social"><a href="http://facebook.com/edxonline">Facebook</a>, <a href="http://twitter.com/edxonline">Twitter</a>, <a href="http://linkedin.com/company/edx">LinkedIn</a></span>
+			</div>
+		</section>
+	</div>
+</section>
+<section class="profile-courses">
+	<div class="container">
+		<nav class="profile-course-nav">
+			<h3 class="about-header">My Courses</h3>
+			<div class="nav-option active">
+				In-Session
+			</div>
+			<div class="nav-option">
+				<a href="#">Completed</a>
+			</div>
+		</nav>
+		<section class="course-listing">
+		</section>
+	</div>
+</section>

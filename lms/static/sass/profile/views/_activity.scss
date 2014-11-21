@@ -2,94 +2,158 @@
 
 .view-profile-activity {
 
+  // general course info styles
+  .title-course {
+    @extend %t-title5;
+    margin-bottom: ($baseline/2);
 
-  // things that will just be on this page
-  .certificates-wrapper {
-    margin: 0 0 $baseline 0;
-
-    .cert {
-      @include margin(0, $baseline,  $baseline*1.5, 0);
-      width: 30%;
-      min-width: 250px;
-      vertical-align: top;
+    .org {
+      @extend %t-copy-sub2;
       display: inline-block;
+      color: $gray-l2;
+
+      &:after {
+        content: " : "
+      }
     }
 
-    .cert-link:link,
-    .cert-link:visited {
-      display: block;
+    .course-num {
+      @extend %t-copy-sub2;
+      display: inline-block;
+      color: $gray-l2;
+    }
 
-      &:hover,
-      &:hover span {
-        color: $blue;
+    .course-name {
+      @extend %t-title4;
+      display: block;
+    }
+
+    .enroll-type {
+      @extend %t-title7;
+      @extend %t-weight4;
+      display: block;
+    }
+  }
+
+
+  .course-actions {
+    @extend %ui-no-list;
+
+    .action-primary a {
+      @extend %btn-secondary-blue-outline;
+      margin: ($baseline/2) 0;
+
+      &:hover {
         text-decoration: none;
       }
     }
 
-    .cert-image {
-      @include transition(background-color .15s ease-in-out 0s);
-      margin: ($baseline/2) 0;
-      border: 1px solid $gray-l2;
-      padding: ($baseline/3);
+    .action-secondary {
+      @extend %t-copy-sub2;
+    }
+  }
+
+  // cert specific styles
+  .certificates-wrapper {
+    margin: 0 0 $baseline 0;
+  }
+
+  .cert {
+    @include margin(0, $baseline,  $baseline*1.5, 0);
+    width: 30%;
+    min-width: 250px;
+    vertical-align: top;
+    display: inline-block;
+
+    .course-name {
+      @extend %t-title6;
+      display: block;
+    }
+  }
+
+  .cert-link:link,
+  .cert-link:visited {
+    display: block;
+
+    &:hover,
+    &:hover span {
+      color: $blue;
+      text-decoration: none;
+    }
+  }
+
+  .cert-image {
+    @include transition(background-color .15s ease-in-out 0s);
+    margin: ($baseline/2) 0;
+    border: 1px solid $gray-l2;
+    padding: ($baseline/3);
+
+    &:hover {
+      background-color: $gray-l3;
+    }
+  }
+
+
+  //extra selector to override bad p styles
+  .cert .meta,
+  .enrollment .meta {
+    @extend %t-copy-sub2;
+    color: $gray-l2;
+  }
+
+  // enrollment specific styles
+
+  .enrollments-list {
+    @extend %ui-no-list;
+
+    .enrollment {
+      border-top: 1px solid $gray-l4;
+      padding: ($baseline/2) ($baseline/2) ($baseline*.75) ($baseline/2);
 
       &:hover {
-        background-color: $gray-l3;
+        background-color: $gray-l6;
       }
     }
+  }
 
-    .title-cert {
-      @extend %t-title5;
+  .course-link:link,
+  .course-link:visited {
+    display: block;
 
-      .org {
-        @extend %t-copy-sub2;
-        display: inline-block;
-        color: $gray-l2;
-
-        &:after {
-          content: " : "
-        }
-      }
-
-      .course-num {
-        @extend %t-copy-sub2;
-        display: inline-block;
-        color: $gray-l2;
-      }
-
-      .course-name {
-        @extend %t-title6;
-        display: block;
-      }
-
-      .cert-type {
-        @extend %t-title7;
-        @extend %t-weight4;
-        display: block;
-      }
+    &:hover,
+    &:hover span {
+      color: $blue;
+      text-decoration: none;
     }
+  }
 
-    //extra selector to override bad p styles
-    .cert .meta {
+  // notification stream
+  .notification-block {
+    margin-bottom: $baseline;
+    border-top: 2px solid $blue;
+    padding: $baseline;
+    background-color: $gray-d4;
+
+    .notice-date {
       @extend %t-copy-sub2;
-      color: $gray-l2;
+      margin-top: ($baseline/4);
+      color: $gray;
     }
 
-    .cert-actions {
-      @extend %ui-no-list;
+    .title {
+      @extend %t-title6;
+      color: $gray-l3;
+    }
 
-      .action-primary a {
-        @extend %btn-primary-blue;
-        margin: ($baseline/2) 0;
-        color: $white;
+    p {
+      @extend %t-copy-sub1;
+      margin-top: 0;
+      margin-bottom: ($baseline/4);
+      color: $white;
+    }
 
-        &:hover {
-          text-decoration: none;
-        }
-      }
-
-      .action-secondary {
-        @extend %t-copy-sub2;
-      }
+    a {
+      @extend %t-copy-sub1;
     }
   }
 
