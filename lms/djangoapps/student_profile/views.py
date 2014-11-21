@@ -16,6 +16,7 @@ from enrollment.api import get_enrollments
 from user_api.api import profile as profile_api
 from lang_pref import LANGUAGE_KEY, api as language_api
 import third_party_auth
+import urllib, urllib2, hashlib
 
 
 @login_required
@@ -37,6 +38,7 @@ def index(request):
         HttpResponse: 500 if an unexpected error occurs.
 
     """
+
     if request.method == "GET":
         return _get_profile(request)
     elif request.method == "PUT":
@@ -58,8 +60,20 @@ def _get_profile(request):
     """
     user = request.user
 
+    default = "http://example.com/static/images/defaultavatar.jpg"
+    size = 40
+
+    gravatar_url = "http://www.gravatar.com/avatar/" + hashlib.md5(user.email.lower()).hexdigest() + "?"
+    gravatar_url += urllib.urlencode({'d':default, 's':str(size)})
+
+    try:
+        f = urllib2.urlopen(urllib2.Request(url))
+    except:
+        gravatar_url = "/static/images/profile-default.png"
+
     context = {
-        'disable_courseware_js': True
+        'disable_courseware_js': True,
+        'gravatar_url': gravatar_url
     }
 
     if third_party_auth.is_enabled():

@@ -64,8 +64,6 @@
         <div id="password-reset-status" />
     </div>
 
-    <hr>
-
     <div id="save">
         <div class="submit-button">
             <input type="submit" id="account-change-submit" value="<%- gettext("Save changes") %>">

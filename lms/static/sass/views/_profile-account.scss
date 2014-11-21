@@ -1,0 +1,40 @@
+#account-container {
+  [class*='col-'] {
+    float: left;
+  }
+
+  .col-1-3 {
+    width: 32%;
+    height: 450px;
+  }
+
+  .grid:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+  #personal, #location {
+    border-right: 1px inset;
+  }
+
+  h2 {
+    text-align: center;
+  }
+
+  label, input, textarea, select, a {
+    margin: 10px;
+  }
+
+  input, textarea, select {
+    display: block;
+  }
+
+  input, textarea {
+    width: 80%;
+  }
+
+  #account-change-submit {
+    width: 325px;
+  }
+}
