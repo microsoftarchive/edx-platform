@@ -8,6 +8,7 @@
   // general course info styles
   .title-course {
     @extend %t-title5;
+    margin-bottom: ($baseline/2);
 
     .org {
       @extend %t-copy-sub2;
@@ -26,7 +27,7 @@
     }
 
     .course-name {
-      @extend %t-title5;
+      @extend %t-title4;
       display: block;
     }
 
@@ -42,9 +43,8 @@
     @extend %ui-no-list;
 
     .action-primary a {
-      @extend %btn-primary-blue;
+      @extend %btn-secondary-blue-outline;
       margin: ($baseline/2) 0;
-      color: $white;
 
       &:hover {
         text-decoration: none;
@@ -96,8 +96,10 @@
     }
   }
 
+
   //extra selector to override bad p styles
-  .cert .meta {
+  .cert .meta,
+  .enrollment .meta {
     @extend %t-copy-sub2;
     color: $gray-l2;
   }
@@ -107,7 +109,7 @@
   .enrollments-list {
     @extend %ui-no-list;
 
-    .title-course {
+    .enrollment {
       border-top: 1px solid $gray-l4;
       padding: ($baseline/2) ($baseline/2) ($baseline*.75) ($baseline/2);
 
@@ -119,7 +121,7 @@
 
   .course-link:link,
   .course-link:visited {
-    @extend %ui-no-list;
+    display: block;
 
     &:hover,
     &:hover span {
