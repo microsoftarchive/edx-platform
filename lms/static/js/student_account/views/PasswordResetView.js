@@ -1,16 +1,17 @@
 define([
         'gettext',
         'jquery',
-        'js/student_account/views/FormView'
+        'js/student_account/views/FormView',
+        'text!js/student_account/templates/password_reset.underscore'
     ],
-    function( gettext, $, FormView ) {
+    function( gettext, $, FormView, passwordResetTpl ) {
 
         'use strict';
 
         return FormView.extend({
             el: '#password-reset-wrapper',
 
-            tpl: '#password_reset-tpl',
+            tpl: passwordResetTpl,
 
             events: {
                 'click .js-reset': 'submitForm'

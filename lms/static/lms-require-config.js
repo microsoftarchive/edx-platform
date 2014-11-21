@@ -9,6 +9,7 @@ var require = {
         'gettext':              '/i18n',
         'jquery':               'js/vendor/jquery.min',
         'jquery.cookie':        'js/vendor/jquery.cookie',
+        'text':                 'js/vendor/text',
         'underscore':           'js/vendor/underscore-min',
         'underscore.string':    'js/vendor/underscore.string.min'
     },

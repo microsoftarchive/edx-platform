@@ -2,16 +2,17 @@ define([
         'gettext',
         'jquery',
         'underscore',
-        'js/student_account/views/FormView'
+        'js/student_account/views/FormView',
+        'text!js/student_account/templates/login.underscore'
     ],
-    function( gettext, $, _, FormView ) {
+    function( gettext, $, _, FormView, loginTpl ) {
 
         'use strict';
 
         return FormView.extend({
             el: '#login-form',
 
-            tpl: '#login-tpl',
+            tpl: loginTpl,
 
             events: {
                 'click .js-login': 'submitForm',

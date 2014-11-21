@@ -11,20 +11,21 @@ define([
         'js/student_account/views/RegisterView',
         'js/student_account/models/RegisterModel',
         'js/student_account/enrollment',
-        'js/student_account/shoppingcart'
+        'js/student_account/shoppingcart',
+        'text!js/student_account/templates/access.underscore'
     ],
     function( Backbone, gettext, $, _, _s,
         LoginView, LoginModel,
         PasswordResetView, PasswordResetModel,
         RegisterView, RegisterModel,
-        EnrollmentInterface, ShoppingCartInterface ) {
+        EnrollmentInterface, ShoppingCartInterface, accessTpl ) {
 
         'use strict';
 
         return Backbone.View.extend({
             el: '#login-and-registration-container',
 
-            tpl: '#access-tpl',
+            tpl: accessTpl,
 
             events: {
                 'change .form-toggle': 'toggleForm'
@@ -46,7 +47,6 @@ define([
                  */
                 _.mixin( _s.exports() );
 
-                this.tpl = $(this.tpl).html();
                 this.activeForm = obj.mode || 'login';
                 this.thirdPartyAuth = obj.thirdPartyAuth || {
                     currentProvider: null,

@@ -2,16 +2,17 @@ define([
         'gettext',
         'jquery',
         'underscore',
-        'js/student_account/views/FormView'
+        'js/student_account/views/FormView',
+        'text!js/student_account/templates/register.underscore'
     ],
-    function( gettext, $, _, FormView ) {
+    function( gettext, $, _, FormView, registerTpl ) {
 
         'use strict';
 
         return FormView.extend({
             el: '#register-form',
 
-            tpl: '#register-tpl',
+            tpl: registerTpl,
 
             events: {
                 'click .js-register': 'submitForm',
