@@ -74,7 +74,7 @@
           <span class="org">UTokyoX</span>
           <span class="course-num">UTokyo001x</span>
           <span class="course-name">Visualizing Postwar Tokyo, Part 1</span>
-          <span class="enroll-type">Honor Code Certificate</span>
+          <span class="enroll-type">Professional Education Certificate</span>
         </h4>
         </a>
         <p class="meta">earned December 2014</p>
@@ -91,7 +91,7 @@
           <span class="org">BerkeleyX</span>
           <span class="course-num">GG101x</span>
           <span class="course-name">The Science of Happiness</span>
-          <span class="enroll-type">Honor Code Certificate</span>
+          <span class="enroll-type">Professional Education Certificate</span>
         </h4>
         </a>
         <p class="meta">earned December 2014</p>
@@ -134,15 +134,37 @@
       </ul>
 
           %for enrollment in course_enrollments:
-              <p>${enrollment['course']['course_id']}</p>
+              <!--<p>${enrollment['course']['course_id']}</p>-->
           %endfor
     </div>
 
   </section>
 
   <aside class="content-supplementary">
-    <h2 class="title title-sup">Related</h2>
-    <p>Complete your <a href="">edX Profile</a></p>
+    <h2 class="title title-sup">Notifications</h2>
+
+    <div class="notification-block">
+     <h3 class="title"><i class="icon-user"></i> We hardly know you!</h3>
+      <p>Your profile is only 20% complete.</p>
+      <p><a href="">Complete your edX Profile</a></p>
+     <p class="notice-date">posted 11/23/2014 at 11:59pm UTC</p>
+    </div>
+
+    <div class="notification-block">
+      <h3 class="title"><i class="icon-time"></i> You have an assignment due tomorrow</h3>
+      <p>The midterm exam in Visualizing Postwar Tokyo, Part 1 is due tomorrow.</p>
+      <p><a href="">Go to assignment</a></p>
+     <p class="notice-date">posted 11/23/2014 at 11:59pm UTC</p>
+    </div>
+
+
+    <div class="notification-block">
+      <h3 class="title"><i class="icon-time"></i> Your Verification will expire soon</h3>
+      <p>It's been almost a year since you last verified.</p>
+      <p><a href="">Re-verify now</a></p>
+     <p class="notice-date">posted 11/23/2014 at 11:59pm UTC</p>
+    </div>
+
   </aside>
 
 
