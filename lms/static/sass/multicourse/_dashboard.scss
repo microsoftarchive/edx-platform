@@ -283,8 +283,8 @@
     width: flex-grid(8);
 
     > header {
-      border-bottom: 1px solid $border-color-2;
       margin-bottom: 30px;
+      margin-top: ($baseline/2);
 
       h2 {
         font-family: $f-sans-serif;
