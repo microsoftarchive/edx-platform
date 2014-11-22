@@ -1,8 +1,7 @@
 define([
-    'jquery', 'js/edxnotes/views/notes_factory', 'js/common_helpers/ajax_helpers',
-    'jasmine-jquery'
-],
-function($, Notes, AjaxHelpers) {
+    'annotator', 'js/edxnotes/views/notes_factory', 'js/common_helpers/ajax_helpers',
+    'js/spec/edxnotes/custom_matchers'
+], function(Annotator, NotesFactory, AjaxHelpers, customMatchers) {
     'use strict';
     var B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
         base64Encode, makeToken;
@@ -51,23 +50,28 @@ function($, Notes, AjaxHelpers) {
         return 'header.' + base64Encode(JSON.stringify(rawToken)) + '.signature';
     };
 
-    describe('EdxNotes Notes', function() {
+    describe('EdxNotes NotesFactory', function() {
         var wrapper;
 
         beforeEach(function() {
+            customMatchers(this);
             loadFixtures('js/fixtures/edxnotes/edxnotes_wrapper.html');
-            wrapper = $('div#edx-notes-wrapper-123');
+            this.wrapper = document.getElementById('edx-notes-wrapper-123');
         });
 
-        it('Tests that annotator is initialized with options correctly', function() {
+        afterEach(function () {
+            _.invoke(Annotator._instances, 'destroy');
+        });
+
+        it('can initialize annotator correctly', function() {
             var requests = AjaxHelpers.requests(this),
                 token = makeToken(),
-                annotationData = {
+                options = {
                     user: 'a user',
                     usage_id : 'an usage',
                     course_id: 'a course'
                 },
-                annotator = Notes.factory(wrapper[0], {
+                annotator = NotesFactory.factory(this.wrapper, {
                     endpoint: '/test_endpoint',
                     user: 'a user',
                     usageId : 'an usage',
@@ -77,12 +81,12 @@ function($, Notes, AjaxHelpers) {
                 }),
                 request = requests[0];
 
-            expect(requests.length).toBe(1);
+            expect(requests).toHaveLength(1);
             expect(request.requestHeaders['x-annotator-auth-token']).toBe(token);
             expect(annotator.options.auth.tokenUrl).toBe('/test_token_url');
             expect(annotator.options.store.prefix).toBe('/test_endpoint');
-            expect(annotator.options.store.annotationData).toEqual(annotationData);
-            expect(annotator.options.store.loadFromSearch).toEqual(annotationData);
+            expect(annotator.options.store.annotationData).toEqual(options);
+            expect(annotator.options.store.loadFromSearch).toEqual(options);
         });
     });
 });
