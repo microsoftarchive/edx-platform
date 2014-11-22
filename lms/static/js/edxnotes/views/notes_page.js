@@ -1,39 +1,40 @@
 ;(function (define, undefined) {
-    'use strict';
-    define([
-        'backbone', 'js/edxnotes/views/recent_activity_view'
-    ], function (Backbone, RecentActivityView) {
-        var NotesPageView = Backbone.View.extend({
-            initialize: function (options) {
-                this.options = options;
-            },
+'use strict';
+define([
+    'backbone', 'js/edxnotes/collections/tabs', 'js/edxnotes/views/tabs_list',
+    'js/edxnotes/views/tabs/recent_activity', 'js/edxnotes/views/tabs/search_results'
+], function (
+    Backbone, TabsCollection, TabsListView, RecentActivityView, SearchResultsView
+) {
+    var NotesPageView = Backbone.View.extend({
+        initialize: function (options) {
+            _.bindAll(this);
+            this.options = options;
 
-            render: function () {
-                this.view = new RecentActivityView({
-                    collection: this.collection
-                }).render();
+            this.tabsCollection = new TabsCollection();
 
-                this.$('.course-info').append(this.view.$el);
-                this.hideLoadingIndicator();
+            this.recentActivityView = new RecentActivityView({
+                el: this.el,
+                collection: this.collection,
+                tabsCollection: this.tabsCollection
+            });
 
-                return this;
-            },
+            this.searchResultsView = new SearchResultsView({
+                el: this.el,
+                tabsCollection: this.tabsCollection,
+                token: this.options.token,
+                user: this.options.user,
+                courseId: this.options.courseId,
+                createTabOnInitialization: false
+            });
 
-            /**
-             * Show the page's loading indicator.
-             */
-            showLoadingIndicator: function() {
-                this.$('.ui-loading').removeClass('is-hidden');
-            },
-
-            /**
-             * Hide the page's loading indicator.
-             */
-            hideLoadingIndicator: function() {
-                this.$('.ui-loading').addClass('is-hidden');
-            }
-        });
-
-        return NotesPageView;
+            this.tabsView = new TabsListView({collection: this.tabsCollection});
+            this.$('.edx-notes-page-views')
+                .append(this.tabsView.render().$el)
+                .removeClass('is-hidden');
+        }
     });
+
+    return NotesPageView;
+});
 }).call(this, define || RequireJS.define);

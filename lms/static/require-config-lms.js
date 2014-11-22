@@ -13,6 +13,11 @@
     } else {
         paths.jquery = "js/vendor/underscore-min";
     }
+    if (window.gettext) {
+        define("gettext", [], function() {return window.gettext;});
+    } else {
+        paths.gettext = "/i18n";
+    }
 
     config = {
         // NOTE: baseUrl has been previously set in lms/static/templates/main.html
@@ -41,7 +46,7 @@
           }
         },
         map: {
-          "js/edxnotes/views/notes": {
+          "js/edxnotes/views/notes_factory": {
             "annotator": "annotator_1.2.9"
           },
           "js/edxnotes/views/shim": {
