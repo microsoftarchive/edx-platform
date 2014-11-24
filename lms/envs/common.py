@@ -1441,6 +1441,7 @@ CELERYD_HIJACK_ROOT_LOGGER = False
 
 # For the Result Store, use the django cache named 'celery'
 CELERY_RESULT_BACKEND = 'djcelery.backends.cache:CacheBackend'
+CELERY_CACHE_BACKEND = 'default'
 
 ################################ Bulk Email ###################################
 
