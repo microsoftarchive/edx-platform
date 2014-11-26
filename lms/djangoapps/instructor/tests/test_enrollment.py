@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Unit tests for instructor.enrollment methods.
 """
@@ -9,6 +10,7 @@ from courseware.models import StudentModule
 from django.conf import settings
 from django.test import TestCase
 from django.test.utils import override_settings
+from django.utils.translation import get_language
 from student.tests.factories import UserFactory
 from xmodule.modulestore.tests.factories import CourseFactory
 from courseware.tests.modulestore_config import TEST_DATA_MONGO_MODULESTORE
@@ -20,7 +22,8 @@ from instructor.enrollment import (
     get_email_params,
     reset_student_attempts,
     send_beta_role_email,
-    unenroll_email
+    unenroll_email,
+    render_message_to_string,
 )
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 
@@ -472,3 +475,28 @@ class TestGetEmailParams(ModuleStoreTestCase):
         self.assertEqual(result['course_about_url'], None)
         self.assertEqual(result['registration_url'], self.registration_url)
         self.assertEqual(result['course_url'], self.course_url)
+
+
+class TestRenderMessageToString(TestCase):
+    """
+    Test that email templates can be rendered in a language chosen manually.
+    """
+
+    def test_subject_and_message_translation(self):
+        subject_template = 'emails/enroll_email_allowedsubject.txt'
+        message_template = 'emails/enroll_email_allowedmessage.txt'
+        course = CourseFactory.create()
+
+        email_params = get_email_params(course, True)
+        email_params["email_address"] = "user@example.com"
+        email_params["full_name"] = "Jean Reno"
+
+        language_before_rendering = get_language()
+        subject, message = render_message_to_string(subject_template, message_template, email_params, language='fr')
+        language_after_rendering = get_language()
+
+        self.assertEqual(settings.LANGUAGE_CODE, language_before_rendering)
+        you_have_been_invited_in_french = u"Vous avez été invité"
+        self.assertIn(you_have_been_invited_in_french, subject)
+        self.assertIn(you_have_been_invited_in_french, message)
+        self.assertEqual(settings.LANGUAGE_CODE, language_after_rendering)
