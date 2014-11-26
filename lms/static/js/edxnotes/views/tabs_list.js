@@ -13,8 +13,8 @@ define([
             this.collection.on({
                 'add': this.createTab,
                 'destroy': function (model, collection) {
-                    if (model.get('is_active')) {
-                        collection.at(0).set('is_active', true);
+                    if (model.isActive()) {
+                        collection.at(0).activate();
                     }
                 }
             });
@@ -22,7 +22,7 @@ define([
 
         render: function () {
             this.collection.each(this.createTab);
-            this.collection.at(0).set('is_active', true);
+            this.collection.at(0).activate();
             return this;
         },
 

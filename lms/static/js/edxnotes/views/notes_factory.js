@@ -69,16 +69,18 @@ define([
     getAnnotator = function (element, params) {
         var el = $(element),
             options = getOptions(el, params),
-            annotator = el.annotator(options).data('annotator'),
-            logger = new Logger(element.id, params.debug);
+            logger = Logger.getLogger(element.id, params.debug),
+            annotator;
 
+        logger.time('Initialization Time');
+        annotator = el.annotator(options).data('annotator');
         setupPlugins(annotator, plugins, options);
+        logger.timeEnd('Initialization Time');
         updateHeaders(el, params.token);
         annotator.logger = logger;
         logger.log({
             'element': element,
             'options': options,
-            'annotator': annotator
         });
         return annotator;
     };

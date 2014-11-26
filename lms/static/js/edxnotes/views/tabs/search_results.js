@@ -35,6 +35,7 @@ define([
                 token: this.options.token,
                 user: this.options.user,
                 courseId: this.options.courseId,
+                debug: this.options.debug,
                 search: this.onSearch,
                 error: this.onSearchError
             });
@@ -78,8 +79,8 @@ define([
             }
 
             // If tab is not already active, makes it active
-            if (!this.tabModel.get('is_active')) {
-                this.tabModel.set('is_active', true);
+            if (!this.tabModel.isActive()) {
+                this.tabModel.activate();
             } else { // Otherwise, just re-render content.
                 this.renderContent();
             }

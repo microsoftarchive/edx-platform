@@ -25,6 +25,7 @@ define([
                 token: this.options.token,
                 user: this.options.user,
                 courseId: this.options.courseId,
+                debug: this.options.debug,
                 createTabOnInitialization: false
             });
 

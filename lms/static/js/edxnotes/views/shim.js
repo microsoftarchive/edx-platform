@@ -51,6 +51,10 @@ define(['jquery', 'underscore', 'annotator'], function ($, _, Annotator) {
                 $(document).off('click.edxnotes:freeze'+this.uid);
                 this.isFrozen = false;
             }
+
+            if (this.logger && this.logger.destroy) {
+                this.logger.destroy();
+            }
         }
     );
 

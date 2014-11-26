@@ -36,14 +36,8 @@ function (gettext, _, Backbone) {
 
         bindEvents: function () {
             this.model.on({
-                'change:is_active': _.bind(function (changed_model, value) {
+                'change:is_active': _.bind(function (model, value) {
                     if (value) {
-                        changed_model.collection.each(function(model) {
-                            // Unactivate all other models.
-                            if (model !== changed_model) {
-                                model.set('is_active', false);
-                            }
-                        });
                         this.$el.addClass(this.activeClassName);
                     } else {
                         this.$el.removeClass(this.activeClassName);
@@ -65,7 +59,7 @@ function (gettext, _, Backbone) {
         },
 
         select: function () {
-            this.model.set('is_active', true);
+            this.model.activate();
         },
 
         close: function () {

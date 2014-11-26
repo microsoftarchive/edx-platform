@@ -1,8 +1,10 @@
 ;(function (define, undefined) {
 'use strict';
-define(['jquery', 'underscore', 'backbone', 'gettext', 'js/edxnotes/collections/notes'],
-function ($, _, Backbone, gettext, NotesCollection) {
-    var SearchView = Backbone.View.extend({
+define([
+    'jquery', 'underscore', 'backbone', 'gettext', 'js/edxnotes/utils/logger',
+    'js/edxnotes/collections/notes'
+], function ($, _, Backbone, gettext, Logger, NotesCollection) {
+    var SearchBoxView = Backbone.View.extend({
         events: {
             'submit': 'submitHandler'
         },
@@ -13,8 +15,10 @@ function ($, _, Backbone, gettext, NotesCollection) {
                 search: function () {},
                 error: function () {},
             });
+            this.logger = Logger.getLogger('search_box', this.options.debug);
             this.$el.removeClass('is-hidden');
             this.isDisabled = false;
+            this.logger.log('initialized');
         },
 
         submitHandler: function (event) {
@@ -31,6 +35,7 @@ function ($, _, Backbone, gettext, NotesCollection) {
             var collection;
 
             if (!(data && _.has(data, 'total') && _.has(data, 'rows'))) {
+                this.logger.log('Wrong data', data, this.searchQuery);
                 return [0, [], this.searchQuery];
             }
 
@@ -57,6 +62,7 @@ function ($, _, Backbone, gettext, NotesCollection) {
 
             this.disableForm();
             this.searchQuery = this.gerSearchQuery();
+            this.logger.time('Request Time');
             this.sendRequest(this.searchQuery)
                 .done(this.onSuccess)
                 .fail(this.onError)
@@ -68,22 +74,25 @@ function ($, _, Backbone, gettext, NotesCollection) {
         onSuccess: function (data) {
             var args = this.prepareData(data);
             this.options.search.apply(this, args);
+            this.logger.log('Successful response', args);
         },
 
         onError:function (jXHR) {
             var message = gettext('This may be happening because of an error with our server or your internet connection. Try refreshing the page or making sure you are online.'),
                 searchQuery = this.gerSearchQuery();
 
-             if (jXHR.responseText) {
+            if (jXHR.responseText) {
                 try {
                     message = $.parseJSON(jXHR.responseText).error;
                 } catch (error) { }
             }
 
             this.options.error(message, searchQuery);
+            this.logger.log('Fail response', jXHR.responseText);
         },
 
         onComplete: function () {
+            this.logger.timeEnd('Request Time');
             this.enableForm();
         },
 
@@ -105,6 +114,13 @@ function ($, _, Backbone, gettext, NotesCollection) {
          * @return {jQuery.Deferred}
          */
         sendRequest: function (text) {
+            this.logger.log('sendRequest', {
+                action: this.el.action,
+                method: this.el.method,
+                user: this.options.user,
+                course_id: this.options.courseId,
+                text: text
+            });
             return $.ajax({
                 url: this.el.action,
                 type: this.el.method,
@@ -118,6 +134,6 @@ function ($, _, Backbone, gettext, NotesCollection) {
         }
     });
 
-    return SearchView;
+    return SearchBoxView;
 });
 }).call(this, define || RequireJS.define);
