@@ -6,7 +6,7 @@ define(['js/edxnotes/utils/logger'],
             var log, logs, logger;
 
             beforeEach(function() {
-                logger = Logger.getLogger('id', 1); // 0 is debug mode
+                logger = Logger.getLogger('id', 1); // 1 is debug mode
             });
 
             it('Tests if the logger keeps a correct history of logs', function() {
