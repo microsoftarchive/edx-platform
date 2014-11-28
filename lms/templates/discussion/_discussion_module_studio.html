@@ -1,10 +1,14 @@
 <%! from django.utils.translation import ugettext as _ %>
 
 <div class="discussion-module" data-discussion-id="${discussion_id | h}">
-    <p>
-        <span class="discussion-preview">
-            <span class="icon icon-comment"/>
-            ${_("To view live discussions, click Preview or View Live in Unit Settings.")}
-        </span>
-    </p>
+    <span class="icon icon-comment"></span>
+    ${_("To view live discussions, click Preview or View Live in Unit Settings.")}
+    <a class="action-button discussion-more-info-button">
+        ${_('More Info')}
+    </a>
+    <div class="xblock-header-secondary" id="discussion-author-more-info">
+        <p>
+            ${_("If you need to refer to this discussion block, such as when setting up Cohorting, you will need to use this ID: {discussion_id}").format(discussion_id=discussion_id)}
+        </p>
+    </div>
 </div>
