@@ -44,7 +44,7 @@ from django_comment_common.models import (
 from edxmako.shortcuts import render_to_response, render_to_string
 from courseware.models import StudentModule
 from shoppingcart.models import Coupon, CourseRegistrationCode, RegistrationCodeRedemption, Invoice, CourseMode
-from student.models import CourseEnrollment, unique_id_for_user, anonymous_id_for_user
+from student.models import CourseEnrollment, AuditedManualCourseEnrollment, unique_id_for_user, anonymous_id_for_user
 import instructor_task.api
 from instructor_task.api_helper import AlreadyRunningError
 from instructor_task.models import ReportStore
@@ -318,7 +318,7 @@ def register_and_enroll_students(request, course_id):  # pylint: disable=R0915
 
                     # make sure user is enrolled in course
                     if not CourseEnrollment.is_enrolled(user, course_id):
-                        CourseEnrollment.enroll(user, course_id)
+                        AuditedManualCourseEnrollment.enroll(request.user, user, course_id)
                         log.info('user {username} enrolled in the course {course}'.format(username=username, course=course.id))
                         enroll_email(course_id=course_id, student_email=email, auto_enroll=True, email_students=True, email_params=email_params)
                 else:
@@ -328,7 +328,7 @@ def register_and_enroll_students(request, course_id):  # pylint: disable=R0915
                     password = generate_unique_password(generated_passwords)
 
                     try:
-                        create_and_enroll_user(email, username, name, country, password, course_id)
+                        create_and_enroll_user(request.user, email, username, name, country, password, course_id)
                     except IntegrityError:
                         row_errors.append({
                             'username': username, 'email': email, 'response': _('Username {user} already exists.').format(user=username)})
@@ -384,7 +384,7 @@ def generate_unique_password(generated_passwords, password_length=12):
     return password
 
 
-def create_and_enroll_user(email, username, name, country, password, course_id):
+def create_and_enroll_user(enrolled_by, email, username, name, country, password, course_id):
     """ Creates a user and enroll him/her in the course"""
 
     user = User.objects.create_user(username, email, password)
@@ -397,7 +397,7 @@ def create_and_enroll_user(email, username, name, country, password, course_id):
     profile.save()
 
     # try to enroll the user in this course
-    CourseEnrollment.enroll(user, course_id)
+    AuditedManualCourseEnrollment.enroll(enrolled_by, user, course_id)
 
 
 @ensure_csrf_cookie
@@ -576,7 +576,7 @@ def bulk_beta_modify_access(request, course_id):
             if auto_enroll:
                 # Check if student is already enrolled
                 if not CourseEnrollment.is_enrolled(user, course_id):
-                    CourseEnrollment.enroll(user, course_id)
+                    AuditedManualCourseEnrollment.enroll(request.user, user, course_id)
 
         finally:
             # Tabulate the action result of this email address

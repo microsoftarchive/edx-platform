@@ -1181,6 +1181,37 @@ class CourseEnrollment(models.Model):
         return modulestore().get_course(self.course_id)
 
 
+class AuditedManualCourseEnrollment(models.Model):
+    """
+    Table to provide an audit trail for manual enrollments
+    """
+    enrollment = models.ForeignKey(CourseEnrollment)
+    enrolled_by = models.ForeignKey(User)
+
+    @classmethod
+    def enroll(cls, enrolled_by, user, course_key, mode="honor", check_access=False):
+        """
+        Helper class method to manage manual enrollments to update both
+        the CourseEnrollment and ManualCourseEnrollmentAudit tables
+        """
+        enrollment = CourseEnrollment.enroll(user, course_key, mode=mode, check_access=check_access)
+        audit = ManualCourseEnrollmentAudit(enrollment=enrollment, enrolled_by=enrolled_by)
+        audit.save()
+        return enrollment
+
+    @classmethod
+    def enroll_by_email(cls, enrolled_by, email, course_id, mode="honor", ignore_errors=True):
+        """
+        Helper class method to manage manual enrollments to update both
+        the CourseEnrollment and ManualCourseEnrollmentAudit tables. Same as above, but this is used
+        when we only have an email address
+        """
+        enrollment = CourseEnrollment.enroll_by_email(email, course_id, mode=mode, ignore_errors=ignore_errors)
+        audit = ManualCourseEnrollmentAudit(enrollment=enrollment, enrolled_by=enrolled_by)
+        audit.save()
+        return enrollment
+
+
 class CourseEnrollmentAllowed(models.Model):
     """
     Table of users (specified by email address strings) who are allowed to enroll in a specified course.
@@ -1190,6 +1221,7 @@ class CourseEnrollmentAllowed(models.Model):
     email = models.CharField(max_length=255, db_index=True)
     course_id = CourseKeyField(max_length=255, db_index=True)
     auto_enroll = models.BooleanField(default=0)
+    enrolled_by = models.ForeignKey(User, null=True)
 
     created = models.DateTimeField(auto_now_add=True, null=True, db_index=True)
 

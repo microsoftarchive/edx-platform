@@ -10,7 +10,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 
-from student.models import CourseEnrollment, CourseEnrollmentAllowed
+from student.models import CourseEnrollment, CourseEnrollmentAllowed, AuditedManualCourseEnrollment
 from courseware.models import StudentModule
 from edxmako.shortcuts import render_to_string
 
@@ -71,7 +71,7 @@ class EmailEnrollmentState(object):
         }
 
 
-def enroll_email(course_id, student_email, auto_enroll=False, email_students=False, email_params=None):
+def enroll_email(enrolled_by, course_id, student_email, auto_enroll=False, email_students=False, email_params=None):
     """
     Enroll a student by email.
 
@@ -88,7 +88,7 @@ def enroll_email(course_id, student_email, auto_enroll=False, email_students=Fal
     previous_state = EmailEnrollmentState(course_id, student_email)
 
     if previous_state.user:
-        CourseEnrollment.enroll_by_email(student_email, course_id, previous_state.mode)
+        AuditedManualCourseEnrollment.enroll_by_email(enrolled_by, student_email, course_id, previous_state.mode)
         if email_students:
             email_params['message'] = 'enrolled_enroll'
             email_params['email_address'] = student_email
@@ -97,6 +97,7 @@ def enroll_email(course_id, student_email, auto_enroll=False, email_students=Fal
     else:
         cea, _ = CourseEnrollmentAllowed.objects.get_or_create(course_id=course_id, email=student_email)
         cea.auto_enroll = auto_enroll
+        cea.enrolled_by = enrolled_by
         cea.save()
         if email_students:
             email_params['message'] = 'allowed_enroll'
