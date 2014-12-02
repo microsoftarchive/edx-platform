@@ -6,10 +6,13 @@ import pytz
 
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseForbidden
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
 from django.views.decorators.cache import cache_control
 from django_future.csrf import ensure_csrf_cookie
+from django.contrib.auth.models import User
 
 from courseware.courses import get_course_by_id
 from courseware.field_overrides import disable_overrides
@@ -17,8 +20,12 @@ from edxmako.shortcuts import render_to_response
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from student.roles import CoursePocCoachRole
 
-from .models import PersonalOnlineCourse
+from instructor.views.api import _split_input_list
+from instructor.views.tools import get_student_from_identifier
+
+from .models import PersonalOnlineCourse, PocMembership
 from .overrides import override_field_for_poc, get_override_for_poc
+from .utils import enroll_email, unenroll_email
 
 log = logging.getLogger(__name__)
 today = datetime.datetime.today  # for patching in tests
@@ -56,6 +63,7 @@ def dashboard(request, course):
         'poc': poc,
         'schedule': json.dumps(schedule, indent=4),
         'save_url': reverse('save_poc', kwargs={'course_id': course.id}),
+        'poc_members': PocMembership.objects.filter(poc=poc),
     }
     if not poc:
         context['create_poc_url'] = reverse(
@@ -191,3 +199,36 @@ def get_poc_schedule(course, poc):
 
     with disable_overrides():
         return tuple(visit(course))
+
+
+@ensure_csrf_cookie
+@cache_control(no_cache=True, no_store=True, must_revalidate=True)
+@coach_dashboard
+def poc_invite(request, course):
+    """
+    Invite users to new poc
+    """
+    poc = get_poc_for_coach(course, request.user)
+    action = request.POST.get('enrollment-button')
+    identifiers_raw = request.POST.get('student-ids')
+    identifiers = _split_input_list(identifiers_raw)
+    for identifier in identifiers:
+        user = None
+        email = None
+        try:
+            user = get_student_from_identifier(identifier)
+        except User.DoesNotExist:
+            email = identifier
+        else:
+            email = user.email
+        try:
+            validate_email(email)
+            if action == 'Enroll':
+                enroll_email(poc, email, email_students=True)
+            if action == "Unenroll":
+                unenroll_email(poc, email, email_students=True)
+        except ValidationError:
+            pass # maybe log this?
+    url = reverse('poc_coach_dashboard', kwargs={'course_id': course.id})
+    return redirect(url)
+
