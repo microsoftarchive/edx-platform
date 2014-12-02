@@ -349,6 +349,8 @@ if settings.COURSEWARE_ENABLED:
             'pocs.views.create_poc', name='create_poc'),
         url(r'^courses/{}/save_poc$'.format(settings.COURSE_ID_PATTERN),
             'pocs.views.save_poc', name='save_poc'),
+        url(r'^courses/{}/poc_invite$'.format(settings.COURSE_ID_PATTERN),
+            'pocs.views.poc_invite', name='poc_invite'),
 
         url(r'^courses/{}/set_course_mode_price$'.format(settings.COURSE_ID_PATTERN),
             'instructor.views.instructor_dashboard.set_course_mode_price', name="set_course_mode_price"),

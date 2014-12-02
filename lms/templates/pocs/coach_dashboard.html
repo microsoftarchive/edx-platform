@@ -34,16 +34,16 @@
       %if poc:
       <ul class="instructor-nav">
         <li class="nav-item">
-          <a href="#" data-section="section-enrollment">${_("Enrollment")}</a>
+          <a href="#" data-section="membership">${_("Enrollment")}</a>
         </li>
         <li class="nav-item">
-          <a href="#" data-section="section-schedule">${_("Schedule")}</a>
+          <a href="#" data-section="schedule">${_("Schedule")}</a>
         </li>
       </ul>
-      <section id="section-enrollment" class="idash-section">
+      <section id="membership" class="idash-section">
         <%include file="enrollment.html" args="" />
       </section>
-      <section id="section-schedule" class="idash-section">
+      <section id="schedule" class="idash-section">
         <%include file="schedule.html" args="" />
       </section>
       %endif
@@ -66,7 +66,7 @@
     var url = document.URL,
         hashbang = url.indexOf('#!');
     if (hashbang != -1) {
-      var selector = '.instructor-nav a[data-section=section-' + 
+      var selector = '.instructor-nav a[data-section=' + 
         url.substr(hashbang + 2) + ']';
       $(selector).click();
     }

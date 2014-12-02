@@ -19,7 +19,15 @@ class PocMembership(models.Model):
     """
     poc = models.ForeignKey(PersonalOnlineCourse, db_index=True)
     student = models.ForeignKey(User, db_index=True)
+    active = models.BooleanField(default=False)
 
+
+class PocFutureMembership(models.Model):
+    """
+    Which emails for non-users are waiting to be added to POC on registration
+    """
+    poc = models.ForeignKey(PersonalOnlineCourse, db_index=True)
+    email = models.CharField(max_length=255)
 
 class PocFieldOverride(models.Model):
     """
