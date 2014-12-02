@@ -1620,6 +1620,7 @@ INSTALLED_APPS = (
     'survey',
 
     'lms.djangoapps.lms_xblock',
+    'course_structure_api',
 )
 
 ######################### MARKETING SITE ###############################

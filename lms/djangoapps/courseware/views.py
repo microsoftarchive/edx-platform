@@ -27,7 +27,6 @@ from edxmako.shortcuts import render_to_response, render_to_string, marketing_li
 from django_future.csrf import ensure_csrf_cookie
 from django.views.decorators.cache import cache_control
 from django.db import transaction
-from functools import wraps
 from markupsafe import escape
 
 from courseware import grades
@@ -1116,22 +1115,27 @@ def notification_image_for_tab(course_tab, user, course):
     return None
 
 
-def get_static_tab_contents(request, course, tab):
+def get_static_tab_contents(request, course, tab, wrap_xmodule_display=True):
     """
     Returns the contents for the given static tab
     """
-    loc = course.id.make_usage_key(
+    locator = course.id.make_usage_key(
         tab.type,
         tab.url_slug,
     )
     field_data_cache = FieldDataCache.cache_for_descriptor_descendents(
-        course.id, request.user, modulestore().get_item(loc), depth=0
+        course.id, request.user, modulestore().get_item(locator), depth=0
     )
     tab_module = get_module(
-        request.user, request, loc, field_data_cache, static_asset_path=course.static_asset_path
+        request.user,
+        request,
+        locator,
+        field_data_cache,
+        static_asset_path=course.static_asset_path,
+        wrap_xmodule_display=wrap_xmodule_display
     )
 
-    logging.debug('course_module = {0}'.format(tab_module))
+    logging.debug('course_module = %s', tab_module)
 
     html = ''
     if tab_module is not None:

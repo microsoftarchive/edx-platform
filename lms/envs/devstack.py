@@ -92,6 +92,8 @@ CC_PROCESSOR = {
 }
 
 ########################### External REST APIs #################################
+FEATURES['ENABLE_OAUTH2_PROVIDER'] = True
+OAUTH_OIDC_ISSUER = 'http://127.0.0.1:8000/oauth2'
 FEATURES['ENABLE_MOBILE_REST_API'] = True
 FEATURES['ENABLE_VIDEO_ABSTRACTION_LAYER_API'] = True
 
@@ -128,3 +130,6 @@ except ImportError:
 #####################################################################
 # Lastly, run any migrations, if needed.
 MODULESTORE = convert_module_store_setting_if_needed(MODULESTORE)
+
+# Set this to an actual value to enforce API security
+EDX_API_KEY = None

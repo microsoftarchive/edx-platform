@@ -81,6 +81,8 @@ urlpatterns = ('',  # nopep8
     # Courseware search endpoints
     url(r'^search/', include('search.urls')),
 
+    # Course content API
+    url(r'^api/course_structure/v0/courses/', include('course_structure_api.v0.urls', namespace='course_structure_api_v0')),
 )
 
 if settings.FEATURES["ENABLE_COMBINED_LOGIN_REGISTRATION"]:
@@ -114,7 +116,6 @@ urlpatterns += (
     url(r'^verify_student/', include('verify_student.urls')),
     url(r'^course_modes/', include('course_modes.urls')),
 )
-
 
 js_info_dict = {
     'domain': 'djangojs',
