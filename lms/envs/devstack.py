@@ -24,7 +24,6 @@ import logging
 for pkg_name in ['track.contexts', 'track.middleware', 'dd.dogapi']:
     logging.getLogger(pkg_name).setLevel(logging.CRITICAL)
 
-
 ################################ EMAIL ########################################
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -45,8 +44,10 @@ ANALYTICS_DASHBOARD_URL = None
 ############# Performance Profiler #################
 # Note: The Django Debug Toolbar creates a lot of profiling noise, so
 # when the profiler is enabled in Devstack we should also disable the toolbar
-FEATURES['PROFILER'] = False
+FEATURES['PROFILER'] = True
 if FEATURES.get('PROFILER'):
+    logging.getLogger('profiler.middleware').setLevel(logging.DEBUG)
+
     INSTALLED_APPS += ('profiler',)
     MIDDLEWARE_CLASSES += (
         'profiler.middleware.HotshotProfilerMiddleware',
