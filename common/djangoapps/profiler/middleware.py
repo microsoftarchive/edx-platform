@@ -95,6 +95,9 @@ class BaseProfilerMiddleware(object):
         # Capture some values/references to use across the operations
         THREAD_LOCAL.profiler_requested = request.GET.get('prof', False)
 
+        if not THREAD_LOCAL.profiler_requested:
+            return
+
         # Ensure we're allowed to use the profiler
         if THREAD_LOCAL.profiler_requested and not settings.DEBUG and not request.user.is_superuser:
             raise MiddlewareNotUsed()
@@ -114,6 +117,9 @@ class BaseProfilerMiddleware(object):
         Enable the profiler and begin collecting data about the view
         Note that this misses the rest of Django's request processing (other middleware, etc.)
         """
+        if not THREAD_LOCAL.profiler_requested:
+            return
+
         # Ensure the profiler being requested is actually installed/available
         if THREAD_LOCAL.profiler_type is None:
             THREAD_LOCAL.profiler_type = request.GET.get('profiler_type', 'hotshot')
@@ -245,6 +251,9 @@ class BaseProfilerMiddleware(object):
         It seems process_response can be invoked without a prior invocation
         of process request and/or process view, so we need to put in a guard
         """
+        if not THREAD_LOCAL.profiler_requested:
+            return response
+
         if not hasattr(THREAD_LOCAL, 'profiler_type') or THREAD_LOCAL.profiler_type is None:
             THREAD_LOCAL.profiler_type = request.GET.get('profiler_type', 'hotshot')
         if self.profiler_type() == THREAD_LOCAL.profiler_type and THREAD_LOCAL.profiler is not None:
