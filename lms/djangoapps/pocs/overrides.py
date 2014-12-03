@@ -6,7 +6,7 @@ import json
 
 from courseware.field_overrides import FieldOverrideProvider
 
-from .models import PocFieldOverride
+from .models import PocMembership, PocFieldOverride
 
 
 class PersonalOnlineCoursesOverrideProvider(FieldOverrideProvider):
@@ -16,17 +16,25 @@ class PersonalOnlineCoursesOverrideProvider(FieldOverrideProvider):
     overrides to be made on a per user basis.
     """
     def get(self, block, name, default):
-        poc = get_current_poc()
+        poc = get_current_poc(self.user)
         if poc:
             return get_override_for_poc(poc, block, name, default)
         return default
 
 
-def get_current_poc():
+def get_current_poc(user):
     """
     TODO Needs to look in user's session
     """
-    return None
+    # Temporary implementation.  Final implementation will need to look in
+    # user's session so user can switch between (potentially multiple) POC and
+    # MOOC views.  See courseware.courses.get_request_for_thread for idea to
+    # get at the request object.
+    try:
+        membership = PocMembership.objects.get(student=user, active=True)
+        return membership.poc
+    except PocMembership.DoesNotExist:
+        return None
 
 
 def get_override_for_poc(poc, block, name, default=None):
@@ -53,7 +61,7 @@ def override_field_for_poc(poc, block, name, value):
     and the name of the field on that block to override.  `value` is the
     value to set for the given field.
     """
-    override, _ = PocFieldOverride.objects.get_or_create(
+    override, created = PocFieldOverride.objects.get_or_create(
         poc=poc,
         location=block.location,
         field=name)

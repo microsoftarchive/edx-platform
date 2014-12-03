@@ -29,6 +29,7 @@ class PocFutureMembership(models.Model):
     poc = models.ForeignKey(PersonalOnlineCourse, db_index=True)
     email = models.CharField(max_length=255)
 
+
 class PocFieldOverride(models.Model):
     """
     Field overrides for personal online courses.
