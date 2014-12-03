@@ -15,9 +15,10 @@ Hotshot/CProfile Profiler Middleware
 - Include "&profile_mode=help" for more information (see generate_help below)
 
 """
-
+from abc import ABCMeta, abstractmethod, abstractproperty
 import hotshot
 import hotshot.stats
+import logging
 import os
 import pstats
 import re
@@ -42,44 +43,55 @@ try:
 except ImportError:
     import StringIO
 
+log = logging.getLogger(__name__)
 THREAD_LOCAL = threading.local()
-
-
-def which(program):
-    """
-    Helper method to return the path of the named program in the PATH,
-    or None if no such executable program can be found.
-    """
-    def is_exe(fpath):
-        """
-        Internal helper to confirm that this is an executable program
-        """
-        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
-
-    fpath, _fname = os.path.split(program)
-    if fpath:
-        if is_exe(program):
-            return program
-    else:
-        for path in os.environ["PATH"].split(os.pathsep):
-            path = path.strip('"')
-            exe_file = os.path.join(path, program)
-            if is_exe(exe_file):
-                return exe_file
-    return None
 
 
 class BaseProfilerMiddleware(object):
     """
+    Abstract base classs for profiler middleware.
+
     This class performs the actual work of profiling and generating the
-    report output.  The child classes defined below address some
-    implementation-specific idiosyncrasies for each profiler.
+    report output.
+    The child classes address implementation-specific idiosyncrasies for each profiler.
     """
+    __metaclass__ = ABCMeta
+
+    @abstractproperty
+    def profiler_type(self):
+        """
+        Which profiler this is
+        """
+        raise NotImplementedError('Subclasses must implement profiler_type')
+
+    @abstractproperty
+    def is_profiler_installed(self):
+        """
+        Is this profiler installed?
+        """
+        return False
+
+    @abstractmethod
+    def profiler_start(self):
+        """
+        Method for starting
+        """
+        raise NotImplementedError('Subclasses must implement profiler_start')
+
+    @abstractmethod
+    def profiler_stop(self, _stream):
+        """
+        Parent method
+        """
+        raise NotImplementedError('Subclasses must implement profiler_stop')
+
     def process_request(self, request):
         """
         Set up the profiler for use
         """
-        print 'process_request'
+        log.debug('Entering process_request')
+        print('Entering process_request')
+
         # Capture some values/references to use across the operations
         THREAD_LOCAL.profiler_requested = request.GET.get('prof', False)
 
@@ -91,7 +103,7 @@ class BaseProfilerMiddleware(object):
         if not hasattr(THREAD_LOCAL, 'profiler_type') or THREAD_LOCAL.profiler_type is None:
             THREAD_LOCAL.profiler_type = request.GET.get('profiler_type', 'hotshot')
         if self.profiler_type() == THREAD_LOCAL.profiler_type:
-            if not self.profiler_installed():
+            if not self.is_profiler_installed:
                 return MiddlewareNotUsed()
 
         # Create the container we'll be using to store the raw profiler data
@@ -106,7 +118,7 @@ class BaseProfilerMiddleware(object):
         if THREAD_LOCAL.profiler_type is None:
             THREAD_LOCAL.profiler_type = request.GET.get('profiler_type', 'hotshot')
         if self.profiler_type() == THREAD_LOCAL.profiler_type:
-            if not self.profiler_installed():
+            if not self.is_profiler_installed:
                 return MiddlewareNotUsed()
 
             THREAD_LOCAL.profiler = self.profiler_start()
@@ -142,6 +154,29 @@ class BaseProfilerMiddleware(object):
         """
         Output a pretty picture of the call tree (boxes and arrows)
         """
+        def which(program):
+            """
+            Helper method to return the path of the named program in the PATH,
+            or None if no such executable program can be found.
+            """
+            def is_exe(fpath):
+                """
+                Internal helper to confirm that this is an executable program
+                """
+                return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+
+            fpath, _fname = os.path.split(program)
+            if fpath:
+                if is_exe(program):
+                    return program
+            else:
+                for path in os.environ["PATH"].split(os.pathsep):
+                    path = path.strip('"')
+                    exe_file = os.path.join(path, program)
+                    if is_exe(exe_file):
+                        return exe_file
+            return None
+
         if not which('dot'):
             raise Exception('Could not find "dot" from Graphviz; please install Graphviz to enable call graph generation')
         if not which('gprof2dot'):
@@ -213,7 +248,7 @@ class BaseProfilerMiddleware(object):
         if not hasattr(THREAD_LOCAL, 'profiler_type') or THREAD_LOCAL.profiler_type is None:
             THREAD_LOCAL.profiler_type = request.GET.get('profiler_type', 'hotshot')
         if self.profiler_type() == THREAD_LOCAL.profiler_type and THREAD_LOCAL.profiler is not None:
-            if not self.profiler_installed():
+            if not self.is_profiler_installed:
                 return MiddlewareNotUsed()
 
             # The caller may want to view the runtime help documentation
@@ -288,30 +323,6 @@ class BaseProfilerMiddleware(object):
         THREAD_LOCAL.profiler_type = None
         THREAD_LOCAL.profiler_requested = None
         return response
-
-    def profiler_type(self):
-        """
-        Parent method -- should be overridden by child
-        """
-        return 'undefined'
-
-    def profiler_installed(self):
-        """
-        Parent method -- should be overridden by child
-        """
-        return False
-
-    def profiler_start(self):
-        """
-        Parent method -- should be overridden by child
-        """
-        return MiddlewareNotUsed()
-
-    def profiler_stop(self, stream):  # pylint: disable=W0613
-        """
-        Parent method -- should be overridden by child
-        """
-        return MiddlewareNotUsed()
 
     def get_group(self, file_name):
         """
@@ -390,16 +401,13 @@ class HotshotProfilerMiddleware(BaseProfilerMiddleware):
     See https://docs.python.org/2/library/hotshot.html for more info
     WARNING: The Hotshot profiler is not thread safe.
     """
-    def __init__(self, *args, **kwargs):
-        super(HotshotProfilerMiddleware, self).__init__(*args, **kwargs)
-
     def profiler_type(self):
         """
         Use this value to select the profiler via query string
         """
         return 'hotshot'
 
-    def profiler_installed(self):
+    def is_profiler_installed(self):
         """
         Hotshot is native and available for use
         """
@@ -411,7 +419,7 @@ class HotshotProfilerMiddleware(BaseProfilerMiddleware):
         """
         return hotshot.Profile(THREAD_LOCAL.data_file.name)
 
-    def profiler_stop(self, stream):  # pylint: disable=W0221
+    def profiler_stop(self, _stream):
         """
         Store profiler data in file and return statistics to caller
         """
@@ -424,19 +432,16 @@ class CProfileProfilerMiddleware(BaseProfilerMiddleware):
     CProfile is a runtime profiler available natively in Python
     See https://docs.python.org/2/library/profile.html#module-cProfile for more info
     """
-    def __init__(self):
-        super(CProfileProfilerMiddleware, self).__init__()
-
     def profiler_type(self):
         """
         Use this value to select the profiler via query string
         """
         return 'cprofile'
 
-    def profiler_installed(self):
+    def is_profiler_installed(self):
         """
         Apparently CProfile is not native, and many examples simply
-        failover to the regular 'profile' module.  Maybe we should, too
+        failover to the regular 'profile' module.  Maybe we should, too.
         """
         return HAS_CPROFILE
 
@@ -446,10 +451,10 @@ class CProfileProfilerMiddleware(BaseProfilerMiddleware):
         """
         return cProfile.Profile()
 
-    def profiler_stop(self, stream):
+    def profiler_stop(self, _stream):
         """
         Store profiler data in file and return statistics to caller
         """
         THREAD_LOCAL.profiler.create_stats()
         THREAD_LOCAL.profiler.dump_stats(THREAD_LOCAL.data_file.name)
-        return pstats.Stats(THREAD_LOCAL.profiler, stream=stream)
+        return pstats.Stats(THREAD_LOCAL.profiler, stream=_stream)
