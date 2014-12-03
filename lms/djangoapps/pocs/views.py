@@ -24,7 +24,11 @@ from instructor.views.api import _split_input_list
 from instructor.views.tools import get_student_from_identifier
 
 from .models import PersonalOnlineCourse, PocMembership
-from .overrides import override_field_for_poc, get_override_for_poc
+from .overrides import (
+    clear_override_for_poc,
+    get_override_for_poc,
+    override_field_for_poc,
+)
 from .utils import enroll_email, unenroll_email
 
 log = logging.getLogger(__name__)
@@ -90,14 +94,14 @@ def create_poc(request, course):
     override_field_for_poc(poc, course, 'start', start)
     override_field_for_poc(poc, course, 'due', None)
 
-    # Hide anything that can appear in the course outline to start out with
+    # Hide anything that can show up in the schedule
+    hidden = 'visible_to_staff_only'
     for chapter in course.get_children():
-        override_field_for_poc(poc, chapter, 'start', start)
-        override_field_for_poc(poc, chapter, 'hidden', True)
+        override_field_for_poc(poc, chapter, hidden, True)
         for sequential in chapter.get_children():
-            override_field_for_poc(poc, sequential, 'hidden', True)
+            override_field_for_poc(poc, sequential, hidden, True)
             for vertical in sequential.get_children():
-                override_field_for_poc(poc, vertical, 'hidden', True)
+                override_field_for_poc(poc, vertical, hidden, True)
 
     url = reverse('poc_coach_dashboard', kwargs={'course_id': course.id})
     return redirect(url)
@@ -118,15 +122,20 @@ def save_poc(request, course):
             for child in parent.get_children()}
         for unit in data:
             block = blocks[unit['location']]
-            override_field_for_poc(poc, block, 'hidden', unit['hidden'])
+            override_field_for_poc(
+                poc, block, 'visible_to_staff_only', unit['hidden'])
             start = parse_date(unit['start'])
             if start:
                 if not earliest or start < earliest:
                     earliest = start
                 override_field_for_poc(poc, block, 'start', start)
+            else:
+                clear_override_for_poc(poc, block, 'start')
             due = parse_date(unit['due'])
             if due:
                 override_field_for_poc(poc, block, 'due', due)
+            else:
+                clear_override_for_poc(poc, block, 'due')
 
             children = unit.get('children', None)
             if children:
@@ -180,7 +189,9 @@ def get_poc_schedule(course, poc):
             due = get_override_for_poc(poc, child, 'due', None)
             if due:
                 due = str(due)[:-9]
-            hidden = get_override_for_poc(poc, child, 'hidden', child.hidden)
+            hidden = get_override_for_poc(
+                poc, child, 'visible_to_staff_only',
+                child.visible_to_staff_only)
             visited = {
                 'location': str(child.location),
                 'display_name': child.display_name,
