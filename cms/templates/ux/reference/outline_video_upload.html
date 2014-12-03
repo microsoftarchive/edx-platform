@@ -8,7 +8,7 @@
 from django.core.urlresolvers import reverse
 %>
 <%block name="title">[template] Course Video Uploads UI</%block>
-<%block name="bodyclass">is-signedin course view-uploads view-video-upload</%block>
+<%block name="bodyclass">is-signedin course view-uploads view-video-uploads</%block>
 
 <%block name="content">
 
@@ -188,6 +188,7 @@ from django.core.urlresolvers import reverse
         <section class="assets-wrapper">
           <div class="asset-library">
             <h3>Previous Uploads</h3>
+            ## <a href="#" class="button">Download CSV</a>
             <table>
               <caption class="sr">List of uploaded files and assets in this course</caption>
               <thead>
@@ -197,6 +198,7 @@ from django.core.urlresolvers import reverse
                   <th class="date-col">Date Added</th>
                   <th class="video-id-col">Video ID</th>
                   <th class="status-col sortable-column"><span class="column-sort-link" id="js-asset-status-col">Status</span></th>
+                  <th class="sources-col">Sources</th>
                 </tr>
               </thead>
               <tbody>
@@ -216,6 +218,19 @@ from django.core.urlresolvers import reverse
                   <td class="status-col">
                     <span class="success">Complete</span>
                   </td>
+                  <td class="sources-col has-popup">
+                    <button type="button" class="button" aria-haspoup="true" aria-owns="popup-source-list-01">View <i class="icon icon-caret-down"></i></button>
+                    <div class="is-popup" id="popup-source-list-01" aria-hidden="true">
+                      <span class="popup-title">Source file links</span>
+                      <ul class="popup-list">
+                        <li><a href="#">MP4</a></li>
+                        <li><a href="#">WEBM</a></li>
+                        <li><a href="#">MOB-HI</a></li>
+                        <li><a href="#">MOB-LO</a></li>
+                        <li><a href="#">YouTube</a></li>
+                      </ul>
+                    </div>
+                  </td>
                 </tr>
                 <tr>
                   <td class="name-col">
@@ -230,6 +245,19 @@ from django.core.urlresolvers import reverse
                   <td class="video-id-col"></td>
                   <td class="status-col">
                     <span class="info">In Progress</span>
+                  </td>
+                  <td class="sources-col has-popup">
+                    <button type="button" class="button" aria-haspoup="true" aria-owns="popup-source-list-02">View <i class="icon icon-caret-down"></i></button>
+                    ## <div class="is-popup" id="popup-source-list-02" aria-hidden="true">
+                    ##   <span class="popup-title">Source file links</span>
+                    ##   <ul class="popup-list">
+                    ##     <li><a href="#">MP4</a></li>
+                    ##     <li><a href="#">WEBM</a></li>
+                    ##     <li><a href="#">MOB-HI</a></li>
+                    ##     <li><a href="#">MOB-LO</a></li>
+                    ##     <li><a href="#">YouTube</a></li>
+                    ##   </ul>
+                    ## </div>
                   </td>
                 </tr>
               </tbody>
@@ -306,6 +334,19 @@ from django.core.urlresolvers import reverse
 
     return false;
   };
+
+  jQuery(document).ready(function($) {
+    $('button[aria-haspopup="true"]').on('click', function(e) {
+      e.preventDefault();
+      console.log('clicked');
+
+      if ($(this).next('#' + $(this).attr('aria-owns')).hasClass('is-opened')) {
+        $(this).next('#' + $(this).attr('aria-owns')).removeClass('is-opened');
+      } else {
+        $(this).next('#' + $(this).attr('aria-owns')).addClass('is-opened');
+      }
+    });
+  });
   </script>
 
 </%block>

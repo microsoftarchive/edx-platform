@@ -1,11 +1,11 @@
-.view-video-upload {
+.view-video-uploads {
 
   .file-drop {
     @include clearfix();
     margin-bottom: ($baseline*1.5);
-    background: $white;
-    border: 2px dashed #ccc;
+    border: 2px dashed $gray-l3;
     border-radius: ($baseline/5);
+    background: $white;
 
     .file-drop-upload-form {
       display: inline-block;
@@ -41,27 +41,24 @@
       .video-upload-item {
         display: inline-block;
         width: flex-grid(4);
+        padding: (flex-gutter() - 1.6);
         vertical-align: top;
-        padding: 6px .5%;
 
         .video-detail-wrapper {
-          min-height: ($baseline*2.5);
+          min-height: ($baseline*4);
           padding: ($baseline/2);
-          border: 1px solid #ccc;
+          border: 1px solid $gray-l3;
           border-radius: ($baseline/5);
 
           .video-detail-title {
+            @extend %cont-truncated;
+            @extend %t-strong;
             margin-bottom: ($baseline/2);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
             font-size: 90%;
-            font-weight: 600;
           }
 
           .video-detail-progress-bar {
-            // display: inline-block;
-            display: none; // Hiding for v 1
+            display: inline-block;
             width: flex-grid(10);
             border-radius: ($baseline/5);
 
@@ -70,7 +67,7 @@
               -moz-appearance: none;
               appearance: none;
               width: 100%;
-              height: 5px;
+              height: ($baseline/4);
               border: none;
             }
 
@@ -99,11 +96,11 @@
           }
 
           .video-actions {
-            // display: inline-block;
-            display: none; // Hiding for v 1
+            display: inline-block;
             width: flex-grid(2);
             margin-top: ($baseline/5);
             text-align: right;
+            vertical-align: middle;
 
             .action-button {
               background: transparent;
@@ -162,8 +159,8 @@
     .asset-library {
 
       h3 {
+        @extend %t-strong;
         margin-bottom: ($baseline*2);
-        font-weight: 600;
       }
 
       table {
@@ -172,7 +169,7 @@
         td.name-col {
 
           a {
-            font-weight: 600;
+            @extend %t-strong;
           }
         }
 
@@ -183,12 +180,62 @@
     }
   }
 
-  .button {
-    @extend %ui-btn;
+  .has-popup {
+    position: relative;
 
-    &.primary-green {
-      @extend %btn-primary-green;
+    .is-popup {
+      @extend %ui-depth1;
+      position: absolute;
+      right: ($baseline/2);
+      width: ($baseline*5);
+      margin: ($baseline/5) 0 $baseline 0;
+      padding: ($baseline/2);
+      background: $white;
+      border: 1px solid $gray-l3;
+      border-radius: ($baseline/5);
+
+      .popup-title {
+        @extend %t-regular;
+        display: block;
+        border-bottom: 1px solid $gray-l3;
+      }
+
+      .popup-list {
+
+        a {
+          color: $ui-link-color;
+        }
+
+        a:hover, 
+        a:focus {
+          color: $ui-link-color-focus;
+        }
+      }
     }
+
+    .is-popup:before {
+      @extend %ui-depth2;
+      content: " ";
+      position: absolute;
+      top: -6px;
+      right: 50%;
+      display: block;
+      width: 10px;
+      height: 10px;
+      margin-right: -5px;
+      background: $white;
+      border-left: 1px solid $gray-l3;
+      border-top: 1px solid $gray-l3;
+      -webkit-transform: rotate(45deg);
+      -moz-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      -o-transform: rotate(45deg);
+      transform: rotate(45deg);
+    }
+  }
+
+  .button {
+    @extend %ui-btn-non;
   }
 
 }
