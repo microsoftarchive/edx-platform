@@ -30,7 +30,7 @@ def intercept_renderer(path, context):
     return response
 
 
-class TestInstructorDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
+class TestCoachDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
     """
     Tests for Personal Online Courses views.
     """
@@ -126,7 +126,7 @@ class TestInstructorDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
         schedule = json.loads(response.mako_context['schedule'])
         self.assertEqual(len(schedule), 2)
         self.assertEqual(schedule[0]['hidden'], True)
-        self.assertEqual(schedule[0]['start'], u'2014-11-25 00:00')
+        self.assertEqual(schedule[0]['start'], None)
         self.assertEqual(schedule[0]['children'][0]['start'], None)
         self.assertEqual(schedule[0]['due'], None)
         self.assertEqual(schedule[0]['children'][0]['due'], None)
