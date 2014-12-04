@@ -239,7 +239,6 @@ def poc_invite(request, course):
             if action == "Unenroll":
                 unenroll_email(poc, email, email_students=True)
         except ValidationError:
-            pass # maybe log this?
+            pass  # maybe log this?
     url = reverse('poc_coach_dashboard', kwargs={'course_id': course.id})
     return redirect(url)
-

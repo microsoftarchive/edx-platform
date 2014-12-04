@@ -122,7 +122,7 @@ class TestCoachDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
         url = reverse(
             'poc_coach_dashboard',
             kwargs={'course_id': self.course.id.to_deprecated_string()})
-        response = self.client.get(url);
+        response = self.client.get(url)
         schedule = json.loads(response.mako_context['schedule'])
         self.assertEqual(len(schedule), 2)
         self.assertEqual(schedule[0]['hidden'], True)
@@ -130,7 +130,9 @@ class TestCoachDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
         self.assertEqual(schedule[0]['children'][0]['start'], None)
         self.assertEqual(schedule[0]['due'], None)
         self.assertEqual(schedule[0]['children'][0]['due'], None)
-        self.assertEqual(schedule[0]['children'][0]['children'][0]['due'], None)
+        self.assertEqual(
+            schedule[0]['children'][0]['children'][0]['due'], None
+        )
 
         url = reverse(
             'save_poc',
@@ -139,13 +141,16 @@ class TestCoachDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
         schedule[0]['hidden'] = False
         schedule[0]['start'] = u'2014-11-20 00:00'
         schedule[0]['children'][0]['due'] = u'2014-12-25 00:00'  # what a jerk!
-        response = self.client.post(url, json.dumps(schedule),
-                         content_type='application/json')
+        response = self.client.post(
+            url, json.dumps(schedule), content_type='application/json'
+        )
 
         schedule = json.loads(response.content)
         self.assertEqual(schedule[0]['hidden'], False)
         self.assertEqual(schedule[0]['start'], u'2014-11-20 00:00')
-        self.assertEqual(schedule[0]['children'][0]['due'], u'2014-12-25 00:00')
+        self.assertEqual(
+            schedule[0]['children'][0]['due'], u'2014-12-25 00:00'
+        )
 
         # Make sure start date set on course, follows start date of earliest
         # scheduled chapter
@@ -159,4 +164,3 @@ def flatten(seq):
     For [[1, 2], [3, 4]] returns [1, 2, 3, 4].  Does not recurse.
     """
     return [x for sub in seq for x in sub]
-
