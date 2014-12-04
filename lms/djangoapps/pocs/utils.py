@@ -18,7 +18,7 @@ from pocs.models import (
     PersonalOnlineCourse,
     PocMembership,
     PocFutureMembership,
-    )
+)
 
 
 class EmailEnrollmentState(object):
@@ -88,14 +88,18 @@ def unenroll_email(poc, student_email, email_students=False, email_params=None):
     previous_state = EmailEnrollmentState(poc, student_email)
 
     if previous_state.in_poc:
-        PocMembership.objects.get(poc=poc, student=previous_state.member).delete()
+        PocMembership.objects.get(
+            poc=poc, student=previous_state.member
+        ).delete()
         if email_students:
             email_params['message'] = 'enrolled_unenroll'
             email_params['email_address'] = student_email
             email_params['full_name'] = previous_state.full_name
             send_mail_to_student(student_email, email_params)
     else:
-        if PocFutureMembership.objects.filter(poc=poc, email=student_email).exists():
+        if PocFutureMembership.objects.filter(
+            poc=poc, email=student_email
+        ).exists():
             PocFutureMembership.get(poc=poc, email=student_email).delete()
         if email_students:
             email_params['message'] = 'allowed_unenroll'
@@ -123,7 +127,10 @@ def get_email_params(poc, auto_enroll, secure=True):
     course_url = u'{proto}://{site}{path}'.format(
         proto=protocol,
         site=stripped_site_name,
-        path=reverse('course_root', kwargs={'course_id': course_id.to_deprecated_string()})
+        path=reverse(
+            'course_root',
+            kwargs={'course_id': course_id.to_deprecated_string()}
+        )
     )
 
     course_about_url = None
@@ -131,7 +138,10 @@ def get_email_params(poc, auto_enroll, secure=True):
         course_about_url = u'{proto}://{site}{path}'.format(
             proto=protocol,
             site=stripped_site_name,
-            path=reverse('about_course', kwargs={'course_id': course_id.to_deprecated_string()})
+            path=reverse(
+                'about_course',
+                kwargs={'course_id': course_id.to_deprecated_string()}
+            )
         )
 
     email_params = {
@@ -178,7 +188,9 @@ def send_mail_to_student(student, param_dict):
         ),
     }
 
-    subject_template, message_template = email_template_dict.get(message_type, (None, None))
+    subject_template, message_template = email_template_dict.get(
+        message_type, (None, None)
+    )
     if subject_template is not None and message_template is not None:
         subject = render_to_string(subject_template, param_dict)
         message = render_to_string(message_template, param_dict)
@@ -192,5 +204,10 @@ def send_mail_to_student(student, param_dict):
             settings.DEFAULT_FROM_EMAIL
         )
 
-        send_mail(subject, message, from_address, [student], fail_silently=False)
-
+        send_mail(
+            subject,
+            message,
+            from_address,
+            [student],
+            fail_silently=False
+        )
