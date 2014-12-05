@@ -1,9 +1,9 @@
 define([
     'jquery', 'annotator', 'js/common_helpers/ajax_helpers', 'js/edxnotes/views/visibility_decorator',
-    'js/edxnotes/views/toggle_notes_factory', 'js/spec/edxnotes/custom_matchers',
+    'js/edxnotes/views/toggle_notes_factory', 'js/spec/edxnotes/custom_matchers', 'js/spec/edxnotes/base64',
     'jasmine-jquery'
 ], function(
-    $, Annotator, AjaxHelpers, VisibilityDecorator, ToggleNotesFactory, customMatchers
+    $, Annotator, AjaxHelpers, VisibilityDecorator, ToggleNotesFactory, customMatchers, base64
 ) {
     'use strict';
     describe('EdxNotes ToggleNotesFactory', function() {
@@ -12,7 +12,8 @@ define([
             user: 'a user',
             usageId : 'an usage',
             courseId: 'a course',
-            token: 'test_token'
+            token: base64.makeToken(),
+            tokenUrl: '/test_token_url'
         };
 
         beforeEach(function() {

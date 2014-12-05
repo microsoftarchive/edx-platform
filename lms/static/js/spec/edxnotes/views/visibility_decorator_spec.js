@@ -1,7 +1,7 @@
 define([
     'annotator', 'js/edxnotes/views/visibility_decorator',
-    'js/spec/edxnotes/custom_matchers'
-], function(Annotator, VisibilityDecorator, customMatchers) {
+    'js/spec/edxnotes/custom_matchers', 'js/spec/edxnotes/base64'
+], function(Annotator, VisibilityDecorator, customMatchers, base64) {
     'use strict';
     describe('EdxNotes VisibilityDecorator', function() {
         var params = {
@@ -9,7 +9,8 @@ define([
             user: 'a user',
             usageId : 'an usage',
             courseId: 'a course',
-            token: 'test_token'
+            token: base64.makeToken(),
+            tokenUrl: '/test_token_url'
         };
 
         beforeEach(function() {
