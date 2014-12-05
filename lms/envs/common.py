@@ -1959,3 +1959,4 @@ COURSE_ABOUT_VISIBILITY_PERMISSION = 'see_exists'
 
 #date format the api will be formatting the datetime values
 API_DATE_FORMAT = '%Y-%m-%d'
+OAUTH_ID_TOKEN_EXPIRATION = 60 * 60 * 24
