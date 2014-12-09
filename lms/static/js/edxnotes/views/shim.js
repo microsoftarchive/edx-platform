@@ -15,7 +15,7 @@ define(['jquery', 'underscore', 'annotator'], function ($, _, Annotator) {
     if (!$.fn.addBack) {
         $.fn.addBack = function (selector) {
             return this.add(
-              selector === null ? this.prevObject : this.prevObject.filter(selector)
+                selector === null ? this.prevObject : this.prevObject.filter(selector)
             );
         };
     }
@@ -36,11 +36,11 @@ define(['jquery', 'underscore', 'annotator'], function ($, _, Annotator) {
      **/
     Annotator.Plugin.Auth.prototype.haveValidToken = function() {
         return (
-          this._unsafeToken &&
-          this._unsafeToken.sub &&
-          this._unsafeToken.exp &&
-          this._unsafeToken.iat &&
-          this.timeToExpiry() > 0
+            this._unsafeToken &&
+            this._unsafeToken.sub &&
+            this._unsafeToken.exp &&
+            this._unsafeToken.iat &&
+            this.timeToExpiry() > 0
         );
     };
 

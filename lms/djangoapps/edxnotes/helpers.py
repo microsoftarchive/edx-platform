@@ -118,7 +118,7 @@ def preprocess_collection(user, course, collection):
                 continue
 
             model.update({
-                u"unit": get_ancestor_context(course, store, usage_key),
+                u"unit": get_ancestor_context(store, course, usage_key, model["id"]),
                 u"updated": dateutil_parse(model["updated"]),
             })
             filtered_collection.append(model)
@@ -178,7 +178,7 @@ def get_ancestor(store, usage_key):
         return
 
 
-def get_ancestor_context(course, store, usage_key):
+def get_ancestor_context(store, course, usage_key, note_id):
     """
     Returns dispay_name and url for the parent module.
     """
@@ -197,7 +197,7 @@ def get_ancestor_context(course, store, usage_key):
 
     return {
         u"display_name": parent.display_name_with_default,
-        u"url": url,
+        u"url": "{}#{}".format(url, note_id)
     }
 
 
