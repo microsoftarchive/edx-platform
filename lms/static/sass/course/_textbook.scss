@@ -21,8 +21,9 @@ div.book-wrapper {
     @extend .sidebar;
     @extend .tran;
     @include box-sizing(border-box);
-    padding: 10px 0;
+    padding: ($baseline/2) 0;
     border-radius: 3px 0 0 3px;
+    background-color: $white;
     border: 1px solid #ccc;
     border-right: none;
     width: 180px;
