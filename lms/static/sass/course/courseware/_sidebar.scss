@@ -84,14 +84,12 @@
     .chapter {
       width: 100% !important;
       @include box-sizing(border-box);
-      padding: 11px 14px;
-      @include linear-gradient(top, $sidebar-chapter-bg-top, $sidebar-chapter-bg-bottom);
-      background-color: $sidebar-chapter-bg;
-      box-shadow: 0 1px 0 #fff inset, 0 -1px 0 rgba(0, 0, 0, .1) inset;
+      padding: ($baseline/2) ($baseline*0.75);
+      box-shadow: 0 1px 0 $white inset, 0 -1px 0 rgba(0, 0, 0, .1) inset;
       @include transition(background-color .1s linear 0s);
 
       &.is-open {
-        background: #fff;
+        background: $white;
       }
 
       &:first-child {
@@ -100,11 +98,11 @@
 
       &:last-child {
         border-radius: 0 0 0 3px;
-        box-shadow: 0 1px 0 #fff inset;
+        box-shadow: 0 1px 0 $white inset;
       }
 
       &:hover, &:focus {
-        background-color: #fff
+        background-color: $white;
       }
     }
 
