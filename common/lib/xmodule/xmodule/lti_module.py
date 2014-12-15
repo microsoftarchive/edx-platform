@@ -809,7 +809,7 @@ oauth_consumer_key="", oauth_signature="frVp4JuvT1mVXlxktiAUjQ7%2F1cw%3D"'}
         oauth_params = signature.collect_parameters(headers=headers, exclude_oauth_signature=False)
         oauth_headers = dict(oauth_params)
         oauth_signature = oauth_headers.pop('oauth_signature')
-        import ipdb; ipdb.set_trace()
+
         mock_request_LTI_1 = mock.Mock(
             uri=unicode(urllib.unquote(self.get_outcome_service_url())),
             http_method=unicode(request.method),
