@@ -809,7 +809,15 @@ oauth_consumer_key="", oauth_signature="frVp4JuvT1mVXlxktiAUjQ7%2F1cw%3D"'}
         oauth_params = signature.collect_parameters(headers=headers, exclude_oauth_signature=False)
         oauth_headers = dict(oauth_params)
         oauth_signature = oauth_headers.pop('oauth_signature')
-        mock_request = mock.Mock(
+        import ipdb; ipdb.set_trace()
+        mock_request_LTI_1 = mock.Mock(
+            uri=unicode(urllib.unquote(self.get_outcome_service_url())),
+            http_method=unicode(request.method),
+            params=oauth_headers.items(),
+            signature=oauth_signature
+        )
+
+        mock_request_LTI_2 = mock.Mock(
             uri=unicode(urllib.unquote(request.url)),
             http_method=unicode(request.method),
             params=oauth_headers.items(),
@@ -819,7 +827,8 @@ oauth_consumer_key="", oauth_signature="frVp4JuvT1mVXlxktiAUjQ7%2F1cw%3D"'}
         if oauth_body_hash != oauth_headers.get('oauth_body_hash'):
             raise LTIError("OAuth body hash verification is failed.")
 
-        if not signature.verify_hmac_sha1(mock_request, client_secret):
+        if not signature.verify_hmac_sha1(mock_request_LTI_1, client_secret) \
+                and not signature.verify_hmac_sha1(mock_request_LTI_2, client_secret):
             raise LTIError("OAuth signature verification is failed.")
 
     def get_client_key_secret(self):
