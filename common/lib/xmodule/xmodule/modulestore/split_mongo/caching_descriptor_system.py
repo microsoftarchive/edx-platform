@@ -174,8 +174,9 @@ class CachingDescriptorSystem(MakoDescriptorSystem, EditInfoRuntimeMixin):
                 block_key.type,
                 definition_id,
                 lambda fields: self.modulestore.convert_references_to_keys(
-                    course_key, self.load_block_type(block_key.type),
-                    fields, self.course_entry.structure['blocks'],
+                    course_key, class_,
+                    fields,
+                    self.course_entry.structure['blocks'],
                 )
             )
         else:
@@ -320,3 +321,13 @@ class CachingDescriptorSystem(MakoDescriptorSystem, EditInfoRuntimeMixin):
 
         json_data['edit_info']['_subtree_edited_on'] = max_date
         json_data['edit_info']['_subtree_edited_by'] = max_by
+
+    def get_aside_of_type(self, block, aside_type):
+        """
+        See `runtime.Runtime.get_aside_of_type`
+
+        This override adds the field data from the block to the aside
+        """
+        new_aside = super(CachingDescriptorSystem, self).get_aside_of_type(block, aside_type)
+        new_aside._field_data = block._field_data
+        return new_aside

@@ -5,7 +5,6 @@ Unit tests for the Mixed Modulestore, with DDT for the various stores (Split, Dr
 from collections import namedtuple
 import datetime
 import ddt
-from importlib import import_module
 import itertools
 import mimetypes
 from uuid import uuid4
@@ -25,6 +24,9 @@ from xmodule.contentstore.content import StaticContent
 from opaque_keys.edx.keys import CourseKey
 from xmodule.modulestore.xml_importer import import_from_xml
 from nose import SkipTest
+from xmodule.modulestore.tests.test_asides import AsideTestType
+from xblock.core import XBlockAside
+from mock import patch
 
 if not settings.configured:
     settings.configure()
@@ -33,7 +35,7 @@ from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from opaque_keys.edx.locator import BlockUsageLocator, CourseLocator
 from xmodule.exceptions import InvalidVersionError
 from xmodule.modulestore import ModuleStoreEnum
-from xmodule.modulestore.draft_and_published import UnsupportedRevisionError, ModuleStoreDraftAndPublished
+from xmodule.modulestore.draft_and_published import UnsupportedRevisionError
 from xmodule.modulestore.exceptions import ItemNotFoundError, DuplicateCourseError, ReferentialIntegrityError, NoPathToItem
 from xmodule.modulestore.mixed import MixedModuleStore
 from xmodule.modulestore.search import path_to_location
@@ -2003,3 +2005,69 @@ class TestMixedModuleStore(CourseComparisonTest):
                 with self.store.branch_setting(ModuleStoreEnum.Branch.published_only, course_id):
                     published_vertical = self.store.get_item(vertical_loc)
                 self.assertEqual(draft_vertical.display_name, published_vertical.display_name)
+
+    @ddt.data(ModuleStoreEnum.Type.mongo, ModuleStoreEnum.Type.split)
+    @XBlockAside.register_temp_plugin(AsideTestType, 'test_aside')
+    @patch('xmodule.modulestore.split_mongo.caching_descriptor_system.CachingDescriptorSystem.applicable_aside_types', lambda self, block: ['test_aside'])
+    def test_aside_crud(self, default_store):
+        """
+        Check that the modulestores handle asides crud
+        """
+        if default_store == ModuleStoreEnum.Type.mongo:
+            raise SkipTest("asides not supported in old mongo")
+        with MongoContentstoreBuilder().build() as contentstore:
+            self.store = MixedModuleStore(
+                contentstore=contentstore,
+                create_modulestore_instance=create_modulestore_instance,
+                mappings={},
+                **self.OPTIONS
+            )
+            self.addCleanup(self.store.close_all_connections)
+            with self.store.default_store(default_store):
+                dest_course_key = self.store.make_course_key('edX', "aside_test", "2012_Fall")
+                courses = import_from_xml(
+                    self.store, self.user_id, DATA_DIR, ['aside'],
+                    load_error_modules=False,
+                    static_content_store=contentstore,
+                    target_course_id=dest_course_key,
+                    create_course_if_not_present=True,
+                )
+
+                # check that the imported blocks have the right asides and values
+                def check_block(block):
+                    """
+                    Check whether block has the expected aside w/ its fields and then recurse to the block's children
+                    """
+                    asides = block.runtime.get_asides(block)
+                    self.assertEqual(len(asides), 1, "Found {} asides but expected only test_aside".format(asides))
+                    self.assertIsInstance(asides[0], AsideTestType)
+                    category = block.scope_ids.block_type
+                    self.assertEqual(asides[0].data_field, "{} aside data".format(category))
+                    self.assertEqual(asides[0].content, "{} Aside".format(category.capitalize()))
+
+                    for child in block.get_children():
+                        check_block(child)
+
+                check_block(courses[0])
+
+                # create a new block and ensure its aside magically appears with the right fields
+                new_chapter = self.store.create_child(self.user_id, courses[0].location, 'chapter', 'new_chapter')
+                asides = new_chapter.runtime.get_asides(new_chapter)
+                self.assertEqual(len(asides), 1, "Found {} asides but expected only test_aside".format(asides))
+                chapter_aside = asides[0]
+                self.assertIsInstance(chapter_aside, AsideTestType)
+                self.assertFalse(
+                    chapter_aside.fields['data_field'].is_set_on(chapter_aside),
+                    "data_field says it's assigned to {}".format(chapter_aside.data_field)
+                )
+                self.assertFalse(
+                    chapter_aside.fields['content'].is_set_on(chapter_aside),
+                    "content says it's assigned to {}".format(chapter_aside.content)
+                )
+
+                # now update the values
+                chapter_aside.data_field = 'new value'
+                self.store.update_item(new_chapter, self.user_id)
+                new_chapter = self.store.get_item(new_chapter.location)
+                chapter_aside = new_chapter.runtime.get_asides(new_chapter)[0]
+                self.assertEqual('new value', chapter_aside.data_field)
