@@ -57,7 +57,8 @@ disable=
     too-many-branches,
     too-many-arguments,
     too-many-locals,
-    duplicate-code
+    duplicate-code,
+    logging-format-interpolation
 
 
 [REPORTS]
@@ -128,7 +129,7 @@ variable-rgx=[a-z_][a-z0-9_]{2,30}$
 
 # Regular expression which should only match correct attribute names in class
 # bodies
-class-attribute-rgx=([A-Za-z_][A-Za-z0-9_]{2,30}|(__.*__))$
+class-attribute-rgx=([A-Za-z_][A-Za-z0-9_]{2,40}|(__.*__))$
 
 # Regular expression which should only match correct list comprehension /
 # generator expression variable names
