@@ -102,10 +102,14 @@ class EdxNotesPageItem(NoteChild):
     def time_updated(self):
         return self._get_element_text(".reference-updated-date")
 
+    @property
+    def title_highlighted(self):
+        return self._get_element_text(".reference-title")
+
 
 class EdxNotesPageView(PageObject):
     """
-    Base class for EdxNotes views: Recent Activity, Location in Course, Search Results.
+    Base class for EdxNotes views: Recent Activity, Course Structure, Search Results.
     """
     url = None
     BODY_SELECTOR = ".tab-panel"
@@ -169,7 +173,7 @@ class RecentActivityView(EdxNotesPageView):
 
 class CourseStructureView(EdxNotesPageView):
     """
-    Helper class for Location in Course view.
+    Helper class for Course Structure view.
     """
     BODY_SELECTOR = "#structure-panel"
     TAB_SELECTOR = ".tab#view-course-structure"
