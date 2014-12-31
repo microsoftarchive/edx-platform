@@ -222,6 +222,7 @@
 
   // messages
   .message {
+    margin-top: $baseline;
     margin-bottom: $baseline;
     display: block;
     border-radius: 1px;
@@ -539,10 +540,16 @@
   }
 
   // create or edit cohort group
-  .cohort-management-create, .cohort-management-edit {
+  .cohort-management-settings,
+  .cohort-management-edit {
     @extend %cohort-management-form;
     border: 1px solid $gray-l5;
     margin-bottom: $baseline;
+
+    .message {
+      margin-left: $baseline;
+      margin-right: $baseline;
+    }
 
     .form-title {
       @extend %t-title5;
@@ -641,6 +648,9 @@
       @extend %t-title6;
       @extend %t-weight4;
       margin-bottom: ($baseline/4);
+      border: none;
+      background: transparent;
+      padding: 0;
     }
 
     .form-introduction {
@@ -995,10 +1005,6 @@
 
   .cohort-management-nav {
     margin-bottom: $baseline;
-
-    .action-create {
-      margin-top: $baseline;
-    }
   }
 
   .cohort-management-settings {
@@ -1039,8 +1045,10 @@
       border-top: ($baseline/5) solid $gray-l4;
       background: $white;
 
-      .cohort-management-create {
+      .cohort-management-settings {
         margin-bottom: 0;
+        border-top: 0;
+        background: $white;
       }
 
       .cohort-details-name {
@@ -1066,7 +1074,7 @@
     @extend %ui-no-list;
     @extend %ui-depth1;
     position: relative;
-    top: (($baseline/5) + 1);
+    top: (($baseline/5));
     padding: 0 $baseline;
 
     .tab {
