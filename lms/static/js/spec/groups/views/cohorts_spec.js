@@ -239,7 +239,7 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                     var contentGroupId = 0;
                     createCohortsView(this, {cohorts: []});
                     cohortsView.$('.action-create').click();
-                    expect(cohortsView.$('.cohort-management-create-form').length).toBe(1);
+                    expect(cohortsView.$('.cohort-management-settings-form').length).toBe(1);
                     expect(cohortsView.$('.cohort-management-nav')).toHaveClass('is-disabled');
                     expect(cohortsView.$('.cohort-management-group')).toHaveClass('is-hidden');
                     cohortsView.$('.cohort-name').val(defaultCohortName);
@@ -266,7 +266,7 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                     verifyHeader(1, defaultCohortName, 0);
                     expect(cohortsView.$('.cohort-management-nav')).not.toHaveClass('is-disabled');
                     expect(cohortsView.$('.cohort-management-group')).not.toHaveClass('is-hidden');
-                    expect(getAddModal().find('.cohort-management-create-form').length).toBe(0);
+                    expect(getAddModal().find('.cohort-management-settings-form').length).toBe(0);
                 });
 
                 it("trims off whitespace before adding a cohort", function() {
@@ -280,7 +280,7 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                 it("does not allow a blank cohort name to be submitted", function() {
                     createCohortsView(this, {selectCohort: 1});
                     cohortsView.$('.action-create').click();
-                    expect(getAddModal().find('.cohort-management-create-form').length).toBe(1);
+                    expect(getAddModal().find('.cohort-management-settings-form').length).toBe(1);
                     cohortsView.$('.cohort-name').val('');
                     expect(cohortsView.$('.cohort-management-nav')).toHaveClass('is-disabled');
                     getAddModal().find('.action-save').click();
@@ -293,7 +293,7 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                     createCohortsView(this, {selectCohort: 1});
                     cohortsView.$('.action-create').click();
                     addModal = getAddModal();
-                    expect(addModal.find('.cohort-management-create-form').length).toBe(1);
+                    expect(addModal.find('.cohort-management-settings-form').length).toBe(1);
                     addModal.find('.cohort-name').val(defaultCohortName);
                     addModal.find('.action-save').click();
                     AjaxHelpers.respondWithError(requests, 400, {
@@ -309,17 +309,17 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                 it("is removed when 'Cancel' is clicked", function() {
                     createCohortsView(this, {selectCohort: 1});
                     cohortsView.$('.action-create').click();
-                    expect(getAddModal().find('.cohort-management-create-form').length).toBe(1);
+                    expect(getAddModal().find('.cohort-management-settings-form').length).toBe(1);
                     expect(cohortsView.$('.cohort-management-nav')).toHaveClass('is-disabled');
                     cohortsView.$('.action-cancel').click();
-                    expect(getAddModal().find('.cohort-management-create-form').length).toBe(0);
+                    expect(getAddModal().find('.cohort-management-settings-form').length).toBe(0);
                     expect(cohortsView.$('.cohort-management-nav')).not.toHaveClass('is-disabled');
                 });
 
                 it("shows an error if canceled when no cohorts are defined", function() {
                     createCohortsView(this, {cohorts: []});
                     cohortsView.$('.action-create').click();
-                    expect(getAddModal().find('.cohort-management-create-form').length).toBe(1);
+                    expect(getAddModal().find('.cohort-management-settings-form').length).toBe(1);
                     expect(cohortsView.$('.cohort-management-nav')).toHaveClass('is-disabled');
                     cohortsView.$('.action-cancel').click();
                     verifyMessage(
