@@ -147,6 +147,10 @@ class MembershipPageCohortManagementSection(PageObject):
         """
         Selects the given cohort in the drop-down.
         """
+        EmptyPromise(
+            lambda: cohort_name in self.get_cohorts(),
+            "Waiting for cohort selector to populate"
+        ).fulfill()
         self.q(css=self._bounded_selector("#cohort-select option")).filter(
             lambda el: self._cohort_name(el.text) == cohort_name
         ).first.click()
