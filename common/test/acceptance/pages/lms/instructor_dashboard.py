@@ -244,10 +244,6 @@ class MembershipPageCohortManagementSection(PageObject):
         Selects the settings tab for the cohort currently being edited.
         """
         self.q(css=self._bounded_selector(".cohort-management-settings li.tab-settings>a")).first.click()
-        EmptyPromise(
-            lambda: len(self.q(css=self._bounded_selector(self.no_content_group_button))) == 1,
-            "Waiting for radio button to appear"
-        ).fulfill()
 
     def get_cohort_settings_messages(self, type="confirmation"):
         """
