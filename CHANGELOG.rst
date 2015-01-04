@@ -7,6 +7,8 @@ the top.  Include a label indicating the component affected.
 
 LMS: Assign cohorts to content groups in the instructor dashboard.  TNL-653
 
+Studio: Support adding groups to the cohort-schemed group configuration.  TNL-736
+
 LMS: Extend preview to support cohorted courseware.  TNL-651
 
 Platform: Add group_access field to all xblocks.  TNL-670
