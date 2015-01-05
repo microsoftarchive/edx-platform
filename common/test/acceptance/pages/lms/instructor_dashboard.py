@@ -245,15 +245,16 @@ class MembershipPageCohortManagementSection(PageObject):
         """
         self.q(css=self._bounded_selector(".cohort-management-settings li.tab-settings>a")).first.click()
 
-    def get_cohort_settings_messages(self, type="confirmation"):
+    def get_cohort_settings_messages(self, type="confirmation", wait_for_messages=True):
         """
-        Returns an array of messages related to modifying cohort settings.
+        Returns an array of messages related to modifying cohort settings. If wait_for_messages
+        is True, will wait for a message to appear.
         """
         # Note that the class name should change because it is no longer a "create"
         title_css = "div.cohort-management-settings .message-" + type + " .message-title"
         detail_css = "div.cohort-management-settings .message-" + type + " .summary-item"
 
-        return self._get_messages(title_css, detail_css)
+        return self._get_messages(title_css, detail_css, wait_for_messages=wait_for_messages)
 
     def _get_cohort_messages(self, type):
         """
@@ -272,10 +273,15 @@ class MembershipPageCohortManagementSection(PageObject):
         detail_css = ".csv-upload .summary-item"
         return self._get_messages(title_css, detail_css)
 
-    def _get_messages(self, title_css, details_css):
+    def _get_messages(self, title_css, details_css, wait_for_messages=False):
         """
         Helper method to get messages given title and details CSS.
         """
+        if wait_for_messages:
+            EmptyPromise(
+                lambda: self.q(css=self._bounded_selector(title_css)).results != 0,
+                "Waiting for messages to appear"
+            ).fulfill()
         message_title = self.q(css=self._bounded_selector(title_css))
         if len(message_title.results) == 0:
             return []
