@@ -7,7 +7,10 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
             var catLoversInitialCount = 123, dogLoversInitialCount = 456, unknownUserMessage,
                 createMockCohort, createMockCohorts, createMockContentGroups, createCohortsView, cohortsView,
                 requests, respondToRefresh, verifyMessage, verifyNoMessage, verifyDetailedMessage, verifyHeader,
-                expectCohortAddRequest, getAddModal, selectContentGroup, clearContentGroup;
+                expectCohortAddRequest, getAddModal, selectContentGroup, clearContentGroup,
+                MOCK_COHORTED_USER_PARTITION_ID;
+
+            MOCK_COHORTED_USER_PARTITION_ID = 0;
 
             createMockCohort = function (name, id, userCount, groupId, userPartitionId) {
                 return {
@@ -30,8 +33,12 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
 
             createMockContentGroups = function () {
                 return [
-                    new ContentGroupModel({id: 0, name: 'Dog Content'}),
-                    new ContentGroupModel({id: 1, name: 'Cat Content'})
+                    new ContentGroupModel({
+                        id: 0, name: 'Dog Content', user_partition_id: MOCK_COHORTED_USER_PARTITION_ID
+                    }),
+                    new ContentGroupModel({
+                        id: 1, name: 'Cat Content', user_partition_id: MOCK_COHORTED_USER_PARTITION_ID
+                    })
                 ];
             };
 
@@ -58,14 +65,15 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                 AjaxHelpers.respondWithJson(requests, createMockCohorts(catCount, dogCount));
             };
 
-            expectCohortAddRequest = function(name, group_id) {
+            expectCohortAddRequest = function(name, groupId, userPartitionId) {
                 AjaxHelpers.expectJsonRequest(
                     requests, 'POST', '/mock_service/cohorts',
                     {
                         name: name,
                         user_count: 0,
                         assignment_type: '',
-                        group_id: group_id
+                        group_id: groupId,
+                        user_partition_id: userPartitionId
                     }
                 );
             };
@@ -74,9 +82,10 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                 return cohortsView.$('.cohort-management-add-modal');
             };
 
-            selectContentGroup = function(values) {
+            selectContentGroup = function(groupId, userPartitionId) {
+                var ids = groupId + ':' + userPartitionId;
                 cohortsView.$('.radio-yes').prop('checked', true).change();
-                cohortsView.$('.input-cohort-group-association').val(values).change();
+                cohortsView.$('.input-cohort-group-association').val(ids).change();
             };
 
             clearContentGroup = function() {
@@ -208,7 +217,7 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
 
                 it('can switch cohort', function () {
                     createCohortsView(this, {selectCohort: 1});
-                    cohortsView.$('.cohort-select').val("2").change();
+                    cohortsView.$('.cohort-select').val('2').change();
                     verifyHeader(2, 'Dog Lovers', dogLoversInitialCount);
                 });
             });
@@ -236,22 +245,24 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                 var defaultCohortName = 'New Cohort';
 
                 it("can add a cohort", function() {
-                    var contentGroupId = 0;
+                    var contentGroupId = 0,
+                        contentGroupUserPartitionId = 0;
                     createCohortsView(this, {cohorts: []});
                     cohortsView.$('.action-create').click();
                     expect(cohortsView.$('.cohort-management-settings-form').length).toBe(1);
                     expect(cohortsView.$('.cohort-management-nav')).toHaveClass('is-disabled');
                     expect(cohortsView.$('.cohort-management-group')).toHaveClass('is-hidden');
                     cohortsView.$('.cohort-name').val(defaultCohortName);
-                    selectContentGroup(contentGroupId);
+                    selectContentGroup(contentGroupId, MOCK_COHORTED_USER_PARTITION_ID);
                     cohortsView.$('.action-save').click();
-                    expectCohortAddRequest(defaultCohortName, contentGroupId);
+                    expectCohortAddRequest(defaultCohortName, contentGroupId, MOCK_COHORTED_USER_PARTITION_ID);
                     AjaxHelpers.respondWithJson(
                         requests,
                         {
                             id: 1,
                             name: defaultCohortName,
-                            group_id: contentGroupId
+                            group_id: contentGroupId,
+                            user_partition_id: MOCK_COHORTED_USER_PARTITION_ID
                         }
                     );
                     AjaxHelpers.respondWithJson(
@@ -274,7 +285,7 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                     cohortsView.$('.action-create').click();
                     cohortsView.$('.cohort-name').val('  New Cohort   ');
                     cohortsView.$('.action-save').click();
-                    expectCohortAddRequest('New Cohort', null);
+                    expectCohortAddRequest('New Cohort', null, null);
                 });
 
                 it("does not allow a blank cohort name to be submitted", function() {
@@ -285,7 +296,7 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                     expect(cohortsView.$('.cohort-management-nav')).toHaveClass('is-disabled');
                     getAddModal().find('.action-save').click();
                     expect(requests.length).toBe(0);
-                    verifyMessage('Please enter a name for your new cohort group.', 'error');
+                    verifyMessage('Please enter a name for your cohort group.', 'error');
                 });
 
                 it("shows a message when adding a cohort returns a server error", function() {
@@ -336,10 +347,10 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                     cohortsView.$('.action-create').click();
                     cohortsView.$('.cohort-name').val('');
                     cohortsView.$('.action-save').click();
-                    verifyMessage('Please enter a name for your new cohort group.', 'error');
+                    verifyMessage('Please enter a name for your cohort group.', 'error');
 
                     // Now switch to a different cohort
-                    cohortsView.$('.cohort-select').val("2").change();
+                    cohortsView.$('.cohort-select').val('2').change();
                     verifyHeader(2, 'Dog Lovers', dogLoversInitialCount);
                     verifyNoMessage();
                 });
@@ -351,7 +362,7 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                     cohortsView.$('.action-create').click();
                     cohortsView.$('.cohort-name').val('');
                     cohortsView.$('.action-save').click();
-                    verifyMessage('Please enter a name for your new cohort group.', 'error');
+                    verifyMessage('Please enter a name for your cohort group.', 'error');
 
                     // Now cancel the form
                     cohortsView.$('.action-cancel').click();
@@ -520,7 +531,7 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                         cohortsView.$('.tab-settings a').click();
 
                         // Select the content group with id 1 and verify the radio button was switched to 'Yes'
-                        selectContentGroup(0);
+                        selectContentGroup(0, MOCK_COHORTED_USER_PARTITION_ID);
                         expect(cohortsView.$('.radio-yes').prop('checked')).toBeTruthy();
 
                         // Click the save button and verify that the correct request is sent
@@ -529,7 +540,8 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                             requests, 'PATCH', '/mock_service/cohorts/1',
                             {
                                 name: 'Cat Lovers',
-                                group_id: 0
+                                group_id: 0,
+                                user_partition_id: MOCK_COHORTED_USER_PARTITION_ID
                             }
                         );
                         AjaxHelpers.respondWithJson(
@@ -537,6 +549,16 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                             createMockCohort('Cat Lovers', 1, catLoversInitialCount, 0, 0)
                         );
                         verifyMessage('Saved cohort group.', 'confirmation');
+                    });
+
+                    it("automatically selects 'No' when a content group is chosen", function () {
+                        createCohortsView(this, {selectCohort: 1});
+                        cohortsView.$('.tab-settings a').click();
+
+                        // Select a content group and verify that the radio button was switched to 'Yes'
+                        cohortsView.$('.input-cohort-group-association').val('0:0').change();
+                        expect(cohortsView.$('.radio-yes').prop('checked')).toBeTruthy();
+                        expect(cohortsView.$('.radio-no').prop('checked')).toBeFalsy();
                     });
 
                     it("can clear selected content group", function () {
@@ -556,7 +578,8 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                             requests, 'PATCH', '/mock_service/cohorts/1',
                             {
                                 name: 'Cat Lovers',
-                                group_id: null
+                                group_id: null,
+                                user_partition_id: null
                             }
                         );
                         AjaxHelpers.respondWithJson(
@@ -564,6 +587,30 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                             createMockCohort('Cat Lovers', 1, catLoversInitialCount, 0, 0)
                         );
                         verifyMessage('Saved cohort group.', 'confirmation');
+                    });
+
+                    it("can clear a selected content group which had been deleted", function () {
+                        createCohortsView(this, {
+                            cohorts: [
+                                {id: 1, name: 'Cat Lovers', group_id: 999}
+                            ],
+                            selectCohort: 1
+                        });
+                        cohortsView.$('.tab-settings a').click();
+                        expect(cohortsView.$('.radio-yes').prop('checked')).toBeTruthy();
+                        clearContentGroup();
+
+                        // Click the save button and verify that the correct request is sent
+                        cohortsView.$('.action-save').click();
+                        AjaxHelpers.respondWithJson(
+                            requests,
+                            createMockCohort('Cat Lovers', 1, catLoversInitialCount, 0, 0)
+                        );
+                        verifyMessage('Saved cohort group.', 'confirmation');
+
+                        // Verify that the deleted content group and associated message have been removed
+                        expect(cohortsView.$('option.option-unavailable').text().trim()).toBe('');
+                        expect(cohortsView.$('.copy-error').text().trim()).toBe('');
                     });
 
                     it("shows a message when the selected content group does not exist", function () {
@@ -574,8 +621,9 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                             selectCohort: 1
                         });
                         cohortsView.$('.tab-settings a').click();
+                        expect(cohortsView.$('option.option-unavailable').text().trim()).toBe('Deleted Content Group');
                         expect(cohortsView.$('.copy-error').text().trim()).toBe(
-                            'The selected content group has been deleted, you may wish to reassign this cohort group.'
+                            'The previously selected content group was deleted. Select another content group.'
                         );
                     });
 

@@ -110,7 +110,8 @@ class CohortConfigurationTest(UniqueCourseTest, CohortTestMixin):
         self.cohort_management_page.select_cohort(self.manual_cohort_name)
         self.assertIsNone(self.cohort_management_page.get_cohort_associated_content_group())
         self.assertEqual(
-            "You haven't configured any content groups yet. You need to create a content group before you can create assignments. Create a content group",
+            "You haven't configured any content groups yet. "
+            "You need to create a content group before you can create assignments. Create a content group",
             self.cohort_management_page.get_cohort_related_content_group_message()
         )
         # TODO: test can't select radio button
@@ -610,9 +611,8 @@ class CohortContentGroupAssociationTest(UniqueCourseTest, CohortTestMixin):
         self.cohort_management_page.set_cohort_associated_content_group("Pears")
         confirmation_messages = self.cohort_management_page.get_cohort_settings_messages()
         self.assertEqual(["Saved cohort group."], confirmation_messages)
-        # TODO: uncomment
-        # self.assertIsNone(self.cohort_management_page.get_cohort_related_content_group_message())
-        # self.assertEquals(["Bananas", "Pears"], self.cohort_management_page.get_all_content_groups())
+        self.assertIsNone(self.cohort_management_page.get_cohort_related_content_group_message())
+        self.assertEquals(["Bananas", "Pears"], self.cohort_management_page.get_all_content_groups())
 
     def _create_new_cohort_linked_to_content_group(self, new_cohort, cohort_group):
         """
