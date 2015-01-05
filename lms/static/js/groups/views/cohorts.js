@@ -24,8 +24,7 @@ var edx = edx || {};
 
             this.template = _.template($('#cohorts-tpl').text());
             this.selectorTemplate = _.template($('#cohort-selector-tpl').text());
-            this.advanced_settings_url = options.advanced_settings_url;
-            this.upload_cohorts_csv_url = options.upload_cohorts_csv_url;
+            this.context = options.context;
             this.contentGroups = options.contentGroups;
             model.on('sync', this.onSync, this);
 
@@ -109,7 +108,7 @@ var edx = edx || {};
                     model: cohort,
                     cohorts: this.model,
                     contentGroups: this.contentGroups,
-                    advanced_settings_url: this.advanced_settings_url
+                    context: this.context
                 });
                 this.editor.render();
             }
@@ -145,7 +144,8 @@ var edx = edx || {};
             newCohort.url = this.model.url;
             this.cohortFormView = new CohortFormView({
                 model: newCohort,
-                contentGroups: this.contentGroups
+                contentGroups: this.contentGroups,
+                context: this.context
             });
             this.cohortFormView.render();
             this.$('.cohort-management-add-modal').append(this.cohortFormView.$el);
@@ -217,10 +217,10 @@ var edx = edx || {};
                     inputTip: gettext("Only properly formatted .csv files will be accepted."),
                     submitButtonText: gettext("Upload File and Assign Students"),
                     extensions: ".csv",
-                    url: this.upload_cohorts_csv_url,
+                    url: this.context.uploadCohortsCsvUrl,
                     successNotification: function (file, event, data) {
                         var message = interpolate_text(gettext(
-                            "Your file '{file}' has been uploaded. Please allow a few minutes for processing."
+                            "Your file '{file}' has been uploaded. Allow a few minutes for processing."
                         ), {file: file});
                         return new NotificationModel({
                             type: "confirmation",

@@ -21,8 +21,8 @@
                 <% } %>
             </div>
             <div class="setup-actions">
-                <% if (advanced_settings_url != "None") { %>
-                    <a href="<%= advanced_settings_url %>" class="action-secondary action-edit"><%- gettext("Edit settings in Studio") %></a>
+                <% if (studioAdvancedSettingsUrl !== "None") { %>
+                    <a href="<%= studioAdvancedSettingsUrl %>" class="action-secondary action-edit"><%- gettext("Edit settings in Studio") %></a>
                 <% } %>
             </div>
         </div>
@@ -55,7 +55,7 @@
                               class="input cohort-management-group-add-students"
                               placeholder="<%- gettext('e.g. johndoe@example.com, JaneDoe, joeydoe@example.com') %>"></textarea>
 
-                    <span class="tip"><%- gettext('You will not receive notification for emails that bounce, so please double-check spelling.') %></span>
+                    <span class="tip"><%- gettext('You will not receive notification for emails that bounce, so double-check your spelling.') %></span>
                 </div>
             </div>
 

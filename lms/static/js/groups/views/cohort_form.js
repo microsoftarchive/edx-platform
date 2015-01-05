@@ -8,7 +8,6 @@ var edx = edx || {};
     edx.groups.CohortFormView = Backbone.View.extend({
         events : {
             'change .cohort-management-details-association-course input': 'onRadioButtonChange',
-            'change .input-cohort-group-association': 'onGroupAssociationChange',
             'click .tab-content-settings .action-save': 'saveSettings',
             'submit .cohort-management-group-add-form': 'addStudents'
         },
@@ -16,6 +15,7 @@ var edx = edx || {};
         initialize: function(options) {
             this.template = _.template($('#cohort-form-tpl').text());
             this.contentGroups = options.contentGroups;
+            this.context = options.context;
         },
 
         showNotification: function(options, beforeElement) {
@@ -38,7 +38,7 @@ var edx = edx || {};
             this.$el.html(this.template({
                 cohort: this.model,
                 contentGroups: this.contentGroups,
-                studioGroupConfigurationsPageUrl: "need-a-url-here"
+                studioGroupConfigurationsUrl: this.context.studioGroupConfigurationsUrl
             }));
             return this;
         },
@@ -51,11 +51,8 @@ var edx = edx || {};
                 // it to the first option ('Choose a content group to associate').
                 this.$('.input-cohort-group-association').val('None');
             }
-        },
-
-        onGroupAssociationChange: function() {
-            // Since the user has chosen a content group, click the 'Yes' button too
-            this.$('.cohort-management-details-association-course .radio-yes').click();
+            // Enable the select if the user has chosen groups, else disable it
+            this.$('.input-cohort-group-association').prop('disabled', !groupsEnabled);
         },
 
         getSelectedContentGroup: function() {
@@ -100,7 +97,7 @@ var edx = edx || {};
             };
             cohortName = this.getUpdatedCohortName();
             if (cohortName.length === 0) {
-                showErrorMessage(gettext('Please enter a name for your cohort group.'));
+                showErrorMessage(gettext('Enter a name for your cohort group.'));
                 saveOperation.reject();
             } else {
                 selectedContentGroup = this.getSelectedContentGroup();
@@ -129,7 +126,7 @@ var edx = edx || {};
                         // Ignore the exception and show the default error message instead.
                     }
                     if (!errorMessage) {
-                        errorMessage = gettext("We've encountered an error. Please refresh your browser and then try again.");
+                        errorMessage = gettext("We've encountered an error. Refresh your browser and then try again.");
                     }
                     showErrorMessage(errorMessage);
                     saveOperation.reject();
