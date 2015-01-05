@@ -26,7 +26,6 @@ var edx = edx || {};
             this.selectorTemplate = _.template($('#cohort-selector-tpl').text());
             this.advanced_settings_url = options.advanced_settings_url;
             this.upload_cohorts_csv_url = options.upload_cohorts_csv_url;
-            this.cohortUserPartitionId = options.cohortUserPartitionId;
             this.contentGroups = options.contentGroups;
             model.on('sync', this.onSync, this);
 
@@ -58,9 +57,14 @@ var edx = edx || {};
                 hasCohorts = this.model.length > 0,
                 cohortNavElement = this.$('.cohort-management-nav'),
                 additionalCohortControlElement = this.$('.wrapper-cohort-supplemental'),
-                isModelUpdate = options && options.patch && response.hasOwnProperty('user_partition_id');
+                isModelUpdate;
+            isModelUpdate = function() {
+                // Distinguish whether this is a sync event for just one model, or if it is for
+                // an entire collection.
+                return options && options.patch && response.hasOwnProperty('user_partition_id');
+            };
             this.hideAddCohortForm();
-            if (isModelUpdate) {
+            if (isModelUpdate()) {
                 // Refresh the selector in case the model's name changed
                 this.renderSelector(selectedCohort);
             } else if (hasCohorts) {
@@ -104,7 +108,6 @@ var edx = edx || {};
                     el: this.$('.cohort-management-group'),
                     model: cohort,
                     cohorts: this.model,
-                    cohortUserPartitionId: this.cohortUserPartitionId,
                     contentGroups: this.contentGroups,
                     advanced_settings_url: this.advanced_settings_url
                 });
@@ -142,7 +145,6 @@ var edx = edx || {};
             newCohort.url = this.model.url;
             this.cohortFormView = new CohortFormView({
                 model: newCohort,
-                cohortUserPartitionId: this.cohortUserPartitionId,
                 contentGroups: this.contentGroups
             });
             this.cohortFormView.render();

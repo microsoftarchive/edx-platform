@@ -15,7 +15,6 @@ var edx = edx || {};
         initialize: function(options) {
             this.template = _.template($('#cohort-editor-tpl').text());
             this.cohorts = options.cohorts;
-            this.cohortUserPartitionId = options.cohortUserPartitionId;
             this.contentGroups = options.contentGroups;
             this.advanced_settings_url = options.advanced_settings_url;
         },
@@ -28,13 +27,11 @@ var edx = edx || {};
         render: function() {
             this.$el.html(this.template({
                 cohort: this.model,
-                cohortUserPartitionId: this.cohortUserPartitionId,
                 contentGroups: this.contentGroups,
                 advanced_settings_url: this.advanced_settings_url
             }));
             this.cohortFormView = new CohortFormView({
                 model: this.model,
-                cohortUserPartitionId: this.cohortUserPartitionId,
                 contentGroups: this.contentGroups
             });
             this.cohortFormView.render();
@@ -53,8 +50,12 @@ var edx = edx || {};
         },
 
         saveSettings: function(event) {
+            var cohortFormView = this.cohortFormView;
             event.preventDefault();
-            this.cohortFormView.saveForm();
+            cohortFormView.saveForm()
+                .done(function() {
+                    cohortFormView.showMessage(gettext('Saved cohort group.'));
+                });
         },
 
         setCohort: function(cohort) {
