@@ -40,38 +40,13 @@ nav.sequence-nav {
   position: relative;
   border-bottom: none;
 
-  .left-shadow {
-    @extend %ui-depth4;
-    @include linear-gradient(left, $shadow, $transparent);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 20px;
-    height: 46px;
-    background-color: transparent;
-    pointer-events: none;
-  }
-
-  .right-shadow {
-    @extend %ui-depth4;
-    @include linear-gradient(right, $shadow, $transparent);
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 20px;
-    height: 46px;
-    background-color: transparent;
-    pointer-events: none;
-  }
-
   .sequence-list-wrapper {
     @extend %ui-depth2;
-    @include linear-gradient(top, #ddd, #eee);
     position: relative;
     border: 1px solid $gray-l3;
     height: 44px;
     margin: 0 ($baseline*1.5);
-    box-shadow: 0 1px 3px $shadow-l1 inset;
+    border-radius: 3px;
   }
 
   ol {
@@ -82,8 +57,8 @@ nav.sequence-nav {
     display: table;
     height: 100%;
     margin: 0;
-    padding: 0 ($baseline/2);
     width: 100%;
+    background-color: $gray-l5;
 
     a {
       @extend .block-link;
@@ -263,9 +238,6 @@ nav.sequence-nav {
       margin-bottom: 0;
       height: 44px;
       width: 70px;
-      border: 1px solid $gray-l3;
-      @include linear-gradient(top, #eee, #ddd);
-      box-shadow: 0 1px 0 rgba(255, 255, 255, .7) inset;
       z-index: 1;
 
       &.prev, &.next {
@@ -297,7 +269,7 @@ nav.sequence-nav {
 
       &.prev {
         @include left(-10px);
-        @include border-radius(35px, 0, 0, 35px);
+        @include border-radius(3px, 0, 0, 3px);
 
         a {
           background-position: center 15px;
@@ -316,7 +288,7 @@ nav.sequence-nav {
 
       &.next {
         @include right(-10px);
-        @include border-radius(0, 35px, 35px, 0);
+        @include border-radius(0, 3px, 3px, 0);
 
         a {
           @include margin-left(30px);
@@ -352,14 +324,14 @@ nav.sequence-bottom {
   ul {
     @include clearfix();
     display: inline-block;
+    width: 100%; // use flex-grid. 
 
     li {
       @include float(left);
-      width: 50px;
-      height: 44px;
+      width: 49%; // TO-DO use flex-grid. 
+      height: 50px;
       border: 1px solid $gray-l3;
-      @include linear-gradient(top, #eee, #ddd);
-      box-shadow: 0 1px 0 rgba(255, 255, 255, .7) inset;
+      background-color: $gray-l5;
 
       &.prev, &.next {
         margin-bottom: 0;
@@ -390,7 +362,7 @@ nav.sequence-bottom {
       }
 
       &.prev {
-        @include border-radius(35px, 0, 0, 35px);
+        @include border-radius(3px, 0, 0, 3px);
 
         a {
           background-position: center 15px;
@@ -408,7 +380,7 @@ nav.sequence-bottom {
       }
 
       &.next {
-        @include border-radius(0, 35px, 35px, 0);
+        @include border-radius(0, 3px, 3px, 0);
         @include border-left(none);
 
         a {

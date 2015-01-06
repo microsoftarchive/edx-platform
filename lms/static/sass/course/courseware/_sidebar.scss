@@ -85,9 +85,8 @@
       width: 100% !important;
       @include box-sizing(border-box);
       padding: 11px 14px;
-      @include linear-gradient(top, $sidebar-chapter-bg-top, $sidebar-chapter-bg-bottom);
-      background-color: $sidebar-chapter-bg;
-      box-shadow: 0 1px 0 $white inset, 0 -1px 0 $shadow-l1 inset;
+      background-color: $gray-l5; // use - $sidebar-chapter-bg
+      border-bottom: 1px solid $gray-l4;
       @include transition(background-color .1s linear 0s);
 
       &.is-open {
@@ -215,7 +214,8 @@
           }
 
           &.active > a {
-            background: linear-gradient(to bottom, #e6e6e6, #d6d6d6);
+            background-color: $gray-l5;
+            border: $gray-l4;
           }
         }
       }
