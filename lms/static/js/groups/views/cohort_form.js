@@ -55,10 +55,14 @@ var edx = edx || {};
             this.$('.input-cohort-group-association').prop('disabled', !groupsEnabled);
         },
 
+        hasAssociatedContentGroup: function() {
+            return this.$('.radio-yes').prop('checked');
+        },
+
         getSelectedContentGroup: function() {
             var selectValue = this.$('.input-cohort-group-association').val(),
                 ids, groupId, userPartitionId, i, contentGroup;
-            if (!this.$('.radio-yes').prop('checked') || selectValue === 'None') {
+            if (!this.hasAssociatedContentGroup() || selectValue === 'None') {
                 return null;
             }
             ids = selectValue.split(':');
@@ -78,29 +82,52 @@ var edx = edx || {};
             return cohortName ? cohortName.trim() : this.model.get('name');
         },
 
-        showMessage: function(message, type) {
+        showMessage: function(message, type, details) {
             this.showNotification(
-                {type: type || 'confirmation', title: message},
+                {type: type || 'confirmation', title: message, details: details},
                 this.$('.form-fields')
             );
+        },
+
+        validateForm: function() {
+            var errorMessages, cohortName, selectedContentGroup;
+            errorMessages = [];
+            cohortName = this.getUpdatedCohortName();
+            selectedContentGroup = this.getSelectedContentGroup();
+            if (cohortName.length === 0) {
+                errorMessages.push(gettext('You must specify a name for the cohort group'));
+            }
+            if (this.hasAssociatedContentGroup() && !selectedContentGroup) {
+                if (this.$('.input-cohort-group-association').val() === 'None') {
+                    errorMessages.push(gettext('You did not select a cohorted content group'));
+                } else {
+                    errorMessages.push(gettext('The selected cohorted content group does not exist'));
+                }
+            }
+            return errorMessages;
         },
 
         saveForm: function() {
             var self = this,
                 cohort = this.model,
                 saveOperation = $.Deferred(),
-                isUpdate = this.model.id !== null,
-                cohortName, selectedContentGroup, showErrorMessage;
-            this.removeNotification();
-            showErrorMessage = function(message) {
-                self.showMessage(message, 'error');
+                isUpdate = !_.isUndefined(this.model.id),
+                cohortName, selectedContentGroup, errorMessages, showErrorMessage;
+            showErrorMessage = function(message, details) {
+                self.showMessage(message, 'error', details);
             };
+            this.removeNotification();
             cohortName = this.getUpdatedCohortName();
-            if (cohortName.length === 0) {
-                showErrorMessage(gettext('Enter a name for your cohort group.'));
+            selectedContentGroup = this.getSelectedContentGroup();
+            errorMessages = this.validateForm();
+            if (errorMessages.length > 0) {
+                showErrorMessage(
+                    isUpdate ? gettext("The cohort group cannot be saved")
+                        : gettext("The cohort group cannot be added"),
+                    errorMessages
+                );
                 saveOperation.reject();
             } else {
-                selectedContentGroup = this.getSelectedContentGroup();
                 cohort.save(
                     {
                         name: cohortName,
