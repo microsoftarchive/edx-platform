@@ -48,7 +48,7 @@ var edx = edx || {};
                 groupsEnabled = target.val() === 'yes';
             if (!groupsEnabled) {
                 // If the user has chosen 'no', then clear the selection by setting
-                // it to the first option ('Choose a content group to associate').
+                // it to the first option which represents no selection.
                 this.$('.input-cohort-group-association').val('None');
             }
             // Enable the select if the user has chosen groups, else disable it

@@ -18,9 +18,9 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
 
             createMockCohort = function (name, id, userCount, groupId, userPartitionId) {
                 return {
-                    id: id || 1,
+                    id: id !== undefined ? id : 1,
                     name: name,
-                    user_count: userCount || 0,
+                    user_count: userCount !== undefined ? userCount : 0,
                     group_id: groupId,
                     user_partition_id: userPartitionId
                 };
@@ -163,7 +163,7 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                 TemplateHelpers.installTemplate('templates/file-upload');
             });
 
-            it("Show an error if no cohorts are defined", function() {
+            it("shows an error if no cohorts are defined", function() {
                 createCohortsView(this, {cohorts: []});
                 verifyMessage(
                     'You currently have no cohort groups configured',
@@ -175,7 +175,7 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                 expect(cohortsView.$('.wrapper-cohort-supplemental')).toHaveClass('is-hidden');
             });
 
-            it("Syncs data when membership tab is clicked", function() {
+            it("syncs data when membership tab is clicked", function() {
                 createCohortsView(this, {selectCohort: 1});
                 verifyHeader(1, 'Cat Lovers', catLoversInitialCount);
                 $(cohortsView.getSectionCss("membership")).click();
@@ -642,9 +642,9 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                         createCohortsView(this, {selectCohort: 1, contentGroups: []});
                         cohortsView.$('.tab-settings a').click();
                         expect(cohortsView.$('.radio-yes').prop('disabled')).toBeTruthy();
-                        expect(
-                            cohortsView.$('.msg-inline').text().trim(),
-                            'No content groups exist. Create a content group to associate with cohort groups.'
+                        expect(cohortsView.$('.msg-inline').text().trim()).toBe(
+                            'No content groups exist. Create a content group to associate with cohort groups. ' +
+                            'Create a content group'
                         );
                         expect(
                             cohortsView.$('.msg-inline a').attr('href'),

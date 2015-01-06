@@ -27,7 +27,6 @@ var edx = edx || {};
         render: function() {
             this.$el.html(this.template({
                 cohort: this.model,
-                contentGroups: this.contentGroups,
                 studioAdvancedSettingsUrl: this.context.studioAdvancedSettingsUrl
             }));
             this.cohortFormView = new CohortFormView({

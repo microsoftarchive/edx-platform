@@ -48,7 +48,7 @@
             <div class="form-fields">
                 <div class="field field-textarea is-required">
                     <label for="cohort-management-group-add-students" class="label">
-                        <%- gettext('Enter email addresses and/or usernames separated by new lines or commas for students to add. *') %>
+                        <%- gettext('Enter email addresses and/or usernames, separated by new lines or commas, for the students you want to add. *') %>
                         <span class="sr"><%- gettext('(Required Field)') %></span>
                     </label>
                     <textarea name="cohort-management-group-add-students" id="cohort-management-group-add-students"
