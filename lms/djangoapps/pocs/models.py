@@ -23,8 +23,7 @@ class PocMembership(models.Model):
     active = models.BooleanField(default=False)
 
     @classmethod
-    def auto_enroll(cls, student=None, future_membership=None):
-        assert student is not None and future_membership is not None
+    def auto_enroll(cls, student, future_membership):
         membership = cls(
             poc=future_membership.poc, student=student, active=True
         )
