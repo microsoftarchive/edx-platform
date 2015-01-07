@@ -308,10 +308,11 @@ div.video {
             float: left;
             margin: 0;
 
-            a {
+            button {
               @extend %video-button;
-              width: 14px;
+              width: 45px;
               padding: 0 lh(.75);
+              background: transparent;
               box-shadow: none;
               border: none;
               text-align: center;
@@ -418,7 +419,7 @@ div.video {
               color: #fff;
               cursor: pointer;
 
-              a {
+              button {
                 display: block;
                 overflow: hidden;
                 padding: lh(.5);
@@ -437,7 +438,7 @@ div.video {
 
               &.is-active {
 
-                a {
+                button {
                   font-weight: bold;
                 }
               }
@@ -466,11 +467,11 @@ div.video {
           }
         }
 
-        a.speed-button,
+        button.speed-button,
         div.volume > a,
-        a.add-fullscreen,
-        a.quality-control,
-        a.hide-subtitles {
+        button.add-fullscreen,
+        button.quality-control,
+        button.hide-subtitles {
 
           &:focus {
             position: relative;
@@ -495,7 +496,7 @@ div.video {
             }
           }
 
-          & > a {
+          & > button {
             @extend %video-button;
             @include clearfix();
             width: 30px;
