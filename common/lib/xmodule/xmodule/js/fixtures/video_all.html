@@ -34,29 +34,29 @@
             </section>
             <div class="video-player-post"></div>
             <section class="video-controls is-hidden">
-              <div class="slider"></div>
+              <div class="slider" title="${_('Video position')}"></div>
               <div class="video-playback-controls">
                 <ul class="video-controls-options">
-                  <li class="video-control"><a class="video_control play" href="#" title="Play" role="button" aria-disabled="false"><i class="icon icon-play" aria-hidden="true"></i></a></li>
+                  <li class="video-control"><button class="video_control" title="Play" aria-disabled="false"><i class="icon icon-play" aria-hidden="true"></i></button></li>
                   <li class="video-control"><div class="vidtime">0:00 / 0:00</div></li>
                 </ul>
                 <div class="secondary-controls">
                   <div class="speeds menu-container">
-                    <a class="speed-button" href="#" title="Speeds" role="button" aria-disabled="false" tabindex="0">
+                    <button class="speed-button" title="Speeds" aria-disabled="false" aria-haspopup="true" aria-controls="video-speeds-menu">
                       <i class="icon icon-caret-right" aria-hidden="true"></i>
                       <span class="label">Speed</span>
                       <span class="value">1.0x</span>
-                    </a>
-                    <ol class="video-speeds menu" role="menu">
+                    </button>
+                    <ul id="video-speeds-menu" class="video-speeds menu" role="menu" tabindex="-1">
                       <li data-speed="2.0" role="presentation"><a class="speed-link" href="#" role="menuitem" tabindex="-1">2.0x</a></li>
                       <li data-speed="1.50" role="presentation"><a class="speed-link" href="#" role="menuitem" tabindex="-1">1.50x</a></li>
                       <li data-speed="1.25" role="presentation"><a class="speed-link" href="#" role="menuitem" tabindex="-1">1.25x</a></li>
                       <li data-speed="1.0" role="presentation" class="is-active"><a class="speed-link" href="#" role="menuitem" tabindex="-1">1.0x</a></li>
                       <li data-speed="0.50" role="presentation"><a class="speed-link" href="#" role="menuitem" tabindex="-1">0.50x</a></li>
-                    </ol>
+                    </ul>
                   </div>
                   <div class="volume">
-                    <a href="#" role="button" aria-disabled="false" title="Volume" aria-label="Click on this button to mute or unmute this video or press UP or DOWN buttons to increase or decrease volume level."><i class="icon icon-volume-up" aria-hidden="true"></i></a><div class="sr video-live-region" role="status" aria-hidden="false" aria-live="polite" aria-atomic="false">Maximum Volume.</div>
+                    <button class="volume-button" aria-disabled="false" title="Volume" aria-haspopup="true" aria-controls="volume-slider" aria-label="Click on this button to mute or unmute this video or press UP or DOWN buttons to increase or decrease volume level."><i class="icon icon-volume-up" aria-hidden="true"></i></button>
                     <div role="presentation" class="volume-slider-container">
                       <div class="volume-slider ui-slider ui-slider-vertical ui-widget ui-widget-content ui-corner-all" aria-disabled="false">
                         <div class="ui-slider-range ui-widget-header ui-slider-range-min" style="height: 100%;"></div>
@@ -65,11 +65,11 @@
                     </div>
                   </div>
                   <ul class="size-quality-controls">
-                    <li class="size-control"><a href="#" class="add-fullscreen" title="Fill browser" role="button" aria-disabled="false"><i class="icon icon-fullscreen" aria-hidden="true"></i><span class="sr">Fill browser</span></a></li>
-                    <li class="quality-control"><a href="#" class="quality-toggle-control is-hidden" title="HD off" role="button" aria-disabled="false">HD off</a></li>
+                    <li class="size-control"><button class="add-fullscreen" title="Fill browser" aria-disabled="false"><i class="icon icon-fullscreen" aria-hidden="true"></i><span class="sr">Fill browser</span></button></li>
+                    <li class="quality-control"><button class="quality-toggle-control is-hidden" title="HD off" aria-disabled="false">HD off</button></li>
                   </ul>
                   <div class="language-control menu-container">
-                    <a href="#" class="subtitles-control hide-subtitles show_transcript" title="Turn off captions" role="button" aria-disabled="false"><i class="icon icon-quote-left" aria-hidden="true"></i><span class="sr">Turn off captions</span></a>
+                    <button class="subtitles-control hide-subtitles" title="Turn off captions" aria-disabled="false"><i class="icon icon-quote-left" aria-hidden="true"></i><span class="sr">Turn off captions</span></button>
                   </div>
                 </div>
               </div>

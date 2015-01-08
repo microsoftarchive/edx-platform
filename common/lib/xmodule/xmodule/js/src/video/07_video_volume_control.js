@@ -47,7 +47,7 @@ function() {
             // Youtube iframe react on key buttons and has his own handlers.
             // So, we disallow focusing on iframe.
             this.state.el.find('iframe').attr('tabindex', -1);
-            this.button = this.el.children('a');
+            this.button = this.el.children('button');
             this.cookie = new CookieManager(this.min, this.max);
             this.a11y = new Accessibility(
                 this.button, this.min, this.max, this.i18n
@@ -196,7 +196,7 @@ function() {
         updateMuteButtonView: function(isMuted, volumeIcon) {
             var action = isMuted ? 'addClass' : 'removeClass';
 
-            this.el[action]('is-muted').find('a i')
+            this.el[action]('is-muted').find('button i')
                 .removeClass('icon-volume-up')
                 .removeClass('icon-volume-off')
                 .removeClass('icon-volume-undefined')

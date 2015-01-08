@@ -271,14 +271,14 @@ function () {
         if (this.videoControl.fullScreenState) {
             this.videoControl.fullScreenState = this.isFullScreen = false;
             fullScreenClassNameEl.removeClass('video-fullscreen');
-            text = gettext('Fill browser');
+            // text = gettext('Fill browser');
             win.scrollTop(this.scrollPos);
         } else {
             this.scrollPos = win.scrollTop();
             win.scrollTop(0);
             this.videoControl.fullScreenState = this.isFullScreen = true;
             fullScreenClassNameEl.addClass('video-fullscreen');
-            text = gettext('Exit full browser');
+            // text = gettext('Exit full browser');
         }
 
         this.videoControl.fullScreenEl
