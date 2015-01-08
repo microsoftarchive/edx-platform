@@ -202,27 +202,22 @@ div.video {
         display: block;
         overflow: hidden;
         margin: 0;
-        padding: 0 0 0 15px;
-        color: #fff;
+        height: 46px;
+        padding: 0 $baseline;
+        border: 0;
+        border-radius: 0;
+        color: $white;
         font-weight: 800;
-        line-height: 46px;
-        border-width: 0 1px;
-        border-style: solid;
-        border-color: #000;
+        background: transparent;
+        box-shadow: none;
+        font-size: inherit;
+        text-shadow: none;
         cursor: pointer;
-        -webkit-font-smoothing: antialiased;
 
-        &:hover, &:focus {
+        &:hover,
+        &:focus,
+        &:active {
           background-color: #444;
-          color: #fff;
-          text-decoration: none;
-        }
-
-        &:active,
-        &:focus {
-          color: #fff;
-          background-color: #444;
-          text-decoration: none;
         }
       }
 
@@ -308,31 +303,21 @@ div.video {
             float: left;
             margin: 0;
 
-            button {
+            .video_control {
               @extend %video-button;
-              width: 45px;
-              padding: 0 lh(.75);
-              background: transparent;
-              box-shadow: none;
-              border: none;
-              text-align: center;
-
-              &:focus {
-                position: relative;
-                z-index: 10000;
-                outline: $white dotted thin;
-                outline-offset: -2px;
-              }
-
-              &:empty {
-                height: 46px;
-              }
             }
 
             .vidtime {
+              @extend %video-button;
               padding: 0 lh(.75);
-              font-weight: bold;
-              -webkit-font-smoothing: antialiased;
+              cursor: default;
+              font-weight: 600;
+
+              &:hover,
+              &:focus {
+                background: transparent;
+                cursor: default;
+              }
 
               @media (max-width: 1120px) {
                 padding-left: lh(.5);
@@ -362,8 +347,8 @@ div.video {
           border-right: 1px solid #666;
 
           .speed-button {
+            // @include clearfix();
             @extend %video-button;
-            @include clearfix();
             border: none;
             text-indent: 0;
 
@@ -374,34 +359,30 @@ div.video {
 
             .icon {
               float: left;
-              margin-top: 1em;
               min-width: ($baseline / 2);
+              margin-top: 4px;
             }
 
-            .label {
-              float: left;
-              padding: 0 lh(.25) 0 lh(.5);
-              font-size: em(14);
-              font-weight: normal;
-              letter-spacing: 1px;
-              text-transform: uppercase;
-              color: #999;
-
-              @media (max-width: 1120px) {
-                display: none;
-              }
-            }
-
+            .label,
             .value {
               float: left;
-              margin-bottom: 0;
-              padding: 0 lh(.5) 0 0;
-              font-weight: bold;
-              color: #fff;
+              display: inline-block;
+              height: auto;
+              line-height: normal;
+              font-weight: 800;
+              color: $white;
 
               @media (max-width: 1120px) {
                 padding: 0 lh(.5) 0 lh(.5);
               }
+            }
+
+            .label {
+              padding: 0 ($baseline/4.5);
+            }
+
+            .value {
+              padding-right: ($baseline/4.5);
             }
           }
 
@@ -467,11 +448,11 @@ div.video {
           }
         }
 
-        button.speed-button,
-        div.volume > a,
-        button.add-fullscreen,
-        button.quality-control,
-        button.hide-subtitles {
+        .speed-button,
+        .volume > a,
+        .add-fullscreen,
+        .quality-control,
+        .hide-subtitles {
 
           &:focus {
             position: relative;
@@ -496,12 +477,8 @@ div.video {
             }
           }
 
-          & > button {
+          .volume-button {
             @extend %video-button;
-            @include clearfix();
-            width: 30px;
-            height: 46px;
-            border: none;
           }
 
           .volume-slider-container {
@@ -558,12 +535,6 @@ div.video {
 
             .add-fullscreen {
               @extend %video-button;
-              display: inline-block;
-              width: 24px;
-              padding: 0 11px;
-              border: none;
-              line-height: 46px;
-              text-align: center;
             }
           }
 
@@ -573,10 +544,6 @@ div.video {
 
             .quality-toggle-control {
               @extend %video-button;
-              float: left;
-              width: 30px;
-              padding: 0 11px;
-              border: none;
 
               &.active {
                 background-color: #F44;
