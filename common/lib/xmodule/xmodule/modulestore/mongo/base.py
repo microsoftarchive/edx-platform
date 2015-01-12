@@ -50,6 +50,8 @@ from xmodule.modulestore.exceptions import ItemNotFoundError, DuplicateCourseErr
 from xmodule.modulestore.inheritance import InheritanceMixin, inherit_metadata, InheritanceKeyValueStore
 from xmodule.modulestore.xml import CourseLocationManager
 
+from search.manager import SearchEngine
+
 log = logging.getLogger(__name__)
 
 new_contract('CourseKey', CourseKey)
@@ -67,6 +69,10 @@ SORT_REVISION_FAVOR_PUBLISHED = ('_id.revision', pymongo.ASCENDING)
 BLOCK_TYPES_WITH_CHILDREN = list(set(
     name for name, class_ in XBlock.load_classes() if getattr(class_, 'has_children', False)
 ))
+
+# Use default index and document names for now
+INDEX_NAME = "courseware_index"
+DOCUMENT_TYPE = "courseware_content"
 
 # Allow us to call _from_deprecated_(son|string) throughout the file
 # pylint: disable=protected-access
@@ -87,7 +93,6 @@ class InvalidWriteError(Exception):
     in the KeyValueStore is disabled
     """
     pass
-
 
 class MongoKeyValueStore(InheritanceKeyValueStore):
     """
@@ -939,6 +944,85 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
             return self.get_item(location, depth=depth)
         except ItemNotFoundError:
             return None
+
+    def do_index(self, location, delete=False):
+        """
+        Main routine to index (for purposes of searching) from given location and other stuff on down
+        """
+        # TODO - inline for now, need to move this out to a celery task
+        error = []
+        searcher = SearchEngine.get_search_engine(INDEX_NAME)
+        if not searcher:
+            return
+
+        location_info = {
+            "course": unicode(location.course_key),
+        }
+
+        def _fetch_item(item_location):
+            """ Fetch the item from the modulestore location, log if not found, but continue """
+            try:
+                item = self.get_item(item_location, revision=ModuleStoreEnum.RevisionOption.published_only)
+            except ItemNotFoundError:
+                log.warning('Cannot find: %s', item_location)
+                return None
+
+            return item
+
+        def index_item_location(item_location, current_start_date):
+            """ add this item to the search index """
+            item = _fetch_item(item_location)
+            if item:
+                if item.start and (not current_start_date or item.start > current_start_date):
+                    current_start_date = item.start
+
+                if item.has_children:
+                    for child_loc in item.children:
+                        index_item_location(child_loc, current_start_date)
+
+                item_index = {}
+                try:
+                    item_index.update(location_info)
+                    item_index.update(item.index_view())
+                    item_index.update({
+                        'id': unicode(item.scope_ids.usage_id),
+                    })
+                    if current_start_date:
+                        item_index.update({
+                            "start_date": current_start_date
+                        })
+
+                    searcher.index(DOCUMENT_TYPE, item_index)
+                except Exception as e:
+                    log.warning('Could not index item: %s', item_location)
+                    error.append('Could not index item: {}'.format(item_location))
+                    pass
+
+        def remove_index_item_location(item_location):
+            """ remove this item from the search index """
+            item = _fetch_item(item_location)
+            if item:
+                if item.has_children:
+                    for child_loc in item.children:
+                        remove_index_item_location(child_loc)
+                try:
+                    searcher.remove(DOCUMENT_TYPE, unicode(item.scope_ids.usage_id))
+                except Exception:
+                    pass
+
+        if delete:
+            remove_index_item_location(location)
+        else:
+            index_item_location(location, None)
+
+        return error
+
+    def do_course_reindex(self, course_key, depth=0, **kwargs):
+        """
+        Get the course with the given courseid (org/course/run)
+        """
+        location = course_key.make_usage_key('course', course_key.run)
+        return self.do_index(location, delete=False)
 
     def has_course(self, course_key, ignore_case=False, **kwargs):
         """
