@@ -60,6 +60,7 @@ from mongodb_proxy import autoretry_read
 from path import path
 from pytz import UTC
 from bson.objectid import ObjectId
+from collections import Counter
 
 from xblock.core import XBlock
 from xblock.fields import Scope, Reference, ReferenceList, ReferenceValueDict
