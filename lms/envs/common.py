@@ -1953,5 +1953,6 @@ COURSE_ABOUT_VISIBILITY_PERMISSION = 'see_exists'
 #date format the api will be formatting the datetime values
 API_DATE_FORMAT = '%Y-%m-%d'
 
-# FIXME: REMOVE BEFORE MERGE
-OAUTH_ID_TOKEN_EXPIRATION = 60 * 60 * 24
+# for Student Notes we would like to avoid too frequent token refreshes (default is 30 seconds)
+if FEATURES['ENABLE_EDXNOTES']:
+    OAUTH_ID_TOKEN_EXPIRATION = 60 * 60
