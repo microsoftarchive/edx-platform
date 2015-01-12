@@ -1,4 +1,4 @@
-require.config({
+var require_config = {
     // NOTE: baseUrl has been previously set in cms/static/templates/base.html
     waitSeconds: 60,
     paths: {
@@ -66,12 +66,6 @@ require.config({
         // end of Annotation tool files
 
         // externally hosted files
-        "tender": [
-            "//edxedge.tenderapp.com/tender_widget",
-            // if tender fails to load, fallback on a local file
-            // so that require doesn't fall over
-            "js/src/tender_fallback"
-        ],
         "mathjax": "//cdn.mathjax.org/mathjax/2.2-latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full&delayStartupUntil=configured",
         "youtube": [
             // youtube URL does not end in ".js". We add "?noext" to the path so
@@ -272,4 +266,16 @@ require.config({
         },
         // end of annotation tool files
     }
-});
+};
+
+// set up Tender if applicable
+if(window.TENDER_DOMAIN) {
+    require_config["paths"]["tender"] = [
+        "//" + window.TENDER_DOMAIN + "/tender_widget",
+        // if tender fails to load, fallback on a local file
+        // so that require doesn't fall over
+        "js/src/tender_fallback"
+    ];
+}
+
+require.config(require_config);
