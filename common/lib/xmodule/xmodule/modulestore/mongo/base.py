@@ -198,6 +198,7 @@ class CachingDescriptorSystem(MakoDescriptorSystem, EditInfoRuntimeMixin):
         """
         Return an XModule instance for the specified location
         """
+        location = location.replace(course_key=self.modulestore.fill_in_run(location.course_key))
         assert isinstance(location, UsageKey)
         json_data = self.module_data.get(location)
         if json_data is None:
