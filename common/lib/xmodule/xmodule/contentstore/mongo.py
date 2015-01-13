@@ -39,7 +39,10 @@ class MongoContentStore(ContentStore):
         if user is not None and password is not None:
             _db.authenticate(user, password)
 
-        self.fs = gridfs.GridFS(_db, bucket)
+        try:
+            self.fs = gridfs.GridFS(_db, bucket)
+        except pymongo.errors.DuplicateKeyError:
+            self.fs = None
 
         self.fs_files = _db[bucket + ".files"]  # the underlying collection GridFS uses
 
