@@ -20,14 +20,16 @@ class Command(BaseCommand):
 
         split_course_keys = [course.id for course in split_store.get_courses()]
 
-        print u"\nLooking through courses for modules with dangling pointers...\n"
+        print u"\nLooking through courses for modules more than one parent...\n"
+        total_courses = 0
         for course_key in split_course_keys:
 
             children_parent_map = self.find_dags(split_store, course_key)
 
             if not children_parent_map:
                 continue
-            print u"Course {course_key} has the following modules with dangling pointers:".format(course_key=unicode(course_key))
+            total_courses += 1
+            print u"Course {course_key} has the following modules with more than one parent:".format(course_key=unicode(course_key))
             for pointer, parents in children_parent_map.iteritems():
                 print u"pointer: {type} {id}".format(type=pointer.type, id=pointer.id)
                 print u"parents:"
@@ -35,6 +37,7 @@ class Command(BaseCommand):
                     print u"\t{type} {id}".format(type=parent.type, id=parent.id)
             print "\n"
 
+        print u"Total of {} courses with modules with multiple parents".format(total_courses)
         print u"Done"
 
     def find_dags(self, store, course_locator):
