@@ -1571,6 +1571,8 @@ INSTALLED_APPS = (
     'survey',
 
     'lms.djangoapps.lms_xblock',
+
+    'enrollment',
 )
 
 ######################### MARKETING SITE ###############################

@@ -9,10 +9,16 @@ from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.throttling import UserRateThrottle
 from rest_framework.views import APIView
-from enrollment import api
+# from enrollment import api
 from enrollment.errors import CourseNotFoundError, CourseEnrollmentError, CourseModeNotFoundError
 from util.authentication import SessionAuthenticationAllowInactiveUser
 
+import zerorpc
+
+def get_api():
+    api = zerorpc.Client()
+    api.connect("tcp://127.0.0.1:4242")
+    return api
 
 class EnrollmentUserThrottle(UserRateThrottle):
     """Limit the number of requests users can make to the enrollment API."""
@@ -85,6 +91,7 @@ class EnrollmentCourseDetailView(APIView):
 
         """
         try:
+            api = get_api()
             return Response(api.get_course_enrollment_details(course_id))
         except CourseNotFoundError:
             return Response(
@@ -123,6 +130,7 @@ class EnrollmentListView(APIView):
             # other users, do not let them deduce the existence of an enrollment.
             return Response(status=status.HTTP_404_NOT_FOUND)
         try:
+            api = get_api()
             return Response(api.get_enrollments(user))
         except CourseEnrollmentError:
             return Response(
@@ -171,6 +179,7 @@ class EnrollmentListView(APIView):
         course_id = request.DATA['course_details']['course_id']
 
         try:
+            api = get_api()
             return Response(api.add_enrollment(user, course_id))
         except CourseModeNotFoundError as error:
             return Response(
