@@ -55,6 +55,7 @@ class EnrollmentView(APIView):
             # other users, do not let them deduce the existence of an enrollment.
             return Response(status=status.HTTP_404_NOT_FOUND)
         try:
+            api = get_api()
             return Response(api.get_enrollment(user, course_id))
         except CourseEnrollmentError:
             return Response(
