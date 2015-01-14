@@ -250,17 +250,30 @@ def get_module_context(course, item):
         'display_name': item.display_name_with_default,
     }
     if item.category == 'chapter':
-        ancestor_children = [unicode(child) for child in course.children]
-        item_dict['index'] = ancestor_children.index(item_dict['location'])
+        item_dict['index'] = get_index(item_dict['location'], course.children)
     elif item.category == 'vertical':
-        item_dict['url'] = reverse("jump_to_id", kwargs={
-            "course_id": unicode(course.id),
-            "module_id": item.url_name,
+        section = get_parent_xblock(item)
+        chapter = get_parent_xblock(section)
+        # Position starts from 1, that's why we add 1.
+        position = get_index(unicode(item.location), section.children) + 1
+        item_dict['url'] = reverse('courseware_position', kwargs={
+            'course_id': unicode(course.id),
+            'chapter': chapter.url_name,
+            'section': section.url_name,
+            'position': position,
         })
     if item.category in ('chapter', 'sequential'):
         item_dict['children'] = [unicode(child) for child in item.children]
 
     return item_dict
+
+
+def get_index(usage_key, children):
+    """
+    Returns an index of the child with `usage_key`.
+    """
+    children = [unicode(child) for child in children]
+    return children.index(usage_key)
 
 
 def search(user, course, query_string):
