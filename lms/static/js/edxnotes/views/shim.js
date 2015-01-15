@@ -57,19 +57,6 @@ define(['jquery', 'underscore', 'annotator'], function ($, _, Annotator) {
     };
 
     /**
-     * Modifies Annotator.highlightRange to add a "tabindex=0" attribute
-     * to the <span class="annotator-hl"> markup that encloses the note.
-     * These are then focusable via the TAB key.
-     **/
-    Annotator.prototype.highlightRange = _.compose(
-        function (results) {
-            $('.annotator-hl', this.wrapper).attr('tabindex', 0);
-            return results;
-        },
-        Annotator.prototype.highlightRange
-    );
-
-    /**
      * Modifies Annotator.destroy to unbind click.edxnotes:freeze from the
      * document and reset isFrozen to default value, false.
      **/
@@ -91,6 +78,8 @@ define(['jquery', 'underscore', 'annotator'], function ($, _, Annotator) {
             }
             // Unbind onNoteClick from click
             this.viewer.element.off('click', this.onNoteClick);
+            // Unsubscribe addAriaAttributes from annotationViewerTextField event
+            this.unsubscribe('annotationViewerTextField', this.addAriaAttributes);
         }
     );
 
@@ -120,6 +109,7 @@ define(['jquery', 'underscore', 'annotator'], function ($, _, Annotator) {
     Annotator.prototype._setupViewer = _.compose(
         function () {
             this.viewer.element.on('click', _.bind(this.onNoteClick, this));
+            this.subscribe('annotationViewerTextField', _.bind(this.addAriaAttributes, this));
             return this;
         },
         Annotator.prototype._setupViewer
@@ -152,6 +142,25 @@ define(['jquery', 'underscore', 'annotator'], function ($, _, Annotator) {
                 Annotator.frozenSrc = this;
                 this.freezeAll();
             }
+        },
+
+        addAriaAttributes: function (field, annotation) {
+            var ariaNoteId = 'aria-note-'+annotation.id;
+            // Add ARIA attributes to highlighted text ie <span class="annotator-hl">Highlighted text</span>
+            // tabindex is set to 0 to make the span focusable via the TAB key.
+            // aria-describedby refers to the actual note that was taken.
+            _.each(annotation.highlights, function(highlight) {
+                $(highlight).attr({
+                    'aria-describedby': ariaNoteId,
+                    'tabindex': 0,
+                });
+            });
+            // Add ARIA attributes to associated note ie <div>My note</div>
+            $(field).attr({
+                'id': ariaNoteId,
+                'role': 'note',
+                'aria-label': 'Note'
+            });
         },
 
         freeze: function () {
