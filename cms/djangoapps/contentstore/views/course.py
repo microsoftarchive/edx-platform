@@ -113,13 +113,15 @@ def get_course_and_check_access(course_key, user, depth=0):
     course_module = modulestore().get_course(course_key, depth=depth)
     return course_module
 
-def do_index_on_course_and_check_access(course_key, user, depth=0):
+
+def reindex_course_and_check_access(course_key, user, depth=0):
     """
     Internal method used to restart indexing on a course.
     """
     if not has_course_author_access(user, course_key):
         raise PermissionDenied()
     return modulestore().do_index(course_key, depth=depth)
+
 
 @login_required
 def course_notifications_handler(request, course_key_string=None, action_state_id=None):
@@ -297,9 +299,8 @@ def course_index_handler(request, course_key_string):
         raise PermissionDenied()
     course_key = CourseKey.from_string(course_key_string)
     with modulestore().bulk_operations(course_key):
-        course_module = get_course_and_check_access(course_key, request.user, depth=3)
         if request.method == 'GET':
-            error = do_index_on_course_and_check_access(course_key, request.user, depth=3)
+            error = reindex_course_and_check_access(course_key, request.user, depth=3)
             if error:
                 return HttpResponse(
                     json.dumps({"status": error}),

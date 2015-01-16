@@ -94,6 +94,15 @@ class InvalidWriteError(Exception):
     """
     pass
 
+
+class IndexWriteError(Exception):
+    """
+    Raised to indicate that indexing of particular key
+    failed
+    """
+    pass
+
+
 class MongoKeyValueStore(InheritanceKeyValueStore):
     """
     A KeyValueStore that maps keyed data access to one of the 3 data areas
@@ -993,10 +1002,9 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
                         })
 
                     searcher.index(DOCUMENT_TYPE, item_index)
-                except Exception as e:
+                except IndexWriteError:
                     log.warning('Could not index item: %s', item_location)
                     error.append('Could not index item: {}'.format(item_location))
-                    pass
 
         def remove_index_item_location(item_location):
             """ remove this item from the search index """

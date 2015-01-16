@@ -213,14 +213,15 @@ define(["jquery", "underscore", "js/views/xblock_outline", "js/views/utils/view_
             },
 
             handleReIndexEvent: function(event) {
+                var self = this;
                 event.preventDefault();
                 var target = $(event.currentTarget);
                 target.css('cursor', 'wait');
                 this.startReIndex().done(function(data) {
                     if(data.status !== 'success') {
-                        alert(data.status.join('\n'));
+                        self.onIndexError(data.status);
                     }
-                }).always(function(data) {target.css('cursor', 'pointer');});
+                }).always(function() {target.css('cursor', 'pointer');});
             },
 
             startReIndex: function() {
@@ -229,6 +230,10 @@ define(["jquery", "underscore", "js/views/xblock_outline", "js/views/utils/view_
                     url: '/course_index/' + locator,
                     method: 'GET'
                     });
+            },
+
+            onIndexError: function(errors) {
+                alert(errors.join('\n'));
             }
         });
 
