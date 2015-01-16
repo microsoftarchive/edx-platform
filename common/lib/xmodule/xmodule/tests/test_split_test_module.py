@@ -235,6 +235,7 @@ class SplitTestModuleStudioTest(SplitTestModuleTest):
         non_editable_metadata_fields = self.split_test_module.non_editable_metadata_fields
         self.assertIn(SplitTestDescriptor.due, non_editable_metadata_fields)
         self.assertIn(SplitTestDescriptor.user_partitions, non_editable_metadata_fields)
+        self.assertIn(SplitTestDescriptor.is_entrance_exam, non_editable_metadata_fields)
         self.assertNotIn(SplitTestDescriptor.display_name, non_editable_metadata_fields)
 
     def test_available_partitions(self):

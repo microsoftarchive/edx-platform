@@ -99,7 +99,6 @@ class SettingsMilestonesTest(StudioCourseTest):
         self.assertTrue('Your changes have been saved.' in self.settings_detail.browser.page_source)
         self.assertTrue(is_option_value_selected(browser_query=self.settings_detail.pre_requisite_course, value=''))
 
-
     def test_page_has_enable_entrance_exam_field(self):
         """
         Test to make sure page has 'enable entrance exam' field.
