@@ -88,6 +88,18 @@ class SettingsMilestonesTest(StudioCourseTest):
         self.assertTrue('Your changes have been saved.' in self.settings_detail.browser.page_source)
         self.assertTrue(is_option_value_selected(browser_query=self.settings_detail.pre_requisite_course, value=''))
 
+        # We should be able to re-select the same course from the dropdown again w/o error
+        select_option_by_value(
+            browser_query=self.settings_detail.pre_requisite_course,
+            value=pre_requisite_course_id
+        )
+
+        # trigger the save changes button.
+        self.settings_detail.save_changes()
+        self.assertTrue('Your changes have been saved.' in self.settings_detail.browser.page_source)
+        self.assertTrue(is_option_value_selected(browser_query=self.settings_detail.pre_requisite_course, value=''))
+
+
     def test_page_has_enable_entrance_exam_field(self):
         """
         Test to make sure page has 'enable entrance exam' field.
