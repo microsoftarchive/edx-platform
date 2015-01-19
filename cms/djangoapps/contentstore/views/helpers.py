@@ -47,12 +47,10 @@ def get_parent_xblock(xblock):
     """
     Returns the xblock that is the parent of the specified xblock, or None if it has no parent.
     """
-    locator = xblock.location
-    parent_location = modulestore().get_parent_location(locator)
-
-    if parent_location is None:
-        return None
-    return modulestore().get_item(parent_location)
+    xblock = xblock.get_parent()
+    if xblock:
+        xblock.location = xblock.location.for_branch(None)
+    return xblock
 
 
 def is_unit(xblock, parent_xblock=None):
