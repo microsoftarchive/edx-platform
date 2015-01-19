@@ -9,17 +9,20 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                 requests, respondToRefresh, verifyMessage, verifyNoMessage, verifyDetailedMessage, verifyHeader,
                 expectCohortAddRequest, getAddModal, selectContentGroup, clearContentGroup, saveFormAndExpectErrors,
                 MOCK_COHORTED_USER_PARTITION_ID, MOCK_UPLOAD_COHORTS_CSV_URL, MOCK_STUDIO_ADVANCED_SETTINGS_URL,
-                MOCK_STUDIO_GROUP_CONFIGURATIONS_URL;
+                MOCK_STUDIO_GROUP_CONFIGURATIONS_URL, MOCK_MANUAL_ASSIGNMENT, MOCK_RANDOM_ASSIGNMENT;
 
+            MOCK_MANUAL_ASSIGNMENT = 'manual';
+            MOCK_RANDOM_ASSIGNMENT = 'random';
             MOCK_COHORTED_USER_PARTITION_ID = 0;
             MOCK_UPLOAD_COHORTS_CSV_URL = 'http://upload-csv-file-url/';
             MOCK_STUDIO_ADVANCED_SETTINGS_URL = 'http://studio/settings/advanced';
             MOCK_STUDIO_GROUP_CONFIGURATIONS_URL = 'http://studio/group_configurations';
 
-            createMockCohort = function (name, id, userCount, groupId, userPartitionId) {
+            createMockCohort = function (name, id, userCount, groupId, userPartitionId, assignmentType) {
                 return {
                     id: id !== undefined ? id : 1,
                     name: name,
+                    assignment_type: assignmentType || MOCK_MANUAL_ASSIGNMENT,
                     user_count: userCount !== undefined ? userCount : 0,
                     group_id: groupId,
                     user_partition_id: userPartitionId
@@ -73,13 +76,13 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                 AjaxHelpers.respondWithJson(requests, createMockCohorts(catCount, dogCount));
             };
 
-            expectCohortAddRequest = function(name, groupId, userPartitionId) {
+            expectCohortAddRequest = function(name, groupId, userPartitionId, assignmentType) {
                 AjaxHelpers.expectJsonRequest(
                     requests, 'POST', '/mock_service/cohorts',
                     {
                         name: name,
                         user_count: 0,
-                        assignment_type: '',
+                        assignment_type: assignmentType,
                         group_id: groupId,
                         user_partition_id: userPartitionId
                     }
@@ -267,6 +270,7 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
 
             describe("Add Cohorts Form", function () {
                 var defaultCohortName = 'New Cohort';
+                var assignmentType = 'random';
 
                 it("can add a cohort", function() {
                     var contentGroupId = 0,
@@ -277,21 +281,23 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                     expect(cohortsView.$('.cohort-management-nav')).toHaveClass('is-disabled');
                     expect(cohortsView.$('.cohort-management-group')).toHaveClass('is-hidden');
                     cohortsView.$('.cohort-name').val(defaultCohortName);
+                    cohortsView.$('.type-random').prop('checked', true).change();
                     selectContentGroup(contentGroupId, MOCK_COHORTED_USER_PARTITION_ID);
                     cohortsView.$('.action-save').click();
-                    expectCohortAddRequest(defaultCohortName, contentGroupId, MOCK_COHORTED_USER_PARTITION_ID);
+                    expectCohortAddRequest(defaultCohortName, contentGroupId, MOCK_COHORTED_USER_PARTITION_ID, assignmentType);
                     AjaxHelpers.respondWithJson(
                         requests,
                         {
                             id: 1,
                             name: defaultCohortName,
+                            assignment_type: assignmentType,
                             group_id: contentGroupId,
                             user_partition_id: MOCK_COHORTED_USER_PARTITION_ID
                         }
                     );
                     AjaxHelpers.respondWithJson(
                         requests,
-                        { cohorts: createMockCohort(defaultCohortName) }
+                        { cohorts: createMockCohort(defaultCohortName, 1, 0, null, null, assignmentType) }
                     );
                     verifyMessage(
                         'The ' + defaultCohortName + ' cohort has been created.' +
@@ -309,7 +315,7 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                     cohortsView.$('.action-create').click();
                     cohortsView.$('.cohort-name').val('  New Cohort   ');
                     cohortsView.$('.action-save').click();
-                    expectCohortAddRequest('New Cohort', null, null);
+                    expectCohortAddRequest('New Cohort', null, null, MOCK_MANUAL_ASSIGNMENT);
                 });
 
                 it("does not allow a blank cohort name to be submitted", function() {
@@ -560,6 +566,7 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                                 {
                                     id: 1,
                                     name: 'Cat Lovers',
+                                    assignment_type: MOCK_RANDOM_ASSIGNMENT,
                                     group_id: 999,
                                     user_partition_id: MOCK_COHORTED_USER_PARTITION_ID
                                 }
@@ -567,6 +574,18 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                             selectCohort: 1
                         });
                     };
+
+                    beforeEach(function() {
+                       // override the page reload
+                       spyOn(edx.groups, 'reloadPage').andCallFake(function() {
+                           return true;
+                       });
+
+                       // override action buttons disabling
+                       spyOn(edx.groups, 'setActionButtonsVisibility').andCallFake(function() {
+                           return true;
+                       });
+                    });
 
                     it("shows a select element with an option for each content group", function () {
                         var options;
@@ -594,6 +613,7 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                             requests, 'PATCH', '/mock_service/cohorts/1',
                             {
                                 name: 'Cat Lovers',
+                                assignment_type: MOCK_MANUAL_ASSIGNMENT,
                                 group_id: 0,
                                 user_partition_id: MOCK_COHORTED_USER_PARTITION_ID
                             }
@@ -608,7 +628,7 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                     it("can clear selected content group", function () {
                         createCohortsView(this, {
                             cohorts: [
-                                {id: 1, name: 'Cat Lovers', group_id: 0}
+                                {id: 1, name: 'Cat Lovers', group_id: 0, 'assignment_type': MOCK_MANUAL_ASSIGNMENT}
                             ],
                             selectCohort: 1
                         });
@@ -622,6 +642,7 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                             requests, 'PATCH', '/mock_service/cohorts/1',
                             {
                                 name: 'Cat Lovers',
+                                'assignment_type': MOCK_MANUAL_ASSIGNMENT,
                                 group_id: null,
                                 user_partition_id: null
                             }
@@ -660,7 +681,7 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                         cohortsView.$('.action-save').click();
                         AjaxHelpers.respondWithJson(
                             requests,
-                            createMockCohort('Cat Lovers', 1, catLoversInitialCount, 0, 0)
+                            createMockCohort('Cat Lovers', 1, catLoversInitialCount, 0, 0, MOCK_RANDOM_ASSIGNMENT)
                         );
                         verifyMessage('Saved cohort', 'confirmation');
 
@@ -698,6 +719,84 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                             cohortsView.$('.msg-inline a').attr('href'),
                             MOCK_STUDIO_GROUP_CONFIGURATIONS_URL
                         );
+                    });
+
+                    it("can update existing cohort settings", function () {
+                        var cohortName = 'Transformers',
+                            newCohortName = 'X Men';
+                        var expectedRequest = function(assignment_type) {
+                            return {
+                                name: newCohortName,
+                                assignment_type: assignment_type,
+                                group_id: null,
+                                user_partition_id: null
+                            }
+                        };
+                        createCohortsView(this, {
+                            cohorts: [
+                                {
+                                    id: 1,
+                                    name: cohortName,
+                                    assignment_type: MOCK_RANDOM_ASSIGNMENT,
+                                    group_id: 111,
+                                    user_partition_id: MOCK_COHORTED_USER_PARTITION_ID
+                                }
+                            ],
+                            selectCohort: 1
+                        });
+
+                        // Select settings tab
+                        cohortsView.$('.tab-settings a').click();
+
+                        // Verify the existing cohort values
+                        expect(cohortsView.$('.cohort-name').val()).toBe(cohortName);
+                        expect(cohortsView.$('input[name="cohort-assignment-type"]:checked').val()).toBe(MOCK_RANDOM_ASSIGNMENT);
+                        expect(cohortsView.$('.radio-yes').prop('checked')).toBeTruthy();
+
+                        // Update existing cohort values
+                        cohortsView.$('.cohort-name').val(newCohortName);
+                        cohortsView.$('.type-manual').prop('checked', true).change();
+                        clearContentGroup();
+
+                        // Save the updated settings
+                        cohortsView.$('.action-save').click();
+                        AjaxHelpers.expectJsonRequest(
+                            requests, 'PATCH', '/mock_service/cohorts/1',
+                            expectedRequest(MOCK_MANUAL_ASSIGNMENT)
+                        );
+                        AjaxHelpers.respondWithJson(
+                            requests,
+                            createMockCohort(newCohortName, 1, 0, null, null)
+                        );
+
+                        // Verify the new/updated cohort values
+                        expect(cohortsView.$('.cohort-name').val()).toBe(newCohortName);
+                        expect(cohortsView.$('input[name="cohort-assignment-type"]:checked').val()).toBe(MOCK_MANUAL_ASSIGNMENT);
+                        expect(cohortsView.$('.radio-no').prop('checked')).toBeTruthy();
+
+                        verifyMessage('Saved cohort', 'confirmation');
+
+                        // Now try to update existing cohort name with an empty name
+                        // We can't set cohort to empty, so the old/existing cohort name will be saved
+                        cohortsView.$('.cohort-name').val('');
+                        cohortsView.$('.type-random').prop('checked', true).change();
+
+                        // Save the updated settings
+                        cohortsView.$('.action-save').click();
+                        AjaxHelpers.expectJsonRequest(
+                            requests, 'PATCH', '/mock_service/cohorts/1',
+                            expectedRequest(MOCK_RANDOM_ASSIGNMENT)
+                        );
+                        AjaxHelpers.respondWithJson(
+                            requests,
+                            createMockCohort(newCohortName, 1, 0, null, null, MOCK_RANDOM_ASSIGNMENT)
+                        );
+
+                        // Verify the new/updated values
+                        expect(cohortsView.$('.cohort-name').val()).toBe(newCohortName);
+                        expect(cohortsView.$('input[name="cohort-assignment-type"]:checked').val()).toBe(MOCK_RANDOM_ASSIGNMENT);
+
+                        verifyMessage('Saved cohort', 'confirmation');
                     });
                 });
             });

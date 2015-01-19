@@ -259,19 +259,29 @@ class CohortConfigurationTest(UniqueCourseTest, CohortTestMixin):
         Given I have a course with a user in the course
         When I add a new manual cohort to the course via the LMS instructor dashboard
         Then the new cohort is displayed and has no users in it
+        And assignment type of displayed cohort to "manual" because this is the default
         And when I add the user to the new cohort
         Then the cohort has 1 user
         And appropriate events have been emitted
         """
         start_time = datetime.now(UTC)
+        assignment_type = 'manual'
         new_cohort = str(uuid.uuid4().get_hex()[0:20])
         self.assertFalse(new_cohort in self.cohort_management_page.get_cohorts())
-        self.cohort_management_page.add_cohort(new_cohort)
+        self.cohort_management_page.add_cohort(new_cohort, assignment_type=None)
         # After adding the cohort, it should automatically be selected
         EmptyPromise(
             lambda: new_cohort == self.cohort_management_page.get_selected_cohort(), "Waiting for new cohort to appear"
         ).fulfill()
         self.assertEqual(0, self.cohort_management_page.get_selected_cohort_count())
+        # After adding the cohort, it should automatically be selected and its
+        # assignment_type should be "manual" as this is the default assignment type
+        msg = "Waiting for currently selected cohort assignment type"
+        EmptyPromise(
+            lambda: assignment_type == self.cohort_management_page.get_cohort_associated_assignment_type(), msg
+        ).fulfill()
+        # Go back to Manage Students Tab
+        self.cohort_management_page.select_manage_settings()
         self.cohort_management_page.add_students_to_selected_cohort([self.instructor_name])
         # Wait for the number of users in the cohort to change, indicating that the add operation is complete.
         EmptyPromise(
@@ -292,6 +302,157 @@ class CohortConfigurationTest(UniqueCourseTest, CohortTestMixin):
                 "event.cohort_name": new_cohort,
             }).count(),
             1
+        )
+
+    def _verify_cohort_settings(
+            self,
+            cohort_name,
+            assignment_type,
+            new_cohort_name=None,
+            new_assignment_type=None,
+            verify_updated=False
+    ):
+
+        """
+        Create a new cohort and verify the new and existing settings.
+        """
+        start_time = datetime.now(UTC)
+        self.assertFalse(cohort_name in self.cohort_management_page.get_cohorts())
+        self.cohort_management_page.add_cohort(cohort_name, assignment_type=assignment_type)
+        # After adding the cohort, it should automatically be selected
+        EmptyPromise(
+            lambda: cohort_name == self.cohort_management_page.get_selected_cohort(), "Waiting for new cohort to appear"
+        ).fulfill()
+        self.assertEqual(0, self.cohort_management_page.get_selected_cohort_count())
+        # After adding the cohort, it should automatically be selected and its
+        # assignment_type should be "manual" as this is the default assignment type
+        msg = "Waiting for currently selected cohort assignment type"
+        EmptyPromise(
+            lambda: assignment_type == self.cohort_management_page.get_cohort_associated_assignment_type(), msg
+        ).fulfill()
+        # Go back to Manage Students Tab
+        self.cohort_management_page.select_manage_settings()
+        self.cohort_management_page.add_students_to_selected_cohort([self.instructor_name])
+        # Wait for the number of users in the cohort to change, indicating that the add operation is complete.
+        EmptyPromise(
+            lambda: 1 == self.cohort_management_page.get_selected_cohort_count(), 'Waiting for student to be added'
+        ).fulfill()
+        self.assertEqual(
+            self.event_collection.find({
+                "name": "edx.cohort.created",
+                "time": {"$gt": start_time},
+                "event.cohort_name": cohort_name,
+            }).count(),
+            1
+        )
+        self.assertEqual(
+            self.event_collection.find({
+                "name": "edx.cohort.creation_requested",
+                "time": {"$gt": start_time},
+                "event.cohort_name": cohort_name,
+            }).count(),
+            1
+        )
+
+        if verify_updated:
+            self.cohort_management_page.select_cohort(cohort_name)
+            self.cohort_management_page.select_cohort_settings()
+            self.cohort_management_page.set_cohort_name(new_cohort_name)
+            self.cohort_management_page.set_assignment_type(new_assignment_type)
+            self.cohort_management_page.save_cohort_settings()
+            # new cohort name should be present in the list of cohorts. But when we try to update an existing cohort
+            # with an empty cohort name then existing/old cohort name will be used because cohort name can't ba empty
+            self.assertTrue(new_cohort_name or cohort_name in self.cohort_management_page.get_cohorts())
+            self.cohort_management_page.select_cohort(new_cohort_name or cohort_name)
+            self.assertEqual(1, self.cohort_management_page.get_selected_cohort_count())
+            msg = "Waiting for currently selected cohort assignment type"
+            EmptyPromise(
+                lambda: new_assignment_type == self.cohort_management_page.get_cohort_associated_assignment_type(), msg
+            ).fulfill()
+
+    def test_add_new_cohort_with_manual_assignment_type(self):
+        """
+        Scenario: A new manual cohort with manual assignment type can be created, and a student assigned to it.
+
+        Given I have a course with a user in the course
+        When I add a new manual cohort with manual assignment type to the course via the LMS instructor dashboard
+        Then the new cohort is displayed and has no users in it
+        And assignment type of displayed cohort is "manual"
+        And when I add the user to the new cohort
+        Then the cohort has 1 user
+        And appropriate events have been emitted
+        """
+        cohort_name = str(uuid.uuid4().get_hex()[0:20])
+        self._verify_cohort_settings(cohort_name=cohort_name, assignment_type='manual')
+
+    def test_add_new_cohort_with_random_assignment_type(self):
+        """
+        Scenario: A new manual cohort with random assignment type can be created, and a student assigned to it.
+
+        Given I have a course with a user in the course
+        When I add a new manual cohort with random assignment type to the course via the LMS instructor dashboard
+        Then the new cohort is displayed and has no users in it
+        And assignment type of displayed cohort is "random"
+        And when I add the user to the new cohort
+        Then the cohort has 1 user
+        And appropriate events have been emitted
+        """
+        cohort_name = str(uuid.uuid4().get_hex()[0:20])
+        self._verify_cohort_settings(cohort_name=cohort_name, assignment_type='random')
+
+    def test_update_existing_cohort_settings(self):
+        """
+        Scenario: Update existing cohort settings(cohort name, assignment type)
+
+        Given I have a course with a user in the course
+        When I add a new manual cohort with random assignment type to the course via the LMS instructor dashboard
+        Then the new cohort is displayed and has no users in it
+        And assignment type of displayed cohort is "random"
+        And when I add the user to the new cohort
+        Then the cohort has 1 user
+        And appropriate events have been emitted
+        Then I select a cohort from existing cohorts
+        Then I change its name and assignment type set to "manual"
+        Then I Save the settings
+        And cohort with new name is present in cohorts dropdown list
+        And cohort assignment type should be "manual"
+        """
+        cohort_name = str(uuid.uuid4().get_hex()[0:20])
+        new_cohort_name = '{old}__NEW'.format(old=cohort_name)
+        self._verify_cohort_settings(
+            cohort_name=cohort_name,
+            assignment_type='random',
+            new_cohort_name=new_cohort_name,
+            new_assignment_type='manual',
+            verify_updated=True
+        )
+
+    def test_update_existing_cohort_settings_with_empty_cohort_name(self):
+        """
+        Scenario: Update existing cohort settings(cohort name, assignment type).
+        NOTE: if cohort name field is empty we will use existing cohort name
+
+        Given I have a course with a user in the course
+        When I add a new manual cohort with random assignment type to the course via the LMS instructor dashboard
+        Then the new cohort is displayed and has no users in it
+        And assignment type of displayed cohort is "random"
+        And when I add the user to the new cohort
+        Then the cohort has 1 user
+        And appropriate events have been emitted
+        Then I select a cohort from existing cohorts
+        Then I set its name as empty string and assignment type set to "manual"
+        Then I Save the settings
+        And cohort with new name is present in cohorts dropdown list
+        And cohort assignment type should be "manual"
+        """
+        cohort_name = str(uuid.uuid4().get_hex()[0:20])
+        new_cohort_name = ''
+        self._verify_cohort_settings(
+            cohort_name=cohort_name,
+            assignment_type='random',
+            new_cohort_name=new_cohort_name,
+            new_assignment_type='manual',
+            verify_updated=True
         )
 
     def test_link_to_data_download(self):
@@ -530,9 +691,7 @@ class CohortContentGroupAssociationTest(UniqueCourseTest, CohortTestMixin):
         Given I have a course with a cohort defined and content groups defined
         When I view the cohort in the instructor dashboard and select settings
         And I link the cohort to one of the content groups and save
-        Then there is a notification that my cohort has been saved
-        And when I reload the page
-        And I view the cohort in the instructor dashboard and select settings
+        And I select the cohort in the instructor dashboard and select settings
         Then the cohort is still linked to the content group
         """
         self._link_cohort_to_content_group(self.cohort_name, "Bananas")
@@ -545,18 +704,14 @@ class CohortContentGroupAssociationTest(UniqueCourseTest, CohortTestMixin):
         Given I have a course with a cohort defined and content groups defined
         When I view the cohort in the instructor dashboard and select settings
         And I link the cohort to one of the content groups and save
-        Then there is a notification that my cohort has been saved
-        And I reload the page
-        And I view the cohort in the instructor dashboard and select settings
+        And I select the cohort in the instructor dashboard and select settings
         And I unlink the cohort from any content group and save
-        Then there is a notification that my cohort has been saved
-        And when I reload the page
-        And I view the cohort in the instructor dashboard and select settings
+        And I select the cohort in the instructor dashboard and select settings
         Then the cohort is not linked to any content group
         """
         self._link_cohort_to_content_group(self.cohort_name, "Bananas")
         self.cohort_management_page.set_cohort_associated_content_group(None)
-        self._verify_settings_saved_and_reload(self.cohort_name)
+        self._verify_settings_saved(self.cohort_name)
         self.assertEqual(None, self.cohort_management_page.get_cohort_associated_content_group())
 
     def test_create_new_cohort_linked_to_content_group(self):
@@ -619,9 +774,10 @@ class CohortContentGroupAssociationTest(UniqueCourseTest, CohortTestMixin):
             "Warning:\nThe previously selected content group was deleted. Select another content group.",
             self.cohort_management_page.get_cohort_related_content_group_message()
         )
+        # This will Reload the page
         self.cohort_management_page.set_cohort_associated_content_group("Pears")
-        confirmation_messages = self.cohort_management_page.get_cohort_settings_messages()
-        self.assertEqual(["Saved cohort"], confirmation_messages)
+        self.cohort_management_page.select_cohort(new_cohort)
+        self.cohort_management_page.select_cohort_settings()
         self.assertIsNone(self.cohort_management_page.get_cohort_related_content_group_message())
         self.assertEquals(["Bananas", "Pears"], self.cohort_management_page.get_all_content_groups())
 
@@ -643,15 +799,11 @@ class CohortContentGroupAssociationTest(UniqueCourseTest, CohortTestMixin):
         """
         self.cohort_management_page.select_cohort(cohort_name)
         self.cohort_management_page.set_cohort_associated_content_group(content_group)
-        self._verify_settings_saved_and_reload(cohort_name)
+        self._verify_settings_saved(cohort_name)
 
-    def _verify_settings_saved_and_reload(self, cohort_name):
+    def _verify_settings_saved(self, cohort_name):
         """
-        Verifies the confirmation message indicating that a cohort's settings have been updated.
-        Then refreshes the page and selects the cohort.
+        Verifies that a cohort's settings have been updated. Then selects the cohort.
         """
-        confirmation_messages = self.cohort_management_page.get_cohort_settings_messages()
-        self.assertEqual(["Saved cohort"], confirmation_messages)
-        self.browser.refresh()
-        self.cohort_management_page.wait_for_page()
         self.cohort_management_page.select_cohort(cohort_name)
+        self.cohort_management_page.select_cohort_settings()

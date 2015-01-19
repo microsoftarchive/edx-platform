@@ -36,6 +36,11 @@ class CourseUserGroup(models.Model):
     GROUP_TYPE_CHOICES = ((COHORT, 'Cohort'),)
     group_type = models.CharField(max_length=20, choices=GROUP_TYPE_CHOICES)
 
+    RANDOM = 'random'
+    MANUAL = 'manual'
+    ASSIGNMENT_TYPE_CHOICES = ((RANDOM, 'Random'), (MANUAL, 'Manual'),)
+    assignment_type = models.CharField(max_length=20, choices=ASSIGNMENT_TYPE_CHOICES, default=MANUAL)
+
 
 class CourseUserGroupPartitionGroup(models.Model):
     """
@@ -49,3 +54,21 @@ class CourseUserGroupPartitionGroup(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class CourseUserGroupSettings(models.Model):
+    """
+    This model represents cohort settings for courses.
+    """
+    is_cohorted = models.BooleanField(default=False)
+
+    course_id = CourseKeyField(
+        unique=True,
+        max_length=255,
+        db_index=True,
+        help_text="Which course is these settings associated with?",
+    )
+
+    cohorted_discussions = models.TextField(null=True, blank=True)  # JSON list
+
+    cohort_inline_discussions = models.BooleanField(default=True)

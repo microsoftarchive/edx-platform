@@ -5,6 +5,7 @@ forums, and to the cohort admin views.
 
 import logging
 import random
+import json
 
 from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
@@ -14,7 +15,7 @@ from django.utils.translation import ugettext as _
 from courseware import courses
 from eventtracking import tracker
 from student.models import get_user_by_username_or_email
-from .models import CourseUserGroup, CourseUserGroupPartitionGroup
+from .models import CourseUserGroup, CourseUserGroupSettings, CourseUserGroupPartitionGroup
 
 
 log = logging.getLogger(__name__)
@@ -79,31 +80,6 @@ def _cohort_membership_changed(sender, **kwargs):
 # Translation Note: We are NOT translating this string since it is the constant identifier for the "default group"
 #                   and needed across product boundaries.
 DEFAULT_COHORT_NAME = "Default Group"
-
-
-class CohortAssignmentType(object):
-    """
-    The various types of rule-based cohorts
-    """
-    # No automatic rules are applied to this cohort; users must be manually added.
-    NONE = "none"
-
-    # One of (possibly) multiple cohorts to which users are randomly assigned.
-    # Note: The 'default' cohort is included in this category iff it exists and
-    # there are no other random groups. (Also see Note 2 above.)
-    RANDOM = "random"
-
-    @staticmethod
-    def get(cohort, course):
-        """
-        Returns the assignment type of the given cohort for the given course
-        """
-        if cohort.name in course.auto_cohort_groups:
-            return CohortAssignmentType.RANDOM
-        elif len(course.auto_cohort_groups) == 0 and cohort.name == DEFAULT_COHORT_NAME:
-            return CohortAssignmentType.RANDOM
-        else:
-            return CohortAssignmentType.NONE
 
 
 # tl;dr: global state is bad.  capa reseeds random every time a problem is loaded.  Even
@@ -235,47 +211,76 @@ def get_cohort(user, course_key, assign=True):
         if not assign:
             return None
 
-    choices = course.auto_cohort_groups
-    if len(choices) > 0:
-        # Randomly choose one of the auto_cohort_groups, creating it if needed.
-        group_name = local_random().choice(choices)
+    course_cohorts = get_course_cohorts(course, assignment_type=CourseUserGroup.RANDOM)
+    if course_cohorts:
+        course_cohort = local_random().choice(course_cohorts)
     else:
-        # Use the "default cohort".
-        group_name = DEFAULT_COHORT_NAME
+        course_cohort, __ = CourseUserGroup.objects.get_or_create(
+            course_id=course_key,
+            group_type=CourseUserGroup.COHORT,
+            name=DEFAULT_COHORT_NAME,
+            defaults={'assignment_type': CourseUserGroup.RANDOM}
+        )
 
-    group, __ = CourseUserGroup.objects.get_or_create(
-        course_id=course_key,
-        group_type=CourseUserGroup.COHORT,
-        name=group_name
+    user.course_groups.add(course_cohort)
+
+    return course_cohort
+
+
+def migrate_cohort_settings(course):
+    """
+    Migrate all the cohort settings associated with this course from modulestore to mysql.
+    After that we will never touch modulestore for any cohort related settings.
+    """
+    cohort_settings, created = CourseUserGroupSettings.objects.get_or_create(
+        course_id=course.location.course_key,
+        defaults={
+            'is_cohorted': course.is_cohorted,
+            'cohorted_discussions': json.dumps(list(course.cohorted_discussions)),
+            'cohort_inline_discussions': course.always_cohort_inline_discussions
+        }
     )
-    user.course_groups.add(group)
-    return group
+
+    # Add the new and update the existing cohorts
+    if created:
+        for group_name in course.auto_cohort_groups:
+            cohort, created = CourseUserGroup.objects.get_or_create(
+                course_id=course.location.course_key,
+                group_type=CourseUserGroup.COHORT,
+                name=group_name,
+                defaults={'assignment_type': CourseUserGroup.RANDOM}
+            )
+
+            # Update the assignment type of already existed auto cohort
+            if not created:
+                cohort.assignment_type = CourseUserGroup.RANDOM
+                cohort.save()
+
+    return cohort_settings
 
 
-def get_course_cohorts(course):
+def get_course_cohorts(course, assignment_type=None):
     """
     Get a list of all the cohorts in the given course. This will include auto cohorts,
     regardless of whether or not the auto cohorts include any users.
 
     Arguments:
         course: the course for which cohorts should be returned
+        assignment_type: cohort assignment type
 
     Returns:
         A list of CourseUserGroup objects.  Empty if there are no cohorts. Does
         not check whether the course is cohorted.
     """
-    # Ensure all auto cohorts are created.
-    for group_name in course.auto_cohort_groups:
-        CourseUserGroup.objects.get_or_create(
-            course_id=course.location.course_key,
-            group_type=CourseUserGroup.COHORT,
-            name=group_name
-        )
+    # Migrate cohort settings for this course
+    migrate_cohort_settings(course)
 
-    return list(CourseUserGroup.objects.filter(
+    query_set = CourseUserGroup.objects.filter(
         course_id=course.location.course_key,
         group_type=CourseUserGroup.COHORT
-    ))
+    )
+    query_set = query_set.filter(assignment_type=assignment_type) if assignment_type else query_set
+    return list(query_set)
 
 ### Helpers for cohort management views
 
@@ -304,7 +309,7 @@ def get_cohort_by_id(course_key, cohort_id):
     )
 
 
-def add_cohort(course_key, name):
+def add_cohort(course_key, name, assignment_type):
     """
     Add a cohort to a course.  Raises ValueError if a cohort of the same name already
     exists.
@@ -323,7 +328,8 @@ def add_cohort(course_key, name):
     cohort = CourseUserGroup.objects.create(
         course_id=course.id,
         group_type=CourseUserGroup.COHORT,
-        name=name
+        name=name,
+        assignment_type=assignment_type
     )
     tracker.emit(
         "edx.cohort.creation_requested",

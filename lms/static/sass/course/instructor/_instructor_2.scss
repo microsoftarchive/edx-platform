@@ -564,6 +564,10 @@
       &.new-cohort-form {
         padding: $baseline;
       }
+
+      &.is-disabled {
+        opacity: 0.50;
+      }
     }
   }
 

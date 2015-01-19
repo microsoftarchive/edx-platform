@@ -5,10 +5,24 @@ var edx = edx || {};
 
     edx.groups = edx.groups || {};
 
+    edx.groups.reloadPage = function() {
+        location.reload(true);
+    };
+
+    edx.groups.setActionButtonsVisibility = function(showSettings) {
+        var formActions = '.cohort-management-details .form-actions';
+        if (showSettings) {
+            this.$(formActions).removeClass('is-disabled').attr('aria-disabled', false);
+        } else {
+            this.$(formActions).addClass('is-disabled').attr('aria-disabled', true);
+        }
+    };
+
     edx.groups.CohortEditorView = Backbone.View.extend({
         events : {
             'click .wrapper-tabs .tab': 'selectTab',
             'click .tab-content-settings .action-save': 'saveSettings',
+            'click .tab-content-settings .action-cancel': 'cancelSettings',
             'submit .cohort-management-group-add-form': 'addStudents'
         },
 
@@ -57,7 +71,16 @@ var edx = edx || {};
             cohortFormView.saveForm()
                 .done(function() {
                     cohortFormView.showMessage(gettext('Saved cohort'));
+                    edx.groups.setActionButtonsVisibility(false);
+                    edx.groups.reloadPage();
+                }).fail(function() {
+                    edx.groups.setActionButtonsVisibility(true);
                 });
+        },
+
+        cancelSettings: function(event) {
+            event.preventDefault();
+            this.render();
         },
 
         setCohort: function(cohort) {

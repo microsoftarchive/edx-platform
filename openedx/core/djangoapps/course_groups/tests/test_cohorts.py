@@ -231,10 +231,12 @@ class TestCohorts(TestCase):
         # get_cohort should return a group for user
         self.assertEquals(cohorts.get_cohort(user, course.id).name, "AutoGroup")
 
-
-    def test_auto_cohorting(self):
+    def test_cohorting_with_auto_cohort_groups(self):
         """
-        Make sure cohorts.get_cohort() does the right thing with auto_cohort_groups
+        Make sure cohorts.get_cohort() does the right thing with auto_cohort_groups.
+        If there are auto cohort groups then a user should be assigned one.
+        Also verifies that cohort config changes on studio/moduletore side will
+        not be reflected on lms after the migrations are done.
         """
         course = modulestore().get_course(self.toy_course_key)
         self.assertFalse(course.is_cohorted)
@@ -242,7 +244,6 @@ class TestCohorts(TestCase):
         user1 = UserFactory(username="test", email="a@b.com")
         user2 = UserFactory(username="test2", email="a2@b.com")
         user3 = UserFactory(username="test3", email="a3@b.com")
-        user4 = UserFactory(username="test4", email="a4@b.com")
 
         cohort = CohortFactory(course_id=course.id, name="TestCohort")
 
@@ -261,21 +262,8 @@ class TestCohorts(TestCase):
 
         self.assertEquals(cohorts.get_cohort(user2, course.id).name, "AutoGroup", "user2 should be auto-cohorted")
 
-        # Now make the auto_cohort_group list empty
-        config_course_cohorts(
-            course,
-            discussions=[],
-            cohorted=True,
-            auto_cohort_groups=[]
-        )
-
-        self.assertEquals(
-            cohorts.get_cohort(user3, course.id).id,
-            cohorts.get_cohort_by_name(course.id, cohorts.DEFAULT_COHORT_NAME).id,
-            "No groups->default cohort"
-        )
-
         # Now set the auto_cohort_group to something different
+        # This will have no effect on lms side as we are already done with migrations
         config_course_cohorts(
             course,
             discussions=[],
@@ -284,19 +272,61 @@ class TestCohorts(TestCase):
         )
 
         self.assertEquals(
-            cohorts.get_cohort(user4, course.id).name, "OtherGroup", "New list->new group"
+            cohorts.get_cohort(user3, course.id).name, "AutoGroup", "user3 should be assigned to AutoGroups"
         )
-        self.assertEquals(
-            cohorts.get_cohort(user1, course.id).name, "TestCohort", "user1 should still be in originally placed cohort"
-        )
+
         self.assertEquals(
             cohorts.get_cohort(user2, course.id).name, "AutoGroup", "user2 should still be in originally placed cohort"
         )
-        self.assertEquals(
-            cohorts.get_cohort(user3, course.id).name,
-            cohorts.get_cohort_by_name(course.id, cohorts.DEFAULT_COHORT_NAME).name,
-            "user3 should still be in the default cohort"
+
+    def test_cohorting_with_no_auto_cohort_groups(self):
+        """
+        Make sure cohorts.get_cohort() does the right thing with auto_cohort_groups.
+        If there are not auto cohort groups then a user should be assigned to Default Cohort Group.
+        Also verifies that cohort config changes on studio/moduletore side will
+        not be reflected on lms after the migrations are done.
+        """
+        course = modulestore().get_course(self.toy_course_key)
+        self.assertFalse(course.is_cohorted)
+
+        user1 = UserFactory(username="test", email="a@b.com")
+        user2 = UserFactory(username="test2", email="a2@b.com")
+
+        # Make the auto_cohort_group list empty
+        config_course_cohorts(
+            course,
+            discussions=[],
+            cohorted=True,
+            auto_cohort_groups=[]
         )
+
+        self.assertEquals(
+            cohorts.get_cohort(user1, course.id).id,
+            cohorts.get_cohort_by_name(course.id, cohorts.DEFAULT_COHORT_NAME).id,
+            "No groups->default cohort for user1"
+        )
+
+        # Add an auto_cohort_group to the course
+        # This will have no effect on lms side as we are already done with migrations
+        config_course_cohorts(
+            course,
+            discussions=[],
+            cohorted=True,
+            auto_cohort_groups=["AutoGroup"]
+        )
+
+        self.assertEquals(
+            cohorts.get_cohort(user1, course.id).name,
+            cohorts.get_cohort_by_name(course.id, cohorts.DEFAULT_COHORT_NAME).name,
+            "user1 should still be in the default cohort"
+        )
+
+        self.assertEquals(
+            cohorts.get_cohort(user2, course.id).id,
+            cohorts.get_cohort_by_name(course.id, cohorts.DEFAULT_COHORT_NAME).id,
+            "No groups->default cohort for user2"
+        )
+
 
     def test_auto_cohorting_randomization(self):
         """
@@ -519,8 +549,9 @@ class TestCohorts(TestCase):
         Make sure cohorts.add_cohort() properly adds a cohort to a course and handles
         errors.
         """
+        assignment_type = CourseUserGroup.RANDOM
         course = modulestore().get_course(self.toy_course_key)
-        added_cohort = cohorts.add_cohort(course.id, "My Cohort")
+        added_cohort = cohorts.add_cohort(course.id, "My Cohort", assignment_type)
         mock_tracker.emit.assert_any_call(
             "edx.cohort.creation_requested",
             {"cohort_name": added_cohort.name, "cohort_id": added_cohort.id}
@@ -529,11 +560,12 @@ class TestCohorts(TestCase):
         self.assertEqual(added_cohort.name, "My Cohort")
         self.assertRaises(
             ValueError,
-            lambda: cohorts.add_cohort(course.id, "My Cohort")
+            lambda: cohorts.add_cohort(course.id, "My Cohort", assignment_type)
         )
+        does_not_exist_course_key = SlashSeparatedCourseKey("course", "does_not", "exist")
         self.assertRaises(
             ValueError,
-            lambda: cohorts.add_cohort(SlashSeparatedCourseKey("course", "does_not", "exist"), "My Cohort")
+            lambda: cohorts.add_cohort(does_not_exist_course_key, "My Cohort", assignment_type)
         )
 
     @patch("openedx.core.djangoapps.course_groups.cohorts.tracker")
@@ -596,6 +628,9 @@ class TestCohorts(TestCase):
 
 @override_settings(MODULESTORE=TEST_DATA_MIXED_MODULESTORE)
 class TestCohortsAndPartitionGroups(TestCase):
+    """
+    Test Cohorts and Partitions Groups.
+    """
 
     def setUp(self):
         """

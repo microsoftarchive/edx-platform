@@ -12,7 +12,7 @@
         </h3>
         <div class="cohort-management-group-setup">
             <div class="setup-value">
-                <% if (cohort.get('assignment_type') == "none") { %>
+                <% if (cohort.get('assignment_type') == "manual") { %>
                     <%- gettext("Students are added to this cohort only when you provide their email addresses or usernames on this page.") %>
                     <a href="http://edx.readthedocs.org/projects/edx-partner-course-staff/en/latest/cohorts/cohort_config.html#assign-students-to-cohort-groups-manually" class="incontext-help action-secondary action-help"><%= gettext("What does this mean?") %></a>
                 <% } else { %>
