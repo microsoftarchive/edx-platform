@@ -41,7 +41,7 @@ from util.json_request import expect_json, JsonResponse
 from student.auth import has_studio_write_access, has_studio_read_access
 from contentstore.utils import find_release_date_source, find_staff_lock_source, is_currently_visible_to_students, \
     ancestor_has_staff_lock, has_children_visible_to_specific_content_groups
-from contentstore.views.helpers import is_unit, xblock_studio_url, xblock_primary_child_category, \
+from contentstore.views.helpers import xblock_studio_url, xblock_primary_child_category, \
     xblock_type_display_name, get_parent_xblock
 from contentstore.views.preview import get_preview_fragment
 from edxmako.shortcuts import render_to_string
@@ -285,7 +285,7 @@ def xblock_view_handler(request, usage_key_string, view_name):
             # Set up the context to be passed to each XBlock's render method.
             context = {
                 'is_pages_view': is_pages_view,     # This setting disables the recursive wrapping of xblocks
-                'is_unit_page': is_unit(xblock),
+                'is_unit_page': xblock.is_unit(),
                 'can_edit': can_edit,
                 'root_xblock': xblock if (view_name == 'container_preview') else None,
                 'reorderable_items': reorderable_items,
@@ -832,7 +832,7 @@ def create_xblock_info(xblock, data=None, metadata=None, include_ancestor_info=F
     not a particular xblock should have its children included.
     """
     is_library_block = isinstance(xblock.location, LibraryUsageLocator)
-    is_xblock_unit = is_unit(xblock, parent_xblock)
+    is_xblock_unit = xblock.is_unit(parent_xblock)
     # this should not be calculated for Sections and Subsections on Unit page or for library blocks
     has_changes = None
     if (is_xblock_unit or course_outline) and not is_library_block:

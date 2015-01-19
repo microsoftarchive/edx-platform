@@ -20,7 +20,7 @@ from xblock.plugin import PluginMissingError
 from xblock.runtime import Mixologist
 
 from contentstore.utils import get_lms_link_for_item
-from contentstore.views.helpers import get_parent_xblock, is_unit, xblock_type_display_name
+from contentstore.views.helpers import get_parent_xblock, xblock_type_display_name
 from contentstore.views.item import create_xblock_info, add_container_page_publishing_info
 
 from opaque_keys.edx.keys import UsageKey
@@ -166,11 +166,12 @@ def container_handler(request, usage_key_string):
             parent = get_parent_xblock(xblock)
             action = request.REQUEST.get('action', 'view')
 
-            is_unit_page = is_unit(xblock)
+            is_unit_page = xblock.is_unit()
             unit = xblock if is_unit_page else None
 
             while parent and parent.category != 'course':
-                if unit is None and is_unit(parent):
+                # TODO: get_parent_unit?
+                if unit is None and parent.is_unit():
                     unit = parent
                 ancestor_xblocks.append(parent)
                 parent = get_parent_xblock(parent)

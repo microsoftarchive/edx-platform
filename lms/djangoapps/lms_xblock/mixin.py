@@ -171,3 +171,14 @@ class LmsBlockMixin(XBlockMixin):
                 )
             )
         return validation
+
+    def is_unit(self, parent_xblock=None):
+        """
+        Returns true if the specified xblock is a vertical that is treated as a unit.
+        A unit is a vertical that is a direct child of a sequential (aka a subsection).
+        """
+        if self.category != 'vertical':
+            return False
+        if parent_xblock is None:
+            parent_xblock = self.get_parent()
+        return parent_xblock and parent_xblock.category == 'sequential'
