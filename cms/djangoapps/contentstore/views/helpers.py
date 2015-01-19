@@ -58,12 +58,11 @@ def is_unit(xblock, parent_xblock=None):
     Returns true if the specified xblock is a vertical that is treated as a unit.
     A unit is a vertical that is a direct child of a sequential (aka a subsection).
     """
-    if xblock.category == 'vertical':
-        if parent_xblock is None:
-            parent_xblock = get_parent_xblock(xblock)
-        parent_category = parent_xblock.category if parent_xblock else None
-        return parent_category == 'sequential'
-    return False
+    if xblock.category != 'vertical':
+        return False
+    if parent_xblock is None:
+        parent_xblock = xblock.get_parent()
+    return parent_xblock and parent_xblock.category == 'sequential'
 
 
 def xblock_has_own_studio_page(xblock, parent_xblock=None):
@@ -83,7 +82,7 @@ def xblock_has_own_studio_page(xblock, parent_xblock=None):
         return True
     elif category == 'vertical':
         if parent_xblock is None:
-            parent_xblock = get_parent_xblock(xblock)
+            parent_xblock = xblock.get_parent()
         return is_unit(parent_xblock) if parent_xblock else False
 
     # All other xblocks with children have their own page
