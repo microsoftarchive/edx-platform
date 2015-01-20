@@ -50,7 +50,7 @@ from xmodule.modulestore.exceptions import ItemNotFoundError, DuplicateCourseErr
 from xmodule.modulestore.inheritance import InheritanceMixin, inherit_metadata, InheritanceKeyValueStore
 from xmodule.modulestore.xml import CourseLocationManager
 
-from search.manager import SearchEngine
+from search.search_engine_base import SearchEngine
 
 log = logging.getLogger(__name__)
 
@@ -958,8 +958,8 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
         """
         Main routine to index (for purposes of searching) from given location and other stuff on down
         """
-        # TODO - inline for now, need to move this out to a celery task
         error = []
+        # TODO - inline for now, need to move this out to a celery task
         searcher = SearchEngine.get_search_engine(INDEX_NAME)
         if not searcher:
             return
@@ -982,29 +982,31 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
             """ add this item to the search index """
             item = _fetch_item(item_location)
             if item:
-                if item.start and (not current_start_date or item.start > current_start_date):
-                    current_start_date = item.start
+                if item.category in ['course', 'chapter', 'sequential', 'vertical', 'html', 'video']:
+                    if item.start and (not current_start_date or item.start > current_start_date):
+                        current_start_date = item.start
 
-                if item.has_children:
-                    for child_loc in item.children:
-                        index_item_location(child_loc, current_start_date)
+                    if item.has_children:
+                        for child_loc in item.children:
+                            index_item_location(child_loc, current_start_date)
 
-                item_index = {}
-                try:
-                    item_index.update(location_info)
-                    item_index.update(item.index_view())
-                    item_index.update({
-                        'id': unicode(item.scope_ids.usage_id),
-                    })
-                    if current_start_date:
+                    item_index = {}
+                    try:
+                        item_index.update(location_info)
+                        item_index.update(item.index_dictionary())
                         item_index.update({
-                            "start_date": current_start_date
+                            'id': unicode(item.scope_ids.usage_id),
                         })
 
-                    searcher.index(DOCUMENT_TYPE, item_index)
-                except IndexWriteError:
-                    log.warning('Could not index item: %s', item_location)
-                    error.append('Could not index item: {}'.format(item_location))
+                        if current_start_date:
+                            item_index.update({
+                                "start_date": current_start_date
+                            })
+
+                        searcher.index(DOCUMENT_TYPE, item_index)
+                    except IndexWriteError:
+                        log.warning('Could not index item: %s', item_location)
+                        error.append('Could not index item: {}'.format(item_location))
 
         def remove_index_item_location(item_location):
             """ remove this item from the search index """
@@ -1013,15 +1015,21 @@ class MongoModuleStore(ModuleStoreDraftAndPublished, ModuleStoreWriteBase, Mongo
                 if item.has_children:
                     for child_loc in item.children:
                         remove_index_item_location(child_loc)
-                try:
-                    searcher.remove(DOCUMENT_TYPE, unicode(item.scope_ids.usage_id))
-                except Exception:
-                    pass
 
-        if delete:
-            remove_index_item_location(location)
-        else:
-            index_item_location(location, None)
+                searcher.remove(DOCUMENT_TYPE, unicode(item.scope_ids.usage_id))
+
+        try:
+            if delete:
+                remove_index_item_location(location)
+            else:
+                index_item_location(location, None)
+        except Exception as err:  # pylint: disable=broad-except
+            # broad exception so that index operation does not prevent the rest of the application from working
+            log.exception(
+                "Indexing error encountered, courseware index may be out of date %s - %s",
+                location.course_key,
+                str(err)
+            )
 
         return error
 

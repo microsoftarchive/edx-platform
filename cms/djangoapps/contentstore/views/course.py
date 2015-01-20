@@ -73,6 +73,7 @@ from course_action_state.managers import CourseActionStateItemNotFoundError
 from microsite_configuration import microsite
 from xmodule.course_module import CourseFields
 from xmodule.split_test_module import get_split_user_partitions
+from student.auth import has_course_author_access
 
 MINIMUM_GROUP_ID = 100
 
@@ -83,7 +84,7 @@ CONTENT_GROUP_CONFIGURATION_DESCRIPTION = 'The groups in this configuration can 
 CONTENT_GROUP_CONFIGURATION_NAME = 'Content Group Configuration'
 
 __all__ = ['course_info_handler', 'course_handler', 'course_listing',
-           'course_info_update_handler','course_index_handler',
+           'course_info_update_handler', 'course_index_handler',
            'course_rerun_handler',
            'settings_handler',
            'grading_handler',

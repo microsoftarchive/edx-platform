@@ -21,8 +21,6 @@ from xmodule.modulestore.mongo.base import (
 from xmodule.modulestore.store_utilities import rewrite_nonportable_content_links
 from xmodule.modulestore.draft_and_published import UnsupportedRevisionError, DIRECT_ONLY_CATEGORIES
 
-from search.search_engine_base import SearchEngine
-
 log = logging.getLogger(__name__)
 
 
