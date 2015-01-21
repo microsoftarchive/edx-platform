@@ -52,7 +52,7 @@ class SequenceFields(object):
             "Tag this course module as an Entrance Exam.  " +
             "Note, you must enable Entrance Exams for this course setting to take effect."
         ),
-        scope=Scope.settings,
+        scope=Scope.content,
     )
 
 
@@ -188,9 +188,3 @@ class SequenceDescriptor(SequenceFields, MakoModuleDescriptor, XmlDescriptor):
         for child in self.get_children():
             self.runtime.add_block_as_child_node(child, xml_object)
         return xml_object
-
-    @property
-    def non_editable_metadata_fields(self):
-        non_editable_fields = super(SequenceDescriptor, self).non_editable_metadata_fields
-        non_editable_fields.extend([SequenceFields.is_entrance_exam, ])
-        return non_editable_fields
