@@ -154,7 +154,7 @@ class CrossStoreXMLRoundtrip(unittest.TestCase):
 # Eventually, exclude this attribute from regular unittests while running *only* tests
 # with this attribute during regular performance tests.
 # @attr("perf_test")
-@unittest.skip
+#@unittest.skip
 class FindAssetTest(unittest.TestCase):
     """
     This class exists to time asset finding in different modulestore
@@ -163,6 +163,9 @@ class FindAssetTest(unittest.TestCase):
 
     # Use this attr to skip this test on regular unittest CI runs.
     perf_test = True
+
+    import uuid
+    uuid_test = uuid.uuid4()
 
     def setUp(self):
         super(FindAssetTest, self).setUp()
@@ -214,10 +217,22 @@ class FindAssetTest(unittest.TestCase):
                             raise_on_failure=True,
                         )
 
-                    with CodeBlockTimer("find_nonexistent_asset"):
-                        # More correct would be using the AssetManager.find() - but since the test
-                        # has created its own test modulestore, the AssetManager can't be used.
-                        __ = source_store.find_asset_metadata(asset_key)
+                    import cProfile
+                    prof_filename = "find_non_existent_asset_{}_{}_{}".format(
+                        SHORT_NAME_MAP[source_ms],
+                        num_assets,
+                        self.uuid_test
+                    )
+                    pr = cProfile.Profile()
+                    pr.enable()
+                    try:
+                        with CodeBlockTimer("find_nonexistent_asset"):
+                            # More correct would be using the AssetManager.find() - but since the test
+                            # has created its own test modulestore, the AssetManager can't be used.
+                            __ = source_store.find_asset_metadata(asset_key)
+                    finally:
+                        pr.disable()
+                        pr.dump_stats(prof_filename)
 
                     # Perform get_all_asset_metadata for each sort.
                     for sort in ALL_SORTS:
