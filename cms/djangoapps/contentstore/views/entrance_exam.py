@@ -87,6 +87,16 @@ def create_entrance_exam(request, course_key, entrance_exam_minimum_score_pct):
     )
 
 
+def _create_item(payload, user):
+    """
+    Internal helper method for creating an item.
+    """
+    factory = RequestFactory()
+    internal_request = factory.post('/', json.dumps(payload), content_type="application/json")
+    internal_request.user = user
+    return json.loads(create_item(internal_request).content)
+
+
 def _create_entrance_exam(request, course_key, entrance_exam_minimum_score_pct=None):
     """
     Internal workflow operation to create an entrance exam
@@ -101,17 +111,25 @@ def _create_entrance_exam(request, course_key, entrance_exam_minimum_score_pct=N
         return HttpResponse(status=400)
 
     # Create the entrance exam item (currently it's just a chapter)
-    payload = {
+    chapter_payload = {
         'category': "chapter",
         'display_name': "Entrance Exam",
         'parent_locator': unicode(course.location),
         'is_entrance_exam': True,
         'in_entrance_exam': True,
     }
-    factory = RequestFactory()
-    internal_request = factory.post('/', json.dumps(payload), content_type="application/json")
-    internal_request.user = request.user
-    created_item = json.loads(create_item(internal_request).content)
+
+    created_item = _create_item(chapter_payload, request.user)
+
+    # Create the entrance exam section item.
+    section_payload = {
+        'category': "sequential",
+        'display_name': "Exam Sequential - Subsection",
+        'parent_locator': unicode(created_item['locator']),
+
+    }
+    # creating a subsection inside entrance exam chapter.
+    _create_item(section_payload, request.user)
 
     # Set the entrance exam metadata flags for this course
     # Reload the course so we don't overwrite the new child reference

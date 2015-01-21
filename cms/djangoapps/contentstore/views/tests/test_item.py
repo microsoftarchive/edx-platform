@@ -1389,7 +1389,7 @@ class TestXBlockInfo(ItemTest):
             include_child_info=True,
             include_children_predicate=ALWAYS,
         )
-        self.assertEqual(xblock_info['override_type'], {'is_entrance_exam': True})
+        self.assertEqual(xblock_info['override_type']['is_entrance_exam'], True)
         self.assertEqual(xblock_info['display_name'], 'Entrance Exam')
 
     def test_chapter_xblock_info(self):
