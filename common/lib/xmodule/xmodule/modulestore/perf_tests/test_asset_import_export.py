@@ -223,16 +223,16 @@ class FindAssetTest(unittest.TestCase):
                         num_assets,
                         self.uuid_test
                     )
-                    pr = cProfile.Profile()
-                    pr.enable()
-                    try:
-                        with CodeBlockTimer("find_nonexistent_asset"):
+                    with CodeBlockTimer("find_nonexistent_asset"):
+                        pr = cProfile.Profile()
+                        pr.enable()
+                        try:
                             # More correct would be using the AssetManager.find() - but since the test
                             # has created its own test modulestore, the AssetManager can't be used.
                             __ = source_store.find_asset_metadata(asset_key)
-                    finally:
-                        pr.disable()
-                        pr.dump_stats(prof_filename)
+                        finally:
+                            pr.disable()
+                            pr.dump_stats(prof_filename)
 
                     # Perform get_all_asset_metadata for each sort.
                     for sort in ALL_SORTS:
