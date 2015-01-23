@@ -211,50 +211,6 @@ class TestRecommenderCreateFromEmpty(TestRecommender):
                 self.assertDictEqual(json.loads(result.content), expected_result)
                 self.assert_request_status_code(200, self.course_url)
 
-    def test_import_resources_by_student(self):
-        """
-        Test the function for importing all resources into the Recommender
-        by a student.
-        """
-        self.enroll_student(self.STUDENTS[0]['email'], self.STUDENTS[0]['password'])
-        # Preparing imported resources
-        initial_configuration = {
-            'flagged_accum_resources': {},
-            'endorsed_recommendation_reasons': [],
-            'endorsed_recommendation_ids': [],
-            'removed_recommendations': {},
-            'recommendations': self.test_recommendations[self.resource_urls[0]]
-        }
-        # Importing resources
-        f_handler = StringIO.StringIO(json.dumps(initial_configuration, sort_keys=True))
-        f_handler.name = 'import_resources'
-        url = self.get_handler_url('import_resources')
-        resp = self.client.post(url, {'file': f_handler})
-        self.assertEqual(resp.status_code, 403)
-        self.assert_request_status_code(200, self.course_url)
-
-    def test_import_resources(self):
-        """
-        Test the function for importing all resources into the Recommender.
-        """
-        self.enroll_staff(self.staff_user)
-        # Preparing imported resources
-        initial_configuration = {
-            'flagged_accum_resources': {},
-            'endorsed_recommendation_reasons': [],
-            'endorsed_recommendation_ids': [],
-            'removed_recommendations': {},
-            'recommendations': self.test_recommendations[self.resource_urls[0]]
-        }
-        # Importing resources
-        f_handler = StringIO.StringIO(json.dumps(initial_configuration, sort_keys=True))
-        f_handler.name = 'import_resources'
-        url = self.get_handler_url('import_resources')
-        resp = self.client.post(url, {'file': f_handler})
-        self.assertEqual(resp.content, json.dumps(initial_configuration, sort_keys=True))
-        self.assertEqual(resp.status_code, 200)
-        self.assert_request_status_code(200, self.course_url)
-
 
 class TestRecommenderWithResources(TestRecommender):
     """
@@ -667,19 +623,30 @@ class TestRecommenderFileUploading(TestRecommender):
     def setUp(self):
         # call the setUp function from the superclass
         super(TestRecommenderFileUploading, self).setUp()
+        self.initial_configuration = {
+            'flagged_accum_resources': {},
+            'endorsed_recommendation_reasons': [],
+            'endorsed_recommendation_ids': [],
+            'removed_recommendations': {},
+            'recommendations': self.test_recommendations[self.resource_urls[0]]
+        }
 
-    def attempt_upload_file_and_verify_result(self, test_case, xblock_name=None):
+    def attempt_upload_file_and_verify_result(self, test_case, event_name, content=None):
         """
         Running on a test case, creating a temp file, uploading it by
         calling the corresponding ajax event, and verifying that upload
         happens or is rejected as expected.
         """
-        if xblock_name is None:
-            xblock_name = TestRecommender.XBLOCK_NAMES[0]
-        f_handler = StringIO.StringIO(test_case['magic_number'].decode('hex'))
+        if 'magic_number' in test_case:
+            f_handler = StringIO.StringIO(test_case['magic_number'].decode('hex'))
+        elif content is not None:
+            f_handler = StringIO.StringIO(json.dumps(content, sort_keys=True))
+        else:
+            f_handler = StringIO.StringIO('')
+
         f_handler.content_type = test_case['mimetypes']
         f_handler.name = 'file' + test_case['suffixes']
-        url = self.get_handler_url('upload_screenshot', xblock_name)
+        url = self.get_handler_url(event_name)
         resp = self.client.post(url, {'file': f_handler})
         self.assertEqual(resp.status_code, test_case['status'])
         self.assert_request_status_code(200, self.course_url)
@@ -735,7 +702,7 @@ class TestRecommenderFileUploading(TestRecommender):
         """
         self.enroll_staff(self.staff_user)
         # Upload file with wrong extension name or magic number
-        self.attempt_upload_file_and_verify_result(test_case)
+        self.attempt_upload_file_and_verify_result(test_case, 'upload_screenshot')
 
     @data(
         {
@@ -770,4 +737,53 @@ class TestRecommenderFileUploading(TestRecommender):
         """
         self.enroll_staff(self.staff_user)
         # Upload file with correct extension name and magic number
-        self.attempt_upload_file_and_verify_result(test_case)
+        self.attempt_upload_file_and_verify_result(test_case, 'upload_screenshot')
+
+    @data(
+        {
+            'suffixes': '.json',
+            'mimetypes': 'application/json',
+            'status': 403
+        }
+    )
+    def test_import_resources_by_student(self, test_case):
+        """
+        Test the function for importing all resources into the Recommender
+        by a student.
+        """
+        self.enroll_student(self.STUDENTS[0]['email'], self.STUDENTS[0]['password'])
+        self.attempt_upload_file_and_verify_result(test_case, 'import_resources', self.initial_configuration)
+        
+    @data(
+        {
+            'suffixes': '.csv',
+            'mimetypes': 'application/json',
+            'status': 415
+        }, # Upload file with wrong extension name
+        {
+            'suffixes': '.json',
+            'mimetypes': 'application/json',
+            'status': 200
+        }
+    )
+    def test_import_resources(self, test_case):
+        """
+        Test the function for importing all resources into the Recommender.
+        """
+        self.enroll_staff(self.staff_user)
+        self.attempt_upload_file_and_verify_result(test_case, 'import_resources', self.initial_configuration)
+
+    @data(
+        {
+            'suffixes': '.json',
+            'mimetypes': 'application/json',
+            'status': 415
+        }
+    )
+    def test_import_resources_wrong_format(self, test_case):
+        """
+        Test the function for importing empty dictionary into the Recommender.
+        This should fire an error.
+        """
+        self.enroll_staff(self.staff_user)
+        self.attempt_upload_file_and_verify_result(test_case, 'import_resources', {})
