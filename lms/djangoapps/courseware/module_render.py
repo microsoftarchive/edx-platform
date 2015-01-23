@@ -28,7 +28,7 @@ from lms.djangoapps.lms_xblock.models import XBlockAsidesConfig
 from edxmako.shortcuts import render_to_string
 from eventtracking import tracker
 from psychometrics.psychoanalyze import make_psychometrics_data_update_handler
-from student.models import anonymous_id_for_user, user_by_anonymous_id
+from student.models import anonymous_id_for_user, user_by_anonymous_id, user_can_skip_entrance_exam
 from xblock.core import XBlock
 from xblock.fields import Scope
 from xblock.runtime import KvsFieldData, KeyValueStore
@@ -155,6 +155,12 @@ def toc_for_course(request, course, active_chapter, active_section, field_data_c
 
         # Check to see if the course is gated on required content (such as an Entrance Exam)
         required_content = _get_required_content(course, request.user)
+        if getattr(course, 'entrance_exam_enabled', False):
+            can_skip_entrance_exam = user_can_skip_entrance_exam(request.user, course.id)
+            if required_content and can_skip_entrance_exam:
+                # check if required_content is entrance exam then user can skip it
+                descriptors = [modulestore().get_item(UsageKey.from_string(content)) for content in required_content]
+                can_skip_entrance_exam = all(descriptor.is_entrance_exam for descriptor in descriptors)
 
         chapters = list()
         for chapter in course_module.get_display_items():
@@ -164,6 +170,10 @@ def toc_for_course(request, course, active_chapter, active_section, field_data_c
             if len(required_content):
                 if unicode(chapter.location) not in required_content:
                     local_hide_from_toc = True
+
+            # check if user is allowed to skip entrance exam then don't hide content
+            if can_skip_entrance_exam:
+                local_hide_from_toc = False
 
             # Skip the current chapter if a hide flag is tripped
             if chapter.hide_from_toc or local_hide_from_toc:

@@ -156,6 +156,20 @@ def user_by_anonymous_id(uid):
         return None
 
 
+def user_can_skip_entrance_exam(user, course_key):
+    """
+    Return True if given user can skip entrance exam for given course otherwise False.
+    """
+    can_skip = False
+    if settings.FEATURES.get('MILESTONES_APP', False):
+        try:
+            record = EntranceExamConfiguration.objects.get(user=user, course_id=course_key)
+            can_skip = record.skip_entrance_exam
+        except EntranceExamConfiguration.DoesNotExist:
+            can_skip = False
+    return can_skip
+
+
 class UserStanding(models.Model):
     """
     This table contains a student's account's status.
@@ -1444,19 +1458,6 @@ class EntranceExamConfiguration(models.Model):
     # if skip_entrance_exam is True, then student can skip entrance exam
     # for the course
     skip_entrance_exam = models.BooleanField(default=True)
-
-    @classmethod
-    def user_can_skip_entrance_exam(cls, user, course_id):
-        """
-        Indicates if a user can skip entrance exam in given course.
-        Arguments are: `user` a User object, `course_id` a CourseKey.
-        Return True if user can skip entrance exam otherwise False.
-        """
-        try:
-            record = EntranceExamConfiguration.objects.get(user=user, course_id=course_id)
-            return record.skip_entrance_exam
-        except cls.DoesNotExist:
-            return False
 
     class Meta(object):
         """

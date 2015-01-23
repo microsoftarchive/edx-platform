@@ -11,6 +11,7 @@ from opaque_keys.edx.locations import SlashSeparatedCourseKey
 
 from courseware.courses import get_course_by_id
 from courseware.tests.helpers import get_request_for_user, LoginEnrollmentTestCase
+from courseware.tests.factories import InstructorFactory
 from xmodule.modulestore.tests.django_utils import (
     TEST_DATA_MIXED_TOY_MODULESTORE, TEST_DATA_MIXED_CLOSED_MODULESTORE
 )
@@ -117,7 +118,7 @@ class EntranceExamsTabsTestCase(LoginEnrollmentTestCase, ModuleStoreTestCase):
             """
             Test case scaffolding
             """
-            self.course = CourseFactory.create()
+            self.course = CourseFactory.create(entrance_exam_enabled=True)
             self.instructor_tab = ItemFactory.create(
                 category="instructor", parent_location=self.course.location,
                 data="Instructor Tab", display_name="Instructor"
@@ -130,6 +131,11 @@ class EntranceExamsTabsTestCase(LoginEnrollmentTestCase, ModuleStoreTestCase):
                 category="static_tab", parent_location=self.course.location,
                 data="Extra Tab", display_name="Extra Tab 3"
             )
+            self.entrance_exam = ItemFactory.create(
+                category="chapter", parent_location=self.course.location,
+                data="Exam Data", display_name="Entrance Exam", is_entrance_exam=True
+            )
+
             self.setup_user()
             self.enroll(self.course)
             self.user.is_staff = True
@@ -137,22 +143,11 @@ class EntranceExamsTabsTestCase(LoginEnrollmentTestCase, ModuleStoreTestCase):
             MilestoneRelationshipType.objects.create(name='requires')
             MilestoneRelationshipType.objects.create(name='fulfills')
 
-        def test_get_course_tabs_list_entrance_exam_enabled(self):
-            """
-            Unit Test: test_get_course_tabs_list_entrance_exam_enabled
-            """
-            entrance_exam = ItemFactory.create(
-                category="chapter", parent_location=self.course.location,
-                data="Exam Data", display_name="Entrance Exam"
-            )
-            entrance_exam.is_entrance_exam = True
             milestone = {
                 'name': 'Test Milestone',
                 'namespace': '{}.entrance_exams'.format(unicode(self.course.id)),
                 'description': 'Testing Courseware Tabs'
             }
-            self.course.entrance_exam_enabled = True
-            self.course.entrance_exam_id = unicode(entrance_exam.location)
             milestone = milestones_api.add_milestone(milestone)
             milestones_api.add_course_milestone(
                 unicode(self.course.id),
@@ -161,12 +156,41 @@ class EntranceExamsTabsTestCase(LoginEnrollmentTestCase, ModuleStoreTestCase):
             )
             milestones_api.add_course_content_milestone(
                 unicode(self.course.id),
-                unicode(entrance_exam.location),
+                unicode(self.entrance_exam.location),
                 self.relationship_types['FULFILLS'],
                 milestone
             )
+
+        def test_get_course_tabs_list_entrance_exam_enabled(self):
+            """
+            Unit Test: test_get_course_tabs_list_entrance_exam_enabled
+            """
+            self.course.entrance_exam_id = unicode(self.entrance_exam.location)
             course_tab_list = get_course_tab_list(self.course, self.user)
             self.assertEqual(len(course_tab_list), 2)
             self.assertEqual(course_tab_list[0]['tab_id'], 'courseware')
             self.assertEqual(course_tab_list[0]['name'], 'Entrance Exam')
             self.assertEqual(course_tab_list[1]['tab_id'], 'instructor')
+
+        def test_get_course_tabs_list_skipped_entrance_exam(self):
+            """
+            Tests tab list is not limited if user is allowed to skip entrance exam.
+            """
+            #create a user
+            student = UserFactory()
+            # login as instructor hit skip entrance exam api in instructor app
+            instructor = InstructorFactory(course_key=self.course.id)
+            self.client.logout()
+            self.client.login(username=instructor.username, password='test')
+
+            url = reverse('mark_student_can_skip_entrance_exam', kwargs={'course_id': unicode(self.course.id)})
+            response = self.client.get(url, {
+                'unique_student_identifier': student.email,
+            })
+            self.assertEqual(response.status_code, 200)
+
+            # log in again as student
+            self.client.logout()
+            self.login(self.email, self.password)
+            course_tab_list = get_course_tab_list(self.course, self.user)
+            self.assertEqual(len(course_tab_list), 5)

@@ -6,7 +6,7 @@ from django.conf import settings
 from django.utils.translation import ugettext as _
 
 from courseware.access import has_access
-from student.models import CourseEnrollment
+from student.models import CourseEnrollment, user_can_skip_entrance_exam
 from xmodule.tabs import CourseTabList
 
 if settings.FEATURES.get('MILESTONES_APP', False):
@@ -48,7 +48,7 @@ def get_course_tab_list(course, user):
     # Majority case is no entrance exam defined
     course_tab_list = []
     for tab in xmodule_tab_list:
-        if entrance_exam_mode:
+        if entrance_exam_mode and not user_can_skip_entrance_exam(user, course.id):
             # Hide all of the tabs except for 'Courseware' and 'Instructor'
             # Rename 'Courseware' tab to 'Entrance Exam'
             if tab.type not in ['courseware', 'instructor']:
