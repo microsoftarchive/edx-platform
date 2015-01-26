@@ -309,14 +309,8 @@ def course_index_handler(request, course_key_string):
     with modulestore().bulk_operations(course_key):
         error = reindex_course_and_check_access(course_key, request.user)
         if error:
-            return HttpResponse(
-                error,
-                status=500
-            )
-        return HttpResponse(
-            {},
-            status=200
-        )
+            return HttpResponse(error, status=500)
+        return HttpResponse({}, status=200)
 
 
 def _course_outline_json(request, course_module):
