@@ -1,4 +1,6 @@
-RequireJS.define([
+;(function (define) {
+
+define([
     'jquery',
     'underscore',
     'backbone',
@@ -14,6 +16,7 @@ RequireJS.define([
         events: {
             'click .search-load-next': 'loadNext'
         },
+        spinner: '.icon',
 
         initialize: function () {
             this.courseName = this.$el.attr('data-course-name');
@@ -30,6 +33,7 @@ RequireJS.define([
             this.$el.html(this.listTemplate({
                 courseName: this.courseName,
                 totalCount: this.collection.totalCount,
+                totalCountMsg: this.totalCountMsg(),
                 pageSize: this.collection.pageSize,
                 hasMoreResults: this.collection.hasNextPage()
             }));
@@ -41,12 +45,12 @@ RequireJS.define([
 
         renderNext: function () {
             // total count may have changed
-            this.$el.find('.search-count-total').text(this.collection.totalCount);
+            this.$el.find('.search-count').text(this.totalCountMsg());
             this.renderItems();
             if (! this.collection.hasNextPage()) {
                 this.$el.find('.search-load-next').remove();
             }
-            this.$el.find('.icon-spin').hide();
+            this.$el.find(this.spinner).hide();
         },
 
         renderItems: function () {
@@ -55,6 +59,11 @@ RequireJS.define([
                 return item.render().el;
             });
             this.$el.find('.search-results').append(items);
+        },
+
+        totalCountMsg: function () {
+            var fmt = ngettext('%s result', '%s results', this.collection.totalCount);
+            return interpolate(fmt, [this.collection.totalCount]);
         },
 
         clear: function () {
@@ -76,10 +85,13 @@ RequireJS.define([
 
         loadNext: function (event) {
             event && event.preventDefault();
-            this.$el.find('.icon-spin').show();
+            this.$el.find(this.spinner).show();
             this.trigger('next');
         }
 
     });
 
 });
+
+
+})(define || RequireJS.define);

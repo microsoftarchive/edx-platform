@@ -1,4 +1,7 @@
-RequireJS.define(['jquery', 'backbone'], function ($, Backbone) {
+;(function (define) {
+
+
+define(['jquery', 'backbone'], function ($, Backbone) {
    'use strict';
 
     return Backbone.View.extend({
@@ -15,10 +18,9 @@ RequireJS.define(['jquery', 'backbone'], function ($, Backbone) {
             this.$cancelButton = this.$el.find('.cancel-button');
         },
 
-        submitForm: function () {
+        submitForm: function (event) {
+            event.preventDefault();
             this.doSearch();
-            // prevent reload
-            return false;
         },
 
         doSearch: function (term) {
@@ -60,3 +62,6 @@ RequireJS.define(['jquery', 'backbone'], function ($, Backbone) {
     });
 
 });
+
+
+})(define || RequireJS.define);
