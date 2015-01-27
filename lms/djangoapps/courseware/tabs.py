@@ -40,7 +40,7 @@ def get_course_tab_list(course, user):
             for __, value in course_milestones_paths.iteritems():
                 if len(value.get('content', [])):
                     for content in value['content']:
-                        if content == course.entrance_exam_id:
+                        if content == course.entrance_exam_id and not user_can_skip_entrance_exam(user, course.id):
                             entrance_exam_mode = True
                             break
 
@@ -48,7 +48,7 @@ def get_course_tab_list(course, user):
     # Majority case is no entrance exam defined
     course_tab_list = []
     for tab in xmodule_tab_list:
-        if entrance_exam_mode and not user_can_skip_entrance_exam(user, course.id):
+        if entrance_exam_mode:
             # Hide all of the tabs except for 'Courseware' and 'Instructor'
             # Rename 'Courseware' tab to 'Entrance Exam'
             if tab.type not in ['courseware', 'instructor']:

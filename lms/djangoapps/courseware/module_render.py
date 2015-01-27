@@ -121,6 +121,16 @@ def _get_required_content(course, user):
             if milestone_path.get('content') and len(milestone_path['content']):
                 for content in milestone_path['content']:
                     required_content.append(content)
+
+    can_skip_entrance_exam = user_can_skip_entrance_exam(user, course.id)
+    # check if required_content has any entrance exam and user is allowed to skip it
+    # then remove it from required content
+    if required_content and getattr(course, 'entrance_exam_enabled', False) and can_skip_entrance_exam:
+        descriptors = [modulestore().get_item(UsageKey.from_string(content)) for content in required_content]
+        entrance_exam_contents = [unicode(descriptor.location)
+                                  for descriptor in descriptors if descriptor.is_entrance_exam]
+        required_content = list(set(required_content) - set(entrance_exam_contents))
+
     return required_content
 
 
@@ -155,12 +165,6 @@ def toc_for_course(request, course, active_chapter, active_section, field_data_c
 
         # Check to see if the course is gated on required content (such as an Entrance Exam)
         required_content = _get_required_content(course, request.user)
-        if getattr(course, 'entrance_exam_enabled', False):
-            can_skip_entrance_exam = user_can_skip_entrance_exam(request.user, course.id)
-            if required_content and can_skip_entrance_exam:
-                # check if required_content is entrance exam then user can skip it
-                descriptors = [modulestore().get_item(UsageKey.from_string(content)) for content in required_content]
-                can_skip_entrance_exam = all(descriptor.is_entrance_exam for descriptor in descriptors)
 
         chapters = list()
         for chapter in course_module.get_display_items():
@@ -170,10 +174,6 @@ def toc_for_course(request, course, active_chapter, active_section, field_data_c
             if len(required_content):
                 if unicode(chapter.location) not in required_content:
                     local_hide_from_toc = True
-
-            # check if user is allowed to skip entrance exam then don't hide content
-            if can_skip_entrance_exam:
-                local_hide_from_toc = False
 
             # Skip the current chapter if a hide flag is tripped
             if chapter.hide_from_toc or local_hide_from_toc:

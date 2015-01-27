@@ -267,7 +267,6 @@ class EntranceExamTestCases(ModuleStoreTestCase):
         )._xmodule  # pylint: disable=protected-access
         module.system.publish(self.problem_2, 'grade', grade_dict)
 
-
         unlocked_toc = toc_for_course(
             self.request,
             self.course,

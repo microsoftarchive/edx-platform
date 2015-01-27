@@ -161,7 +161,7 @@ def user_can_skip_entrance_exam(user, course_key):
     Return True if given user can skip entrance exam for given course otherwise False.
     """
     can_skip = False
-    if settings.FEATURES.get('MILESTONES_APP', False):
+    if settings.FEATURES.get('ENTRANCE_EXAMS', False):
         try:
             record = EntranceExamConfiguration.objects.get(user=user, course_id=course_key)
             can_skip = record.skip_entrance_exam
