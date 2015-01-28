@@ -5,13 +5,15 @@ Common utility methods and decorators for Mobile APIs.
 
 import functools
 
-from opaque_keys.edx.keys import CourseKey
-from courseware.courses import get_course_with_access
 from rest_framework import permissions
 from rest_framework.authentication import OAuth2Authentication, SessionAuthentication
 
+from opaque_keys.edx.keys import CourseKey
+from xmodule.modulestore.django import modulestore
+from courseware.courses import get_course_with_access
 
-def mobile_course_access(depth=0, verify_enrolled=True):
+
+def mobile_course_access(depth=0, verify_enrolled=True, bulk_operations=True):
     """
     Method decorator for a mobile API endpoint that verifies the user has access to the course in a mobile context.
     """
@@ -25,13 +27,25 @@ def mobile_course_access(depth=0, verify_enrolled=True):
             Raises 404 if access to course is disallowed.
             """
             course_id = CourseKey.from_string(kwargs.pop('course_id'))
-            course = get_course_with_access(
-                request.user,
-                'load_mobile' if verify_enrolled else 'load_mobile_no_enrollment_check',
-                course_id,
-                depth=depth
-            )
-            return func(self, request, course=course, *args, **kwargs)
+
+            def func_call():
+                """
+                Gets access to the course and calls the given function with the course.
+                """
+                course = get_course_with_access(
+                    request.user,
+                    'load_mobile' if verify_enrolled else 'load_mobile_no_enrollment_check',
+                    course_id,
+                    depth=depth
+                )
+                return func(self, request, course=course, *args, **kwargs)
+
+            if bulk_operations:
+                with modulestore().bulk_operations(course_id):
+                    return func_call()
+            else:
+                return func_call()
+
         return _wrapper
     return _decorator
 
