@@ -383,7 +383,7 @@ class TestCourseReIndex(CourseTestCase):
         """
         Verify that course gets reindexed.
         """
-        index_url = reverse_course_url('course_index_handler', self.course.id)
+        index_url = reverse_course_url('course_search_index_handler', self.course.id)
         response = self.client.get(index_url, {}, HTTP_ACCEPT='application/json')
 
         # A course with the default release date should display as "Unscheduled"
@@ -402,7 +402,7 @@ class TestCourseReIndex(CourseTestCase):
         """
         Test the error conditions for the access
         """
-        index_url = reverse_course_url('course_index_handler', self.course.id)
+        index_url = reverse_course_url('course_search_index_handler', self.course.id)
         # register a non-staff member and try to delete the course branch
         non_staff_client, _ = self.create_non_staff_authed_user_client()
         response = non_staff_client.get(index_url, {}, HTTP_ACCEPT='application/json')

@@ -9,12 +9,10 @@
  *  - adding units will automatically redirect to the unit page rather than showing them inline
  */
 define(["jquery", "underscore", "js/views/xblock_outline", "js/views/utils/view_utils", "js/views/utils/xblock_utils",
-        "js/models/xblock_outline_info", "js/views/modals/course_outline_modals", "js/utils/drag_and_drop",
-        "gettext", "js/views/feedback_alert"],
+        "js/models/xblock_outline_info", "js/views/modals/course_outline_modals", "js/utils/drag_and_drop"],
     function(
         $, _, XBlockOutlineView, ViewUtils, XBlockViewUtils,
-        XBlockOutlineInfo, CourseOutlineModalsFactory, ContentDragger,
-        gettext, AlertView
+        XBlockOutlineInfo, CourseOutlineModalsFactory, ContentDragger
     ) {
 
         var CourseOutlineView = XBlockOutlineView.extend({
@@ -170,7 +168,6 @@ define(["jquery", "underscore", "js/views/xblock_outline", "js/views/utils/view_
 
             addButtonActions: function(element) {
                 XBlockOutlineView.prototype.addButtonActions.apply(this, arguments);
-                element.find('.button.re-index').click(_.bind(this.handleReIndexEvent, this));
                 element.find('.configure-button').click(function(event) {
                     event.preventDefault();
                     this.editXBlock();
@@ -212,32 +209,6 @@ define(["jquery", "underscore", "js/views/xblock_outline", "js/views/utils/view_
                         ensureChildrenRendered: this.ensureChildrenRendered.bind(this)
                     });
                 }
-            },
-
-            handleReIndexEvent: function(event) {
-                var self = this;
-                event.preventDefault();
-                var target = $(event.currentTarget);
-                target.css('cursor', 'wait');
-                this.startReIndex()
-                    .done(function() {self.onIndexSuccess();})
-                    .always(function() {target.css('cursor', 'pointer');});
-            },
-
-            startReIndex: function() {
-                var locator =  window.course.id;
-                return $.ajax({
-                    url: '/course_index/' + locator,
-                    method: 'GET'
-                    });
-            },
-
-            onIndexSuccess: function() {
-                var msg = new AlertView.Announcement({
-                        title: gettext('Course Index'),
-                        message: gettext('Course has been successfully reindexed.')
-                    });
-                msg.show();
             }
         });
 

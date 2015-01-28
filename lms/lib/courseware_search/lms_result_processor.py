@@ -54,7 +54,7 @@ class LmsSearchResultProcessor(SearchResultProcessor):
             raise ValueError("Must have course and id in order to build url")
 
         return reverse(
-            'jump_to',
+            "jump_to",
             kwargs={"course_id": self._results_fields["course"], "location": self._results_fields["id"]}
         )
 
@@ -74,7 +74,7 @@ class LmsSearchResultProcessor(SearchResultProcessor):
         def get_position_name(section, position):
             """ helper to fetch name corresponding to the position therein """
             pos = int(position)
-            section_item = self.get_item(course_key.make_usage_key('sequential', section))
+            section_item = self.get_item(course_key.make_usage_key("sequential", section))
             if section_item.has_children and len(section_item.children) >= pos:
                 item = self.get_item(section_item.children[pos - 1])
                 return getattr(item, "display_name", None)
@@ -82,9 +82,9 @@ class LmsSearchResultProcessor(SearchResultProcessor):
 
         location_description = []
         if chapter:
-            location_description.append(get_display_name('chapter', chapter))
+            location_description.append(get_display_name("chapter", chapter))
         if section:
-            location_description.append(get_display_name('sequential', section))
+            location_description.append(get_display_name("sequential", section))
         if position:
             location_description.append(get_position_name(section, position))
 
@@ -94,7 +94,7 @@ class LmsSearchResultProcessor(SearchResultProcessor):
         """ Test to see if this result should be removed due to access restriction """
         return not has_access(
             user,
-            'load',
+            "load",
             self.get_item(self.get_usage_key()),
             self.get_course_key()
         )

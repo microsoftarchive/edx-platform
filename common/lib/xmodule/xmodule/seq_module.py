@@ -190,6 +190,12 @@ class SequenceDescriptor(SequenceFields, MakoModuleDescriptor, XmlDescriptor):
         return xml_object
 
     def index_dictionary(self):
+        """
+        Return dictionary prepared with module content and type for indexing.
+        """
+        # return key/value fields in a Python dict object
+        # values may be numeric / string or dict
+        # default implementation is an empty dict
         xblock_body = super(SequenceDescriptor, self).index_dictionary()
         html_body = {
             "display_name": self.display_name,

@@ -556,7 +556,7 @@ class CourseOutlinePage(CoursePage, CourseOutlineContainer):
         """
         Returns reindex button.
         """
-        return self.q(css=".button.re-index")[0]
+        return self.q(css=".button.button-reindex")[0]
 
     def expand_all_subsections(self):
         """

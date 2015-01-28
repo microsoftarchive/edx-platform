@@ -22,7 +22,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a title="Click to reindex current course" data-category="reindex" class="button re-index" href="#">
+                        <a title="Reindex current course" data-category="reindex" class="button button-reindex" href="#">
                             <i class="icon-arrow-right"></i>Reindex
                         </a>
                     </li>

@@ -92,7 +92,7 @@ CONTENT_GROUP_CONFIGURATION_DESCRIPTION = 'The groups in this configuration can 
 CONTENT_GROUP_CONFIGURATION_NAME = 'Content Group Configuration'
 
 __all__ = ['course_info_handler', 'course_handler', 'course_listing',
-           'course_info_update_handler', 'course_index_handler',
+           'course_info_update_handler', 'course_search_index_handler',
            'course_rerun_handler',
            'settings_handler',
            'grading_handler',
@@ -297,13 +297,13 @@ def course_rerun_handler(request, course_key_string):
 @login_required
 @ensure_csrf_cookie
 @require_GET
-def course_index_handler(request, course_key_string):
+def course_search_index_handler(request, course_key_string):
     """
     The restful handler for course indexing.
     GET
         html: return status of indexing task
     """
-    # Only global staff (PMs) are able to rerun courses during the soft launch
+    # Only global staff (PMs) are able to index courses
     if not GlobalStaff().has_user(request.user):
         raise PermissionDenied()
     course_key = CourseKey.from_string(course_key_string)
