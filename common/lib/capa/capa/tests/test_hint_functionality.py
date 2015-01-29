@@ -15,13 +15,13 @@ class HintTest(unittest.TestCase):
     """Base class for tests of extended hinting functionality."""
 
     def correctness(self, problem_id, choice):
-        """Grades and returns the 'correctness' string from cmap."""
+        """Grades the problem and returns the 'correctness' string from cmap."""
         student_answers = {problem_id: choice}
         cmap = self.problem.grade_answers(answers=student_answers)    # pylint: disable=no-member
         return cmap[problem_id]['correctness']
 
     def get_hint(self, problem_id, choice):
-        """Grades the problem and returns its hint from cmap."""
+        """Grades the problem and returns its hint from cmap or the empty string."""
         student_answers = {problem_id: choice}
         cmap = self.problem.grade_answers(answers=student_answers)    # pylint: disable=no-member
         adict = cmap.cmap.get(problem_id)
@@ -30,31 +30,12 @@ class HintTest(unittest.TestCase):
         else:
             return ''
 
-    def _check_student_selection_result(self, problem_id, choice, expected_string, expect_failure=False):
-        """
-        This helper function simplifies a call to either 'assertNotEqual' or 'assertEqual' to
-        make the tests in this file easier to read.
-        """
-        message_text = self.get_hint(problem_id, choice)
-        if expect_failure:
-            self.assertNotEqual(
-                message_text,
-                expected_string,
-                '\n   The produced HTML hint string:\n                           ' + message_text +
-                '\n   Should not have matched the expected HTML:\n                           ' + expected_string)
-        else:
-            self.assertEqual(
-                message_text,
-                expected_string,
-                '\nThe produced HTML hint string:\n                           ' + message_text +
-                '\nDoes not match the expected HTML:\n                           ' + expected_string)
-
 
 # It is a little surprising how much more complicated TextInput is than all the other cases.
 @ddt
 class TextInputHintsTest(HintTest):
     """
-    Typical
+    Test Text Input Hints Test
     """
     xml = load_fixture('extended_hints_text_input.xml')
     problem = new_loncapa_problem(xml)
@@ -81,7 +62,7 @@ class TextInputHintsTest(HintTest):
 
 @ddt
 class TextInputExtendedHintsCaseInsensitive(HintTest):
-    """Sometimes the semantics can be encoded in the class name."""
+    """Test Text Input Extended hints Case Insensitive"""
     xml = load_fixture('extended_hints_text_input.xml')
     problem = new_loncapa_problem(xml)
 
@@ -196,7 +177,8 @@ class NumericInputHintsTest(HintTest):
     )
     @unpack
     def test_numeric_input_hints(self, problem_id, choice, expected_string):
-        self._check_student_selection_result(problem_id, choice, expected_string, False)
+        hint = self.get_hint(problem_id, choice)
+        self.assertEqual(hint, expected_string)
 
 
 @ddt
@@ -241,7 +223,8 @@ class CheckboxHintsTest(HintTest):
     )
     @unpack
     def test_checkbox_hints(self, problem_id, choice, expected_string):
-        self._check_student_selection_result(problem_id, choice, expected_string, False)
+        hint = self.get_hint(problem_id, choice)
+        self.assertEqual(hint, expected_string)
 
 
 @ddt
@@ -262,7 +245,8 @@ class MultpleChoiceHintsTest(HintTest):
     )
     @unpack
     def test_multiplechoice_hints(self, problem_id, choice, expected_string):
-        self._check_student_selection_result(problem_id, choice, expected_string, False)
+        hint = self.get_hint(problem_id, choice)
+        self.assertEqual(hint, expected_string)
 
 
 @ddt
@@ -283,14 +267,14 @@ class DropdownHintsTest(HintTest):
     )
     @unpack
     def test_dropdown_hints(self, problem_id, choice, expected_string):
-        self._check_student_selection_result(problem_id, choice, expected_string, False)
+        hint = self.get_hint(problem_id, choice)
+        self.assertEqual(hint, expected_string)
 
 
 class ErrorConditionsTest(HintTest):
     """
-    Intentional errors are exercised.
+    Erroneous xml should raise exception.
     """
-
     def test_error_conditions_illegal_element(self):
         xml_with_errors = load_fixture('extended_hints_with_errors.xml')
         with self.assertRaises(Exception):

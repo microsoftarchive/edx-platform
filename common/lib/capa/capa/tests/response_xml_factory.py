@@ -726,11 +726,11 @@ class StringResponseXMLFactory(ResponseXMLFactory):
                 hintgroup_element.set("hintfn", hint_fn)
 
         for additional_answer in additional_answers:
-            additional_node = etree.SubElement(response_element, "additional_answer")
+            additional_node = etree.SubElement(response_element, "additional_answer")  # pylint: disable=no-member
             additional_node.set("answer", additional_answer)
 
         for old_answer in old_answers:
-            additional_node = etree.SubElement(response_element, "additional_answer")
+            additional_node = etree.SubElement(response_element, "additional_answer")  # pylint: disable=no-member
             additional_node.text = old_answer
 
         return response_element
