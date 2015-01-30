@@ -66,6 +66,10 @@ def compare_with_tolerance(student_complex, instructor_complex, tolerance=defaul
         # `inf <= inf` which is a fail. Instead, compare directly.
         return student_complex == instructor_complex
 
+    if isinstance(instructor_complex, complex):
+        if instructor_complex.imag == 0 and isinstance(instructor_complex.real, float):
+            instructor_complex = instructor_complex.real
+
     if isinstance(student_complex, float) and isinstance(instructor_complex, float):
         # use Decimal class to avoid rounding errors
         student_decimal = Decimal(str(student_complex))
