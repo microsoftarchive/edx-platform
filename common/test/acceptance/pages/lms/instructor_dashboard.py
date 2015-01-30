@@ -126,22 +126,18 @@ class MembershipPageCohortManagementSection(PageObject):
         """
         return int(label.split(' (')[1].split(')')[0])
 
-    def wait_for_cohort_management_section(self):
-        """
-        Wait for Cohort Management Section to appear.
-        """
-        self.wait_for_element_visibility(self._bounded_selector('#cohort-select'), "Select Cohort is Visible")
-
     def save_cohort_settings(self):
         """
         Click on Save button shown after click on Settings tab or when we add a new cohort.
-
-        NOTE: In case of updating the existing cohort settings, Page will Reload when we click on Save button.
-        In case of adding a new cohort, We will move to Manage Students tab when we click on Save button.
         """
         self.q(css=self._bounded_selector("div.form-actions .action-save")).first.click()
-        self.wait_for_page()
-        self.wait_for_cohort_management_section()
+
+    @property
+    def cohort_header_title(self):
+        """
+        return cohort header title.
+        """
+        return self._cohort_name(self.q(css=self._bounded_selector(".group-header-title .title-value")).text[0])
 
     def get_cohorts(self):
         """

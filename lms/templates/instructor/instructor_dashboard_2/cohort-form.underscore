@@ -128,7 +128,6 @@
 
         <div class="form-actions <% if (isNewCohort) { %>new-cohort-form<% } %>">
             <button class="form-submit button action-primary action-save">
-                <i class="icon fa fa-plus" aria-hidden="true"></i>
                 <%- gettext('Save') %>
             </button>
             <a href="" class="form-cancel action-secondary action-cancel"><%- gettext('Cancel') %></a>

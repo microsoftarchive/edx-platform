@@ -575,18 +575,6 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                         });
                     };
 
-                    beforeEach(function() {
-                       // override the page reload
-                       spyOn(edx.groups, 'reloadPage').andCallFake(function() {
-                           return true;
-                       });
-
-                       // override action buttons disabling
-                       spyOn(edx.groups, 'setActionButtonsVisibility').andCallFake(function() {
-                           return true;
-                       });
-                    });
-
                     it("shows a select element with an option for each content group", function () {
                         var options;
                         createCohortsView(this, {selectCohort: 1});
