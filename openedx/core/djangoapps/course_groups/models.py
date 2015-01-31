@@ -36,11 +36,6 @@ class CourseUserGroup(models.Model):
     GROUP_TYPE_CHOICES = ((COHORT, 'Cohort'),)
     group_type = models.CharField(max_length=20, choices=GROUP_TYPE_CHOICES)
 
-    RANDOM = 'random'
-    MANUAL = 'manual'
-    ASSIGNMENT_TYPE_CHOICES = ((RANDOM, 'Random'), (MANUAL, 'Manual'),)
-    assignment_type = models.CharField(max_length=20, choices=ASSIGNMENT_TYPE_CHOICES, default=MANUAL)
-
 
 class CourseUserGroupPartitionGroup(models.Model):
     """
@@ -56,7 +51,7 @@ class CourseUserGroupPartitionGroup(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-class CourseUserGroupSettings(models.Model):
+class CourseCohortsSettings(models.Model):
     """
     This model represents cohort settings for courses.
     """
@@ -71,4 +66,17 @@ class CourseUserGroupSettings(models.Model):
 
     cohorted_discussions = models.TextField(null=True, blank=True)  # JSON list
 
-    cohort_inline_discussions = models.BooleanField(default=True)
+    # pylint: disable=invalid-name
+    always_cohort_inline_discussions = models.BooleanField(default=True)
+
+
+class CourseCohort(models.Model):
+    """
+    This model represents cohort related info.
+    """
+    course_user_group = models.OneToOneField(CourseUserGroup, unique=True, related_name='cohort')
+
+    RANDOM = 'random'
+    MANUAL = 'manual'
+    ASSIGNMENT_TYPE_CHOICES = ((RANDOM, 'Random'), (MANUAL, 'Manual'),)
+    assignment_type = models.CharField(max_length=20, choices=ASSIGNMENT_TYPE_CHOICES, default=MANUAL)

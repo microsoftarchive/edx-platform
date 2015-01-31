@@ -564,11 +564,13 @@
       &.new-cohort-form {
         padding: $baseline;
       }
+    }
+  }
 
-      &.is-disabled {
+  .cohort-management-assignment-type-settings {
+     &.is-disabled {
         opacity: 0.50;
       }
-    }
   }
 
   // cohort

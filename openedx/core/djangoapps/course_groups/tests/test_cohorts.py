@@ -12,7 +12,7 @@ from student.tests.factories import UserFactory
 from xmodule.modulestore.django import modulestore, clear_existing_modulestores
 from xmodule.modulestore.tests.django_utils import TEST_DATA_MIXED_TOY_MODULESTORE, mixed_store_config
 
-from ..models import CourseUserGroup, CourseUserGroupPartitionGroup
+from ..models import CourseUserGroup, CourseCohort, CourseUserGroupPartitionGroup
 from .. import cohorts
 from ..tests.helpers import topic_name_to_id, config_course_cohorts, CohortFactory
 
@@ -549,7 +549,7 @@ class TestCohorts(TestCase):
         Make sure cohorts.add_cohort() properly adds a cohort to a course and handles
         errors.
         """
-        assignment_type = CourseUserGroup.RANDOM
+        assignment_type = CourseCohort.RANDOM
         course = modulestore().get_course(self.toy_course_key)
         added_cohort = cohorts.add_cohort(course.id, "My Cohort", assignment_type)
         mock_tracker.emit.assert_any_call(

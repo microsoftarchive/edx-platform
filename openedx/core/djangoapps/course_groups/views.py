@@ -7,7 +7,8 @@ from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_http_methods
 from util.json_request import expect_json, JsonResponse
 from django.contrib.auth.decorators import login_required
-import json
+from django.utils.translation import ugettext
+
 import logging
 import re
 
@@ -59,13 +60,14 @@ def _get_cohort_representation(cohort, course):
     Returns a JSON representation of a cohort.
     """
     group_id, partition_id = cohorts.get_group_info_for_cohort(cohort)
+    assignment_type = cohorts.get_assignment_type(cohort)
     return {
         'name': cohort.name,
         'id': cohort.id,
         'user_count': cohort.users.count(),
-        'assignment_type': cohort.assignment_type,
+        'assignment_type': assignment_type,
         'user_partition_id': partition_id,
-        'group_id': group_id
+        'group_id': group_id,
     }
 
 
@@ -113,10 +115,16 @@ def cohort_handler(request, course_key_string, cohort_id=None):
         # If cohort_id is specified, update the existing cohort. Otherwise, create a new cohort.
         if cohort_id:
             cohort = cohorts.get_cohort_by_id(course_key, cohort_id)
-            if name != cohort.name or assignment_type != cohort.assignment_type:
+            if name != cohort.name:
+                if cohorts.is_cohort_exists(course_key, name):
+                    err_msg = ugettext("A cohort with the same name already exists.")
+                    return JsonResponse({"error": unicode(err_msg)}, 400)
                 cohort.name = name
-                cohort.assignment_type = assignment_type
                 cohort.save()
+            try:
+                cohorts.set_assignment_type(cohort, assignment_type)
+            except ValueError as err:
+                return JsonResponse({"error": unicode(err)}, 400)
         else:
             try:
                 cohort = cohorts.add_cohort(course_key, name, assignment_type)

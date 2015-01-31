@@ -8,20 +8,31 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'CourseUserGroupSettings'
-        db.create_table('course_groups_courseusergroupsettings', (
+        # Adding model 'CourseCohort'
+        db.create_table('course_groups_coursecohort', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('course_user_group', self.gf('django.db.models.fields.related.OneToOneField')(related_name='cohort', unique=True, to=orm['course_groups.CourseUserGroup'])),
+            ('assignment_type', self.gf('django.db.models.fields.CharField')(default='manual', max_length=20)),
+        ))
+        db.send_create_signal('course_groups', ['CourseCohort'])
+
+        # Adding model 'CourseCohortsSettings'
+        db.create_table('course_groups_coursecohortssettings', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('is_cohorted', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('course_id', self.gf('xmodule_django.models.CourseKeyField')(unique=True, max_length=255, db_index=True)),
             ('cohorted_discussions', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-            ('cohort_inline_discussions', self.gf('django.db.models.fields.BooleanField')(default=True)),
+            ('always_cohort_inline_discussions', self.gf('django.db.models.fields.BooleanField')(default=True)),
         ))
-        db.send_create_signal('course_groups', ['CourseUserGroupSettings'])
+        db.send_create_signal('course_groups', ['CourseCohortsSettings'])
 
 
     def backwards(self, orm):
-        # Deleting model 'CourseUserGroupSettings'
-        db.delete_table('course_groups_courseusergroupsettings')
+        # Deleting model 'CourseCohort'
+        db.delete_table('course_groups_coursecohort')
+
+        # Deleting model 'CourseCohortsSettings'
+        db.delete_table('course_groups_coursecohortssettings')
 
 
     models = {
@@ -61,9 +72,22 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
+        'course_groups.coursecohort': {
+            'Meta': {'object_name': 'CourseCohort'},
+            'assignment_type': ('django.db.models.fields.CharField', [], {'default': "'manual'", 'max_length': '20'}),
+            'course_user_group': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'cohort'", 'unique': 'True', 'to': "orm['course_groups.CourseUserGroup']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
+        },
+        'course_groups.coursecohortssettings': {
+            'Meta': {'object_name': 'CourseCohortsSettings'},
+            'always_cohort_inline_discussions': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'cohorted_discussions': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'course_id': ('xmodule_django.models.CourseKeyField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'is_cohorted': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
+        },
         'course_groups.courseusergroup': {
             'Meta': {'unique_together': "(('name', 'course_id'),)", 'object_name': 'CourseUserGroup'},
-            'assignment_type': ('django.db.models.fields.CharField', [], {'default': "'manual'", 'max_length': '20'}),
             'course_id': ('xmodule_django.models.CourseKeyField', [], {'max_length': '255', 'db_index': 'True'}),
             'group_type': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -78,14 +102,6 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'partition_id': ('django.db.models.fields.IntegerField', [], {}),
             'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'})
-        },
-        'course_groups.courseusergroupsettings': {
-            'Meta': {'object_name': 'CourseUserGroupSettings'},
-            'cohort_inline_discussions': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'cohorted_discussions': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'course_id': ('xmodule_django.models.CourseKeyField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_cohorted': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
         }
     }
 

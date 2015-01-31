@@ -18,7 +18,7 @@ from xmodule.modulestore.tests.factories import CourseFactory
 from xmodule.modulestore.django import modulestore
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 
-from ..models import CourseUserGroup
+from ..models import CourseUserGroup, CourseCohort
 from ..views import (
     cohort_handler, users_in_cohort, add_users_to_cohort, remove_user_from_cohort, link_cohort_to_partition_group
 )
@@ -173,9 +173,9 @@ class CohortHandlerTestCase(CohortViewsTestCase):
         """
         self._create_cohorts()
         expected_cohorts = [
-            CohortHandlerTestCase.create_expected_cohort(self.cohort1, 3, CourseUserGroup.MANUAL),
-            CohortHandlerTestCase.create_expected_cohort(self.cohort2, 2, CourseUserGroup.MANUAL),
-            CohortHandlerTestCase.create_expected_cohort(self.cohort3, 2, CourseUserGroup.MANUAL),
+            CohortHandlerTestCase.create_expected_cohort(self.cohort1, 3, CourseCohort.MANUAL),
+            CohortHandlerTestCase.create_expected_cohort(self.cohort2, 2, CourseCohort.MANUAL),
+            CohortHandlerTestCase.create_expected_cohort(self.cohort3, 2, CourseCohort.MANUAL),
         ]
         self.verify_lists_expected_cohorts(expected_cohorts)
 
@@ -194,11 +194,11 @@ class CohortHandlerTestCase(CohortViewsTestCase):
         auto_cohort_1 = get_cohort_by_name(self.course.id, "AutoGroup1")
         auto_cohort_2 = get_cohort_by_name(self.course.id, "AutoGroup2")
         expected_cohorts = [
-            CohortHandlerTestCase.create_expected_cohort(self.cohort1, 3, CourseUserGroup.MANUAL),
-            CohortHandlerTestCase.create_expected_cohort(self.cohort2, 2, CourseUserGroup.MANUAL),
-            CohortHandlerTestCase.create_expected_cohort(self.cohort3, 2, CourseUserGroup.MANUAL),
-            CohortHandlerTestCase.create_expected_cohort(auto_cohort_1, 0, CourseUserGroup.RANDOM),
-            CohortHandlerTestCase.create_expected_cohort(auto_cohort_2, 0, CourseUserGroup.RANDOM),
+            CohortHandlerTestCase.create_expected_cohort(self.cohort1, 3, CourseCohort.MANUAL),
+            CohortHandlerTestCase.create_expected_cohort(self.cohort2, 2, CourseCohort.MANUAL),
+            CohortHandlerTestCase.create_expected_cohort(self.cohort3, 2, CourseCohort.MANUAL),
+            CohortHandlerTestCase.create_expected_cohort(auto_cohort_1, 0, CourseCohort.RANDOM),
+            CohortHandlerTestCase.create_expected_cohort(auto_cohort_2, 0, CourseCohort.RANDOM),
         ]
         self.verify_lists_expected_cohorts(expected_cohorts, actual_cohorts)
 
@@ -228,7 +228,7 @@ class CohortHandlerTestCase(CohortViewsTestCase):
         default_cohort = get_cohort_by_name(self.course.id, DEFAULT_COHORT_NAME)
         actual_cohorts = self.get_cohort_handler(self.course)
         self.verify_lists_expected_cohorts(
-            [CohortHandlerTestCase.create_expected_cohort(default_cohort, len(users), CourseUserGroup.RANDOM)],
+            [CohortHandlerTestCase.create_expected_cohort(default_cohort, len(users), CourseCohort.RANDOM)],
             actual_cohorts,
         )
 
@@ -253,7 +253,7 @@ class CohortHandlerTestCase(CohortViewsTestCase):
                 "name": self.cohort2.name,
                 "id": self.cohort2.id,
                 "user_count": 2,
-                "assignment_type": CourseUserGroup.MANUAL,
+                "assignment_type": CourseCohort.MANUAL,
                 "user_partition_id": None,
                 "group_id": None
             }
@@ -262,7 +262,7 @@ class CohortHandlerTestCase(CohortViewsTestCase):
     ############### Tests of adding a new cohort ###############
 
     def verify_contains_added_cohort(
-            self, response_dict, cohort_name, assignment_type=CourseUserGroup.MANUAL,
+            self, response_dict, cohort_name, assignment_type=CourseCohort.MANUAL,
             expected_user_partition_id=None, expected_group_id=None
     ):
         """
@@ -288,14 +288,14 @@ class CohortHandlerTestCase(CohortViewsTestCase):
         Verify that a new cohort can be created, with and without user_partition_id/group_id information.
         """
         new_cohort_name = "New cohort unassociated to content groups"
-        request_data = {'name': new_cohort_name, 'assignment_type': CourseUserGroup.RANDOM}
+        request_data = {'name': new_cohort_name, 'assignment_type': CourseCohort.RANDOM}
         response_dict = self.put_cohort_handler(self.course, data=request_data)
-        self.verify_contains_added_cohort(response_dict, new_cohort_name, assignment_type=CourseUserGroup.RANDOM)
+        self.verify_contains_added_cohort(response_dict, new_cohort_name, assignment_type=CourseCohort.RANDOM)
 
         new_cohort_name = "New cohort linked to group"
         data = {
             'name': new_cohort_name,
-            'assignment_type': CourseUserGroup.MANUAL,
+            'assignment_type': CourseCohort.MANUAL,
             'user_partition_id': 1,
             'group_id': 2
         }
@@ -327,7 +327,7 @@ class CohortHandlerTestCase(CohortViewsTestCase):
         """
         self._create_cohorts()
         response_dict = self.put_cohort_handler(
-            self.course, data={'name': self.cohort1.name, 'assignment_type': CourseUserGroup.MANUAL},
+            self.course, data={'name': self.cohort1.name, 'assignment_type': CourseCohort.MANUAL},
             expected_response_code=400
         )
         self.assertEqual("You cannot create two cohorts with the same name", response_dict.get("error"))
@@ -336,7 +336,7 @@ class CohortHandlerTestCase(CohortViewsTestCase):
         """
         Verify that we cannot create a cohort with a group_id if the user_partition_id is not also specified.
         """
-        data = {'name': "Cohort missing user_partition_id", 'assignment_type': CourseUserGroup.MANUAL, 'group_id': 2}
+        data = {'name': "Cohort missing user_partition_id", 'assignment_type': CourseCohort.MANUAL, 'group_id': 2}
         response_dict = self.put_cohort_handler(self.course, data=data, expected_response_code=400)
         self.assertEqual(
             "If group_id is specified, user_partition_id must also be specified.", response_dict.get("error")
@@ -350,11 +350,11 @@ class CohortHandlerTestCase(CohortViewsTestCase):
         """
         self._create_cohorts()
         updated_name = self.cohort1.name + "_updated"
-        data = {'name': updated_name, 'assignment_type': CourseUserGroup.MANUAL}
+        data = {'name': updated_name, 'assignment_type': CourseCohort.MANUAL}
         response_dict = self.put_cohort_handler(self.course, self.cohort1, data=data)
         self.assertEqual(updated_name, get_cohort_by_id(self.course.id, self.cohort1.id).name)
         self.assertEqual(updated_name, response_dict.get("name"))
-        self.assertEqual(CourseUserGroup.MANUAL, response_dict.get("assignment_type"))
+        self.assertEqual(CourseCohort.MANUAL, response_dict.get("assignment_type"))
 
     def test_update_random_cohort_name(self):
         """
@@ -362,21 +362,21 @@ class CohortHandlerTestCase(CohortViewsTestCase):
         """
         # Create a new cohort with random assignment
         cohort_name = 'I AM A RANDOM COHORT'
-        data = {'name': cohort_name, 'assignment_type': CourseUserGroup.RANDOM}
+        data = {'name': cohort_name, 'assignment_type': CourseCohort.RANDOM}
         response_dict = self.put_cohort_handler(self.course, data=data)
 
         self.assertEqual(cohort_name, response_dict.get("name"))
-        self.assertEqual(CourseUserGroup.RANDOM, response_dict.get("assignment_type"))
+        self.assertEqual(CourseCohort.RANDOM, response_dict.get("assignment_type"))
 
         # Update the newly created random cohort
         newly_created_cohort = get_cohort_by_name(self.course.id, cohort_name)
         cohort_name = 'I AM AN UPDATED RANDOM COHORT'
-        data = {'name': cohort_name, 'assignment_type': CourseUserGroup.RANDOM}
+        data = {'name': cohort_name, 'assignment_type': CourseCohort.RANDOM}
         response_dict = self.put_cohort_handler(self.course, newly_created_cohort, data=data)
 
         self.assertEqual(cohort_name, get_cohort_by_id(self.course.id, newly_created_cohort.id).name)
         self.assertEqual(cohort_name, response_dict.get("name"))
-        self.assertEqual(CourseUserGroup.RANDOM, response_dict.get("assignment_type"))
+        self.assertEqual(CourseCohort.RANDOM, response_dict.get("assignment_type"))
 
     def test_update_cohort_group_id(self):
         """
@@ -386,7 +386,7 @@ class CohortHandlerTestCase(CohortViewsTestCase):
         self.assertEqual((None, None), get_group_info_for_cohort(self.cohort1))
         data = {
             'name': self.cohort1.name,
-            'assignment_type': CourseUserGroup.MANUAL,
+            'assignment_type': CourseCohort.MANUAL,
             'group_id': 2,
             'user_partition_id': 3
         }
@@ -404,7 +404,7 @@ class CohortHandlerTestCase(CohortViewsTestCase):
         self._create_cohorts()
         link_cohort_to_partition_group(self.cohort1, 5, 0)
         self.assertEqual((0, 5), get_group_info_for_cohort(self.cohort1))
-        data = {'name': self.cohort1.name, 'assignment_type': CourseUserGroup.RANDOM, 'group_id': None}
+        data = {'name': self.cohort1.name, 'assignment_type': CourseCohort.RANDOM, 'group_id': None}
         response_dict = self.put_cohort_handler(self.course, self.cohort1, data=data)
         self.assertEqual((None, None), get_group_info_for_cohort(self.cohort1))
         self.assertIsNone(response_dict.get("group_id"))
@@ -419,7 +419,7 @@ class CohortHandlerTestCase(CohortViewsTestCase):
         self.assertEqual((None, None), get_group_info_for_cohort(self.cohort1))
         data = {
             'name': self.cohort1.name,
-            'assignment_type': CourseUserGroup.RANDOM,
+            'assignment_type': CourseCohort.RANDOM,
             'group_id': 2,
             'user_partition_id': 3
         }
@@ -428,7 +428,7 @@ class CohortHandlerTestCase(CohortViewsTestCase):
 
         data = {
             'name': self.cohort1.name,
-            'assignment_type': CourseUserGroup.RANDOM,
+            'assignment_type': CourseCohort.RANDOM,
             'group_id': 1,
             'user_partition_id': 3
         }
@@ -440,7 +440,7 @@ class CohortHandlerTestCase(CohortViewsTestCase):
         Verify that we cannot update a cohort with a group_id if the user_partition_id is not also specified.
         """
         self._create_cohorts()
-        data = {'name': self.cohort1.name, 'assignment_type': CourseUserGroup.RANDOM, 'group_id': 2}
+        data = {'name': self.cohort1.name, 'assignment_type': CourseCohort.RANDOM, 'group_id': 2}
         response_dict = self.put_cohort_handler(self.course, self.cohort1, data=data, expected_response_code=400)
         self.assertEqual(
             "If group_id is specified, user_partition_id must also be specified.", response_dict.get("error")

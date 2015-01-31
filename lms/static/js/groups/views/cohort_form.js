@@ -35,10 +35,19 @@ var edx = edx || {};
         render: function() {
             this.$el.html(this.template({
                 cohort: this.model,
+                isDefaultCohort: this.isDefault(this.model.get('name')),
                 contentGroups: this.contentGroups,
                 studioGroupConfigurationsUrl: this.context.studioGroupConfigurationsUrl
             }));
             return this;
+        },
+
+        isDefault: function(name) {
+            var cohorts = this.model.collection;
+            if (_.isUndefined(cohorts))
+                return false;
+            var randomModels = cohorts.where({assignment_type:'random'});
+            return (randomModels.length == 1) && (randomModels[0].get('name') == name);
         },
 
         onRadioButtonChange: function(event) {
@@ -84,6 +93,10 @@ var edx = edx || {};
             return this.$('input[name="cohort-assignment-type"]:checked').val();
         },
 
+        isCohortExists: function(name) {
+            return this.model.get('name') == name;
+        },
+
         showMessage: function(message, type, details) {
             this.showNotification(
                 {type: type || 'confirmation', title: message, details: details},
@@ -127,6 +140,7 @@ var edx = edx || {};
                 assignment_type: selectedAssignmentType
             };
             errorMessages = this.validate(fieldData);
+
             if (errorMessages.length > 0) {
                 showErrorMessage(
                     isUpdate ? gettext("The cohort cannot be saved") : gettext("The cohort cannot be added"),
@@ -135,7 +149,7 @@ var edx = edx || {};
                 saveOperation.reject();
             } else {
                 cohort.save(
-                    fieldData, {patch: isUpdate}
+                    fieldData, {patch: isUpdate, wait: true}
                 ).done(function(result) {
                     cohort.id = result.id;
                     self.render();    // re-render to remove any now invalid error messages
