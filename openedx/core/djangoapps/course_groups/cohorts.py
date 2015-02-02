@@ -249,7 +249,10 @@ def migrate_cohort_settings(course):
             group_type=CourseUserGroup.COHORT
         ).exclude(name__in=course.auto_cohort_groups)
         for cohort in manual_cohorts:
-            CourseCohort.objects.get_or_create(course_user_group=cohort, assignment_type=CourseCohort.MANUAL)
+            CourseCohort.objects.get_or_create(
+                course_user_group=cohort,
+                defaults={'assignment_type': CourseCohort.MANUAL}
+            )
 
         for group_name in course.auto_cohort_groups:
             cohort, created = CourseUserGroup.objects.get_or_create(
@@ -257,7 +260,10 @@ def migrate_cohort_settings(course):
                 group_type=CourseUserGroup.COHORT,
                 name=group_name
             )
-            CourseCohort.objects.get_or_create(course_user_group=cohort, assignment_type=CourseCohort.RANDOM)
+            CourseCohort.objects.get_or_create(
+                course_user_group=cohort,
+                defaults={'assignment_type': CourseCohort.RANDOM}
+            )
 
     return cohort_settings
 
@@ -415,10 +421,11 @@ def set_assignment_type(user_group, assignment_type):
     """
     Set assignment type for cohort.
     """
-    if is_default(user_group):
+    course_cohort = user_group.cohort
+
+    if is_default_cohort(user_group) and course_cohort.assignment_type != assignment_type:
         raise ValueError(_("There must be one cohort to which students can be randomly assigned."))
 
-    course_cohort = user_group.cohort
     course_cohort.assignment_type = assignment_type
     course_cohort.save()
 
@@ -431,7 +438,7 @@ def get_assignment_type(user_group):
     return course_cohort.assignment_type
 
 
-def is_default(user_group):
+def is_default_cohort(user_group):
     """
     Check if a cohort is default.
     """

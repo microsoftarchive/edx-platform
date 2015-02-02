@@ -457,6 +457,24 @@ class CohortConfigurationTest(UniqueCourseTest, CohortTestMixin):
             verify_updated=True
         )
 
+    def test_default_cohort_assignment_settings(self):
+        """
+        Scenario: Cohort assignment settings are disabled for default cohort.
+
+        Given I have a course with a user in the course
+        And I have added a manual cohort
+        And I have added a random cohort
+        When I select the random cohort
+        Then cohort assignment settings are disabled
+        """
+        self.cohort_management_page.select_cohort("AutoCohort1")
+        self.cohort_management_page.select_cohort_settings()
+
+        self.assertTrue(self.cohort_management_page.is_assignment_settings_disabled)
+
+        message = "There must be one cohort to which students can be randomly assigned."
+        self.assertEqual(message, self.cohort_management_page.assignment_settings_message)
+
     def test_link_to_data_download(self):
         """
         Scenario: a link is present from the cohort configuration in

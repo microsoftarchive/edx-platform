@@ -133,6 +133,28 @@ class MembershipPageCohortManagementSection(PageObject):
         self.q(css=self._bounded_selector("div.form-actions .action-save")).first.click()
 
     @property
+    def is_assignment_settings_disabled(self):
+        """
+        Check if assignment settings are disabled.
+        """
+        attributes = self.q(css=self._bounded_selector('.cohort-management-assignment-type-settings')).attrs('class')
+        if 'is-disabled' in attributes[0].split():
+            return True
+
+        return False
+
+    @property
+    def assignment_settings_message(self):
+        """
+        Return assignment settings disabled message in case of default cohort.
+        """
+        query = self.q(css=self._bounded_selector('.warning'))
+        if query.present:
+            return query.text[0]
+        else:
+            return ''
+
+    @property
     def cohort_header_title(self):
         """
         return cohort header title.

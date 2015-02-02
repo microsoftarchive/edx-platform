@@ -1,6 +1,8 @@
 """
 Tests for course group views
 """
+# pylint: disable=attribute-defined-outside-init
+# pylint: disable=no-member
 from collections import namedtuple
 import json
 
@@ -26,7 +28,7 @@ from ..cohorts import (
     get_cohort, get_cohort_by_name, get_cohort_by_id,
     DEFAULT_COHORT_NAME, get_group_info_for_cohort
 )
-from .helpers import config_course_cohorts, CohortFactory
+from .helpers import config_course_cohorts, CohortFactory, CourseCohortFactory
 
 
 @override_settings(MODULESTORE=TEST_DATA_MOCK_MODULESTORE)
@@ -49,15 +51,22 @@ class CohortViewsTestCase(ModuleStoreTestCase):
         self.cohort1_users = [UserFactory() for _ in range(3)]
         self.cohort2_users = [UserFactory() for _ in range(2)]
         self.cohort3_users = [UserFactory() for _ in range(2)]
+        self.cohort4_users = [UserFactory() for _ in range(2)]
         self.cohortless_users = [UserFactory() for _ in range(3)]
         self.unenrolled_users = [UserFactory() for _ in range(3)]
         self._enroll_users(
-            self.cohort1_users + self.cohort2_users + self.cohort3_users + self.cohortless_users,
+            self.cohort1_users + self.cohort2_users + self.cohort3_users + self.cohortless_users + self.cohort4_users,
             self.course.id
         )
         self.cohort1 = CohortFactory(course_id=self.course.id, users=self.cohort1_users)
         self.cohort2 = CohortFactory(course_id=self.course.id, users=self.cohort2_users)
         self.cohort3 = CohortFactory(course_id=self.course.id, users=self.cohort3_users)
+        self.cohort4 = CohortFactory(course_id=self.course.id, users=self.cohort4_users)
+
+        CourseCohortFactory(course_user_group=self.cohort1)
+        CourseCohortFactory(course_user_group=self.cohort2)
+        CourseCohortFactory(course_user_group=self.cohort3)
+        CourseCohortFactory(course_user_group=self.cohort4, assignment_type=CourseCohort.RANDOM)
 
     def _user_in_cohort(self, username, cohort):
         """
@@ -176,6 +185,7 @@ class CohortHandlerTestCase(CohortViewsTestCase):
             CohortHandlerTestCase.create_expected_cohort(self.cohort1, 3, CourseCohort.MANUAL),
             CohortHandlerTestCase.create_expected_cohort(self.cohort2, 2, CourseCohort.MANUAL),
             CohortHandlerTestCase.create_expected_cohort(self.cohort3, 2, CourseCohort.MANUAL),
+            CohortHandlerTestCase.create_expected_cohort(self.cohort4, 2, CourseCohort.RANDOM),
         ]
         self.verify_lists_expected_cohorts(expected_cohorts)
 
@@ -197,6 +207,7 @@ class CohortHandlerTestCase(CohortViewsTestCase):
             CohortHandlerTestCase.create_expected_cohort(self.cohort1, 3, CourseCohort.MANUAL),
             CohortHandlerTestCase.create_expected_cohort(self.cohort2, 2, CourseCohort.MANUAL),
             CohortHandlerTestCase.create_expected_cohort(self.cohort3, 2, CourseCohort.MANUAL),
+            CohortHandlerTestCase.create_expected_cohort(self.cohort4, 2, CourseCohort.RANDOM),
             CohortHandlerTestCase.create_expected_cohort(auto_cohort_1, 0, CourseCohort.RANDOM),
             CohortHandlerTestCase.create_expected_cohort(auto_cohort_2, 0, CourseCohort.RANDOM),
         ]
@@ -378,6 +389,26 @@ class CohortHandlerTestCase(CohortViewsTestCase):
         self.assertEqual(cohort_name, response_dict.get("name"))
         self.assertEqual(CourseCohort.RANDOM, response_dict.get("assignment_type"))
 
+    def test_cannot_update_assignment_type_of_single_random_cohort(self):
+        """
+        Test that it is not possible to update the assignment type of a single random cohort.
+        """
+        # Create a new cohort with random assignment
+        cohort_name = 'I AM A RANDOM COHORT'
+        data = {'name': cohort_name, 'assignment_type': CourseCohort.RANDOM}
+        response_dict = self.put_cohort_handler(self.course, data=data)
+
+        self.assertEqual(cohort_name, response_dict.get("name"))
+        self.assertEqual(CourseCohort.RANDOM, response_dict.get("assignment_type"))
+
+        # Try to update the assignment type of newly created random cohort
+        cohort = get_cohort_by_name(self.course.id, cohort_name)
+        data = {'name': cohort_name, 'assignment_type': CourseCohort.MANUAL}
+        response_dict = self.put_cohort_handler(self.course, cohort, data=data, expected_response_code=400)
+        self.assertEqual(
+            'There must be one cohort to which students can be randomly assigned.', response_dict.get("error")
+        )
+
     def test_update_cohort_group_id(self):
         """
         Test that it is possible to update the user_partition_id/group_id of an existing cohort.
@@ -416,24 +447,24 @@ class CohortHandlerTestCase(CohortViewsTestCase):
         different group_id.
         """
         self._create_cohorts()
-        self.assertEqual((None, None), get_group_info_for_cohort(self.cohort1))
+        self.assertEqual((None, None), get_group_info_for_cohort(self.cohort4))
         data = {
-            'name': self.cohort1.name,
+            'name': self.cohort4.name,
             'assignment_type': CourseCohort.RANDOM,
             'group_id': 2,
             'user_partition_id': 3
         }
-        self.put_cohort_handler(self.course, self.cohort1, data=data)
-        self.assertEqual((2, 3), get_group_info_for_cohort(self.cohort1))
+        self.put_cohort_handler(self.course, self.cohort4, data=data)
+        self.assertEqual((2, 3), get_group_info_for_cohort(self.cohort4))
 
         data = {
-            'name': self.cohort1.name,
+            'name': self.cohort4.name,
             'assignment_type': CourseCohort.RANDOM,
             'group_id': 1,
             'user_partition_id': 3
         }
-        self.put_cohort_handler(self.course, self.cohort1, data=data)
-        self.assertEqual((1, 3), get_group_info_for_cohort(self.cohort1))
+        self.put_cohort_handler(self.course, self.cohort4, data=data)
+        self.assertEqual((1, 3), get_group_info_for_cohort(self.cohort4))
 
     def test_update_cohort_missing_user_partition_id(self):
         """

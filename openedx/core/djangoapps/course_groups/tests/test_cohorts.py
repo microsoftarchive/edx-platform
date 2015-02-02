@@ -14,7 +14,7 @@ from xmodule.modulestore.tests.django_utils import TEST_DATA_MIXED_TOY_MODULESTO
 
 from ..models import CourseUserGroup, CourseCohort, CourseUserGroupPartitionGroup
 from .. import cohorts
-from ..tests.helpers import topic_name_to_id, config_course_cohorts, CohortFactory
+from ..tests.helpers import topic_name_to_id, config_course_cohorts, CohortFactory, CourseCohortFactory
 
 # NOTE: running this with the lms.envs.test config works without
 # manually overriding the modulestore.  However, running with
@@ -171,6 +171,52 @@ class TestCohorts(TestCase):
             ValueError,
             lambda: cohorts.get_cohort_id(user, SlashSeparatedCourseKey("course", "does_not", "exist"))
         )
+
+    def test_assignment_type(self):
+        """
+        Make sure that cohorts.set_assignment_type() and cohorts.get_assignment_type() works correctly.
+        """
+        course = modulestore().get_course(self.toy_course_key)
+        self.assertFalse(course.is_cohorted)
+
+        config_course_cohorts(course, discussions=[], cohorted=True)
+
+        # We are creating two random cohorts because we can't change assignment type of
+        # random cohort if it is the only random cohort present.
+        cohort1 = CohortFactory(course_id=course.id, name="TestCohort1")
+        CourseCohortFactory(course_user_group=cohort1, assignment_type=CourseCohort.RANDOM)
+        cohort2 = CohortFactory(course_id=course.id, name="TestCohort2")
+        CourseCohortFactory(course_user_group=cohort2, assignment_type=CourseCohort.RANDOM)
+        cohort3 = CohortFactory(course_id=course.id, name="TestCohort3")
+        CourseCohortFactory(course_user_group=cohort3, assignment_type=CourseCohort.MANUAL)
+
+        self.assertEqual(cohorts.get_assignment_type(cohort1), CourseCohort.RANDOM)
+
+        cohorts.set_assignment_type(cohort1, CourseCohort.MANUAL)
+        self.assertEqual(cohorts.get_assignment_type(cohort1), CourseCohort.MANUAL)
+
+        cohorts.set_assignment_type(cohort3, CourseCohort.RANDOM)
+        self.assertEqual(cohorts.get_assignment_type(cohort3), CourseCohort.RANDOM)
+
+    def test_cannot_set_assignment_type(self):
+        """
+        Make sure that we can't change the assignment type of a random cohort if it is the only random cohort present.
+        """
+        course = modulestore().get_course(self.toy_course_key)
+        self.assertFalse(course.is_cohorted)
+
+        config_course_cohorts(course, discussions=[], cohorted=True)
+
+        cohort = CohortFactory(course_id=course.id, name="TestCohort")
+        CourseCohortFactory(course_user_group=cohort, assignment_type=CourseCohort.RANDOM)
+
+        self.assertEqual(cohorts.get_assignment_type(cohort), CourseCohort.RANDOM)
+
+        exception_msg = "There must be one cohort to which students can be randomly assigned."
+        with self.assertRaises(ValueError) as context_manager:
+            cohorts.set_assignment_type(cohort, CourseCohort.MANUAL)
+
+        self.assertEqual(exception_msg, str(context_manager.exception))
 
     def test_get_cohort(self):
         """
