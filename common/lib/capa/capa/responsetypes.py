@@ -1569,9 +1569,8 @@ class StringResponse(LoncapaResponse):
 
         # XML compatibility note: in 2015, additional_answer switched to having a 'answer' attribute.
         # See make_xml_compatible in capa_problem which translates the old format.
-        correct_answers = [
-            [self.xml.get('answer')] + [element.get('answer') for element in self.xml.findall('additional_answer')
-        ]
+        correct_answers = ([self.xml.get('answer')] + 
+            [element.get('answer') for element in self.xml.findall('additional_answer')])
         self.correct_answer = [contextualize_text(answer, self.context).strip() for answer in correct_answers]
 
     def get_score(self, student_answers):
