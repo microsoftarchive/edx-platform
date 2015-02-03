@@ -1,22 +1,22 @@
 <problem>
     <p>In which country would you find the city of Paris?</p>
 
-    <stringresponse answer="France" type="ci" >
+    <stringresponse answer="FranceΩ" type="ci" >
         <textline label="In which country would you find the city of Paris?" size="20"/>
         <correcthint>
-            Viva la France!
+            Viva la France!Ω
         </correcthint>
 
-        <additional_answer answer="USA">
-             <correcthint>Less well known, but yes, there is a Paris, Texas.</correcthint>
+        <additional_answer answer="USAΩ">
+             <correcthint>Less well known, but yes, there is a Paris, Texas.Ω</correcthint>
         </additional_answer>
 
-        <stringequalhint answer="Germany">
-            I do not think so.
+        <stringequalhint answer="GermanyΩ">
+            I do not think so.Ω
         </stringequalhint>
 
-        <regexphint answer=".*land">
-             The country name does not end in LAND
+        <regexphint answer=".*landΩ">
+             The country name does not end in LANDΩ
         </regexphint>
     </stringresponse>
 
@@ -38,11 +38,11 @@
     </stringresponse>
 
     <!-- string response with extended hints + case_insensitive + blank labels -->
-    <p>And also some unicode åΩ</p>
+    <p>Meh</p>
     <stringresponse answer="A" type="ci">
-        <correcthint label="Woo Hooå">hint1Ω</correcthint>
-        <additional_answer answer="B"> <correcthint label=""> hint2 </correcthint> </additional_answer>
-        <stringequalhint answer="C" label=""> hint4 </stringequalhint>
+        <correcthint label="Woo Hoo">hint1</correcthint>
+        <additional_answer answer="B"> <correcthint label=""> hint2</correcthint> </additional_answer>
+        <stringequalhint answer="C" label=""> hint4</stringequalhint>
         <regexphint answer="FG+" label=""> hint6 </regexphint>
         <regexphint answer="(abc"> erroneous regex don't match anything </regexphint>
         <textline size="20"/>
