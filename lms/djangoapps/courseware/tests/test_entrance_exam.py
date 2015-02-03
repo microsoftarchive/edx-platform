@@ -60,7 +60,7 @@ class EntranceExamTestCases(ModuleStoreTestCase):
             parent=self.course,
             category="chapter",
             display_name="Entrance Exam Section - Chapter 1",
-            metadata={'is_entrance_exam': True}
+            is_entrance_exam=True
         )
         self.exam_1 = ItemFactory.create(
             parent=self.entrance_exam,
