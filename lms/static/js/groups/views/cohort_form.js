@@ -93,10 +93,6 @@ var edx = edx || {};
             return this.$('input[name="cohort-assignment-type"]:checked').val();
         },
 
-        isCohortExists: function(name) {
-            return this.model.get('name') == name;
-        },
-
         showMessage: function(message, type, details) {
             this.showNotification(
                 {type: type || 'confirmation', title: message, details: details},
