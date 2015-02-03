@@ -86,7 +86,7 @@ define(["jquery", "underscore", "underscore.string", "js/common_helpers/ajax_hel
                 it('renders correctly for unscheduled unit', function () {
                     renderContainerPage(this, mockContainerXBlockHtml);
                     expect(containerPage.$(viewPublishedCss)).toHaveClass(disabledCss);
-                    expect(containerPage.$(previewCss)).not.toHaveClass(disabledCss);
+                    expect(containerPage.$(previewCss)).toHaveClass(disabledCss);
                 });
 
                 it('updates when publish state changes', function () {
@@ -103,12 +103,8 @@ define(["jquery", "underscore", "underscore.string", "js/common_helpers/ajax_hel
                     fetch({has_changes: true});
                     expect(containerPage.$(previewCss)).not.toHaveClass(disabledCss);
 
-                    fetch({published: true, has_changes: false});
+                    fetch({has_changes: false});
                     expect(containerPage.$(previewCss)).toHaveClass(disabledCss);
-
-                    // If published is false, preview is always enabled.
-                    fetch({published: false, has_changes: false});
-                    expect(containerPage.$(previewCss)).not.toHaveClass(disabledCss);
                 });
 
                 it('updates when has_content_group_components attribute changes', function () {

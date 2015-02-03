@@ -66,7 +66,7 @@ define(["jquery", "underscore", "gettext", "js/views/baseview", "js/views/utils/
                 else {
                     viewLiveAction.addClass(disabledCss).attr('aria-disabled', true);
                 }
-                if (this.model.get('has_changes') || !this.model.get('published')) {
+                if (this.model.get('has_changes')) {
                     previewAction.removeClass(disabledCss).attr('aria-disabled', false);
                 }
                 else {
