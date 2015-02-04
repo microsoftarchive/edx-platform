@@ -44,10 +44,11 @@ var edx = edx || {};
 
         isDefault: function(name) {
             var cohorts = this.model.collection;
-            if (_.isUndefined(cohorts))
+            if (_.isUndefined(cohorts)) {
                 return false;
+            }
             var randomModels = cohorts.where({assignment_type:'random'});
-            return (randomModels.length == 1) && (randomModels[0].get('name') == name);
+            return (randomModels.length === 1) && (randomModels[0].get('name') === name);
         },
 
         onRadioButtonChange: function(event) {

@@ -148,7 +148,7 @@ class MembershipPageCohortManagementSection(PageObject):
         """
         Return assignment settings disabled message in case of default cohort.
         """
-        query = self.q(css=self._bounded_selector('.warning'))
+        query = self.q(css=self._bounded_selector('.copy-error'))
         if query.present:
             return query.text[0]
         else:

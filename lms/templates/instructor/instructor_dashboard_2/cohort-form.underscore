@@ -45,8 +45,8 @@
                     </label>
                 </div>
                 <% if (isDefaultCohort) { %>
-                    <p class="warning">
-                        <i class="icon fa fa-warning" aria-hidden="true"></i>
+                    <p class="copy-error">
+                        <i class="icon fa fa-exclamation-triangle" aria-hidden="true"></i>
                         <%- gettext("There must be one cohort to which students can be randomly assigned.") %>
                     </p>
                 <% } %>
