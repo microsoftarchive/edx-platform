@@ -395,13 +395,6 @@ def _index_bulk_op(request, course_key, chapter, section, position):
             'reverifications': fetch_reverify_banner_info(request, course_key),
         }
 
-        now = datetime.now(UTC())
-        effective_start = _adjust_start_date_for_beta_testers(user, course, course_key)
-        if staff_access and now < effective_start:
-            # Disable student view button if user is staff and
-            # course is not yet visible to students.
-            context['disable_student_access'] = True
-
         has_content = course.has_children_at_depth(CONTENT_DEPTH)
         if not has_content:
             # Show empty courseware for a course with no units
@@ -662,13 +655,6 @@ def course_info(request, course_id):
             'show_enroll_banner': show_enroll_banner,
             'url_to_enroll': url_to_enroll,
         }
-
-        now = datetime.now(UTC())
-        effective_start = _adjust_start_date_for_beta_testers(request.user, course, course_key)
-        if staff_access and now < effective_start:
-            # Disable student view button if user is staff and
-            # course is not yet visible to students.
-            context['disable_student_access'] = True
 
         return render_to_response('courseware/info.html', context)
 

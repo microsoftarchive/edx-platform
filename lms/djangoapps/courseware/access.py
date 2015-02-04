@@ -594,7 +594,7 @@ def _has_access_to_course(user, access_level, course_key):
         return False
 
     if is_masquerading_as_student(user, course_key):
-        return False
+        return True
 
     if GlobalStaff().has_user(user):
         debug("Allow: user.is_staff")
