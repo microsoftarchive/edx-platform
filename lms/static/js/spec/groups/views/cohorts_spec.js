@@ -654,7 +654,7 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
                         createCohortsViewWithDeletedContentGroup(this);
                         cohortsView.$('.tab-settings a').click();
                         expect(cohortsView.$('option.option-unavailable').text().trim()).toBe('Deleted Content Group');
-                        expect(cohortsView.$('.copy-error').text().trim()).toBe(
+                        expect(cohortsView.$('.cohort-management-details-association-course .copy-error').text().trim()).toBe(
                             'Warning: The previously selected content group was deleted. Select another content group.'
                         );
                     });
@@ -675,7 +675,7 @@ define(['backbone', 'jquery', 'js/common_helpers/ajax_helpers', 'js/common_helpe
 
                         // Verify that the deleted content group and associated message have been removed
                         expect(cohortsView.$('option.option-unavailable').text().trim()).toBe('');
-                        expect(cohortsView.$('.copy-error').text().trim()).toBe('');
+                        expect(cohortsView.$('.cohort-management-details-association-course .copy-error').text().trim()).toBe('');
                     });
 
                     it("shows an error when saving with a deleted content group", function () {
