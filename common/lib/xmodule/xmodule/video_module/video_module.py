@@ -302,12 +302,9 @@ class VideoDescriptor(VideoFields, VideoTranscriptsMixin, VideoStudioViewHandler
             self._field_data.set_many(self, field_data)
             del self.data
 
-        editable_fields = super(VideoDescriptor, self).editable_metadata_fields
-
         self.source_visible = False
         # Set download_video field to default value if its not explicitly set for backward compatibility.
-        download_video = editable_fields['download_video']
-        if not download_video['explicitly_set']:
+        if not self._field_data.has(self, 'download_video'):
             self.download_video = self.download_video
 
         if self.source:
@@ -318,14 +315,11 @@ class VideoDescriptor(VideoFields, VideoTranscriptsMixin, VideoStudioViewHandler
                 self.download_video = True
             else:  # Otherwise, `source` field value will be used.
                 self.source_visible = True
-                if not download_video['explicitly_set']:
-                    self.download_video = True
 
         # for backward compatibility.
         # If course was existed and was not re-imported by the moment of adding `download_track` field,
         # we should enable `download_track` if following is true:
-        download_track = editable_fields['download_track']
-        if not download_track['explicitly_set'] and self.track:
+        if not self._field_data.has(self, 'download_track') and self.track:
             self.download_track = True
 
     def editor_saved(self, user, old_metadata, old_content):
