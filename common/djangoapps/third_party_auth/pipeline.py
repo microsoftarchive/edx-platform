@@ -463,13 +463,13 @@ def ensure_user_information(
     details,
     response,
     uid,
-    is_dashboard=None,
-    is_login=None,
-    is_profile=None,
-    is_register=None,
-    is_login_2=None,
-    is_register_2=None,
-    is_api=None,
+    is_dashboard=False,
+    is_login=False,
+    is_profile=False,
+    is_register=False,
+    is_login_2=False,
+    is_register_2=False,
+    is_api=False,
     user=None,
     *args,
     **kwargs
@@ -634,7 +634,7 @@ def login_analytics(strategy, *args, **kwargs):
 
 
 @partial.partial
-def change_enrollment(strategy, user=None, *args, **kwargs):
+def change_enrollment(strategy, user=None, is_dashboard=False, is_api=False, *args, **kwargs):
     """Enroll a user in a course.
 
     If a user entered the authentication flow when trying to enroll
@@ -655,14 +655,16 @@ def change_enrollment(strategy, user=None, *args, **kwargs):
 
     """
     enroll_course_id = strategy.session_get('enroll_course_id')
-    if enroll_course_id:
+    if enroll_course_id and not (is_dashboard or is_api):
         course_id = CourseKey.from_string(enroll_course_id)
         modes = CourseMode.modes_for_course_dict(course_id)
+
         # If the email opt in parameter is found, set the preference.
         email_opt_in = strategy.session_get(AUTH_EMAIL_OPT_IN_KEY)
         if email_opt_in:
             opt_in = email_opt_in.lower() == 'true'
             profile.update_email_opt_in(user.username, course_id.org, opt_in)
+
         if CourseMode.can_auto_enroll(course_id, modes_dict=modes):
             try:
                 CourseEnrollment.enroll(user, course_id, check_access=True)
