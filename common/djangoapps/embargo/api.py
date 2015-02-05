@@ -10,12 +10,17 @@ from functools import partial
 import logging
 import pygeoip
 
+from django.core.urlresolvers import reverse
 from django.core.cache import cache
 from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 
+from opaque_keys import InvalidKeyError
+from opaque_keys.edx.keys import CourseKey
+
 from student.models import unique_id_for_user
 from embargo.models import CountryAccessRule, IPFilter, RestrictedCourse, WHITE_LIST, BLACK_LIST
+from embargo.exceptions import InvalidAccessPoint
 
 log = logging.getLogger(__name__)
 
@@ -156,31 +161,115 @@ def check_access(user, ip_address, course_key):
         course_key (CourseLocator): CourseLocator object the user is trying to access
 
     Returns:
-        Redirect to a URL configured in Django settings or a forbidden response if any constraints fails or None
+        Boolean: True if the user has access to the course; False otherwise
 
     """
-
     course_is_restricted = RestrictedCourse.is_restricted_course(course_key)
     # If they're trying to access a course that cares about embargoes
 
     if not course_is_restricted:
-        return None
+        return True
 
     if _is_embargoed_by_ip(ip_address):
-        return True
+        return False
 
     user_country_from_ip = _country_code_from_ip(ip_address)
     if user_country_from_ip == '':
-        return None
+        return True
 
     if _is_embargoed_user_country(user_country_from_ip, course_key):
-        return True
+        return False
 
     user_country_from_profile = get_user_country_from_profile(user, course_key)
     if user_country_from_profile == '':
-        return None
-
-    if _is_embargoed_user_country(user_country_from_profile, course_key):
         return True
 
-    return None
+    if _is_embargoed_user_country(user_country_from_profile, course_key):
+        return False
+
+    return True
+
+
+def message_url_path(course_key, access_point):
+    """Determine the URL path for the message explaining why the user was blocked.
+
+    This is configured per-course.  See `RestrictedCourse` in the `embargo.models`
+    module for more details.
+
+    Arguments:
+        course_key (CourseKey): The location of the course.
+        access_point (str): How the user was trying to access the course.
+            Can be either "enrollment" or "courseware".
+
+    Returns:
+        unicode: The URL path to a page explaining why the user was blocked.
+
+    Raises:
+        InvalidAccessPoint: Raised if access_point is not a supported value.
+
+    """
+    if access_point not in ['enrollment', 'courseware']:
+        raise InvalidAccessPoint(access_point)
+
+    # First check the cache to see if we already have
+    # a URL for this (course_key, access_point) tuple
+    cache_key = u"embargo.message_url_path.{access_point}.{course_key}".format(
+        access_point=access_point,
+        course_key=course_key
+    )
+    url = cache.get(cache_key)
+
+    # If there's a cache miss, we'll need to retrieve the message
+    # configuration from the database
+    if url is None:
+        url = _get_message_url_path_from_db(course_key, access_point)
+        cache.set(cache_key, url)
+
+    return url
+
+
+def _get_message_url_path_from_db(course_key, access_point):
+    """Retrieve the "blocked" message from the database.
+
+    Arguments:
+        course_key (CourseKey): The location of the course.
+        access_point (str): How the user was trying to access the course.
+            Can be either "enrollment" or "courseware".
+
+    Returns:
+        unicode: The URL path to a page explaining why the user was blocked.
+
+    """
+    # Fallback in case we're not able to find a message path
+    # Presumably if the caller is requesting a URL, the caller
+    # has already determined that the user should be blocked.
+    # We use generic messaging unless we find something more specific,
+    # but *always* return a valid URL path.
+    default_path = reverse(
+        'embargo_blocked_message',
+        kwargs={
+            'access_point': 'courseware',
+            'message_key': 'default'
+        }
+    )
+
+    # First check whether this is a restricted course.
+    # The list of restricted courses is cached, so this does
+    # not require a database query.
+    if not RestrictedCourse.is_restricted_course(course_key):
+        return default_path
+
+    # Retrieve the message key from the restricted course
+    # for this access point, then determine the URL.
+    try:
+        course = RestrictedCourse.objects.get(course_key=course_key)
+        msg_key = course.message_key_for_access_point(access_point)
+        return reverse(
+            'embargo_blocked_message',
+            kwargs={
+                'access_point': access_point,
+                'message_key': msg_key
+            }
+        )
+    except RestrictedCourse.DoesNotExist:
+        return default_path

@@ -149,6 +149,26 @@ class RestrictedCourse(models.Model):
             cache.set(self.cache_key_name(), countries)
         return countries
 
+    def message_key_for_access_point(self, access_point):
+        """Determine which message to show the user.
+
+        The message can be configured per-course and depends
+        on how the user is trying to access the course
+        (trying to enroll or accessing courseware).
+
+        Arguments:
+            access_point (str): Either "courseware" or "enrollment"
+
+        Returns:
+            str: The message key.  If the access point is not valid,
+                returns None instead.
+
+        """
+        if access_point == 'enrollment':
+            return self.enroll_msg_key
+        elif access_point == 'courseware':
+            return self.access_msg_key
+
     def __unicode__(self):
         return unicode(self.course_key)
 

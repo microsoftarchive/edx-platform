@@ -71,10 +71,16 @@ class EmbargoMiddleware(object):
 
     def __init__(self):
         self.site_enabled = settings.FEATURES.get('SITE_EMBARGOED', False)
-        # If embargoing is turned off, make this middleware do nothing
-        if not settings.FEATURES.get('EMBARGO', False) and not self.site_enabled:
-            raise MiddlewareNotUsed()
         self.enable_country_access = settings.FEATURES.get('ENABLE_COUNTRY_ACCESS', False)
+
+        # If embargoing is turned off, make this middleware do nothing
+        disable_middleware = not (
+            settings.FEATURES.get('EMBARGO') or
+            self.site_enabled or
+            self.enable_country_access
+        )
+        if disable_middleware:
+            raise MiddlewareNotUsed()
 
     def process_request(self, request):
         """
@@ -307,4 +313,5 @@ class EmbargoMiddleware(object):
     def country_access_rules(self, request):
         url = request.path
         course_id = course_id_from_url(url)
-        return check_access(request.user, get_ip(request), course_id)
+        if course_id is not None:
+            return check_access(request.user, get_ip(request), course_id)
