@@ -108,6 +108,9 @@ if __name__ == "__main__":
         # This will trigger django-admin.py to print out its help
         django_args.append('--help')
 
+    import openedx.core.operations
+    openedx.core.operations.install_memory_dumper()
+
     startup = importlib.import_module(edx_args.startup)
     startup.run()
 
