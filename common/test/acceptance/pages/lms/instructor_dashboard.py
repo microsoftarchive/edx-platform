@@ -155,9 +155,9 @@ class MembershipPageCohortManagementSection(PageObject):
             return ''
 
     @property
-    def cohort_header_title(self):
+    def cohort_name_in_header(self):
         """
-        return cohort header title.
+        Return cohort name as shown in cohort header.
         """
         return self._cohort_name(self.q(css=self._bounded_selector(".group-header-title .title-value")).text[0])
 

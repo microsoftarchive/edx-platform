@@ -203,7 +203,6 @@ class TestCohorts(TestCase):
         Make sure that we can't change the assignment type of a random cohort if it is the only random cohort present.
         """
         course = modulestore().get_course(self.toy_course_key)
-        self.assertFalse(course.is_cohorted)
 
         config_course_cohorts(course, discussions=[], cohorted=True)
 

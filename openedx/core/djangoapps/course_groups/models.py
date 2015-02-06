@@ -61,7 +61,7 @@ class CourseCohortsSettings(models.Model):
         unique=True,
         max_length=255,
         db_index=True,
-        help_text="Which course is these settings associated with?",
+        help_text="Which course are these settings associated with?",
     )
 
     cohorted_discussions = models.TextField(null=True, blank=True)  # JSON list

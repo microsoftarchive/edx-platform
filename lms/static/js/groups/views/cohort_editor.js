@@ -6,6 +6,7 @@ var edx = edx || {};
     edx.groups = edx.groups || {};
 
     edx.groups.CohortEditorView = Backbone.View.extend({
+
         events : {
             'click .wrapper-tabs .tab': 'selectTab',
             'click .tab-content-settings .action-save': 'saveSettings',
@@ -15,6 +16,7 @@ var edx = edx || {};
 
         initialize: function(options) {
             this.template = _.template($('#cohort-editor-tpl').text());
+            this.groupHeaderTemplate = _.template($('#cohort-group-header-tpl').text());
             this.cohorts = options.cohorts;
             this.contentGroups = options.contentGroups;
             this.context = options.context;
@@ -27,9 +29,9 @@ var edx = edx || {};
 
         render: function() {
             this.$el.html(this.template({
-                cohort: this.model,
-                studioAdvancedSettingsUrl: this.context.studioAdvancedSettingsUrl
+                cohort: this.model
             }));
+            this.renderGroupHeader();
             this.cohortFormView = new CohortFormView({
                 model: this.model,
                 contentGroups: this.contentGroups,
@@ -40,8 +42,11 @@ var edx = edx || {};
             return this;
         },
 
-        updateHeaderTitle: function() {
-            this.$('.title-value').html(this.model.get('name'));
+        renderGroupHeader: function() {
+            this.$('.cohort-management-group-header').html(this.groupHeaderTemplate({
+                cohort: this.model,
+                studioAdvancedSettingsUrl: this.context.studioAdvancedSettingsUrl
+            }));
         },
 
         selectTab: function(event) {
@@ -62,7 +67,7 @@ var edx = edx || {};
             event.preventDefault();
             cohortFormView.saveForm()
                 .done(function() {
-                    self.updateHeaderTitle();
+                    self.renderGroupHeader();
                     cohortFormView.showMessage(gettext('Saved cohort'));
                 });
         },

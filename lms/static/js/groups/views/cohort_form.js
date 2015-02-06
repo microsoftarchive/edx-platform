@@ -87,7 +87,7 @@ var edx = edx || {};
 
         getUpdatedCohortName: function() {
             var cohortName = this.$('.cohort-name').val();
-            return cohortName ? cohortName.trim() : this.model.get('name');
+            return cohortName ? cohortName.trim() : '';
         },
 
         getAssignmentType: function() {

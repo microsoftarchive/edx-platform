@@ -278,7 +278,7 @@ def get_course_cohorts(course, assignment_type=None):
         assignment_type: cohort assignment type
 
     Returns:
-        A list of CourseUserGroup objects.  Empty if there are no cohorts. Does
+        A list of CourseUserGroup objects. Empty if there are no cohorts. Does
         not check whether the course is cohorted.
     """
     # Migrate cohort settings for this course
