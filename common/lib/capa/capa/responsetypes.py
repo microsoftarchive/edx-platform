@@ -258,17 +258,22 @@ class LoncapaResponse(object):
 
     def make_hint_div(self, hint_node, correct, label=None, hint_text=''):
         """
-        Given the xml extended hint node and the boolean correctness, returns the extended hint div,
-        like this:
-          <div class="feedback_hint_incorrect">Incorrect: the answer is not 42</div>
-        Optionally, the hint label and the hint_text to use may be passed in,
-        overriding the text found in the hint node, which can be passed as None.
-        This function supports many argument combinations in order to work with the many
-        different contexts where extended hints are constructed.
-        A label with the value '' means inhibit all labeling, while the None means
-        no specific label is provided and we should get the default.
-        The empty string is returned, meaning no hint, if after processing all the arguments,
-        there is no hint.
+        Returns an extended hint div
+
+        Keyword args:
+            * hint_node: xml node such as <optionhint>, holding extended hint text. May be passed in as None.
+            * correct: bool indication if the student answer is correct
+            * label: (optional) if None (the default), extracts the label from the node,
+              otherwise using this value. The value '' inhibits labeling of the hint.
+            * hint_text: (optional) if '' (the default) extracts the hint from the node,
+              otherwise using this value.
+
+        Returns: the extended hint div string e.g.
+        <div class="feedback_hint_incorrect">Incorrect: the answer is not 42</div>
+        or the empty string if, after processing all the arguments, there is no hint.
+        The slightly complicated layering of the node and the optional label and hint
+        parameters allow the many different XML hint contexts to all bottleneck through this
+        one routine.
         """
         _ = self.capa_system.i18n.ugettext
         # Establish the hint text
@@ -305,9 +310,11 @@ class LoncapaResponse(object):
 
     def get_extended_hints(self, student_answers, new_cmap):
         """
-        Pull "extended hint" information out the xml based on the student answers.
-        Implemented down in the subclasses.
+        Pull "extended hint" information out the xml based on the student answers,
+        installing it in the new_map for display.
+        Implemented by subclasses that have extended hints.
         """
+        pass
 
     def get_hints(self, student_answers, new_cmap, old_cmap):
         """
@@ -848,10 +855,12 @@ class ChoiceResponse(LoncapaResponse):
                 # However if there are multiple, we use none.
                 if label_count > 1:
                     label = None
-                new_cmap[self.answer_id]['msg'] += (
-                    self.make_hint_div(None,
-                                       new_cmap[self.answer_id]['correctness'] == 'correct',
-                                       label, hint_divs))
+                new_cmap[self.answer_id]['msg'] += self.make_hint_div(
+                    None,
+                    new_cmap[self.answer_id]['correctness'] == 'correct',
+                    label,
+                    hint_divs
+                )
 
     def get_compound_hints(self, new_cmap, student_answers):
         """
@@ -1569,8 +1578,10 @@ class StringResponse(LoncapaResponse):
 
         # XML compatibility note: in 2015, additional_answer switched to having a 'answer' attribute.
         # See make_xml_compatible in capa_problem which translates the old format.
-        correct_answers = ([self.xml.get('answer')] + 
-            [element.get('answer') for element in self.xml.findall('additional_answer')])
+        correct_answers = (
+            [self.xml.get('answer')] +
+            [element.get('answer') for element in self.xml.findall('additional_answer')]
+        )
         self.correct_answer = [contextualize_text(answer, self.context).strip() for answer in correct_answers]
 
     def get_score(self, student_answers):
@@ -1714,7 +1725,7 @@ class StringResponse(LoncapaResponse):
 
             if self.check_string([hinted_answer], given):
                 hints_to_show.append(name)
-            log.debug('hints_to_show = %s', hints_to_show)
+        log.debug('hints_to_show = %s', hints_to_show)
         return hints_to_show
 
     def get_answers(self):

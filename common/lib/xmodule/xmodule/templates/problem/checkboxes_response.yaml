@@ -4,11 +4,19 @@ metadata:
     markdown: |
       A checkboxes problem presents checkbox buttons for student input. Students can select more than one option presented.
       
-      Ideally, compound feedback would be provided for all possible combinations of answers.  In practice, that is extremely difficult for problems with more than 3 options.  A good compromise is to write individual feedback for each option, and compound feedback for common combinations of answers or combinations of answers that address common student misconceptions.  
+      Ideally, compound feedback would be provided for all possible combinations of answers.
+      In practice, that is extremely difficult for problems with more than 3 options.
+      A good compromise is to write individual feedback for each option, and compound feedback
+      for common combinations of answers or combinations of answers that address common student misconceptions.
 
-      The compound feedback will be shown first if it exists for a given set of answer options.  If no compound feedback is present, individual feedback is shown.  Feedback is defined for each answer option, for both the selected (checked) and unselected (unchecked) states.  This is indicated using the keywords "selected" (or "S") and "unselected (or "U").
+      The compound feedback will be shown first if it exists for a given set of answer options.
+      If no compound feedback is present, individual feedback is shown.
+      Feedback is defined for each answer option, for both the selected (checked) and unselected
+      (unchecked) states.  This is indicated using the keywords "selected" (or "S") and "unselected (or "U").
 
-      Compound feedback is specified by using A, B, C, etc to indicate the relevant answer options, with each letter separated by a space.  For example, "(A C)" indicates that the feedback will be provided if the student has checked the first and third answer options.  Try it below!
+      Compound feedback is specified by using A, B, C, etc to indicate the relevant answer
+      options, with each letter separated by a space.  For example, "(A C)" indicates that
+      the feedback will be provided if the student has checked the first and third answer options.  Try it below!
       
       >>Select all the fruits from the list<<
 

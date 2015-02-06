@@ -601,10 +601,12 @@ class CapaMixin(CapaFields):
     def get_problem_html(self, encapsulate=True, hint_index=None):
         """
         Return html for the problem.
-        Displays check, reset, save, and hint buttons as necessary.
-        encapsulate:         True -- embed the html in a problem <div>
-        hint_index: if not None, this is the index of the next demand hint
-        to show.
+
+        Adds check, reset, save, and hint buttons as necessary based on the problem config
+        and state.
+        encapsulate: if True (the default) embed the html in a problem <div>
+        hint_index: (None is the default) if not None, this is the index of the next demand
+        hint to show.
         """
         try:
             html = self.lcp.get_html()

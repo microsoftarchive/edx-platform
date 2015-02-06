@@ -195,15 +195,24 @@ class LoncapaProblem(object):
 
     def make_xml_compatible(self, tree):
         """
-        Adjust tree xml in-place for compatibility, such as
-        supporting an old xml format by translating it to a new format.
+        Adjust tree xml in-place for compatibility before creating
+        a problem from it.
+        The idea here is to provide a central point for XML translation,
+        for example, supporting an old XML format. At present, there just two translations.
+
+        1. <additional_answer> compatibility translation:
+        old:    <additional_answer>ANSWER</additional_answer>
+        convert to
+        new:    <additional_answer answer="ANSWER">OPTIONAL-HINT</addional_answer>
+
+        2. <optioninput> compatibility translation:
+        optioninput works like this internally:
+            <optioninput options="('yellow','blue','green')" correct="blue" />
+        With extended hints there is a new <option> tag, like this
+            <option correct="True">blue <optionhint>sky color</optionhint> </option>
+        This translation takes in the new format and synthesizes the old option= attribute
+        so all downstream logic works unchanged with the new <option> tag format.
         """
-        # <additional_answer> compatibility translation:
-        # old:    <additional_answer>ANSWER</additional_answer>
-        # convert to
-        # new:    <additional_answer answer="ANSWER">OPTIONAL-HINT</addional_answer>
-        # the new format is the form used at runtime and by this conversion we support
-        # the old format
         additionals = tree.xpath('//stringresponse/additional_answer')
         for additional in additionals:
             answer = additional.get('answer')
@@ -212,13 +221,6 @@ class LoncapaProblem(object):
                 additional.set('answer', text)
                 additional.text = ''
 
-        # <optioninput> compatibility translation:
-        # optioninput uses option= like this:
-        #   <optioninput options="('yellow','blue','green')" correct="blue" />
-        # With extended hints there is a new <option> tag, like this
-        #   <option correct="True">blue <optionhint>sky color</optionhint> </option>
-        # This translation takes in the new format and synthesizes the old option= attribute
-        # so all downstream logic works unchanged with the new <option> tag format.
         for optioninput in tree.xpath('//optioninput'):
             correct_option = None
             child_options = []

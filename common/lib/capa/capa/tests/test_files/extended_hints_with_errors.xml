@@ -1,4 +1,4 @@
-<problem schema="edXML/1.0">
+<problem>
     <choiceresponse>
       <checkboxgroup label="Select all the vegetables from the list" direction="vertical">
         <choice correct="false">Banana

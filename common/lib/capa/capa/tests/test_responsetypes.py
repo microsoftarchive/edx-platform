@@ -738,8 +738,8 @@ class StringResponseTest(ResponseTest):
         # Other strings and the lowercase version of the string are incorrect
         self.assert_grade(problem, "Other String", "incorrect")
 
-    def test_compatible_old_additional_answer_xml(self):
-        problem = self.build_problem(answer="Donut", old_answers=["Sprinkles"])
+    def test_compatible_non_attribute_additional_answer_xml(self):
+        problem = self.build_problem(answer="Donut", non_attribute_answers=["Sprinkles"])
         self.assert_grade(problem, "Donut", "correct")
         self.assert_grade(problem, "Sprinkles", "correct")
         self.assert_grade(problem, "Meh", "incorrect")

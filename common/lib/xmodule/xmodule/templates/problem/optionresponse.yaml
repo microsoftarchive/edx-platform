@@ -2,9 +2,12 @@
 metadata:
     display_name: Dropdown
     markdown: |
-        Dropdown problems give a limited set of options for students to respond with, and present those options in a format that encourages them to search for a specific answer rather than being immediately presented with options from which to recognize the correct answer.
+        Dropdown problems give a limited set of options for students to respond with,
+        and present those options in a format that encourages them to search for a specific
+        answer rather than being immediately presented with options from which to recognize the correct answer.
 
-        The answer options and the identification of the correct answer is defined in the <b>optioninput</b> tag.  Feedback can be specified for each option.
+        The answer options and the identification of the correct answer is defined in the <b>optioninput</b> tag. 
+        Feedback can be specified for each option.
 
         >>Translation between Dropdown and __________ is extremely straightforward:<<
 

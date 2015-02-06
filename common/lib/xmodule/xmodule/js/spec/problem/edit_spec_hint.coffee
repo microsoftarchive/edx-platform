@@ -505,7 +505,6 @@ describe 'numeric input components', ->
 
   # The output xml here shows some of the quirks of how historical markdown parsing does or does not put
   # in blank lines.
-  # TODO nparlante: there's a bug in the parsing stack if the >>text<< is the same twice
   it 'numeric input with hints and demand hints', ->
     data = MarkdownEditingDescriptor.markdownToXml("""
         >>text1<<
