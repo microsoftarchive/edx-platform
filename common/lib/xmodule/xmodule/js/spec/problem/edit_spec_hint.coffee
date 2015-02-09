@@ -1,7 +1,7 @@
 # This file tests the parsing of  extended-hints, double bracket sections {{ .. }}
 # for all sorts of markdown.
-describe 'drop down optionresponse components', ->
-  it 'multiple multiline (new-style) drop down with hints', ->
+describe 'Markdown to xml extended hint dropdown', ->
+  it 'produces xml', ->
     data = MarkdownEditingDescriptor.markdownToXml("""
       Translation between Dropdown and ________ is straightforward.
 
@@ -50,7 +50,7 @@ describe 'drop down optionresponse components', ->
     </problem>
     """)
 
-  it 'drop down with demand hint', ->
+  it 'produces xml with demand hint', ->
     data = MarkdownEditingDescriptor.markdownToXml("""
       Translation between Dropdown and ________ is straightforward.
 
@@ -83,7 +83,7 @@ describe 'drop down optionresponse components', ->
     </problem>
     """)
 
-  it 'single-line (old-style) drop down plus demand hint', ->
+  it 'produces xml with single-line markdown syntax', ->
     data = MarkdownEditingDescriptor.markdownToXml("""
       A Question ________ is answered.
 
@@ -105,7 +105,7 @@ describe 'drop down optionresponse components', ->
     </problem>
     """)
 
-  it ' multiline (new-style) drop down with fewer newlines', ->
+  it 'produces xml with fewer newlines', ->
     data = MarkdownEditingDescriptor.markdownToXml("""
       >>q1<<
       [[ (aa) 	 {{ hint1 }}
@@ -128,7 +128,7 @@ describe 'drop down optionresponse components', ->
     </problem>
     """)
 
-  it ' multiline (new-style) drop down with extra blank lines and whitespace', ->
+  it 'produces xml even with lots of whitespace', ->
     data = MarkdownEditingDescriptor.markdownToXml("""
       >>q1<<
       [[
@@ -157,8 +157,8 @@ describe 'drop down optionresponse components', ->
     </problem>
     """)
 
-describe 'checkbox components', ->
-  it 'multiple checkbox components', ->
+describe 'Markdown to xml extended hint checkbox', ->
+  it 'produces xml', ->
     data = MarkdownEditingDescriptor.markdownToXml("""
       >>Select all the fruits from the list<<
             
@@ -230,7 +230,7 @@ describe 'checkbox components', ->
     """)
 
 
-  it 'multiple checkbox components plus demand hints', ->
+  it 'produces xml also with demand hints', ->
     data = MarkdownEditingDescriptor.markdownToXml("""
       >>Select all the fruits from the list<<
 
@@ -313,8 +313,8 @@ describe 'checkbox components', ->
     """)
 
 
-describe 'multiple choice components', ->
-  it 'multiple choice with hints', ->
+describe 'Markdown to xml extended hint multiple choice', ->
+  it 'produces xml', ->
     data = MarkdownEditingDescriptor.markdownToXml("""
       >>Select the fruit from the list<<
                      
@@ -352,7 +352,7 @@ describe 'multiple choice components', ->
     </problem>
     """)
 
-  it 'multiple choice with hints and demand hints', ->
+  it 'produces xml with demand hints', ->
       data = MarkdownEditingDescriptor.markdownToXml("""
                      >>Select the fruit from the list<<
 
@@ -406,8 +406,8 @@ describe 'multiple choice components', ->
     """)
 
 
-describe 'text input components', ->
-  it 'text input with hints', ->
+describe 'Markdown to xml extended hint text input', ->
+  it 'produces xml', ->
     data = MarkdownEditingDescriptor.markdownToXml(""">>In which country would you find the city of Paris?<<
                     = France		{{ BRAVO::Viva la France! }}
 
@@ -423,7 +423,7 @@ describe 'text input components', ->
     </problem>
     """)
 
-  it 'text input with or= with hints', ->
+  it 'produces xml with or=', ->
     data = MarkdownEditingDescriptor.markdownToXml(""">>Where Paris?<<
       = France		{{ BRAVO::hint1}}
       or= USA			{{   meh::hint2  }}
@@ -441,7 +441,7 @@ describe 'text input components', ->
     </problem>
     """)
 
-  it 'text input with demand hints', ->
+  it 'produces xml with demand hints', ->
     data = MarkdownEditingDescriptor.markdownToXml(""">>Where Paris?<<
           = France		{{ BRAVO::hint1 }}
 
@@ -464,8 +464,8 @@ describe 'text input components', ->
     </problem>""")
 
 
-describe 'numeric input components', ->
-  it 'numeric input with hints', ->
+describe 'Markdown to xml extended hint numeric input', ->
+  it 'produces xml', ->
     data = MarkdownEditingDescriptor.markdownToXml("""
         >>Enter the numerical value of Pi:<<
         = 3.14159 +- .02   {{ Pie for everyone!   }}
@@ -537,8 +537,8 @@ describe 'numeric input components', ->
     """)
 
 
-describe 'multi-line extended hints', ->
-  it 'with all question types', ->
+describe 'Markdown to xml extended hint with multiline hints', ->
+  it 'produces xml', ->
     data = MarkdownEditingDescriptor.markdownToXml("""
         >>Checkboxes<<
 
@@ -638,10 +638,10 @@ describe 'multi-line extended hints', ->
     </problem>
     """)
 
-describe 'tricky syntax cases', ->
+describe 'Markdown to xml extended hint with tricky syntax cases', ->
   # I'm entering this as utf-8 in this file.
   # I cannot find a way to set the encoding for .coffee files but it seems to work.
-  it 'unicode', ->
+  it 'produces xml with unicode', ->
     data = MarkdownEditingDescriptor.markdownToXml("""
         >>á and Ø<<
 
@@ -668,7 +668,7 @@ describe 'tricky syntax cases', ->
     </problem>
     """)
     
-  it 'quote-type characters', ->
+  it 'produces xml with quote-type characters', ->
     data = MarkdownEditingDescriptor.markdownToXml("""
         >>"quotes" aren't `fun`<<
         () "hello" {{ isn't }}
@@ -689,7 +689,7 @@ describe 'tricky syntax cases', ->
     </problem>
     """)
 
-  it 'almost but not quite multiple choice syntax', ->
+  it 'produces xml with almost but not quite multiple choice syntax', ->
     data = MarkdownEditingDescriptor.markdownToXml("""
         >>q1<<
         this (x)
@@ -713,7 +713,7 @@ describe 'tricky syntax cases', ->
     """)
 
   # An incomplete checkbox hint passes through to cue the author
-  it 'almost checkboxgroup syntax', ->
+  it 'produce xml with almost but not quite checkboxgroup syntax', ->
     data = MarkdownEditingDescriptor.markdownToXml("""
         >>q1<<
         this [x]
@@ -738,7 +738,7 @@ describe 'tricky syntax cases', ->
 
   # It's sort of a pain to edit DOS line endings without some editor or other "fixing" them
   # for you. Therefore, we construct DOS line endings on the fly just for the test.
-  it 'check for DOS \r\n line endings', ->
+  it 'produces xml with DOS \r\n line endings', ->
     markdown = """
            q22
 
