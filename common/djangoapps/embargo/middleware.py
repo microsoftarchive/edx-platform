@@ -110,8 +110,9 @@ class EmbargoMiddleware(object):
                     return None
 
             ip_address = get_ip(request)
+            ip_filter = IPFilter.current()
 
-            if ip_address in IPFilter.current().blacklist_ips:
+            if ip_filter.enabled and ip_address in ip_filter.blacklist_ips:
                 log.info(
                     (
                         u"User %s was blocked from accessing %s "
@@ -130,7 +131,7 @@ class EmbargoMiddleware(object):
                 )
                 return redirect(ip_blacklist_url)
 
-            elif ip_address in IPFilter.current().whitelist_ips:
+            elif ip_filter.enabled and ip_address in ip_filter.whitelist_ips:
                 log.info(
                     (
                         u"User %s was allowed access to %s because "

@@ -347,7 +347,6 @@ def _third_party_auth_context(request):
             if redirect_url:
                 # If so, prevent them from enrolling and send them to the
                 # "blocked" message once they finish authenticating.
-                course_id = None
                 redirect_to = embargo_api.message_url_path(course_key, "enrollment")
         except InvalidKeyError:
             pass

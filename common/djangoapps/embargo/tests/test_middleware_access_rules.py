@@ -81,26 +81,31 @@ class EmbargoMiddlewareAccessTests(UrlResetMixin, ModuleStoreTestCase):
 
     @patch.dict(settings.FEATURES, {'ENABLE_COUNTRY_ACCESS': True})
     @ddt.data(
-        # request_ip, blacklist, whitelist, allow_access
-        ('173.194.123.35', ['173.194.123.35'], [], False),
-        ('173.194.123.35', ['173.194.0.0/16'], [], False),
-        ('173.194.123.35', ['127.0.0.0/32', '173.194.0.0/16'], [], False),
-        ('173.195.10.20', ['173.194.0.0/16'], [], True),
-        ('173.194.123.35', ['173.194.0.0/16'], ['173.194.0.0/16'], False),
-        ('173.194.123.35', [], ['173.194.0.0/16'], True),
-        ('192.178.2.3', [], ['173.194.0.0/16'], True),
+        # request_ip, blacklist, whitelist, is_enabled, allow_access
+        ('173.194.123.35', ['173.194.123.35'], [], True, False),
+        ('173.194.123.35', ['173.194.0.0/16'], [], True, False),
+        ('173.194.123.35', ['127.0.0.0/32', '173.194.0.0/16'], [], True, False),
+        ('173.195.10.20', ['173.194.0.0/16'], [], True, True),
+        ('173.194.123.35', ['173.194.0.0/16'], ['173.194.0.0/16'], True, False),
+        ('173.194.123.35', [], ['173.194.0.0/16'], True, True),
+        ('192.178.2.3', [], ['173.194.0.0/16'], True, True),
+        ('173.194.123.35', ['173.194.123.35'], [], False, True),
     )
     @ddt.unpack
-    def test_ip_access_rules(self, request_ip, blacklist, whitelist, allow_access):
+    def test_ip_access_rules(self, request_ip, blacklist, whitelist, is_enabled, allow_access):
+        # Ensure that IP blocking works for anonymous users
+        self.client.logout()
+
         # Set up the IP rules
         IPFilter.objects.create(
             blacklist=", ".join(blacklist),
             whitelist=", ".join(whitelist),
+            enabled=is_enabled
         )
 
         # Check that access is enforced
         response = self.client.get(
-            self.non_courseware_url,
+            "/",
             HTTP_X_FORWARDED_FOR=request_ip,
             REMOTE_ADDR=request_ip
         )
@@ -128,7 +133,8 @@ class EmbargoMiddlewareAccessTests(UrlResetMixin, ModuleStoreTestCase):
     def test_always_allow_access_to_embargo_messages(self, access_point, msg_key):
         # Blacklist an IP address
         IPFilter.objects.create(
-            blacklist="192.168.10.20"
+            blacklist="192.168.10.20",
+            enabled=True
         )
 
         url = reverse(
@@ -149,7 +155,8 @@ class EmbargoMiddlewareAccessTests(UrlResetMixin, ModuleStoreTestCase):
     def test_whitelist_ip_skips_country_access_checks(self):
         # Whitelist an IP address
         IPFilter.objects.create(
-            whitelist="192.168.10.20"
+            whitelist="192.168.10.20",
+            enabled=True
         )
 
         # Set up country access rules so the user would
