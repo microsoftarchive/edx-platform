@@ -80,21 +80,22 @@ class Command(TrackedCommand):
             except InvalidKeyError:
                 course = SlashSeparatedCourseKey.from_deprecated_string(options['course'])
 
-        post_data = {
-            'username': username,
-            'email': options['email'],
-            'password': options['password'],
-            'name': name,
-            'honor_code': u'true',
-            'terms_of_service': u'true',
-        }
+        form = AccountCreationForm(
+            data={
+                'username': username,
+                'email': options['email'],
+                'password': options['password'],
+                'name': name,
+            },
+            tos_required=False
+        )
         # django.utils.translation.get_language() will be used to set the new
         # user's preferred language.  This line ensures that the result will
         # match this installation's default locale.  Otherwise, inside a
         # management command, it will always return "en-us".
         translation.activate(settings.LANGUAGE_CODE)
         try:
-            user, profile, reg = _do_create_account(post_data)
+            user, profile, reg = _do_create_account(form)
             if options['staff']:
                 user.is_staff = True
                 user.save()

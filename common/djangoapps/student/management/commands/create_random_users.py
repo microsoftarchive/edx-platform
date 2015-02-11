@@ -11,23 +11,26 @@ from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from student.views import _do_create_account
 
 
-def get_random_post_override():
+def get_random_account_creation_form():
     """
     Generate unique user data for dummy users.
     """
     identification = uuid.uuid4().hex[:8]
-    return {
-        'username': 'user_{id}'.format(id=identification),
-        'email': 'email_{id}@example.com'.format(id=identification),
-        'password': '12345',
-        'name': 'User {id}'.format(id=identification),
-    }
+    return AccountCreationForm(
+        data={
+            'username': 'user_{id}'.format(id=identification),
+            'email': 'email_{id}@example.com'.format(id=identification),
+            'password': '12345',
+            'name': 'User {id}'.format(id=identification),
+        },
+        tos_required=False
+    )
 
 
 def create(num, course_key):
     """Create num users, enrolling them in course_key if it's not None"""
     for idx in range(num):
-        (user, user_profile, __) = _do_create_account(get_random_post_override())
+        (user, user_profile, __) = _do_create_account(get_random_account_creation_form())
         if course_key is not None:
             CourseEnrollment.enroll(user, course_key)
 
