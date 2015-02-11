@@ -202,6 +202,41 @@
                     // Otherwise, the flash player says it has a camera,
                     // so we don't need to keep checking.
                 }
+            },
+
+            /**
+             * TODO more explanation about this implementation
+             * and why we're using it.
+             */
+            {
+                name: "input-capture",
+
+                initialize: function( obj ) {
+                    this.wrapper = obj.wrapper || "";
+
+                    // Replace the camera section with the input tag
+                    $( this.wrapper ).html( this.inputCaptureTag() );
+                },
+
+                isSupported: function() {
+                    return true;
+                },
+
+                snapshot: function() {
+
+                },
+
+                getImageData: function() {
+
+                },
+
+                reset: function() {
+
+                },
+
+                inputCaptureTag: function() {
+                    return '<input type="file" accept="image/*" capture>';
+                }
             }
         ],
 
@@ -217,6 +252,7 @@
             );
 
             if ( !this.backend ) {
+                // TODO -- explain the justification here or remove this
                 this.handleError(
                     gettext( "Flash Not Detected" ),
                     gettext( "You don't seem to have Flash installed." ) + "  " +
