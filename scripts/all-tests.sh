@@ -74,14 +74,14 @@ SHARD=${SHARD:="all"}
 case "$TEST_SUITE" in
 
     "quality")
-        paver find_fixme > fixme.log || { cat fixme.log; EXIT=1; }
-        paver run_pep8 -l $PEP8_THRESHOLD > pep8.log || { cat pep8.log; EXIT=1; }
-        paver run_pylint -l $PYLINT_THRESHOLD > pylint.log || { cat pylint.log; EXIT=1; }
-        # Run quality task. Pass in the 'fail-under' percentage to diff-quality
-        paver run_quality -p 100
+#         paver find_fixme > fixme.log || { cat fixme.log; EXIT=1; }
+#         paver run_pep8 -l $PEP8_THRESHOLD > pep8.log || { cat pep8.log; EXIT=1; }
+#         paver run_pylint -l $PYLINT_THRESHOLD > pylint.log || { cat pylint.log; EXIT=1; }
+#         # Run quality task. Pass in the 'fail-under' percentage to diff-quality
+#         paver run_quality -p 100
 
-        # Need to create an empty test result so the post-build
-        # action doesn't fail the build.
+#         # Need to create an empty test result so the post-build
+#         # action doesn't fail the build.
         mkdir -p reports
         cat > reports/quality.xml <<END
 <?xml version="1.0" encoding="UTF-8"?>
@@ -89,7 +89,8 @@ case "$TEST_SUITE" in
 <testcase classname="quality" name="quality" time="0.604"></testcase>
 </testsuite>
 END
-        exit $EXIT
+        # exit $EXIT
+        exit 1
         ;;
 
     "unit")
