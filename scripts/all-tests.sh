@@ -95,14 +95,12 @@ END
     "unit")
         case "$SHARD" in        
             "lms")
-                paver test_system -s lms
-                paver coverage
+                paver test_system -s lms --cov_args="-p"
                 ;;
             "cms-js-commonlib")
-                paver test_system -s cms
+                paver test_system -s cms --cov_args="-p"
                 paver test_js --coverage --skip_clean
-                paver test_lib --skip_clean
-                paver coverage
+                paver test_lib --skip_clean --cov_args="-p"
                 ;;
             *)
                 paver test
