@@ -213,31 +213,57 @@
 
                 initialize: function( obj ) {
                     this.wrapper = obj.wrapper || "";
+                    this.imageData = null;
 
                     // Replace the camera section with the input tag
+                    // TODO -- skip replacing the canvas
                     $( this.wrapper ).html( this.inputCaptureTag() );
+
+                    // TODO: No capture buttons; just display the image
+                    // once a file is uploaded.
+                    this.$inputEl = $( 'input#webcam' );
+                    this.$snapshotEl = $( 'img.snapshot' );
+                    this.$inputEl.on( 'change', _.bind( this.handleInputChange ) );
                 },
 
                 isSupported: function() {
                     return true;
                 },
 
-                snapshot: function() {
-
+                snapshot: function( ) {
+                    // TODO -- explain why this is a no-op
                 },
 
                 getImageData: function() {
-
+                    return this.imageData;
                 },
 
                 reset: function() {
-
+                    // TODO -- explain why this is a no-op
                 },
 
                 inputCaptureTag: function() {
-                    return '<input type="file" accept="image/*" capture>';
-                }
-            }
+                    return (
+                        '<img class="snapshot" src="" alt="TODO" />' +
+                        '<input class="webcam" type="file" accept="image/*" capture>'
+                    );
+                },
+
+                handleInputChange: function( event ) {
+                    var files = event.target.files,
+                        reader = new FileReader();
+                    if ( files[0] && files[0].type.match( 'image.*' ) ) {
+                        this.imageData = reader.readAsDataUrl( files[0] );
+                        this.displayImage( this.imageData );
+                    } else {
+                        this.imageData = null;
+                    }
+                },
+
+                displayImage: function( imageUrl ) {
+                    this.$snapshotEl.attr( 'src', imageUrl );
+                },
+            },
         ],
 
         initialize: function( obj ) {
