@@ -2126,7 +2126,7 @@ def spoc_gradebook(request, course_id):
 def mark_student_can_skip_entrance_exam(request, course_id):  # pylint: disable=invalid-name
     """
     Mark a student to skip entrance exam.
-    Takes `unique_student_identifier` as required query parameter
+    Takes `unique_student_identifier` as required query parameter.
     """
     course_id = SlashSeparatedCourseKey.from_deprecated_string(course_id)
     student_identifier = request.GET.get('unique_student_identifier')
