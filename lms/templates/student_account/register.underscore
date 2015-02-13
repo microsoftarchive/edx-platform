@@ -18,15 +18,14 @@
                     <span class="text"><%- gettext("Create an account using") %></span>
                 </h2>
             </div>
-            <%
-            _.each( context.providers, function( provider) {
-                if ( provider.registerUrl ) { %>
-                    <button type="button" class="button button-primary button-<%- provider.name %> login-provider register-<%- provider.name %>" data-provider-url="<%- provider.registerUrl %>">
-                        <span class="icon fa <%- provider.iconClass %>" aria-hidden="true"></span>
-                        <%- provider.name %>
-                    </button>
-            <%  }
-            }); %>
+            <button type="button" class="button button-primary button-Facebook login-provider register-Facebook" data-provider-url="/auth/login/facebook/?auth_entry=register">
+    <span class="icon fa fa-facebook" aria-hidden="true"></span>
+    Facebook
+</button>
+<button type="button" class="button button-primary button-Google login-provider register-Google" data-provider-url="/auth/login/google-oauth2/?auth_entry=register">
+    <span class="icon fa fa-google-plus" aria-hidden="true"></span>
+    Google
+</button>
         </div>
     <% } %>
 
