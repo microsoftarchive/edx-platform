@@ -1404,15 +1404,10 @@ def _do_create_account(form):
     return (user, profile, registration)
 
 
-@csrf_exempt
-def create_account(request, post_override=None):  # pylint: disable-msg=too-many-statements
-    """
-    JSON call to create new edX account.
-    Used by form in signup_modal.html, which is included into navigation.html
-    """
-    js = {'success': False}  # pylint: disable-msg=invalid-name
-
-    post_vars = post_override if post_override else request.POST
+def foobar(request, data):
+    # Copy data so we can modify it; we can't just do dict(data) because if data
+    # is request.POST, that results in a dict containing lists of values
+    data = dict(data.items())
 
     # allow for microsites to define their own set of required/optional/hidden fields
     extra_fields = microsite.get_value(
@@ -1421,33 +1416,25 @@ def create_account(request, post_override=None):  # pylint: disable-msg=too-many
     )
 
     if third_party_auth.is_enabled() and pipeline.running(request):
-        post_vars = dict(post_vars.items())
-        post_vars.update({'password': pipeline.make_random_password()})
+        data["password"] = pipeline.make_random_password()
 
     # if doing signup for an external authorization, then get email, password, name from the eamap
     # don't use the ones from the form, since the user could have hacked those
     # unless originally we didn't get a valid email or name from the external auth
+    # TODO: We do not check whether these values meet all necessary criteria, such as email length
     do_external_auth = 'ExternalAuthMap' in request.session
     if do_external_auth:
         eamap = request.session['ExternalAuthMap']
         try:
             validate_email(eamap.external_email)
-            email = eamap.external_email
+            data["email"] = eamap.external_email
         except ValidationError:
-            email = post_vars.get('email', '')
-        if eamap.external_name.strip() == '':
-            name = post_vars.get('name', '')
-        else:
-            name = eamap.external_name
-        password = eamap.internal_password
-        post_vars = dict(post_vars.items())
-        post_vars.update(dict(email=email, name=name, password=password))
-        log.debug(u'In create_account with external_auth: user = %s, email=%s', name, email)
+            pass
+        if eamap.external_name.strip() != '':
+            data["name"] = eamap.external_name
+        data["password"] = eamap.internal_password
+        log.debug(u'In create_account with external_auth: user = %s, email=%s', data["name"], data["email"])
 
-    extra_fields = microsite.get_value(
-        'REGISTRATION_EXTRA_FIELDS',
-        getattr(settings, 'REGISTRATION_EXTRA_FIELDS', {})
-    )
     extended_profile_fields = microsite.get_value('extended_profile_fields', [])
     enforce_password_policy = (
         settings.FEATURES.get("ENFORCE_PASSWORD_POLICY", False) and
@@ -1464,7 +1451,7 @@ def create_account(request, post_override=None):  # pylint: disable-msg=too-many
     )
 
     form = AccountCreationForm(
-        data=post_vars,
+        data=data,
         extra_fields=extra_fields,
         extended_profile_fields=extended_profile_fields,
         enforce_username_neq_password=True,
@@ -1472,35 +1459,19 @@ def create_account(request, post_override=None):  # pylint: disable-msg=too-many
         tos_required=tos_required
     )
 
-    if not form.is_valid():
-        field, error_list = next(form.errors.iteritems())
-        return JsonResponse(
-            {
-                "success": False,
-                "field": field,
-                "value": error_list[0],
-            },
-            status=400
-        )
-
-    try:
-        with transaction.commit_on_success():
-            ret = _do_create_account(form)
-    except AccountValidationError as exc:
-        return JsonResponse({'success': False, 'value': exc.message, 'field': exc.field}, status=400)
+    with transaction.commit_on_success():
+        ret = _do_create_account(form)
 
     (user, profile, registration) = ret
 
     dog_stats_api.increment("common.student.account_created")
 
-    email = post_vars['email']
-
     # Track the user's registration
     if settings.FEATURES.get('SEGMENT_IO_LMS') and hasattr(settings, 'SEGMENT_IO_LMS_KEY'):
         tracking_context = tracker.get_tracker().resolve_context()
         analytics.identify(user.id, {
-            'email': email,
-            'username': username,
+            'email': user.email,
+            'username': user.username,
         })
 
         # If the user is registering via 3rd party auth, track which provider they use
@@ -1515,7 +1486,7 @@ def create_account(request, post_override=None):  # pylint: disable-msg=too-many
             "edx.bi.user.account.registered",
             {
                 'category': 'conversion',
-                'label': request.POST.get('course_id'),
+                'label': data.get('course_id'),
                 'provider': provider_name
             },
             context={
@@ -1528,7 +1499,7 @@ def create_account(request, post_override=None):  # pylint: disable-msg=too-many
     create_comments_service_user(user)
 
     context = {
-        'name': post_vars['name'],
+        'name': profile.name,
         'key': registration.activation_key,
     }
 
@@ -1559,16 +1530,11 @@ def create_account(request, post_override=None):  # pylint: disable-msg=too-many
                 user.email_user(subject, message, from_address)
         except Exception:  # pylint: disable=broad-except
             log.error(u'Unable to send activation email to user from "%s"', from_address, exc_info=True)
-            js['value'] = _('Could not send activation e-mail.')
-            # What is the correct status code to use here? I think it's 500, because
-            # the problem is on the server's end -- but also, the account was created.
-            # Seems like the core part of the request was successful.
-            return JsonResponse(js, status=500)
 
     # Immediately after a user creates an account, we log them in. They are only
     # logged in until they close the browser. They can't log in again until they click
     # the activation link from the email.
-    new_user = authenticate(username=post_vars['username'], password=post_vars['password'])
+    new_user = authenticate(username=user.username, password=data['password'])
     login(request, new_user)
     request.session.set_expiry(0)
 
@@ -1581,8 +1547,8 @@ def create_account(request, post_override=None):  # pylint: disable-msg=too-many
         eamap.user = new_user
         eamap.dtsignup = datetime.datetime.now(UTC)
         eamap.save()
-        AUDIT_LOG.info(u"User registered with external_auth %s", post_vars['username'])
-        AUDIT_LOG.info(u'Updated ExternalAuthMap for %s to be %s', post_vars['username'], eamap)
+        AUDIT_LOG.info(u"User registered with external_auth %s", new_user.username)
+        AUDIT_LOG.info(u'Updated ExternalAuthMap for %s to be %s', new_user.username, eamap)
 
         if settings.FEATURES.get('BYPASS_ACTIVATION_EMAIL_FOR_EXTAUTH'):
             log.info('bypassing activation email')
@@ -1590,19 +1556,8 @@ def create_account(request, post_override=None):  # pylint: disable-msg=too-many
             new_user.save()
             AUDIT_LOG.info(u"Login activated on extauth account - {0} ({1})".format(new_user.username, new_user.email))
 
-    dog_stats_api.increment("common.student.account_created")
-    redirect_url = try_change_enrollment(request)
 
-    # Resume the third-party-auth pipeline if necessary.
-    if third_party_auth.is_enabled() and pipeline.running(request):
-        running_pipeline = pipeline.get(request)
-        redirect_url = pipeline.get_complete_url(running_pipeline['backend'])
-
-    response = JsonResponse({
-        'success': True,
-        'redirect_url': redirect_url,
-    })
-
+def set_marketing_cookie(request, response):
     # set the login cookie for the edx marketing site
     # we want this cookie to be accessed via javascript
     # so httponly is set to None
@@ -1621,6 +1576,41 @@ def create_account(request, post_override=None):  # pylint: disable-msg=too-many
                         path='/',
                         secure=None,
                         httponly=None)
+
+
+@csrf_exempt
+def create_account(request, post_override=None):
+    """
+    JSON call to create new edX account.
+    Used by form in signup_modal.html, which is included into navigation.html
+    """
+    try:
+        foobar(request, post_override or request.POST)
+    except AccountValidationError as exc:
+        return JsonResponse({'success': False, 'value': exc.message, 'field': exc.field}, status=400)
+    except ValidationError as exc:
+        field, error_list = next(exc.message_dict.iteritems())
+        return JsonResponse(
+            {
+                "success": False,
+                "field": field,
+                "value": error_list[0],
+            },
+            status=400
+        )
+
+    redirect_url = try_change_enrollment(request)
+
+    # Resume the third-party-auth pipeline if necessary.
+    if third_party_auth.is_enabled() and pipeline.running(request):
+        running_pipeline = pipeline.get(request)
+        redirect_url = pipeline.get_complete_url(running_pipeline['backend'])
+
+    response = JsonResponse({
+        'success': True,
+        'redirect_url': redirect_url,
+    })
+    set_marketing_cookie(request, response)
     return response
 
 
