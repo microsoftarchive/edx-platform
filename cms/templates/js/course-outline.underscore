@@ -99,8 +99,8 @@ if (xblockInfo.get('graded')) {
     </div>
     <div class="<%= xblockType %>-status">
         <% if (!xblockInfo.isVertical()) { %>
-            <div class="status-release">
             <% if (xblockInfo.showSectionContent()) { %>
+             <div class="status-release">
                 <p>
                     <span class="sr status-release-label"><%= gettext('Release Status:') %></span>
                     <span class="status-release-value">
@@ -119,14 +119,14 @@ if (xblockInfo.get('graded')) {
                         <% } %>
                     </span>
                 </p>
+             </div>
             <% } else if (xblockInfo.getExamScore() !=null) { %>
-                <p>
+                <div class="status-exam">
                     <span class="status-release-value">
                           <%= gettext('You must score ')%> <%= xblockInfo.getExamScore() %> <%= gettext('% or higher to proceed')%>
                     </span>
-                </p>
+                </div>
             <% } %>
-            </div>
             <% if (xblockInfo.get('due_date') || xblockInfo.get('graded')) { %>
                 <div class="status-grading">
                     <p>
