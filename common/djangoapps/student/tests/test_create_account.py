@@ -81,6 +81,10 @@ class TestCreateAccount(TestCase):
         user = User.objects.get(username=self.username)
         return user.profile
 
+    @unittest.skipUnless(
+        "microsite_configuration.middleware.MicrositeMiddleware" in settings.MIDDLEWARE_CLASSES,
+        "Microsites not implemented in this environment"
+    )
     def test_profile_saved_no_optional_fields(self):
         profile = self.create_account_and_fetch_profile()
         self.assertEqual(profile.name, self.params["name"])
@@ -99,6 +103,10 @@ class TestCreateAccount(TestCase):
         )
         self.assertIsNone(profile.year_of_birth)
 
+    @unittest.skipUnless(
+        "microsite_configuration.middleware.MicrositeMiddleware" in settings.MIDDLEWARE_CLASSES,
+        "Microsites not implemented in this environment"
+    )
     def test_profile_saved_all_optional_fields(self):
         self.params.update({
             "level_of_education": "a",
@@ -127,6 +135,10 @@ class TestCreateAccount(TestCase):
         )
         self.assertEqual(profile.year_of_birth, 2015)
 
+    @unittest.skipUnless(
+        "microsite_configuration.middleware.MicrositeMiddleware" in settings.MIDDLEWARE_CLASSES,
+        "Microsites not implemented in this environment"
+    )
     def test_profile_saved_empty_optional_fields(self):
         self.params.update({
             "level_of_education": "",
