@@ -1,5 +1,7 @@
 """ Common Authentication Handlers used across projects. """
 from rest_framework import authentication
+from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.compat import oauth2_provider, provider_now
 
 
 class SessionAuthenticationAllowInactiveUser(authentication.SessionAuthentication):
@@ -46,3 +48,34 @@ class SessionAuthenticationAllowInactiveUser(authentication.SessionAuthenticatio
 
         # CSRF passed with authenticated user
         return (user, None)
+
+
+class OAuth2AuthenticationAllowInactiveUser(authentication.OAuth2Authentication):
+    """
+    This is a temporary workaround while the is_active field on the user is coupled
+    with whether or not the user has verified ownership of their claimed email address.
+    Once is_active is decoupled from verified_email, we will no longer need this
+    class override.
+
+    But until then, this authentication class ensures that the user is logged in,
+    but does not require that their account "is_active".
+
+    This class can be used for an OAuth2-accessible endpoint that allows users to access
+    that endpoint without having their email verified.  For example, this is used
+    for mobile endpoints.
+
+    """
+    def authenticate_credentials(self, request, access_token):
+        """
+        Authenticate the request, given the access token.
+        Override base class implementation to discard failure if user is inactive.
+        """
+        try:
+            token = oauth2_provider.oauth2.models.AccessToken.objects.select_related('user')
+            # provider_now switches to timezone aware datetime when
+            # the oauth2_provider version supports to it.
+            token = token.get(token=access_token, expires__gt=provider_now())
+        except oauth2_provider.oauth2.models.AccessToken.DoesNotExist:
+            raise AuthenticationFailed('Invalid token')
+
+        return token.user, token
