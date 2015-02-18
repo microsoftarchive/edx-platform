@@ -616,7 +616,7 @@ class CapaMixin(CapaFields):
         except Exception as err:  # pylint: disable=broad-except
             html = self.handle_problem_html_error(err)
 
-        html = self.remove_extra_tags(html)
+        html = self.remove_tags_from_html(html)
 
         # The convention is to pass the name of the check button if we want
         # to show a check button, and False otherwise This works because
@@ -648,7 +648,6 @@ class CapaMixin(CapaFields):
                 prefix = _('Hint: ')
             else:
                 # Translators: e.g. "Hint 1 of 3" meaning we are showing the first of three hints.
-                # Do not translate hint_num and hints_count
                 prefix = _('Hint ({hint_num} of {hints_count}): ').format(hint_num=hint_index + 1,
                                                                           hints_count=len(demand_hints))
             demand_hint = prefix + hint_element.text.strip()
@@ -688,7 +687,7 @@ class CapaMixin(CapaFields):
 
         return html
 
-    def remove_extra_tags(self, html):
+    def remove_tags_from_html(self, html):
         """
         The capa xml includes many tags such as <additional_answer> or <demandhint> which are not
         meant to be part of the client html. We strip them all and return the resulting html.
