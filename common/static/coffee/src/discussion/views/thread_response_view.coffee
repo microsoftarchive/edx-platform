@@ -19,7 +19,11 @@ if Backbone?
 
       templateData = @model.toJSON()
       templateData.wmdId = @model.id ? (new Date()).getTime()
-      templateData.create_sub_comment = $("#discussion-container").data("user-create-subcomment")
+      container = $("#discussion-container")
+      if !container.length
+        # inline discussion
+        container = $(".discussion-module")
+      templateData.create_sub_comment = container.data("user-create-subcomment")
       @template(templateData)
 
     render: ->
