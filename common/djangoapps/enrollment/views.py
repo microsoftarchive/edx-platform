@@ -5,14 +5,13 @@ consist primarily of authentication, request validation, and serialization.
 """
 from opaque_keys import InvalidKeyError
 from rest_framework import status
-from rest_framework.authentication import OAuth2Authentication
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.throttling import UserRateThrottle
 from rest_framework.views import APIView
 from enrollment import api
 from enrollment.errors import CourseNotFoundError, CourseEnrollmentError, CourseModeNotFoundError
-from util.authentication import SessionAuthenticationAllowInactiveUser
+from util.authentication import SessionAuthenticationAllowInactiveUser, OAuth2AuthenticationAllowInactiveUser
 from util.disable_rate_limit import can_disable_rate_limit
 
 
@@ -64,7 +63,7 @@ class EnrollmentView(APIView):
             * user: The ID of the user.
     """
 
-    authentication_classes = OAuth2Authentication, SessionAuthenticationAllowInactiveUser
+    authentication_classes = OAuth2AuthenticationAllowInactiveUser, SessionAuthenticationAllowInactiveUser
     permission_classes = permissions.IsAuthenticated,
     throttle_classes = EnrollmentUserThrottle,
 
@@ -233,7 +232,7 @@ class EnrollmentListView(APIView):
                 * user: The ID of the user.
     """
 
-    authentication_classes = OAuth2Authentication, SessionAuthenticationAllowInactiveUser
+    authentication_classes = OAuth2AuthenticationAllowInactiveUser, SessionAuthenticationAllowInactiveUser
     permission_classes = permissions.IsAuthenticated,
     throttle_classes = EnrollmentUserThrottle,
 
