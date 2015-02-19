@@ -236,7 +236,6 @@ class LoncapaProblem(object):
                 if correct_option:
                     optioninput.attrib.update({'correct': correct_option})
 
-
     def do_reset(self):
         """
         Reset internal state to unfinished, with no answers
