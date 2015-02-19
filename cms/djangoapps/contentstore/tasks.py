@@ -70,8 +70,9 @@ def deserialize_fields(json_fields):
 
 
 @task()
-def send_bulk_notifications_to_user(user_ids_list, notification_msg):
+def publish_bulk_notifications_task(user_ids_list, notification_msg):
     """
     This function will call the edx_notifications api method "bulk_publish_notification_to_users"
+    and run as a new Celery task.
     """
     bulk_publish_notification_to_users(user_ids_list, notification_msg)
