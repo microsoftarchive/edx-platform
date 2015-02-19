@@ -670,6 +670,14 @@ class CourseFields(object):
         scope=Scope.settings,
         default=""
     )
+    cert_html_view_overrides = Dict(
+        help=_(
+            "Enter course-specific overrides for the Web/HTML template parameters here "
+            "(JSON format)"
+        ),
+        display_name=_("Certificate Web/HTML View Overrides"),
+        scope=Scope.settings,
+    )
 
     # An extra property is used rather than the wiki_slug/number because
     # there are courses that change the number for different runs. This allows

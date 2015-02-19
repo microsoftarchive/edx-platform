@@ -1,8 +1,11 @@
 """URL handlers related to certificate handling by LMS"""
+from datetime import datetime
 import dogstats_wrapper as dog_stats_api
 import json
 import logging
 
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, Http404, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
@@ -13,13 +16,17 @@ from certificates.models import (
     certificate_status_for_student,
     CertificateStatuses,
     GeneratedCertificate,
-    ExampleCertificate
+    ExampleCertificate,
+    CertificateHtmlViewConfiguration
 )
 from certificates.queue import XQueueCertInterface
+from edxmako.shortcuts import render_to_response
 from xmodule.modulestore.django import modulestore
+from opaque_keys import InvalidKeyError
+from opaque_keys.edx.keys import CourseKey
+from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from util.json_request import JsonResponse, JsonResponseBadRequest
 from util.bad_request_rate_limiter import BadRequestRateLimiter
-from opaque_keys.edx.locations import SlashSeparatedCourseKey
 
 logger = logging.getLogger(__name__)
 
@@ -224,3 +231,76 @@ def update_example_certificate(request):
 
     # Let the XQueue know that we handled the response
     return JsonResponse({'return_code': 0})
+
+
+@login_required
+def render_html_view(request):
+    """
+    This view generates an HTML representation of the specified student's certificate
+    If a certificate is not available, we display a "Sorry!" screen instead
+    """
+    invalid_template_path = 'certificates/invalid.html'
+
+    # Feature Flag check
+    if not settings.FEATURES.get('CERTIFICATES_HTML_VIEW', False):
+        return render_to_response(invalid_template_path)
+
+    context = {}
+    course_id = request.GET.get('course', None)
+    context['course'] = course_id
+    if not course_id:
+        return render_to_response(invalid_template_path, context)
+
+    # Course Lookup
+    try:
+        course_key = CourseKey.from_string(course_id)
+    except InvalidKeyError:
+        return render_to_response(invalid_template_path, context)
+    course = modulestore().get_course(course_key)
+    if not course:
+        return render_to_response(invalid_template_path, context)
+
+    # Certificate Lookup
+    try:
+        certificate = GeneratedCertificate.objects.get(
+            user=request.user,
+            course_id=course_key
+        )
+    except GeneratedCertificate.DoesNotExist:
+        return render_to_response(invalid_template_path, context)
+
+    # Load static output values from configuration,
+    configuration = CertificateHtmlViewConfiguration.get_config()
+    context = configuration.get('default', {})
+    # Override the defaults with any mode-specific static values
+    context.update(configuration.get(certificate.mode, {}))
+    # Override further with any course-specific static values
+    context.update(course.cert_html_view_overrides)
+
+    # Populate dynamic output values using the course/certificate data loaded above
+    user_fullname = request.user.profile.name
+    company_name = context.get('company_name')
+    context['accomplishment_copy_name'] = user_fullname
+    accd = 'a course of study offered by <span class="detail--xuniversity">{0}</span>'.format(course.org)
+    accd = accd + ', through <span class="detail--company">{0}</span>.'.format(company_name)
+    context['accomplishment_copy_course_description'] = accd
+    context['accomplishment_copy_course_org'] = course.org
+    context['accomplishment_copy_course_name'] = course.display_name
+    context['accomplishment_more_title'] = "More Information About {0}'s Certificate:".format(user_fullname)
+    context['certificate_date_issued'] = certificate.modified_date.strftime("%B %m, %Y")
+    context['certificate_id_number'] = certificate.verify_uuid
+    context['certificate_verify_url'] = "{0}{1}{2}".format(
+        context.get('certificate_verify_url_prefix'),
+        certificate.verify_uuid,
+        context.get('certificate_verify_url_suffix')
+    )
+    context['copyright_text'] = "&copy; {0} {1}. All rights reserved".format(datetime.now().year, company_name)
+    dmd = "This is a valid {0} certificate for {1}, ".format(company_name, user_fullname)
+    dmd = dmd + "who participated in {0} {1}".format(course.org, course.number).format()
+    context['document_meta_description'] = dmd
+    context['document_title'] = "Valid {} {} Certificate | {}".format(course.org, course.number, company_name)
+    context['accomplishment_copy_description_full'] = '{}{}'.format(
+        context.get('accomplishment_copy_description'),
+        context.get('accomplishment_copy_description_suffix')
+    )
+    return render_to_response("certificates/valid.html", context)
