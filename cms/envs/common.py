@@ -139,6 +139,9 @@ FEATURES = {
     # Toggle course milestones app/feature
     'MILESTONES_APP': False,
 
+    # edx_notifications application feature flag
+    'NOTIFICATIONS_ENABLED': False,
+
     # Toggle course entrance exams feature
     'ENTRANCE_EXAMS': False,
 

@@ -73,10 +73,16 @@ from student.roles import (
 from student import auth
 from course_action_state.models import CourseRerunState, CourseRerunUIStateManager
 from course_action_state.managers import CourseActionStateItemNotFoundError
+from student.models import CourseEnrollment
 from microsite_configuration import microsite
 from xmodule.course_module import CourseFields
 from xmodule.split_test_module import get_split_user_partitions
 from student.auth import has_course_author_access
+
+
+from contentstore.tasks import publish_bulk_notifications_task
+from edx_notifications.data import NotificationMessage
+from edx_notifications.lib.publisher import get_notification_type
 
 from util.milestones_helpers import (
     set_prerequisite_courses,
@@ -815,29 +821,28 @@ def course_info_update_handler(request, course_key_string, provided_id=None):
     # can be either and sometimes django is rewriting one to the other:
     elif request.method in ('POST', 'PUT'):
         try:
-            from contentstore.tasks import send_bulk_notifications_to_user
-            from edx_notifications.data import NotificationType, NotificationMessage
-            from edx_notifications.lib.publisher import register_notification_type
-            notification_type = NotificationType(
-                name=u'open-edx.studio.announcements.new_announcement',
-                renderer=u'edx_notifications.openedx.announcements.NewCourseAnnouncementRenderer',
-            )
-            # register the notification type
-            register_notification_type(notification_type)
-            course_id = course_key.to_deprecated_string()
-            notification_msg = NotificationMessage(
-                msg_type=notification_type,
-                namespace=course_id,
-                payload={'course_name': course_id}
-            )
-            from student.models import CourseEnrollment
-            user_ids = CourseEnrollment.objects.values_list('user_id', flat=True).filter(
-                is_active=1,
-                course_id=course_key
-            )
+            if request.method == 'POST':
+                # only send bulk notifications to users when there is
+                # new update/announcement in the course.
 
-            # Send bulk notifications to user as a new celery task
-            send_bulk_notifications_to_user.delay(user_ids, notification_msg)
+                # get the notification type.
+                notification_type = get_notification_type(u'open-edx.studio.announcements.new_announcement')
+                course_id = course_key.to_deprecated_string()
+                notification_msg = NotificationMessage(
+                    msg_type=notification_type,
+                    namespace=course_id,
+                    payload={'course_name': course_id}
+                )
+
+                # get the enrolled and active user_id list for this course.
+                user_ids = CourseEnrollment.objects.values_list('user_id', flat=True).filter(
+                    is_active=1,
+                    course_id=course_key
+                )
+
+                # publish bulk notifications to user as a new celery task
+                publish_bulk_notifications_task.delay(user_ids, notification_msg)
+
             return JsonResponse(update_course_updates(usage_key, request.json, provided_id, request.user))
         except:
             return HttpResponseBadRequest(
