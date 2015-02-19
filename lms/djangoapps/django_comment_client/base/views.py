@@ -559,6 +559,7 @@ def publish_discussion_notification(msg_type_name, course_id, original_poster_id
     poster of the thread.
     """
     msg_type = get_notification_type(msg_type_name)
+    register_notification_type(msg_type)
     msg = NotificationMessage(
         namespace=course_id,
         msg_type=msg_type,
