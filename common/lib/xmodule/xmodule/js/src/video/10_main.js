@@ -44,6 +44,7 @@
             'video/07_video_volume_control.js',
             'video/08_video_speed_control.js',
             'video/09_video_caption.js',
+            'video/09_bumper.js',
             'video/10_commands.js',
             'video/095_video_context_menu.js'
         ],
@@ -57,6 +58,7 @@
             VideoVolumeControl,
             VideoSpeedControl,
             VideoCaption,
+            VideoBumper,
             VideoCommands,
             VideoContextMenu
         ) {
@@ -74,7 +76,11 @@
                     $(window).off('unload', previousState.saveState);
                 }
 
-                state = {};
+                var el = $(element).find('.video');
+                state = {
+                    el: el,
+                    metadata: el.data('metadata')
+                };
                 // Because this constructor can be called multiple times on a single page (when the user switches
                 // verticals, the page doesn't reload, but the content changes), we must will check each time if there
                 // is a previous copy of 'state' object. If there is, we will make sure that copy exists cleanly. We
@@ -96,13 +102,24 @@
                     VideoContextMenu
                 ];
 
+                state.bumper_modules = [
+                    VideoControl,
+                    VideoCommands,
+                    VideoCaption
+                ];
+
                 state.youtubeXhr = youtubeXhr;
-                initialize(state, element);
+
+                VideoBumper(state, element).done(function () {
+                    state.metadata.autoplay = true;
+                    initialize(state, element);
+                });
+
                 if (!youtubeXhr) {
                     youtubeXhr = state.youtubeXhr;
                 }
 
-                $(element).find('.video').data('video-player-state', state);
+                el.data('video-player-state', state);
 
                 // Because the 'state' object is only available inside this closure, we will also make it available to
                 // the caller by returning it. This is necessary so that we can test Video with Jasmine.

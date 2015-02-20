@@ -1,35 +1,32 @@
 <%! from django.utils.translation import ugettext as _ %>
+<%! import json %>
 
 % if display_name is not UNDEFINED and display_name is not None:
     <h2>${display_name}</h2>
 % endif
 
-<div
-    id="video_${id}"
-    class="video closed"
-
-    data-streams="${youtube_streams}"
-
-    ${'data-sub="{}"'.format(sub) if sub else ''}
-    ${'data-autoplay="{}"'.format(autoplay) if autoplay else ''}
-
-    data-sources='${sources}'
-    data-save-state-url="${ajax_url}"
-    data-caption-data-dir="${data_dir}"
-    data-show-captions="${show_captions}"
-    data-general-speed="${general_speed}"
-    data-speed="${speed}"
-    data-saved-video-position="${saved_video_position}"
-    data-start="${start}"
-    data-end="${end}"
-    data-transcript-language="${transcript_language}"
-    data-transcript-languages='${transcript_languages}'
-    data-autoplay="${autoplay}"
-    data-yt-test-timeout="${yt_test_timeout}"
-    data-yt-api-url="${yt_api_url}"
-    data-yt-test-url="${yt_test_url}"
-    data-transcript-translation-url="${transcript_translation_url}"
-    data-transcript-available-translations-url="${transcript_available_translations_url}"
+<%
+  metadata = {
+    "streams": youtube_streams,
+    "sub": sub if sub else '',
+    "autoplay": autoplay if autoplay else False,
+    "sources": sources,
+    "saveStateUrl": ajax_url,
+    "captionDataDir": data_dir,
+    "showCaptions": show_captions,
+    "generalSpeed": general_speed,
+    "speed": speed,
+    "savedVideoPosition": saved_video_position,
+    "start": start,
+    "end": end,
+    "transcriptLanguage": transcript_language,
+    "transcriptLanguages": json.loads(transcript_languages),
+    "autoplay": autoplay,
+    "ytTestTimeout": yt_test_timeout,
+    "ytApiUrl": yt_api_url,
+    "ytTestUrl": yt_test_url,
+    "transcriptTranslationUrl": transcript_translation_url,
+    "transcriptAvailableTranslationsUrl": transcript_available_translations_url,
 
     ## For now, the option "data-autohide-html5" is hard coded. This option
     ## either enables or disables autohiding of controls and captions on mouse
@@ -42,8 +39,14 @@
     ## There is no option in the "Advanced Editor" to set this option. However,
     ## this option will have an effect if changed to "True". The code on
     ## front-end exists.
-    data-autohide-html5="False"
+    "autohideHtml5": False
+  }
 
+%>
+<div
+    id="video_${id}"
+    class="video closed"
+    data-metadata='${json.dumps(metadata)}'
     tabindex="-1"
 >
     <div class="focus_grabber first"></div>

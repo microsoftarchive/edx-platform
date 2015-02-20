@@ -458,25 +458,46 @@ function (VideoPlayer, VideoStorage, i18n) {
         });
     }
 
+
+
+    function canShowVideo (state) {
+        var dfd = $.Deferred(), player;
+        state = $.extend(true, {}, state, {
+            videoType: 'html5',
+            config: {
+                savedVideoPosition: 0,
+                speed: '1.0',
+                startTime: 0,
+                endTime: null,
+                autoplay: true,
+                sources: ['https://s3.amazonaws.com/edx-course-videos/edx-intro/edX-FA12-cware-1_100.mp4']
+            }
+        });
+
+        // player = VideoPlayer(state);
+        // _renderElements(state);
+        state.el.on('ended', dfd.resolve);
+
+        return dfd.promise().resolve();
+    }
+
     // function initialize(element)
     // The function set initial configuration and preparation.
 
     function initialize(element) {
         var self = this,
-            el = $(element).find('.video'),
-            container = el.find('.video-wrapper'),
-            id = el.attr('id').replace(/video_/, ''),
+            container = this.el.find('.video-wrapper'),
+            id = this.el.attr('id').replace(/video_/, ''),
             __dfd__ = $.Deferred(),
             isTouch = onTouchBasedDevice() || '',
             storage = VideoStorage('VideoState', id);
 
         if (isTouch) {
-            el.addClass('is-touch');
+            this.el.addClass('is-touch');
         }
 
         $.extend(this, {
             __dfd__: __dfd__,
-            el: el,
             container: container,
             id: id,
             isFullScreen: false,
@@ -492,7 +513,8 @@ function (VideoPlayer, VideoStorage, i18n) {
         // are "read only", so don't modify them. All variable content lives in
         // 'state' object.
         // jQuery .data() return object with keys in lower camelCase format.
-        this.config = $.extend({}, _getConfiguration(el.data(), storage), {
+        console.log(this.metadata);
+        this.config = $.extend({}, _getConfiguration(this.metadata, storage), {
             element: element,
             fadeOutTimeout:     1400,
             captionsFreezeTime: 10000,
@@ -510,6 +532,8 @@ function (VideoPlayer, VideoStorage, i18n) {
         this.speed = this.speedToString(
             this.config.speed || this.config.generalSpeed
         );
+
+        // canShowVideo(state).always(function () {
 
         if (!(_parseYouTubeIDs(this))) {
 
@@ -554,9 +578,9 @@ function (VideoPlayer, VideoStorage, i18n) {
 
                             // Non-YouTube sources were not found either.
 
-                            el.find('.video-player div')
+                            self.el.find('.video-player div')
                                 .removeClass('hidden');
-                            el.find('.video-player h3')
+                            self.find('.video-player h3')
                                 .addClass('hidden');
 
                             // If in reality the timeout was to short, try to
@@ -570,7 +594,7 @@ function (VideoPlayer, VideoStorage, i18n) {
 
                             // In-browser HTML5 player does not support quality
                             // control.
-                            el.find('a.quality_control').hide();
+                            self.el.find('a.quality_control').hide();
                         }
                     } else {
                         console.log(
@@ -584,7 +608,9 @@ function (VideoPlayer, VideoStorage, i18n) {
                     _setConfigurations(self);
                     _renderElements(self);
                 });
-        }
+            }
+
+        // });
 
         return __dfd__.promise();
     }

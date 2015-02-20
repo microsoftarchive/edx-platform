@@ -716,6 +716,10 @@ function (HTML5Video, Resizer) {
         }
 
         this.el.trigger('ready', arguments);
+
+        if (this.config.autoplay) {
+            this.videoPlayer.play();
+        }
     }
 
     function onStateChange(event) {
