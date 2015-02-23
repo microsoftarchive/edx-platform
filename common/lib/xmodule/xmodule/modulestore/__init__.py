@@ -279,6 +279,57 @@ class BulkOperationsMixin(object):
         return self._get_bulk_ops_record(course_key, ignore_case).active
 
 
+class UnsetValueError(Exception):
+    """
+    Throw this when accessing an unset value.
+    """
+    pass
+
+
+class UnsetValue(object):
+    """
+    Simple class which supports an "unset" value as well as None and non-None values.
+    """
+    def __init__(self, value=None, valid=False):
+        self._value = value
+        self.valid = valid
+
+    @property
+    def value(self):
+        if self.valid:
+            return self._value
+        else:
+            raise UnsetValueError()
+
+    @value.setter
+    def value(self, value):
+        self._value = value
+        self.valid = True
+
+
+class SourceVersion(UnsetValue):
+    """
+    Simple class to encapsulate source_version.
+    """
+    def __init__(self, version=None, valid=False):
+        super(SourceVersion, self).__init__(version, valid)
+
+    @property
+    def version(self):
+        try:
+            return self.value
+        except UnsetValueError:
+            # Be gentle - return None.
+            return None
+
+    @version.setter
+    def version(self, value):
+        self.value = value
+
+    def __str__(self):
+        return ("SourceVersion(version={0.version}, valid={0.valid}".format(self))
+
+
 class EditInfo(object):
     """
     Encapsulates the editing info of a block.
@@ -294,15 +345,17 @@ class EditInfo(object):
         """
         Serialize to a Mongo-storable format.
         """
-        return {
+        block_to_store = {
             'previous_version': self.previous_version,
             'update_version': self.update_version,
-            'source_version': self.source_version,
             'edited_on': self.edited_on,
             'edited_by': self.edited_by,
             'original_usage': self.original_usage,
             'original_usage_version': self.original_usage_version,
         }
+        if self._source_version.valid:
+            block_to_store['source_version'] = self._source_version.version
+        return block_to_store
 
     def from_storable(self, edit_info):
         """
@@ -317,7 +370,10 @@ class EditInfo(object):
         # branch from which this version was published).
         self.update_version = edit_info.get('update_version', None)
 
-        self.source_version = edit_info.get('source_version', None)
+        self._source_version = SourceVersion(
+            version=edit_info.get('source_version', None),
+            valid=edit_info.has_key('source_version')
+        )
 
         # Datetime when this XBlock's fields last changed.
         self.edited_on = edit_info.get('edited_on', None)
@@ -327,10 +383,25 @@ class EditInfo(object):
         self.original_usage = edit_info.get('original_usage', None)
         self.original_usage_version = edit_info.get('original_usage_version', None)
 
+    def source_version(self):
+        """
+        Return the version of the given database representation of a block.
+        """
+        if self._source_version.valid:
+            return self._source_version.version
+        else:
+            return self.update_version
+
+    def set_source_version(self, version):
+        """
+        Setter which marks the value as valid -and- saves the version.
+        """
+        self._source_version.version = version
+
     def __str__(self):
         return ("EditInfo(previous_version={0.previous_version}, "
                 "update_version={0.update_version}, "
-                "source_version={0.source_version}, "
+                "source_version={0._source_version}, "
                 "edited_on={0.edited_on}, "
                 "edited_by={0.edited_by}, "
                 "original_usage={0.original_usage}, "
