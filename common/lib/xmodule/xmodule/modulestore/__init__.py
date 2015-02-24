@@ -296,6 +296,9 @@ class UnsetValue(object):
 
     @property
     def value(self):
+        """
+        Getter for the value. Raises UnsetValueError if value is unset.
+        """
         if self.valid:
             return self._value
         else:
@@ -303,6 +306,9 @@ class UnsetValue(object):
 
     @value.setter
     def value(self, value):
+        """
+        Setter for the value. Also marks the value as valid.
+        """
         self._value = value
         self.valid = True
 
@@ -316,6 +322,9 @@ class SourceVersion(UnsetValue):
 
     @property
     def version(self):
+        """
+        Getter for the source version. Upon unset exception, just returns None.
+        """
         try:
             return self.value
         except UnsetValueError:
@@ -324,10 +333,13 @@ class SourceVersion(UnsetValue):
 
     @version.setter
     def version(self, value):
+        """
+        Setter for source version.
+        """
         self.value = value
 
     def __str__(self):
-        return ("SourceVersion(version={0.version}, valid={0.valid}".format(self))
+        return "SourceVersion(version={0.version}, valid={0.valid}".format(self)
 
 
 class EditInfo(object):
@@ -372,7 +384,7 @@ class EditInfo(object):
 
         self._source_version = SourceVersion(
             version=edit_info.get('source_version', None),
-            valid=edit_info.has_key('source_version')
+            valid='source_version' in edit_info
         )
 
         # Datetime when this XBlock's fields last changed.
