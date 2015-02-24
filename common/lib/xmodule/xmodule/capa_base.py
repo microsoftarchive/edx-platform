@@ -676,11 +676,6 @@ class CapaMixin(CapaFields):
                 id=self.location.html_id(), ajax_url=self.runtime.ajax_url
             ) + html + "</div>"
 
-        ## nparlante: attempt to introduce test failure
-        html = html.replace('a', 'b')
-        html = html.replace('u', 'x')
-        html = html.replace('p', 'x')
-        
         # Now do all the substitutions which the LMS module_render normally does, but
         # we need to do here explicitly since we can get called for our HTML via AJAX
         html = self.runtime.replace_urls(html)
