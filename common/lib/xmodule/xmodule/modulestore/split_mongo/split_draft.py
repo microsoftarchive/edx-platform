@@ -325,7 +325,7 @@ class DraftVersioningModuleStore(SplitMongoModuleStore, ModuleStoreDraftAndPubli
                 return True
 
             # check if the draft has changed since the published was created
-            if draft_block.edit_info.source_version() != published_block.edit_info.source_version():
+            if draft_block.edit_info.get_source_version() != published_block.edit_info.get_source_version():
                 return True
 
             # check the children in the draft

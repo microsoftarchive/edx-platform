@@ -279,67 +279,21 @@ class BulkOperationsMixin(object):
         return self._get_bulk_ops_record(course_key, ignore_case).active
 
 
-class UnsetValueError(Exception):
+class Unset(object):
     """
-    Throw this when accessing an unset value.
+    Class used to indicate a value that has not yet been explicitly set - it's uninitialized.
+    Differentiates this state from None, so that None can be a valid value.
     """
-    pass
-
-
-class UnsetValue(object):
-    """
-    Simple class which supports an "unset" value as well as None and non-None values.
-    """
-    def __init__(self, value=None, valid=False):
-        self._value = value
-        self.valid = valid
-
-    @property
-    def value(self):
+    def __deepcopy__(self, memo):
         """
-        Getter for the value. Raises UnsetValueError if value is unset.
+        This class is immutable, so return itself.
         """
-        if self.valid:
-            return self._value
-        else:
-            raise UnsetValueError()
-
-    @value.setter
-    def value(self, value):
-        """
-        Setter for the value. Also marks the value as valid.
-        """
-        self._value = value
-        self.valid = True
+        memo[id(self)] = self
+        return self
 
 
-class SourceVersion(UnsetValue):
-    """
-    Simple class to encapsulate source_version.
-    """
-    def __init__(self, version=None, valid=False):
-        super(SourceVersion, self).__init__(version, valid)
-
-    @property
-    def version(self):
-        """
-        Getter for the source version. Upon unset exception, just returns None.
-        """
-        try:
-            return self.value
-        except UnsetValueError:
-            # Be gentle - return None.
-            return None
-
-    @version.setter
-    def version(self, value):
-        """
-        Setter for source version.
-        """
-        self.value = value
-
-    def __str__(self):
-        return "SourceVersion(version={0.version}, valid={0.valid}".format(self)
+# Used as a non-None unset value for source_version below.
+UNSET = Unset()
 
 
 class EditInfo(object):
@@ -365,8 +319,8 @@ class EditInfo(object):
             'original_usage': self.original_usage,
             'original_usage_version': self.original_usage_version,
         }
-        if self._source_version.valid:
-            block_to_store['source_version'] = self._source_version.version
+        if self.source_version is not UNSET:
+            block_to_store['source_version'] = self.source_version
         return block_to_store
 
     def from_storable(self, edit_info):
@@ -381,11 +335,7 @@ class EditInfo(object):
         # May point to a structure not in this structure's history (e.g., to a draft
         # branch from which this version was published).
         self.update_version = edit_info.get('update_version', None)
-
-        self._source_version = SourceVersion(
-            version=edit_info.get('source_version', None),
-            valid='source_version' in edit_info
-        )
+        self.source_version = edit_info.get('source_version', UNSET)
 
         # Datetime when this XBlock's fields last changed.
         self.edited_on = edit_info.get('edited_on', None)
@@ -395,31 +345,32 @@ class EditInfo(object):
         self.original_usage = edit_info.get('original_usage', None)
         self.original_usage_version = edit_info.get('original_usage_version', None)
 
-    def source_version(self):
+    def get_source_version(self, value_if_unset=UNSET):
         """
         Return the version of the given database representation of a block.
         """
-        if self._source_version.valid:
-            return self._source_version.version
+        if value_if_unset is UNSET:
+            # Parameter was not passed-in.
+            value_if_unset = self.update_version
+        if self.source_version is not UNSET:
+            return self.source_version
         else:
-            return self.update_version
-
-    def set_source_version(self, version):
-        """
-        Setter which marks the value as valid -and- saves the version.
-        """
-        self._source_version.version = version
+            return value_if_unset
 
     def __str__(self):
+        # pylint: disable=bad-continuation
         return ("EditInfo(previous_version={0.previous_version}, "
                 "update_version={0.update_version}, "
-                "source_version={0._source_version}, "
+                "source_version={1}, "
                 "edited_on={0.edited_on}, "
                 "edited_by={0.edited_by}, "
                 "original_usage={0.original_usage}, "
                 "original_usage_version={0.original_usage_version}, "
                 "_subtree_edited_on={0._subtree_edited_on}, "
-                "_subtree_edited_by={0._subtree_edited_by})").format(self)
+                "_subtree_edited_by={0._subtree_edited_by})").format(
+            self,
+            "UNSET" if self.source_version is UNSET else self.source_version
+        )  # pylint: disable=bad-continuation
 
 
 class BlockData(object):

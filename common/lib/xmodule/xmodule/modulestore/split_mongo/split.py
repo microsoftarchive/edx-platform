@@ -2915,7 +2915,7 @@ class SplitMongoModuleStore(SplitBulkWriteMixin, ModuleStoreWriteBase):
             )
 
         # introduce new edit info field for tracing where copied/published blocks came
-        destination_block.edit_info.set_source_version(new_block.edit_info.update_version)
+        destination_block.edit_info.source_version = new_block.edit_info.update_version
 
         if blacklist != EXCLUDE_ALL:
             for child in destination_block.fields.get('children', []):
