@@ -9,6 +9,7 @@ from contextlib import contextmanager
 from django.conf import settings
 from django.db import transaction
 from django.test.client import RequestFactory
+from django.core.cache import cache
 
 import dogstats_wrapper as dog_stats_api
 
@@ -26,8 +27,121 @@ from .module_render import get_module_for_descriptor
 from submissions import api as sub_api  # installed from the edx-submissions repository
 from opaque_keys import InvalidKeyError
 
-
 log = logging.getLogger("edx.courseware")
+
+
+class MaxScoresCache(object):
+    """
+    A cache for unweighted max scores for problems.
+
+    The key assumption here is that any problem that has not yet recorded a
+    score for a user is worth the same number of points. An XBlock is free to
+    score one student at 2/5 and another at 1/3. But a problem that has never
+    issued a score -- say a problem two students have only seen mentioned in
+    their progress pages and never interacted with -- should be worth the same
+    number of points for everyone.
+    """
+    def __init__(self, cache_prefix):
+        self.cache_prefix = cache_prefix
+        self._max_scores_cache = {}
+        self._max_scores_updates = {}
+
+    @classmethod
+    def create_for_course(cls, course):
+        """
+        Given a CourseDescriptor, return a correctly configured `MaxScoresCache`
+
+        This method will base the `MaxScoresCache` cache prefix value on the
+        last time something was published to the live version of the course.
+        This is so that we don't have to worry about stale cached values for
+        max scores -- any time a content change occurs, we change our cache
+        keys.
+        """
+        return cls("{}.{}".format(course.id, course.subtree_edited_on.isoformat()))
+
+    def fetch_from_remote(self, locations):
+        """
+        Populate the local cache with values from django's cache
+        """
+        remote_dict = cache.get_many([self._remote_cache_key(loc) for loc in locations])
+        self._max_scores_cache = {
+            self._local_cache_key(remote_key): value
+            for remote_key, value in remote_dict.items()
+            if value is not None
+        }
+
+    def push_to_remote(self):
+        """
+        Update the remote cache
+        """
+        if self._max_scores_updates:
+            cache.set_many(
+                {
+                    self._remote_cache_key(key): value
+                    for key, value in self._max_scores_updates.items()
+                },
+                60 * 60 * 24  # 1 day
+            )
+
+    def _remote_cache_key(self, location):
+        """Convert a location to a remote cache key (add our prefixing)."""
+        return "grades.MaxScores.{}___{}".format(self.cache_prefix, unicode(location))
+
+    def _local_cache_key(self, remote_key):
+        """Convert a remote cache key to a local cache key (i.e. location str)."""
+        return remote_key.split("___", 1)[1]
+
+    def num_cached_from_remote(self):
+        """How many items did we pull down from the remote cache?"""
+        return len(self._max_scores_cache)
+
+    def num_cached_updates(self):
+        """How many local updates are we waiting to push to the remote cache?"""
+        return len(self._max_scores_updates)
+
+    def set(self, location, max_score):
+        """
+        Adds a max score to the max_score_cache
+        """
+        loc_str = unicode(location)
+        if self._max_scores_cache.get(loc_str) != max_score:
+            self._max_scores_updates[loc_str] = max_score
+
+    def get(self, location):
+        """
+        Retrieve a max score from the cache
+        """
+        loc_str = unicode(location)
+        max_score = self._max_scores_updates.get(loc_str)
+        if max_score is None:
+            max_score = self._max_scores_cache.get(loc_str)
+
+        return max_score
+
+
+def descriptor_affects_grading(descriptor):
+    """
+    Returns True if the descriptor could have any impact on grading, else False.
+
+    Something might be a scored item if it is capable of storing a score
+    (has_score=True). We also have to include anything that can have children,
+    since those children might have scores. We can avoid things like Videos,
+    which have state but cannot ever impact someone's grade.
+    """
+    return getattr(descriptor, "has_score", False) or getattr(descriptor, "has_children", False)
+
+
+def field_data_cache_for_grading(course, user):
+    """
+    Given a CourseDescriptor and User, create the FieldDataCache for grading.
+
+    This will generate a FieldDataCache that only loads state for those things
+    that might possibly affect the grading process, and will ignore things like
+    Videos.
+    """
+    return FieldDataCache.cache_for_descriptor_descendents(
+        course.id, user, course, depth=None, descriptor_filter=descriptor_affects_grading
+    )
 
 
 def answer_distributions(course_key):
@@ -122,16 +236,16 @@ def answer_distributions(course_key):
 
 
 @transaction.commit_manually
-def grade(student, request, course, keep_raw_scores=False):
+def grade(student, request, course, keep_raw_scores=False, field_data_cache=None):
     """
     Wraps "_grade" with the manual_transaction context manager just in case
     there are unanticipated errors.
     """
     with manual_transaction():
-        return _grade(student, request, course, keep_raw_scores)
+        return _grade(student, request, course, keep_raw_scores, field_data_cache)
 
 
-def _grade(student, request, course, keep_raw_scores):
+def _grade(student, request, course, keep_raw_scores, field_data_cache):
     """
     Unwrapped version of "grade"
 
@@ -152,15 +266,21 @@ def _grade(student, request, course, keep_raw_scores):
 
     More information on the format is in the docstring for CourseGrader.
     """
-    grading_context = course.grading_context
-    raw_scores = []
+    if field_data_cache is None:
+        with manual_transaction():
+            field_data_cache = field_data_cache_for_grading(course, student)
 
     # Dict of item_ids -> (earned, possible) point tuples. This *only* grabs
     # scores that were registered with the submissions API, which for the moment
     # means only openassessment (edx-ora2)
-    submissions_scores = sub_api.get_scores(
-        course.id.to_deprecated_string(), anonymous_id_for_user(student, course.id)
+    submissions_scores = sub_api.get_scores(course.id.to_deprecated_string(), anonymous_id_for_user(student, course.id))
+    max_scores_cache = MaxScoresCache.create_for_course(course)
+    max_scores_cache.fetch_from_remote(
+        [descriptor.location for descriptor in field_data_cache.descriptors]
     )
+
+    grading_context = course.grading_context
+    raw_scores = []
 
     totaled_scores = {}
     # This next complicated loop is just to collect the totaled_scores, which is
@@ -188,13 +308,10 @@ def _grade(student, request, course, keep_raw_scores):
                 )
 
             if not should_grade_section:
-                with manual_transaction():
-                    should_grade_section = StudentModule.objects.filter(
-                        student=student,
-                        module_state_key__in=[
-                            descriptor.location for descriptor in section['xmoduledescriptors']
-                        ]
-                    ).exists()
+                should_grade_section = any(
+                    descriptor.location in field_data_cache.locations_to_scores
+                    for descriptor in section['xmoduledescriptors']
+                )
 
             # If we haven't seen a single problem in the section, we don't have
             # to grade it at all! We can assume 0%
@@ -205,19 +322,21 @@ def _grade(student, request, course, keep_raw_scores):
                     '''creates an XModule instance given a descriptor'''
                     # TODO: We need the request to pass into here. If we could forego that, our arguments
                     # would be simpler
-                    with manual_transaction():
-                        field_data_cache = FieldDataCache([descriptor], course.id, student)
                     return get_module_for_descriptor(student, request, descriptor, field_data_cache, course.id)
 
                 for module_descriptor in yield_dynamic_descriptor_descendents(section_descriptor, create_module):
-
                     (correct, total) = get_score(
-                        course.id, student, module_descriptor, create_module, scores_cache=submissions_scores
+                        student,
+                        module_descriptor,
+                        create_module,
+                        field_data_cache,
+                        submissions_scores,
+                        max_scores_cache,
                     )
                     if correct is None and total is None:
                         continue
 
-                    if settings.GENERATE_PROFILE_SCORES:  	# for debugging!
+                    if settings.GENERATE_PROFILE_SCORES:    # for debugging!
                         if total > 1:
                             correct = random.randrange(max(total - 2, 1), total + 1)
                         else:
@@ -255,11 +374,14 @@ def _grade(student, request, course, keep_raw_scores):
 
     letter_grade = grade_for_percentage(course.grade_cutoffs, grade_summary['percent'])
     grade_summary['grade'] = letter_grade
-    grade_summary['totaled_scores'] = totaled_scores  	# make this available, eg for instructor download & debugging
+    grade_summary['totaled_scores'] = totaled_scores   # make this available, eg for instructor download & debugging
     if keep_raw_scores:
         # way to get all RAW scores out to instructor
         # so grader can be double-checked
         grade_summary['raw_scores'] = raw_scores
+
+    max_scores_cache.push_to_remote()
+
     return grade_summary
 
 
@@ -286,19 +408,19 @@ def grade_for_percentage(grade_cutoffs, percentage):
 
 
 @transaction.commit_manually
-def progress_summary(student, request, course):
+def progress_summary(student, request, course, field_data_cache=None):
     """
     Wraps "_progress_summary" with the manual_transaction context manager just
     in case there are unanticipated errors.
     """
     with manual_transaction():
-        return _progress_summary(student, request, course)
+        return _progress_summary(student, request, course, field_data_cache)
 
 
 # TODO: This method is not very good. It was written in the old course style and
 # then converted over and performance is not good. Once the progress page is redesigned
 # to not have the progress summary this method should be deleted (so it won't be copied).
-def _progress_summary(student, request, course):
+def _progress_summary(student, request, course, field_data_cache=None):
     """
     Unwrapped version of "progress_summary".
 
@@ -320,17 +442,18 @@ def _progress_summary(student, request, course):
 
     """
     with manual_transaction():
-        field_data_cache = FieldDataCache.cache_for_descriptor_descendents(
-            course.id, student, course, depth=None
-        )
-        # TODO: We need the request to pass into here. If we could
-        # forego that, our arguments would be simpler
+        if field_data_cache is None:
+            field_data_cache = field_data_cache_for_grading(course, student)
+
         course_module = get_module_for_descriptor(student, request, course, field_data_cache, course.id)
         if not course_module:
-            # This student must not have access to the course.
             return None
 
     submissions_scores = sub_api.get_scores(course.id.to_deprecated_string(), anonymous_id_for_user(student, course.id))
+    max_scores_cache = MaxScoresCache.create_for_course(course)
+    max_scores_cache.fetch_from_remote(
+        [descriptor.location for descriptor in field_data_cache.descriptors]
+    )
 
     chapters = []
     # Don't include chapters that aren't displayable (e.g. due to error)
@@ -355,7 +478,12 @@ def _progress_summary(student, request, course):
                 for module_descriptor in yield_dynamic_descriptor_descendents(section_module, module_creator):
                     course_id = course.id
                     (correct, total) = get_score(
-                        course_id, student, module_descriptor, module_creator, scores_cache=submissions_scores
+                        student,
+                        module_descriptor,
+                        module_creator,
+                        field_data_cache,
+                        submissions_scores,
+                        max_scores_cache,
                     )
                     if correct is None and total is None:
                         continue
@@ -384,10 +512,12 @@ def _progress_summary(student, request, course):
             'sections': sections
         })
 
+    max_scores_cache.push_to_remote()
+
     return chapters
 
 
-def get_score(course_id, user, problem_descriptor, module_creator, scores_cache=None):
+def get_score(user, problem_descriptor, module_creator, field_data_cache, submissions_scores_cache, max_scores_cache):
     """
     Return the score for a user on a problem, as a tuple (correct, total).
     e.g. (5,7) if you got 5 out of 7 points.
@@ -397,19 +527,21 @@ def get_score(course_id, user, problem_descriptor, module_creator, scores_cache=
 
     user: a Student object
     problem_descriptor: an XModuleDescriptor
+    field_data_cache: a FieldDataCache
     module_creator: a function that takes a descriptor, and returns the corresponding XModule for this user.
            Can return None if user doesn't have access, or if something else went wrong.
-    scores_cache: A dict of location names to (earned, possible) point tuples.
+    submissions_scores_cache: A dict of location names to (earned, possible) point tuples.
            If an entry is found in this cache, it takes precedence.
+    max_scores_cache: a MaxScoresCache
     """
-    scores_cache = scores_cache or {}
+    submissions_scores_cache = submissions_scores_cache or {}
 
     if not user.is_authenticated():
         return (None, None)
 
     location_url = problem_descriptor.location.to_deprecated_string()
-    if location_url in scores_cache:
-        return scores_cache[location_url]
+    if location_url in submissions_scores_cache:
+        return submissions_scores_cache[location_url]
 
     # some problems have state that is updated independently of interaction
     # with the LMS, so they need to always be scored. (E.g. foldit.)
@@ -427,18 +559,24 @@ def get_score(course_id, user, problem_descriptor, module_creator, scores_cache=
         # These are not problems, and do not have a score
         return (None, None)
 
-    try:
-        student_module = StudentModule.objects.get(
-            student=user,
-            course_id=course_id,
-            module_state_key=problem_descriptor.location
-        )
-    except StudentModule.DoesNotExist:
-        student_module = None
+    student_module = None
+    if field_data_cache:
+        student_module = field_data_cache.locations_to_scores.get(problem_descriptor.location)
 
+    max_score = max_scores_cache.get(problem_descriptor.location)
+
+    # If the student_module exists and has a max_grade associated with it, we
+    # trust that value. This is important for cases where a student might have
+    # seen an older version of the problem -- they're still graded on what was
+    # possible when they tried the problem, not what it's worth now.
     if student_module is not None and student_module.max_grade is not None:
         correct = student_module.grade if student_module.grade is not None else 0
         total = student_module.max_grade
+
+    elif max_score is not None and settings.FEATURES.get("ENABLE_MAX_SCORE_CACHE"):
+        correct = 0.0
+        total = max_score
+
     else:
         # If the problem was not in the cache, or hasn't been graded yet,
         # we need to instantiate the problem.
@@ -454,6 +592,10 @@ def get_score(course_id, user, problem_descriptor, module_creator, scores_cache=
         # In which case total might be None
         if total is None:
             return (None, None)
+
+        else:
+            # add location to the max score cache
+            max_scores_cache.set(problem_descriptor.location, total)
 
     # Now we re-weight the problem, if specified
     weight = problem_descriptor.weight

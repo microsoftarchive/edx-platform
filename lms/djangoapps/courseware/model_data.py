@@ -63,6 +63,7 @@ class FieldDataCache(object):
         '''
         self.cache = {}
         self.select_for_update = select_for_update
+        self.locations_to_scores = {}
 
         if asides is None:
             self.asides = []
@@ -72,7 +73,7 @@ class FieldDataCache(object):
         assert isinstance(course_id, CourseKey)
         self.course_id = course_id
         self.user = user
-
+        self.descriptors = descriptors
         self.add_descriptors_to_cache(descriptors)
 
     def add_descriptors_to_cache(self, descriptors):
@@ -82,7 +83,15 @@ class FieldDataCache(object):
         if self.user.is_authenticated():
             for scope, fields in self._fields_to_cache(descriptors).items():
                 for field_object in self._retrieve_fields(scope, fields, descriptors):
-                    self.cache[self._cache_key_from_field_object(scope, field_object)] = field_object
+                    cache_key = self._cache_key_from_field_object(scope, field_object)
+                    self.cache[cache_key] = field_object
+                    if scope == Scope.user_state:
+                        # In this case, field_object is a StudentModule. We take the location value
+                        # from the cache_key instead of field_object.module_state_key because the
+                        # latter does not have run information and won't match against the locations
+                        # we get when crawling the course.
+                        _scope, location = cache_key  # pylint:disable=unbalanced-tuple-unpacking
+                        self.locations_to_scores[location] = field_object  # This is a StudentModule
 
     def add_descriptor_descendents(self, descriptor, depth=None, descriptor_filter=lambda descriptor: True):
         """

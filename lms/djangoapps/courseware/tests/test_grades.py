@@ -2,13 +2,18 @@
 Test grade calculation.
 """
 from django.http import Http404
+from django.test.utils import override_settings
+from django.test.client import RequestFactory
+
 from mock import patch
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 
-from courseware.grades import grade, iterate_grades_for
+from courseware.grades import descriptor_affects_grading, grade, iterate_grades_for, MaxScoresCache
+from courseware.model_data import FieldDataCache
 from student.tests.factories import UserFactory
-from xmodule.modulestore.tests.factories import CourseFactory
-from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
+from student.models import CourseEnrollment
+from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
+from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase, TEST_DATA_MOCK_MODULESTORE
 
 
 def _grade_with_errors(student, request, course, keep_raw_scores=False):
@@ -119,3 +124,84 @@ class TestGradeIteration(ModuleStoreTestCase):
                 students_to_errors[student] = err_msg
 
         return students_to_gradesets, students_to_errors
+
+
+class TestMaxScoresCache(ModuleStoreTestCase):
+    """
+    Tests for the MaxScoresCache
+    """
+    def setUp(self):
+        super(TestMaxScoresCache, self).setUp()
+        self.student = UserFactory.create()
+        self.course = CourseFactory.create()
+        self.problems = []
+        for _ in xrange(3):
+            self.problems.append(
+                ItemFactory.create(category='problem', parent=self.course)
+            )
+
+        CourseEnrollment.enroll(self.student, self.course.id)
+        self.request = RequestFactory().get('/')
+        self.locations = [problem.location for problem in self.problems]
+
+    def test_max_scores_cache(self):
+        """
+        Tests the behavior fo the MaxScoresCache
+        """
+        max_scores_cache = MaxScoresCache("test_max_scores_cache")
+        self.assertEqual(max_scores_cache.num_cached_from_remote(), 0)
+        self.assertEqual(max_scores_cache.num_cached_updates(), 0)
+
+        # add score to cache
+        max_scores_cache.set(self.locations[0], 1)
+        self.assertEqual(max_scores_cache.num_cached_updates(), 1)
+
+        # push to remote cache
+        max_scores_cache.push_to_remote()
+
+        # create a new cache with the same params, fetch from remote cache
+        max_scores_cache = MaxScoresCache("test_max_scores_cache")
+        max_scores_cache.fetch_from_remote(self.locations)
+
+        # see cache is populated
+        self.assertEqual(max_scores_cache.num_cached_from_remote(), 1)
+
+
+class TestDescriptorFilter(ModuleStoreTestCase):
+    """
+    Make sure we can filter the descriptors we pull back student state for via
+    the FieldDataCache.
+    """
+    def setUp(self):
+        super(TestDescriptorFilter, self).setUp()
+        self.student = UserFactory.create()
+        self.course = CourseFactory.create()
+        chapter = ItemFactory.create(category='chapter', parent=self.course)
+        sequential = ItemFactory.create(category='sequential', parent=chapter)
+        vertical = ItemFactory.create(category='vertical', parent=sequential)
+        ItemFactory.create(category='video', parent=vertical)
+        ItemFactory.create(category='html', parent=vertical)
+        ItemFactory.create(category='discussion', parent=vertical)
+        ItemFactory.create(category='problem', parent=vertical)
+
+        CourseEnrollment.enroll(self.student, self.course.id)
+
+    def test_field_data_cache_no_filter(self):
+        field_data_cache_no_filter = FieldDataCache.cache_for_descriptor_descendents(
+            self.course.id, self.student, self.course, depth=None
+        )
+        categories = set(descriptor.category for descriptor in field_data_cache_no_filter.descriptors)
+        self.assertIn('video', categories)
+        self.assertIn('html', categories)
+        self.assertIn('discussion', categories)
+        self.assertIn('problem', categories)
+
+    def test_field_data_cache_filter(self):
+        field_data_cache_filter = FieldDataCache.cache_for_descriptor_descendents(
+            self.course.id, self.student, self.course, depth=None, descriptor_filter=descriptor_affects_grading
+        )
+        categories = set(descriptor.category for descriptor in field_data_cache_filter.descriptors)
+        self.assertNotIn('video', categories)
+        self.assertNotIn('html', categories)
+        self.assertNotIn('discussion', categories)
+        self.assertIn('problem', categories)

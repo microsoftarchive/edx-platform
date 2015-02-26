@@ -86,7 +86,7 @@ class StudentModule(models.Model):
         return 'StudentModule<%r>' % ({
             'course_id': self.course_id,
             'module_type': self.module_type,
-            'student': self.student.username,
+            'student_id': self.student_id,  # pylint: disable=no-member
             'module_state_key': self.module_state_key,
             'state': str(self.state)[:20],
         },)
