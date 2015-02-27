@@ -15,8 +15,8 @@ from .utils.cmd import cmd, django_cmd
 # setup baseline paths
 
 COFFEE_DIRS = ['lms', 'cms', 'common']
-SASS_LOAD_PATHS = ['./common/static/sass']
-SASS_UPDATE_DIRS = ['*/static']
+SASS_LOAD_PATHS = ['./common/static/sass', './common/static/css']
+SASS_UPDATE_DIRS = ['lms/static', 'common/static']
 SASS_CACHE_PATH = '/tmp/sass-cache'
 
 
@@ -127,18 +127,31 @@ def compile_coffeescript(*files):
         "node_modules/.bin/coffee", "--compile", *files
     ))
 
+def gulp_compile_sass():
+    sh(cmd(
+        'gulp stylesStudio'
+    ))
+
+def get_sass_load_path():
+    sass_load_path = ''
+    for load_path in SASS_LOAD_PATHS:
+        sass_load_path += ' --load-path' + " " + load_path
+    return sass_load_path
 
 def compile_sass(debug=False):
     """
     Compile Sass to CSS.
     """
-    sh(cmd(
-        'sass', '' if debug else '--style compressed',
-        "--sourcemap" if debug else '',
-        "--cache-location {cache}".format(cache=SASS_CACHE_PATH),
-        "--load-path", " ".join(SASS_LOAD_PATHS + THEME_SASS_PATHS),
-        "--update", "-E", "utf-8", " ".join(SASS_UPDATE_DIRS + THEME_SASS_PATHS),
-    ))
+    for sass_dir in SASS_UPDATE_DIRS:
+        sass_dir = [sass_dir]
+        sh(cmd(
+            'sass', '' if debug else '--style compressed',
+            "--sourcemap" if debug else '',
+            "--cache-location {cache}".format(cache=SASS_CACHE_PATH),
+            "{load_path}".format(load_path=get_sass_load_path()),
+            # "--load-path", " ".join(SASS_LOAD_PATHS + THEME_SASS_PATHS),
+            "--update", "-E", "utf-8", " ".join(sass_dir + THEME_SASS_PATHS),
+        ))
 
 
 def compile_templated_sass(systems, settings):
@@ -229,6 +242,7 @@ def update_assets(args):
     compile_templated_sass(args.system, args.settings)
     process_xmodule_assets()
     compile_coffeescript()
+    gulp_compile_sass()
     compile_sass(args.debug)
 
     if args.collect:
