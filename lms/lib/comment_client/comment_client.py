@@ -2,5 +2,5 @@
 # pylint: disable=unused-import
 from .comment import Comment
 from .thread import Thread
-from .user import User
+#from .user import User
 from .commentable import Commentable

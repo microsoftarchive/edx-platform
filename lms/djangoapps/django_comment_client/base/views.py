@@ -33,6 +33,8 @@ from django_comment_client.permissions import check_permissions_by_view, cached_
 from eventtracking import tracker
 import lms.lib.comment_client as cc
 
+from .models import User as ForumUser
+
 log = logging.getLogger(__name__)
 
 TRACKING_MAX_FORUM_BODY = 2000
@@ -58,7 +60,7 @@ def permitted(fn):
 
 
 def ajax_content_response(request, course_key, content):
-    user_info = cc.User.from_django_user(request.user).to_dict()
+    user_info = ForumUser.from_django_user(request.user).to_dict()
     annotated_content_info = get_annotated_content_info(course_key, content, request.user, user_info)
     return JsonResponse({
         'content': prepare_content(content, course_key),
@@ -153,7 +155,7 @@ def create_thread(request, course_id, commentable_id):
     follow = post.get('auto_subscribe', 'false').lower() == 'true'
 
     if follow:
-        user = cc.User.from_django_user(request.user)
+        user = ForumUser.from_django_user(request.user)
         user.follow(thread)
 
     event_data = {
@@ -257,7 +259,7 @@ def _create_comment(request, course_key, thread_id=None, parent_id=None):
     followed = post.get('auto_subscribe', 'false').lower() == 'true'
 
     if followed:
-        user = cc.User.from_django_user(request.user)
+        user = ForumUser.from_django_user(request.user)
         user.follow(comment.thread)
 
     event_data = {'discussion': {'id': comment.thread_id}, 'options': {'followed': followed}}
@@ -398,7 +400,7 @@ def vote_for_comment(request, course_id, comment_id, value):
     given a course_id and comment_id,
     """
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
-    user = cc.User.from_django_user(request.user)
+    user = ForumUser.from_django_user(request.user)
     comment = cc.Comment.find(comment_id)
     user.vote(comment, value)
     return JsonResponse(prepare_content(comment.to_dict(), course_key))
@@ -413,7 +415,7 @@ def undo_vote_for_comment(request, course_id, comment_id):
     ajax only
     """
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
-    user = cc.User.from_django_user(request.user)
+    user = ForumUser.from_django_user(request.user)
     comment = cc.Comment.find(comment_id)
     user.unvote(comment)
     return JsonResponse(prepare_content(comment.to_dict(), course_key))
@@ -428,7 +430,7 @@ def vote_for_thread(request, course_id, thread_id, value):
     ajax only
     """
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
-    user = cc.User.from_django_user(request.user)
+    user = ForumUser.from_django_user(request.user)
     thread = cc.Thread.find(thread_id)
     user.vote(thread, value)
 
@@ -444,7 +446,7 @@ def flag_abuse_for_thread(request, course_id, thread_id):
     ajax only
     """
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
-    user = cc.User.from_django_user(request.user)
+    user = ForumUser.from_django_user(request.user)
     thread = cc.Thread.find(thread_id)
     thread.flagAbuse(user, thread)
 
@@ -459,7 +461,7 @@ def un_flag_abuse_for_thread(request, course_id, thread_id):
     given a course id and thread id, remove abuse flag for this thread
     ajax only
     """
-    user = cc.User.from_django_user(request.user)
+    user = ForumUser.from_django_user(request.user)
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
     course = get_course_by_id(course_key)
     thread = cc.Thread.find(thread_id)
@@ -478,7 +480,7 @@ def flag_abuse_for_comment(request, course_id, comment_id):
     ajax only
     """
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
-    user = cc.User.from_django_user(request.user)
+    user = ForumUser.from_django_user(request.user)
     comment = cc.Comment.find(comment_id)
     comment.flagAbuse(user, comment)
     return JsonResponse(prepare_content(comment.to_dict(), course_key))
@@ -492,7 +494,7 @@ def un_flag_abuse_for_comment(request, course_id, comment_id):
     given a course_id and comment id, unflag comment for abuse
     ajax only
     """
-    user = cc.User.from_django_user(request.user)
+    user = ForumUser.from_django_user(request.user)
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
     course = get_course_by_id(course_key)
     remove_all = cached_has_permission(request.user, 'openclose_thread', course_key) or has_access(request.user, 'staff', course)
@@ -510,7 +512,7 @@ def undo_vote_for_thread(request, course_id, thread_id):
     ajax only
     """
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
-    user = cc.User.from_django_user(request.user)
+    user = ForumUser.from_django_user(request.user)
     thread = cc.Thread.find(thread_id)
     user.unvote(thread)
 
@@ -526,7 +528,7 @@ def pin_thread(request, course_id, thread_id):
     ajax only
     """
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
-    user = cc.User.from_django_user(request.user)
+    user = ForumUser.from_django_user(request.user)
     thread = cc.Thread.find(thread_id)
     thread.pin(user, thread_id)
 
@@ -542,7 +544,7 @@ def un_pin_thread(request, course_id, thread_id):
     ajax only
     """
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
-    user = cc.User.from_django_user(request.user)
+    user = ForumUser.from_django_user(request.user)
     thread = cc.Thread.find(thread_id)
     thread.un_pin(user, thread_id)
 
@@ -553,7 +555,7 @@ def un_pin_thread(request, course_id, thread_id):
 @login_required
 @permitted
 def follow_thread(request, course_id, thread_id):
-    user = cc.User.from_django_user(request.user)
+    user = ForumUser.from_django_user(request.user)
     thread = cc.Thread.find(thread_id)
     user.follow(thread)
     return JsonResponse({})
@@ -567,7 +569,7 @@ def follow_commentable(request, course_id, commentable_id):
     given a course_id and commentable id, follow this commentable
     ajax only
     """
-    user = cc.User.from_django_user(request.user)
+    user = ForumUser.from_django_user(request.user)
     commentable = cc.Commentable.find(commentable_id)
     user.follow(commentable)
     return JsonResponse({})
@@ -577,8 +579,8 @@ def follow_commentable(request, course_id, commentable_id):
 @login_required
 @permitted
 def follow_user(request, course_id, followed_user_id):
-    user = cc.User.from_django_user(request.user)
-    followed_user = cc.User.find(followed_user_id)
+    user = ForumUser.from_django_user(request.user)
+    followed_user = ForumUser.find(followed_user_id)
     user.follow(followed_user)
     return JsonResponse({})
 
@@ -591,7 +593,7 @@ def unfollow_thread(request, course_id, thread_id):
     given a course id and thread id, stop following this thread
     ajax only
     """
-    user = cc.User.from_django_user(request.user)
+    user = ForumUser.from_django_user(request.user)
     thread = cc.Thread.find(thread_id)
     user.unfollow(thread)
     return JsonResponse({})
@@ -605,7 +607,7 @@ def unfollow_commentable(request, course_id, commentable_id):
     given a course id and commentable id stop following commentable
     ajax only
     """
-    user = cc.User.from_django_user(request.user)
+    user = ForumUser.from_django_user(request.user)
     commentable = cc.Commentable.find(commentable_id)
     user.unfollow(commentable)
     return JsonResponse({})
@@ -619,8 +621,8 @@ def unfollow_user(request, course_id, followed_user_id):
     given a course id and user id, stop following this user
     ajax only
     """
-    user = cc.User.from_django_user(request.user)
-    followed_user = cc.User.find(followed_user_id)
+    user = ForumUser.from_django_user(request.user)
+    followed_user = ForumUser.find(followed_user_id)
     user.unfollow(followed_user)
     return JsonResponse({})
 
@@ -707,9 +709,8 @@ def users(request, course_id):
     user_objs = []
     try:
         matched_user = User.objects.get(username=username)
-        cc_user = cc.User.from_django_user(matched_user)
-        cc_user.course_id = course_key
-        cc_user.retrieve(complete=False)
+        cc_user = ForumUser.from_django_user(matched_user)
+        cc_user = cc_user.to_dict({"course_id": unicode(course_key), "complete": False})
         if (cc_user['threads_count'] + cc_user['comments_count']) > 0:
             user_objs.append({
                 'id': matched_user.id,

@@ -35,6 +35,7 @@ from django_comment_client.utils import (
 )
 import django_comment_client.utils as utils
 import lms.lib.comment_client as cc
+from ..base.models import User as ForumUser
 
 from opaque_keys.edx.keys import CourseKey
 
@@ -96,13 +97,13 @@ def get_threads(request, course, discussion_id=None, per_page=THREADS_PER_PAGE):
 
     if not request.GET.get('sort_key'):
         # If the user did not select a sort key, use their last used sort key
-        cc_user = cc.User.from_django_user(request.user)
-        cc_user.retrieve()
+        cc_user = ForumUser.from_django_user(request.user)
+        #cc_user.retrieve()
         # TODO: After the comment service is updated this can just be user.default_sort_key because the service returns the default value
-        default_query_params['sort_key'] = cc_user.get('default_sort_key') or default_query_params['sort_key']
+        default_query_params['sort_key'] = cc_user.default_sort_key or default_query_params['sort_key']
     else:
         # If the user clicked a sort key, update their default sort key
-        cc_user = cc.User.from_django_user(request.user)
+        cc_user = ForumUser.from_django_user(request.user)
         cc_user.default_sort_key = request.GET.get('sort_key')
         cc_user.save()
 
@@ -166,7 +167,7 @@ def inline_discussion(request, course_key, discussion_id):
     nr_transaction = newrelic.agent.current_transaction()
 
     course = get_course_with_access(request.user, 'load_forum', course_key)
-    cc_user = cc.User.from_django_user(request.user)
+    cc_user = ForumUser.from_django_user(request.user)
     user_info = cc_user.to_dict()
 
     try:
@@ -203,7 +204,7 @@ def forum_form_discussion(request, course_key):
     course = get_course_with_access(request.user, 'load_forum', course_key, check_if_enrolled=True)
     course_settings = make_course_settings(course, request.user)
 
-    user = cc.User.from_django_user(request.user)
+    user = ForumUser.from_django_user(request.user)
     user_info = user.to_dict()
 
     try:
@@ -269,7 +270,7 @@ def single_thread(request, course_key, discussion_id, thread_id):
 
     course = get_course_with_access(request.user, 'load_forum', course_key)
     course_settings = make_course_settings(course, request.user)
-    cc_user = cc.User.from_django_user(request.user)
+    cc_user = ForumUser.from_django_user(request.user)
     user_info = cc_user.to_dict()
     is_moderator = cached_has_permission(request.user, "see_all_cohorts", course_key)
 
@@ -386,14 +387,14 @@ def user_profile(request, course_key, user_id):
             return HttpResponseBadRequest("Invalid group_id")
         if group_id is not None:
             query_params['group_id'] = group_id
-            profiled_user = cc.User(id=user_id, course_id=course_key, group_id=group_id)
+            profiled_user = ForumUser(id=user_id, course_id=course_key, group_id=group_id)
         else:
-            profiled_user = cc.User(id=user_id, course_id=course_key)
+            profiled_user = ForumUser(id=user_id, course_id=course_key)
 
         threads, page, num_pages = profiled_user.active_threads(query_params)
         query_params['page'] = page
         query_params['num_pages'] = num_pages
-        user_info = cc.User.from_django_user(request.user).to_dict()
+        user_info = ForumUser.from_django_user(request.user).to_dict()
 
         with newrelic.agent.FunctionTrace(nr_transaction, "get_metadata_for_threads"):
             annotated_content_info = utils.get_metadata_for_threads(course_key, threads, request.user, user_info)
@@ -436,7 +437,7 @@ def followed_threads(request, course_key, user_id):
 
     course = get_course_with_access(request.user, 'load_forum', course_key)
     try:
-        profiled_user = cc.User(id=user_id, course_id=course_key)
+        profiled_user = ForumUser(id=user_id, course_id=course_key)
 
         default_query_params = {
             'page': 1,
@@ -472,7 +473,7 @@ def followed_threads(request, course_key, user_id):
         threads, page, num_pages = profiled_user.subscribed_threads(query_params)
         query_params['page'] = page
         query_params['num_pages'] = num_pages
-        user_info = cc.User.from_django_user(request.user).to_dict()
+        user_info = ForumUser.from_django_user(request.user).to_dict()
 
         with newrelic.agent.FunctionTrace(nr_transaction, "get_metadata_for_threads"):
             annotated_content_info = utils.get_metadata_for_threads(course_key, threads, request.user, user_info)
