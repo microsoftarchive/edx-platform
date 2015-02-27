@@ -349,7 +349,7 @@ FEATURES = {
     'MODE_CREATION_FOR_TESTING': False,
 
     # Courseware search feature
-    'ENABLE_COURSEWARE_SEARCH': False,
+    'ENABLE_COURSEWARE_SEARCH': True,
 }
 
 # Ignore static asset files on import which match this pattern
