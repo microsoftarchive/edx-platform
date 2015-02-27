@@ -80,14 +80,17 @@ class DiscussionModule(DiscussionFields, XModule):
         if user:
             can_create_comment = has_permission(user, "create_comment", course.id)
             can_create_subcomment = has_permission(user, "create_sub_comment", course.id)
+            can_create_thread = has_permission(user, "create_thread", course.id)
         else:
             can_create_comment = True
             can_create_subcomment = True
+            can_create_thread = True
         context = {
             'discussion_id': self.discussion_id,
             'course': course,
             'can_create_comment': json.dumps(can_create_comment),
             'can_create_subcomment': json.dumps(can_create_subcomment),
+            'can_create_thread': can_create_thread,
         }
         if getattr(self.system, 'is_author_mode', False):
             template = 'discussion/_discussion_module_studio.html'

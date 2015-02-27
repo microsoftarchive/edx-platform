@@ -101,6 +101,7 @@ class SystemTestSuite(NoseTestSuite):
         super(SystemTestSuite, self).__init__(*args, **kwargs)
         self.test_id = kwargs.get('test_id', self._default_test_id)
         self.fasttest = kwargs.get('fasttest', False)
+        self.use_pdb = kwargs.get('pdb', False)
 
     def __enter__(self):
         super(SystemTestSuite, self).__enter__()
@@ -109,11 +110,12 @@ class SystemTestSuite(NoseTestSuite):
     def cmd(self):
         cmd = (
             './manage.py {system} test --verbosity={verbosity} '
-            '{test_id} {test_opts} --traceback --settings=test {extra}'.format(
+            '{test_id} {test_opts} --traceback --settings=test {pdb} {extra}'.format(
                 system=self.root,
                 verbosity=self.verbosity,
                 test_id=self.test_id,
                 test_opts=self.test_options_flags,
+                pdb="--pdb" if self.use_pdb else "",
                 extra=self.extra_args,
             )
         )
@@ -141,7 +143,7 @@ class SystemTestSuite(NoseTestSuite):
 
         if self.root == 'lms':
             default_test_id += " {system}/tests.py".format(system=self.root)
-        
+
         if self.root == 'cms':
             default_test_id += " {system}/tests/*".format(system=self.root)
 

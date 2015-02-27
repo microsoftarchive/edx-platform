@@ -246,6 +246,7 @@ def forum_form_discussion(request, course_key):
                 cached_has_permission(request.user, "create_comment", course.id)),
             'can_create_subcomment': _attr_safe_json(
                 cached_has_permission(request.user, "create_sub_comment", course.id)),
+            'can_create_thread': cached_has_permission(request.user, "create_thread", course.id),
             'flag_moderator': cached_has_permission(request.user, 'openclose_thread', course.id) or has_access(request.user, 'staff', course),
             'annotated_content_info': _attr_safe_json(annotated_content_info),
             'course_id': course.id.to_deprecated_string(),
@@ -349,6 +350,7 @@ def single_thread(request, course_key, discussion_id, thread_id):
                 cached_has_permission(request.user, "create_comment", course.id)),
             'can_create_subcomment': _attr_safe_json(
                 cached_has_permission(request.user, "create_sub_comment", course.id)),
+            'can_create_thread': cached_has_permission(request.user, "create_thread", course.id),
             'annotated_content_info': _attr_safe_json(annotated_content_info),
             'course': course,
             #'recent_active_threads': recent_active_threads,

@@ -33,6 +33,8 @@ __test__ = False  # do not collect
     make_option("--verbose", action="store_const", const=2, dest="verbosity"),
     make_option("-q", "--quiet", action="store_const", const=0, dest="verbosity"),
     make_option("-v", "--verbosity", action="count", dest="verbosity", default=1),
+    make_option("--pdb", action="store_true",
+                help="use the Python debugger on test failure"),
 ], share_with=['pavelib.utils.test.utils.clean_reports_dir'])
 def test_system(options):
     """
@@ -49,6 +51,7 @@ def test_system(options):
         'extra_args': getattr(options, 'extra_args', ''),
         'cov_args': getattr(options, 'cov_args', ''),
         'skip_clean': getattr(options, 'skip_clean', False),
+        'pdb': getattr(options, 'pdb', False),
     }
 
     if test_id:
