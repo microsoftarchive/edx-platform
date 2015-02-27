@@ -234,9 +234,22 @@ def get_discussion_categories_ids(course, user):
     return ids
 
 
+class MyEncoder(json.JSONEncoder):  # pylint: disable=invalid-name
+    """
+    If provided as the cls to json.dumps, will serialize and Locations as i4x strings and other
+    keys using the unicode strings.
+    """
+    def default(self, key):
+        from opaque_keys import OpaqueKey
+        from bson.json_util import default as bson_default
+        if isinstance(key, OpaqueKey):
+            return unicode(key)
+        return bson_default(key)
+
+
 class JsonResponse(HttpResponse):
     def __init__(self, data=None):
-        content = json.dumps(data, cls=i4xEncoder)
+        content = json.dumps(data, cls=MyEncoder)
         super(JsonResponse, self).__init__(content,
                                            mimetype='application/json; charset=utf-8')
 

@@ -34,6 +34,8 @@ from eventtracking import tracker
 import lms.lib.comment_client as cc
 
 from .models import User as ForumUser
+from .models import Comment as ForumComment
+from .models import Thread as ForumThread
 
 log = logging.getLogger(__name__)
 
@@ -45,9 +47,10 @@ def permitted(fn):
     def wrapper(request, *args, **kwargs):
         def fetch_content():
             if "thread_id" in kwargs:
-                content = cc.Thread.find(kwargs["thread_id"]).to_dict()
+                content = ForumThread.find(kwargs["thread_id"]).to_dict()
             elif "comment_id" in kwargs:
-                content = cc.Comment.find(kwargs["comment_id"]).to_dict()
+                print "ForumComment.objects.get(id=\"{}\")".format(kwargs["comment_id"])
+                content = ForumComment.objects.get(id=kwargs["comment_id"]).to_dict()
             else:
                 content = None
             return content
@@ -127,7 +130,7 @@ def create_thread(request, course_id, commentable_id):
     if 'body' not in post or not post['body'].strip():
         return JsonError(_("Body can't be empty"))
 
-    thread = cc.Thread(
+    thread = ForumThread(
         anonymous=anonymous,
         anonymous_to_peers=anonymous_to_peers,
         commentable_id=commentable_id,
@@ -201,7 +204,7 @@ def update_thread(request, course_id, thread_id):
         return JsonError(_("Body can't be empty"))
 
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
-    thread = cc.Thread.find(thread_id)
+    thread = ForumThread.objects.get(id=thread_id)
     thread.body = request.POST["body"]
     thread.title = request.POST["title"]
     # The following checks should avoid issues we've seen during deploys, where end users are hitting an updated server
@@ -245,7 +248,7 @@ def _create_comment(request, course_key, thread_id=None, parent_id=None):
     else:
         anonymous_to_peers = False
 
-    comment = cc.Comment(
+    comment = ForumComment(
         anonymous=anonymous,
         anonymous_to_peers=anonymous_to_peers,
         user_id=request.user.id,
@@ -303,7 +306,7 @@ def delete_thread(request, course_id, thread_id):  # pylint: disable=unused-argu
     this is ajax only
     """
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
-    thread = cc.Thread.find(thread_id)
+    thread = ForumThread.objects.get(id=thread_id)
     thread.delete()
 
     return JsonResponse(prepare_content(thread.to_dict(), course_key))
@@ -318,7 +321,7 @@ def update_comment(request, course_id, comment_id):
     handles static and ajax submissions
     """
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
-    comment = cc.Comment.find(comment_id)
+    comment = ForumComment.find(comment_id)
     if 'body' not in request.POST or not request.POST['body'].strip():
         return JsonError(_("Body can't be empty"))
     comment.body = request.POST["body"]
@@ -338,7 +341,7 @@ def endorse_comment(request, course_id, comment_id):
     ajax only
     """
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
-    comment = cc.Comment.find(comment_id)
+    comment = ForumComment.find(comment_id)
     comment.endorsed = request.POST.get('endorsed', 'false').lower() == 'true'
     comment.endorsement_user_id = request.user.id
     comment.save()
@@ -354,7 +357,7 @@ def openclose_thread(request, course_id, thread_id):
     ajax only
     """
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
-    thread = cc.Thread.find(thread_id)
+    thread = ForumThread.objects.get(id=thread_id)
     thread.closed = request.POST.get('closed', 'false').lower() == 'true'
     thread.save()
 
@@ -373,7 +376,7 @@ def create_sub_comment(request, course_id, comment_id):
     after checking the max depth allowed, if allowed
     """
     if cc_settings.MAX_COMMENT_DEPTH is not None:
-        if cc_settings.MAX_COMMENT_DEPTH <= cc.Comment.find(comment_id).depth:
+        if cc_settings.MAX_COMMENT_DEPTH <= ForumComment.find(comment_id).depth:
             return JsonError(_("Comment level too deep"))
     return _create_comment(request, SlashSeparatedCourseKey.from_deprecated_string(course_id), parent_id=comment_id)
 
@@ -387,7 +390,7 @@ def delete_comment(request, course_id, comment_id):
     ajax only
     """
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
-    comment = cc.Comment.find(comment_id)
+    comment = ForumComment.find(comment_id)
     comment.delete()
     return JsonResponse(prepare_content(comment.to_dict(), course_key))
 
@@ -401,7 +404,7 @@ def vote_for_comment(request, course_id, comment_id, value):
     """
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
     user = ForumUser.from_django_user(request.user)
-    comment = cc.Comment.find(comment_id)
+    comment = ForumComment.find(comment_id)
     user.vote(comment, value)
     return JsonResponse(prepare_content(comment.to_dict(), course_key))
 
@@ -416,7 +419,7 @@ def undo_vote_for_comment(request, course_id, comment_id):
     """
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
     user = ForumUser.from_django_user(request.user)
-    comment = cc.Comment.find(comment_id)
+    comment = ForumComment.find(comment_id)
     user.unvote(comment)
     return JsonResponse(prepare_content(comment.to_dict(), course_key))
 
@@ -431,7 +434,7 @@ def vote_for_thread(request, course_id, thread_id, value):
     """
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
     user = ForumUser.from_django_user(request.user)
-    thread = cc.Thread.find(thread_id)
+    thread = ForumThread.objects.get(id=thread_id)
     user.vote(thread, value)
 
     return JsonResponse(prepare_content(thread.to_dict(), course_key))
@@ -447,7 +450,7 @@ def flag_abuse_for_thread(request, course_id, thread_id):
     """
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
     user = ForumUser.from_django_user(request.user)
-    thread = cc.Thread.find(thread_id)
+    thread = ForumThread.objects.get(id=thread_id)
     thread.flagAbuse(user, thread)
 
     return JsonResponse(prepare_content(thread.to_dict(), course_key))
@@ -464,7 +467,7 @@ def un_flag_abuse_for_thread(request, course_id, thread_id):
     user = ForumUser.from_django_user(request.user)
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
     course = get_course_by_id(course_key)
-    thread = cc.Thread.find(thread_id)
+    thread = ForumThread.objects.get(id=thread_id)
     remove_all = cached_has_permission(request.user, 'openclose_thread', course_key) or has_access(request.user, 'staff', course)
     thread.unFlagAbuse(user, thread, remove_all)
 
@@ -481,7 +484,7 @@ def flag_abuse_for_comment(request, course_id, comment_id):
     """
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
     user = ForumUser.from_django_user(request.user)
-    comment = cc.Comment.find(comment_id)
+    comment = ForumComment.find(comment_id)
     comment.flagAbuse(user, comment)
     return JsonResponse(prepare_content(comment.to_dict(), course_key))
 
@@ -498,7 +501,7 @@ def un_flag_abuse_for_comment(request, course_id, comment_id):
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
     course = get_course_by_id(course_key)
     remove_all = cached_has_permission(request.user, 'openclose_thread', course_key) or has_access(request.user, 'staff', course)
-    comment = cc.Comment.find(comment_id)
+    comment = ForumComment.find(comment_id)
     comment.unFlagAbuse(user, comment, remove_all)
     return JsonResponse(prepare_content(comment.to_dict(), course_key))
 
@@ -513,7 +516,7 @@ def undo_vote_for_thread(request, course_id, thread_id):
     """
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
     user = ForumUser.from_django_user(request.user)
-    thread = cc.Thread.find(thread_id)
+    thread = ForumThread.objects.get(id=thread_id)
     user.unvote(thread)
 
     return JsonResponse(prepare_content(thread.to_dict(), course_key))
@@ -529,7 +532,7 @@ def pin_thread(request, course_id, thread_id):
     """
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
     user = ForumUser.from_django_user(request.user)
-    thread = cc.Thread.find(thread_id)
+    thread = ForumThread.objects.get(id=thread_id)
     thread.pin(user, thread_id)
 
     return JsonResponse(prepare_content(thread.to_dict(), course_key))
@@ -545,7 +548,7 @@ def un_pin_thread(request, course_id, thread_id):
     """
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
     user = ForumUser.from_django_user(request.user)
-    thread = cc.Thread.find(thread_id)
+    thread = ForumThread.objects.get(id=thread_id)
     thread.un_pin(user, thread_id)
 
     return JsonResponse(prepare_content(thread.to_dict(), course_key))
@@ -556,22 +559,8 @@ def un_pin_thread(request, course_id, thread_id):
 @permitted
 def follow_thread(request, course_id, thread_id):
     user = ForumUser.from_django_user(request.user)
-    thread = cc.Thread.find(thread_id)
+    thread = ForumThread.objects.get(id=thread_id)
     user.follow(thread)
-    return JsonResponse({})
-
-
-@require_POST
-@login_required
-@permitted
-def follow_commentable(request, course_id, commentable_id):
-    """
-    given a course_id and commentable id, follow this commentable
-    ajax only
-    """
-    user = ForumUser.from_django_user(request.user)
-    commentable = cc.Commentable.find(commentable_id)
-    user.follow(commentable)
     return JsonResponse({})
 
 
@@ -594,22 +583,8 @@ def unfollow_thread(request, course_id, thread_id):
     ajax only
     """
     user = ForumUser.from_django_user(request.user)
-    thread = cc.Thread.find(thread_id)
+    thread = ForumThread.objects.get(id=thread_id)
     user.unfollow(thread)
-    return JsonResponse({})
-
-
-@require_POST
-@login_required
-@permitted
-def unfollow_commentable(request, course_id, commentable_id):
-    """
-    given a course id and commentable id stop following commentable
-    ajax only
-    """
-    user = ForumUser.from_django_user(request.user)
-    commentable = cc.Commentable.find(commentable_id)
-    user.unfollow(commentable)
     return JsonResponse({})
 
 

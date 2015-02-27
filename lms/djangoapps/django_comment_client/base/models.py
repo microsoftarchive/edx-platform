@@ -1,6 +1,7 @@
 import datetime
 
-from mongoengine import Document, EmbeddedDocument
+from bson.objectid import ObjectId
+from mongoengine import Document, EmbeddedDocument, Q
 from mongoengine.fields import BooleanField, DateTimeField, DictField, EmbeddedDocumentField, IntField, ListField, ReferenceField, StringField
 
 
@@ -14,11 +15,18 @@ class Content(Document):
     historical_abuse_flaggers = ListField(default=[]) #preserve abuse flaggers after a moderator unflags)
     author_username = StringField(default=None)
 
-    author = ReferenceField('User')
+    updated_at = DateTimeField(default=datetime.datetime.now)
+    created_at = DateTimeField(default=datetime.datetime.now)
+
+    author_id = StringField()
+    @property
+    def author(self):
+        return User.objects.get(id=self.author_id)
+
     #before_save :set_username
-    def set_username(self):
-        # avoid having to look this attribute up later, since it does not change
-        self.author_username = self.author.username
+    #def set_username(self):
+    #    # avoid having to look this attribute up later, since it does not change
+    #    self.author_username = self.author.username
 
     def author_with_anonymity(self, attr=None, attr_when_anonymous=None):
         if not attr:
@@ -32,6 +40,17 @@ class Content(Document):
             else:
                 return getattr(self.author, attr)
 
+    @classmethod
+    def find(cls, object_id_str):
+        """
+        """
+        return cls.objects.get(pk=ObjectId(object_id_str))
+
+    def save(self, *args, **kwargs):
+        self.updated_at = datetime.datetime.now()
+        if not self.author_username:
+            self.author_username = self.author.username
+        return super(Content, self).save(*args, **kwargs)
 
 
 class Thread(Content):
@@ -54,13 +73,11 @@ class Thread(Content):
     at_position_list = ListField(default=[])
     last_activity_at = DateTimeField(default=datetime.datetime.utcnow)
     group_id = IntField()
-    pinned = BooleanField()
+    pinned = BooleanField(default=False)
 
     #index({author_id: 1, course_id: 1})
 
 
-    author = ReferenceField('User')
-    comments = ListField(ReferenceField('Comment'))
     #belongs_to :author, class_name: "User", inverse_of: :comment_threads, index: true#, autosave: true
     #has_many :comments, dependent: :destroy#, autosave: true# Use destroy to envoke callback on the top-level comments TODO async
     #has_many :activities, autosave: true
@@ -101,22 +118,201 @@ class Thread(Content):
     #def endorsed
     #    comments.where(endorsed: true).exists?
 
+    #  # GET /api/v1/threads/{id}
+    #
+    #  begin
+    #    thread = CommentThread.find(thread_id)
+    #  rescue Mongoid::Errors::DocumentNotFound
+    #    error 404, [t(:requested_object_not_found)].to_json
+    #  end
+    #
+    #  if params["user_id"] and bool_mark_as_read
+    #    user = User.only([:id, :username, :read_states]).find_by(external_id: params["user_id"])
+    #    user.mark_as_read(thread) if user
+    #  end
+    #
+    #  presenter = ThreadPresenter.factory(thread, user || nil)
+    #  if params.has_key?("resp_skip")
+    #    unless (resp_skip = Integer(params["resp_skip"]) rescue nil) && resp_skip >= 0
+    #      error 400, [t(:param_must_be_a_non_negative_number, :param => 'resp_skip')].to_json
+    #    end
+    #  else
+    #    resp_skip = 0
+    #  end
+    #  if params["resp_limit"]
+    #    unless (resp_limit = Integer(params["resp_limit"]) rescue nil) && resp_limit >= 0
+    #      error 400, [t(:param_must_be_a_number_greater_than_zero, :param => 'resp_limit')].to_json
+    #    end
+    #  else
+    #    resp_limit = nil
+    #  end
+    #  presenter.to_hash(true, resp_skip, resp_limit).to_json
 
-    def to_dict(self, params={}):
-        hash = self.to_mongo().to_dict()
-        hash = {k: hash[k] for k in ' '.split("thread_type title body course_id anonymous anonymous_to_peers commentable_id created_at updated_at at_position_list closed")}
+    @staticmethod
+    def merge_response_content(content):
+        #  # Takes content output from Mongoid in a depth-first traversal order and
+        #  # returns an array of first-level response hashes with content represented
+        #  # hierarchically, with a comment's list of children in the key "children".
+        #  def merge_response_content(content)
+        #    top_level = []
+        #    ancestry = []
+        #    content.each do |item|
+        #      item_hash = item.to_hash.merge("children" => [])
+        #      if item.parent_id.nil?
+        #        top_level << item_hash
+        #        ancestry = [item_hash]
+        #      else
+        #        while ancestry.length > 0 do
+        #          if item.parent_id == ancestry.last["id"]
+        #            ancestry.last["children"] << item_hash
+        #            ancestry << item_hash
+        #            break
+        #          else
+        #            ancestry.pop
+        #            next
+        #          end
+        #        end
+        #        if ancestry.empty? # invalid parent; ignore item
+        #          next
+        #        end
+        #      end
+        #    end
+        #    top_level
+        #  end
+        print 'merge response content:', list(content)
+        top_level = []
+        ancestry = []
+        for item in content:
+            item_hash = item.to_dict()
+            item_hash.update({"children": []})
+            if item.parent_id is None:
+                top_level.append(item_hash)
+                ancestry = [item_hash]
+            else:
+                while len(ancestry) > 0:
+                    if item.parent_id == ancestry[-1:]["id"]:
+                        ancestry[-1:]["children"].append(item_hash)
+                        ancestry.append(item_hash)
+                        break
+                    else:
+                        ancestry.pop()
+                        continue
+                if len(ancestry)==0:  # invalid parent; ignore item
+                    continue
+        print 'merge result:', top_level
+        return top_level
+
+    def get_paged_merged_responses(self, responses, skip, limit):
+        #  # Given a Mongoid object representing responses, apply pagination and return
+        #  # a hash containing the following:
+        #  #   responses
+        #  #     An array of hashes representing the page of responses (including
+        #  #     children)
+        #  #   response_count
+        #  #     The total number of responses
+        #  def get_paged_merged_responses(thread_id, responses, skip, limit)
+        #    response_ids = responses.only(:_id).sort({"sk" => 1}).to_a.map{|doc| doc["_id"]}
+        response_ids = [doc.id for doc in responses.only("id").order_by("+sk")]
+        #    paged_response_ids = limit.nil? ? response_ids.drop(skip) : response_ids.drop(skip).take(limit)
+        paged_response_ids = response_ids[skip:] if limit is None else response_ids[skip:limit+1]
+        #    content = Comment.where(comment_thread_id: thread_id).
+        #      or({:parent_id => {"$in" => paged_response_ids}}, {:id => {"$in" => paged_response_ids}}).
+        #      sort({"sk" => 1})
+        content = Comment.objects(Q(parent_id__in=paged_response_ids) | Q(id__in=paged_response_ids)).order_by("+sk")
+        #    {"responses" => merge_response_content(content), "response_count" => response_ids.length}
+         #  end
+        return {
+            "responses": self.merge_response_content(content),
+            "response_count": len(response_ids)
+        }
+
+    def to_dict(self, user=None, with_responses=False, resp_skip=0, resp_limit=None):
+
+        assert resp_skip >= 0
+        assert resp_limit is None or resp_limit >= 1
+
+        hash = self.to_mongo()
+        hash = {k: hash[k] for k in "thread_type title body course_id anonymous anonymous_to_peers commentable_id created_at updated_at at_position_list closed".split(' ')}
         hash.update({
-            "id": self._id,
-            "user_id": self.author_id,
-            "username": self.author_username,
-            "votes": None,  # votes.slice(*%w[count up_count down_count point]),
+            "id": self.id,
+            "user_id": self.author.id,
+            "username": self.author.username,
+            "votes": {"up" : [ ], "down" : [ ], "up_count" : 0, "down_count" : 0, "count" : 0, "point" : 0},  # votes.slice(*%w[count up_count down_count point]),
             "abuse_flaggers": self.abuse_flaggers,
-            "tags": [],
             "type": "thread",
             "group_id": self.group_id,
-            "pinned": self.pinned,
+            "pinned": self.pinned or False,
             "comments_count": self.comment_count
         })
+
+        #  def to_hash with_responses=false, resp_skip=0, resp_limit=nil
+        #    raise ArgumentError unless resp_skip >= 0
+        #    raise ArgumentError unless resp_limit.nil? or resp_limit >= 1
+        #    h = @thread.to_hash
+        #    h["read"] = @is_read
+        #    h["unread_comments_count"] = @unread_count
+        #    h["endorsed"] = @is_endorsed || false
+        hash["read"] = False  # FIXME
+        hash["unread_comments_count"] = 0  # FIXME
+        hash["endorsed"] = False  # FIXME
+        #    if with_responses
+        if with_responses:
+            #      if @thread.thread_type.discussion? && resp_skip == 0 && resp_limit.nil?
+            if self.thread_type == "discussion" and resp_skip == 0 and resp_limit is None:
+                #        content = Comment.where(comment_thread_id: @thread._id).order_by({"sk" => 1})
+                #        h["children"] = merge_response_content(content)
+                #        h["resp_total"] = content.to_a.select{|d| d.depth == 0 }.length
+                content = Comment.objects(comment_thread_id=self.id).order_by("+sk")
+                hash["children"] = self.merge_response_content(content)
+                hash["resp_total"] = len(filter(lambda item: item.depth == 0, content))
+                print 'discussion responses default', hash
+            #      else
+            else:
+                #        responses = Content.where(comment_thread_id: @thread._id).exists(parent_id: false)
+                responses = Comment.objects(comment_thread_id=self.id, parent_id__exists=False)
+                #        case @thread.thread_type
+                #        when "question"
+                if self.thread_type == "question":
+                    #          endorsed_responses = responses.where(endorsed: true)
+                    #          non_endorsed_responses = responses.where(endorsed: false)
+                    endorsed_responses = responses.clone().filter(endorsed=True)
+                    non_endorsed_responses = responses.clone().filter(endorsed=False)
+                    #          endorsed_response_info = get_paged_merged_responses(@thread._id, endorsed_responses, 0, nil)
+                    #          non_endorsed_response_info = get_paged_merged_responses(
+                    #            @thread._id,
+                    #            non_endorsed_responses,
+                    #            resp_skip,
+                    #            resp_limit
+                    #          )
+                    endorsed_response_info = self.get_paged_merged_responses(endorsed_responses, 0, None)
+                    non_endorsed_response_info = self.get_paged_merged_responses(non_endorsed_responses, resp_skip, resp_limit)
+                    #          h["endorsed_responses"] = endorsed_response_info["responses"]
+                    #          h["non_endorsed_responses"] = non_endorsed_response_info["responses"]
+                    #          h["non_endorsed_resp_total"] = non_endorsed_response_info["response_count"]
+                    hash["endorsed_responses"] = endorsed_response_info["responses"]
+                    hash["non_endorsed_responses"] = non_endorsed_response_info["responses"]
+                    hash["non_endorsed_resp_total"] = non_endorsed_response_info["response_count"]
+                    print 'question responses', hash
+                #        when "discussion"
+                elif self.thread_type == "discussion":
+                    #          response_info = get_paged_merged_responses(@thread._id, responses, resp_skip, resp_limit)
+                    #          h["children"] = response_info["responses"]
+                    #          h["resp_total"] = response_info["response_count"]
+                    response_info = self.get_paged_merged_responses(responses, resp_skip, resp_limit)
+                    hash["children"] = response_info["responses"]
+                    hash["resp_total"] = response_info["response_count"]
+                    print 'discussion responses', hash
+                #        end
+            #      end
+            #      h["resp_skip"] = resp_skip
+            #      h["resp_limit"] = resp_limit
+            hash["resp_skip"] = resp_skip
+            hash["resp_limit"] = resp_limit
+            #    end
+        #    h
+        #  end
+        return hash
+#
 
     @property
     def comment_thread_id(self):
@@ -137,6 +333,77 @@ class Thread(Content):
             comment.endorsed = False
             comment.endorsement = None
 
+    @classmethod
+    def search(
+        cls,
+        user,
+        course_id,
+        group_id=None,
+        commentable_id=None,
+        commentable_ids=None,
+        page=1,
+        per_page=20,
+        sort_key='date',
+        sort_order='desc',
+        text='',
+        flagged=None,
+        unread=None,
+        unanswered=None,
+    ):
+
+        #default_params = {'page': 1,
+        #                  'per_page': 20,
+        #                  'course_id': query_params['course_id'],
+        #                  'recursive': False}
+        #params = merge_dict(default_params, strip_blank(strip_none(query_params)))
+        #
+        #if query_params.get('text'):
+        #    url = cls.url(action='search')
+        #else:
+        #    url = cls.url(action='get_all', params=extract(params, 'commentable_id'))
+        #    if params.get('commentable_id'):
+        #        del params['commentable_id']
+        #response = perform_request(
+        #    'get',
+        #    url,
+        #    params,
+        #    metric_tags=[u'course_id:{}'.format(query_params['course_id'])],
+        #    metric_action='thread.search',
+        #    paged_results=True
+        #)
+        threads = Thread.objects(course_id=course_id)
+        #if query_params.get('text'):
+        #    search_query = query_params['text']
+        #    course_id = query_params['course_id']
+        #    group_id = query_params['group_id'] if 'group_id' in query_params else None
+        #    requested_page = params['page']
+        #    total_results = response.get('total_results')
+        #    corrected_text = response.get('corrected_text')
+        #    # Record search result metric to allow search quality analysis.
+        #    # course_id is already included in the context for the event tracker
+        #    tracker.emit(
+        #        'edx.forum.searched',
+        #        {
+        #            'query': search_query,
+        #            'corrected_text': corrected_text,
+        #            'group_id': group_id,
+        #            'page': requested_page,
+        #            'total_results': total_results,
+        #        }
+        #    )
+        #    log.info(
+        #        u'forum_text_search query="{search_query}" corrected_text="{corrected_text}" course_id={course_id} group_id={group_id} page={requested_page} total_results={total_results}'.format(
+        #            search_query=search_query,
+        #            corrected_text=corrected_text,
+        #            course_id=course_id,
+        #            group_id=group_id,
+        #            requested_page=requested_page,
+        #            total_results=total_results
+        #        )
+        #    )
+        meta = {}
+        return threads, meta.get('page', 1), meta.get('num_pages', 1), meta.get('corrected_text')
+
 
 
 class Comment(Content):
@@ -155,17 +422,25 @@ class Comment(Content):
     anonymous_to_peers = BooleanField(default=False)
     at_position_list = ListField(default=[])
 
+    parent_id = ReferenceField('Comment')
+    parent_ids = ListField(ReferenceField('Comment'))
+
     #index({author_id: 1, course_id: 1})
     #index({_type: 1, comment_thread_id: 1, author_id: 1, updated_at: 1})
 
     sk = StringField(default=None)
     #before_save :set_sk
-    def set_sk(self):
-        # this attribute is explicitly write-once
-        if self.sk is None:
-            self.sk = "-".join(self.parent_ids.copy() + self.id)
+    #def set_sk(self):
+    #    # this attribute is explicitly write-once
+    #    if self.sk is None:
 
-    thread = ReferenceField('Thread')
+    def save(self, *args, **kwargs):
+        if not self.sk:
+            self.sk = "-".join([str(id) for str in self.parent_ids + self.id])
+        return super(Comment, self).save(*args, **kwargs)
+
+
+    comment_thread_id = ReferenceField('Thread', dbref=False)
     #belongs_to :comment_thread, index: true
     #belongs_to :author, class_name: "User", index: true
 
@@ -206,7 +481,6 @@ class Comment(Content):
 
 
     def to_dict(self, params={}):
-        raise NotImplementedError
         #sort_by_parent_and_time = Proc.new do |x, y|
         #arr_cmp = x.parent_ids.map(&:to_s) <=> y.parent_ids.map(&:to_s)
         #if arr_cmp != 0
@@ -219,8 +493,27 @@ class Comment(Content):
         #subtree_hash = subtree(sort: sort_by_parent_and_time)
         #self.class.hash_tree(subtree_hash).first
         #else
+        hash = self.to_mongo()
+        hash = {k:hash.get(k) for k in "body course_id endorsed endorsement anonymous anonymous_to_peers created_at updated_at at_position_list".split(' ')}
         #as_document.slice(*%w[body course_id endorsed endorsement anonymous anonymous_to_peers created_at updated_at at_position_list])
-        #.merge("id" => _id)
+        hash.update({
+            "id": str(self.id),
+            "user_id": self.author_id,
+            "username": self.author_username,
+            "depth": 1,   # ??
+            #.merge("closed" => comment_thread is None ? false : comment_thread.closed) # ditto
+            "closed": False,
+            #.merge("thread_id" => comment_thread_id)
+            "thread_id": str(self.comment_thread_id),
+            #.merge("commentable_id" => comment_thread is None ? None : comment_thread.commentable_id) # ditto
+            "commentable_id": None,  # ?
+            #.merge("votes" => votes.slice(*%w[count up_count down_count point]))
+            "votes": {"up" : [ ], "down" : [ ], "up_count" : 0, "down_count" : 0, "count" : 0, "point" : 0},
+            #.merge("abuse_flaggers" => abuse_flaggers)
+            "abuse_flaggers": [],
+            #.merge("type" => "comment")
+            "type": "comment",
+        })
         #.merge("user_id" => author_id)
         #.merge("username" => author_username)
         #.merge("depth" => depth)
@@ -230,6 +523,7 @@ class Comment(Content):
         #.merge("votes" => votes.slice(*%w[count up_count down_count point]))
         #.merge("abuse_flaggers" => abuse_flaggers)
         #.merge("type" => "comment")
+        return hash
 
     @property
     def commentable_id(self):
@@ -273,7 +567,9 @@ class User(Document):
     meta = {'collection': 'users'}
     #include Mongo::Voter
 
-    external_id = StringField(primary_key=True)
+    id = StringField(primary_key=True)
+    external_id = StringField()
+    # the above two need to be kept in sync
     username = StringField()
     default_sort_key = StringField(default="date")
 
@@ -297,10 +593,11 @@ class User(Document):
         """
         """
         obj, __ = cls.objects.get_or_create(
+            id=str(user.id),
             external_id=str(user.id),
             username=user.username,
         )
-        if course_id:
+        if course_id:  # get rid of this, not saved to db.
             setattr(obj, 'course_id', course_id)
         return obj
 
@@ -314,8 +611,8 @@ class User(Document):
         #end
         #assert isinstance(thread, Thread)
         Subscription.objects.get_or_create(
-            subscriber_id=self.id,
-            source_id=thread.id,
+            subscriber_id=str(self.id),
+            source_id=str(thread.id),
             source_type="Thread"
         )
 
@@ -326,8 +623,8 @@ class User(Document):
         # subscription.destroy if subscription
         # subscription
         Subscription.objects(
-            subscriber_id=self.id,
-            source_id=thread.id,
+            subscriber_id=str(self.id),
+            source_id=str(thread.id),
             source_type="Thread",
         ).delete()
 

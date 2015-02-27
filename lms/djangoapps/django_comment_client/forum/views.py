@@ -3,6 +3,7 @@ Views handling read (GET) requests for the Discussion tab and inline discussions
 """
 
 from functools import wraps
+from bson import json_util
 import json
 import logging
 import xml.sax.saxutils as saxutils
@@ -36,6 +37,7 @@ from django_comment_client.utils import (
 import django_comment_client.utils as utils
 import lms.lib.comment_client as cc
 from ..base.models import User as ForumUser
+from ..base.models import Thread as ForumThread
 
 from opaque_keys.edx.keys import CourseKey
 
@@ -45,11 +47,19 @@ PAGES_NEARBY_DELTA = 2
 log = logging.getLogger("edx.discussions")
 
 
+def my_json_default(obj):
+    from bson.objectid import ObjectId
+    if isinstance(obj, ObjectId):
+        return str(obj)
+    else:
+        return json_util.default(obj)
+
+
 def _attr_safe_json(obj):
     """
     return a JSON string for obj which is safe to embed as the value of an attribute in a DOM node
     """
-    return saxutils.escape(json.dumps(obj), {'"': '&quot;'})
+    return saxutils.escape(json.dumps(obj, default=my_json_default), {'"': '&quot;'})
 
 
 @newrelic.agent.function_trace()
@@ -76,6 +86,8 @@ def get_threads(request, course, discussion_id=None, per_page=THREADS_PER_PAGE):
     This may raise an appropriate subclass of cc.utils.CommentClientError
     if something goes wrong, or ValueError if the group_id is invalid.
     """
+    cc_user = ForumUser.from_django_user(request.user)
+
     default_query_params = {
         'page': 1,
         'per_page': per_page,
@@ -83,7 +95,7 @@ def get_threads(request, course, discussion_id=None, per_page=THREADS_PER_PAGE):
         'sort_order': 'desc',
         'text': '',
         'course_id': unicode(course.id),
-        'user_id': request.user.id,
+        'user': cc_user,
         'group_id': get_group_id_for_comments_service(request, course.id, discussion_id),  # may raise ValueError
     }
 
@@ -103,7 +115,6 @@ def get_threads(request, course, discussion_id=None, per_page=THREADS_PER_PAGE):
         default_query_params['sort_key'] = cc_user.default_sort_key or default_query_params['sort_key']
     else:
         # If the user clicked a sort key, update their default sort key
-        cc_user = ForumUser.from_django_user(request.user)
         cc_user.default_sort_key = request.GET.get('sort_key')
         cc_user.save()
 
@@ -130,7 +141,8 @@ def get_threads(request, course, discussion_id=None, per_page=THREADS_PER_PAGE):
         )
     )
 
-    threads, page, num_pages, corrected_text = cc.Thread.search(query_params)
+    threads, page, num_pages, corrected_text = ForumThread.search(**query_params)
+    threads = [thread.to_dict() for thread in threads]
 
     for thread in threads:
         # patch for backward compatibility to comments service
@@ -255,7 +267,11 @@ def forum_form_discussion(request, course_key):
             'category_map': course_settings["category_map"],
             'course_settings': _attr_safe_json(course_settings)
         }
-        # print "start rendering.."
+        import pprint
+        print 'THREADS'
+        pprint.pprint(threads)
+        print 'CONTEXT'
+        pprint.pprint(context)
         return render_to_response('discussion/index.html', context)
 
 
@@ -285,11 +301,13 @@ def single_thread(request, course_key, discussion_id, thread_id):
     # page; it would be a nice optimization to avoid that extra round trip to
     # the comments service.
     try:
-        thread = cc.Thread.find(thread_id).retrieve(
-            recursive=request.is_ajax(),
-            user_id=request.user.id,
-            response_skip=request.GET.get("resp_skip"),
-            response_limit=request.GET.get("resp_limit")
+        resp_skip = int(request.GET["resp_skip"]) if "resp_skip" in request.GET else 0
+        resp_limit = int(request.GET["resp_limit"]) if "resp_limit" in request.GET else None
+        thread = ForumThread.find(thread_id).to_dict(
+            with_responses=request.is_ajax(),
+            user=cc_user,
+            resp_skip=resp_skip,
+            resp_limit=resp_limit,
         )
     except cc.utils.CommentClientRequestError as e:
         if e.status_code == 404:
@@ -299,14 +317,14 @@ def single_thread(request, course_key, discussion_id, thread_id):
     # verify that the thread belongs to the requesting student's cohort
     if is_commentable_cohorted(course_key, discussion_id) and not is_moderator:
         user_group_id = get_cohort_id(request.user, course_key)
-        if getattr(thread, "group_id", None) is not None and user_group_id != thread.group_id:
+        if thread.get("group_id") is not None and user_group_id != thread["group_id"]:
             raise Http404
 
     is_staff = cached_has_permission(request.user, 'openclose_thread', course.id)
     if request.is_ajax():
         with newrelic.agent.FunctionTrace(nr_transaction, "get_annotated_content_infos"):
             annotated_content_info = utils.get_annotated_content_infos(course_key, thread, request.user, user_info=user_info)
-        content = utils.prepare_content(thread.to_dict(), course_key, is_staff)
+        content = utils.prepare_content(thread, course_key, is_staff)
         with newrelic.agent.FunctionTrace(nr_transaction, "add_courseware_context"):
             add_courseware_context([content], course, request.user)
         return utils.JsonResponse({
@@ -319,15 +337,17 @@ def single_thread(request, course_key, discussion_id, thread_id):
             threads, query_params = get_threads(request, course)
         except ValueError:
             return HttpResponseBadRequest("Invalid group_id")
-        threads.append(thread.to_dict())
+        threads.append(thread)
 
         with newrelic.agent.FunctionTrace(nr_transaction, "add_courseware_context"):
             add_courseware_context(threads, course, request.user)
 
         for thread in threads:
             # patch for backward compatibility with comments service
+            print 'pinned? {}'.format(thread)
             if "pinned" not in thread:
                 thread["pinned"] = False
+            print 'pinned =', thread["pinned"]
 
         threads = [utils.prepare_content(thread, course_key, is_staff) for thread in threads]
 
@@ -359,6 +379,11 @@ def single_thread(request, course_key, discussion_id, thread_id):
             'category_map': course_settings["category_map"],
             'course_settings': _attr_safe_json(course_settings)
         }
+        import pprint
+        print 'THREADS'
+        pprint.pprint(threads)
+        print 'CONTEXT'
+        pprint.pprint(context)
         return render_to_response('discussion/index.html', context)
 
 

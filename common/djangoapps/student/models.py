@@ -43,7 +43,6 @@ from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from xmodule.modulestore import Location
 from opaque_keys import InvalidKeyError
 
-import lms.lib.comment_client as cc
 from util.query import use_read_replica_if_available
 from xmodule_django.models import CourseKeyField, NoneToEmptyManager
 from xmodule.modulestore.exceptions import ItemNotFoundError
@@ -1374,8 +1373,9 @@ def create_comments_service_user(user):
         # Don't try--it won't work, and it will fill the logs with lots of errors
         return
     try:
-        cc_user = cc.User.from_django_user(user)
-        cc_user.save()
+        from lms.djangoapps.django_comment_client.base.models import User as ForumUser
+        forum_user = ForumUser.from_django_user(user)
+        forum_user.save()
     except Exception:  # pylint: disable=broad-except
         log = logging.getLogger("edx.discussion")  # pylint: disable=redefined-outer-name
         log.error(

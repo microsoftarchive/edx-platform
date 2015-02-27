@@ -186,7 +186,7 @@ class ViewsTestCase(UrlResetMixin, ModuleStoreTestCase, MockRequestSetupMixin):
 
         # Patch the comment client user save method so it does not try
         # to create a new cc user when creating a django user
-        with patch('student.models.cc.User.save'):
+        with patch('lms.djangoapps.django_comment_client.base.models.User.save'):
             uname = 'student'
             email = 'student@edx.org'
             password = 'test'
