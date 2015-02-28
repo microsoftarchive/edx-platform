@@ -248,12 +248,14 @@ def _create_comment(request, course_key, thread_id=None, parent_id=None):
     else:
         anonymous_to_peers = False
 
+    user = ForumUser.from_django_user(request.user)
+
     comment = ForumComment(
         anonymous=anonymous,
         anonymous_to_peers=anonymous_to_peers,
-        user_id=request.user.id,
+        author_id=user.id,
         course_id=course_key.to_deprecated_string(),
-        thread_id=thread_id,
+        comment_thread_id=ForumThread.objects.get(id=thread_id),
         parent_id=parent_id,
         body=post["body"]
     )
@@ -262,10 +264,9 @@ def _create_comment(request, course_key, thread_id=None, parent_id=None):
     followed = post.get('auto_subscribe', 'false').lower() == 'true'
 
     if followed:
-        user = ForumUser.from_django_user(request.user)
         user.follow(comment.thread)
 
-    event_data = {'discussion': {'id': comment.thread_id}, 'options': {'followed': followed}}
+    event_data = {'discussion': {'id': str(comment.comment_thread_id.id)}, 'options': {'followed': followed}}
 
     if parent_id:
         event_data['response'] = {'id': comment.parent_id}

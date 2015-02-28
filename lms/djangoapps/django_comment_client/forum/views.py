@@ -141,8 +141,11 @@ def get_threads(request, course, discussion_id=None, per_page=THREADS_PER_PAGE):
         )
     )
 
+    query_params['page']  = int(query_params['page'])
+    if query_params['commentable_ids']:
+        query_params['commentable_ids'] = query_params['commentable_ids'].split(',')
+    logging.warning("ForumThread.search(query params: %s)", query_params)
     threads, page, num_pages, corrected_text = ForumThread.search(**query_params)
-    threads = [thread.to_dict() for thread in threads]
 
     for thread in threads:
         # patch for backward compatibility to comments service

@@ -333,12 +333,84 @@ class Thread(Content):
             comment.endorsed = False
             comment.endorsement = None
 
+    #  def get_sort_criteria(sort_key, sort_order)
+    #    sort_key_mapper = {
+    #      "date" => :created_at,
+    #      "activity" => :last_activity_at,
+    #      "votes" => :"votes.point",
+    #      "comments" => :comment_count,
+    #    }
+    #
+    #    sort_order_mapper = {
+    #      "desc" => :desc,
+    #      "asc" => :asc,
+    #    }
+    #
+    #    sort_key = sort_key_mapper[params["sort_key"] || "date"]
+    #    sort_order = sort_order_mapper[params["sort_order"] || "desc"]
+    #
+    #    if sort_key && sort_order
+    #      sort_criteria = [[:pinned, :desc], [sort_key, sort_order]]
+    #      if ![:created_at, :last_activity_at].include? sort_key
+    #        sort_criteria << [:created_at, :desc]
+    #      end
+    #      sort_criteria
+    #    else
+    #      nil
+    #    end
+    #  end
+    @staticmethod
+    def _get_sort_criteria(sort_key, sort_order):
+        """
+        """
+        sort_key = {
+            "date": "created_at",
+            "activity": "last_activity_at",
+            "votes": "votes.point",
+            "comments": "comment_count",
+        }.get(sort_key, "created_at")
+
+        sort_order = {
+            "desc": "-",
+            "asc": "+",
+        }.get(sort_order, "-")
+
+        sort_criteria = ["-pinned", sort_order + sort_key]
+        if not sort_key.endswith("_at"):
+            sort_criteria.append("-created_at")
+
+        return sort_criteria
+
+    #  def get_group_id_criteria(threads, group_ids)
+    #    if group_ids.length > 1
+    #      threads.any_of(
+    #        {"group_id" => {"$in" => group_ids}},
+    #        {"group_id" => {"$exists" => false}},
+    #      )
+    #    else
+    #      threads.any_of(
+    #        {"group_id" => group_ids[0]},
+    #        {"group_id" => {"$exists" => false}},
+    #      )
+    #    end
+    #  end
+    @staticmethod
+    def _make_group_id_filter(group_ids):
+        """
+        """
+        if len(group_ids) > 1:
+            return Q(Q(group_id__in=group_ids)|Q(group_id__exists=False))
+        else:
+            return Q(Q(group_id=group_ids[0])|Q(group_id__exists=False))
+
+
     @classmethod
     def search(
         cls,
         user,
         course_id,
         group_id=None,
+        group_ids=None,
         commentable_id=None,
         commentable_ids=None,
         page=1,
@@ -371,7 +443,161 @@ class Thread(Content):
         #    metric_action='thread.search',
         #    paged_results=True
         #)
-        threads = Thread.objects(course_id=course_id)
+
+        thread_cursor = Thread.objects(course_id=course_id)
+        if commentable_ids is not None:
+            thread_cursor.filter(commentable_id__in=commentable_ids)
+
+        #  def handle_threads_query(
+        #    comment_threads,
+        #    user_id,
+        #    course_id,
+        #    group_ids,
+        #    filter_flagged,
+        #    filter_unread,
+        #    filter_unanswered,
+        #    sort_key,
+        #    sort_order,
+        #    page,
+        #    per_page
+        #  )
+        #
+        #    if not group_ids.empty?
+        #      comment_threads = get_group_id_criteria(comment_threads, group_ids)
+        #    end
+        if group_ids:
+            thread_cursor.filter(cls._make_group_id_filter(group_ids))
+        elif group_id:
+            thread_cursor.filter(cls._make_group_id_filter([group_id]))
+        #
+        #    if filter_flagged
+        if flagged:
+            #      self.class.trace_execution_scoped(['Custom/handle_threads_query/find_flagged']) do
+            #        # TODO replace with aggregate query?
+            #        comment_ids = Comment.where(:course_id => course_id).
+            #          where(:abuse_flaggers.ne => [], :abuse_flaggers.exists => true).
+            #          collect{|c| c.comment_thread_id}.uniq
+            #
+            #        thread_ids = comment_threads.where(:abuse_flaggers.ne => [], :abuse_flaggers.exists => true).
+            #          collect{|c| c.id}
+            #
+            #        comment_threads = comment_threads.in({"_id" => (comment_ids + thread_ids).uniq})
+            #      end
+            #    end
+            #
+            flagged_comment_thread_ids = [doc.comment_thread_id for doc in Comment.objects(course_id=course_id, abuse_flaggers__ne=[], abuse_flaggers__exists=True)]
+            flagged_thread_ids = [doc.id for doc in thread_cursor.clone().filter(abuse_flaggers__ne=[], abuse_flaggers__exists=True)]
+            thread_cursor.filter(id__in=set(flagged_comment_thread_ids + flagged_thread_ids))
+
+        #    if filter_unanswered
+        if unanswered:
+            #      self.class.trace_execution_scoped(['Custom/handle_threads_query/find_unanswered']) do
+            #        endorsed_thread_ids = Comment.where(:course_id => course_id).
+            #          where(:parent_id.exists => false, :endorsed => true).
+            #          collect{|c| c.comment_thread_id}.uniq
+            #
+            #        comment_threads = comment_threads.where({"thread_type" => :question}).nin({"_id" => endorsed_thread_ids})
+            #      end
+            #    end
+            endorsed_comment_thread_ids = [doc.comment_thread_id for doc in Comment.objects(course_id=course_id, parent_id__exists=False, endorsed=True)]
+            thread_cursor.filter(thread_type="question", id__nin=endorsed_comment_thread_ids)
+        #
+        #    sort_criteria = get_sort_criteria(sort_key, sort_order)
+        #    if not sort_criteria
+        #      {}
+        #    else
+        #      request_user = user_id ? user : nil
+        #      page = (page || DEFAULT_PAGE).to_i
+        #      per_page = (per_page || DEFAULT_PER_PAGE).to_i
+        #
+        #      comment_threads = comment_threads.order_by(sort_criteria)
+        #
+        thread_cursor.order_by(*cls._get_sort_criteria(sort_key, sort_order))
+        #      if request_user and filter_unread
+        #        # Filter and paginate based on user read state.  Requires joining a subdocument of the
+        #        # user object with documents in the contents collection, which has to be done in memory.
+        #        read_dates = {}
+        #        read_state = request_user.read_states.where(:course_id => course_id).first
+        #        if read_state
+        #          read_dates = read_state["last_read_times"].to_hash
+        #        end
+        #
+        if unread:
+            read_dates = {}
+            try:
+                read_state = User.read_states.get(course_id=course_id)
+                read_dates = read_state["last_read_times"].to_dict()
+            except User.read_states.DoesNotExist:
+                pass
+
+            #        threads = []
+            #        skipped = 0
+            #        to_skip = (page - 1) * per_page
+            #        has_more = false
+            #        # batch_size is used to cap the number of documents we might load into memory at any given time
+            #        # TODO: starting with Mongoid 3.1, you can just do comment_threads.batch_size(size).each()
+            #        comment_threads.query.batch_size(CommentService.config["manual_pagination_batch_size"].to_i)
+            #        Mongoid.unit_of_work(disable: :current) do # this is to prevent Mongoid from memoizing every document we look at
+            #          comment_threads.each do |thread|
+            threads = []
+            skipped = 0
+            to_skip = (page - 1) * per_page
+            has_more = False
+            for doc in thread_cursor:
+                #            thread_key = thread._id.to_s
+                #            if !read_dates.has_key?(thread_key) || read_dates[thread_key] < thread.last_activity_at
+                #              if skipped >= to_skip
+                #                if threads.length == per_page
+                #                  has_more = true
+                #                  break
+                #                end
+                #                threads << thread
+                #              else
+                #                skipped += 1
+                #              end
+                #            end
+                #          end
+                #        end
+                #        # The following trick makes frontend pagers work without recalculating
+                #        # the number of all unread threads per user on every request (since the number
+                #        # of threads in a course could be tens or hundreds of thousands).  It has the
+                #        # effect of showing that there's always just one more page of results, until
+                #        # there definitely are no more pages.  This is really only acceptable for pagers
+                #        # that don't actually reveal the total number of pages to the user onscreen.
+                #        num_pages = has_more ? page + 1 : page
+                thread_key = str(doc.id)
+                if thread_key not in read_dates or read_dates[thread_key] < doc.last_activity_at:
+                    if skipped >= to_skip:
+                        if len(threads) == per_page:
+                            has_more = True
+                            break
+                        threads.append(doc)
+                    else:
+                        skipped += 1
+            num_pages = page + 1 if has_more else page
+        #      else
+        else:
+            #        # let the installed paginator library handle pagination
+            #        num_pages = [1, (comment_threads.count / per_page.to_f).ceil].max
+            #        page = [1, page].max
+            #        threads = comment_threads.page(page).per(per_page).to_a
+            #      end
+            import math
+            num_pages = max([1,  math.ceil(thread_cursor.clone().count() / float(per_page))])
+            thread_cursor.skip((page - 1) * per_page).limit(per_page)
+        #
+        #      if threads.length == 0
+        #        collection = []
+        #      else
+        #        pres_threads = ThreadListPresenter.new(threads, request_user, course_id)
+        #        collection = pres_threads.to_hash
+        threads = [thread.to_dict() for thread in thread_cursor]
+        #      end
+        #      {collection: collection, num_pages: num_pages, page: page}
+        meta = {num_pages: num_pages, page: page}
+
+
+
         #if query_params.get('text'):
         #    search_query = query_params['text']
         #    course_id = query_params['course_id']
@@ -401,7 +627,6 @@ class Thread(Content):
         #            total_results=total_results
         #        )
         #    )
-        meta = {}
         return threads, meta.get('page', 1), meta.get('num_pages', 1), meta.get('corrected_text')
 
 
@@ -436,7 +661,7 @@ class Comment(Content):
 
     def save(self, *args, **kwargs):
         if not self.sk:
-            self.sk = "-".join([str(id) for str in self.parent_ids + self.id])
+            self.sk = "-".join([str(oid) for oid in (self.parent_ids + [self.id])])
         return super(Comment, self).save(*args, **kwargs)
 
 
@@ -524,6 +749,10 @@ class Comment(Content):
         #.merge("abuse_flaggers" => abuse_flaggers)
         #.merge("type" => "comment")
         return hash
+
+    @property
+    def thread(self):
+        return Thread.objects.get(id=self.comment_thread_id)
 
     @property
     def commentable_id(self):
