@@ -8,26 +8,28 @@ from mongoengine.fields import BooleanField, DateTimeField, DictField, EmbeddedD
 class Content(Document):
 
     meta = {'allow_inheritance': True, 'collection': 'contents'}
-    #include Mongo::Voteable
 
-    visible = BooleanField(default=True)
-    abuse_flaggers = ListField(default=[])
-    historical_abuse_flaggers = ListField(default=[]) #preserve abuse flaggers after a moderator unflags)
-    author_username = StringField(default=None)
-
+    abuse_flaggers = ListField()
+    historical_abuse_flaggers = ListField() #preserve abuse flaggers after a moderator unflags)
+    anonymous = BooleanField(default=False)
+    anonymous_to_peers = BooleanField(default=False)
+    at_position_list = ListField()
+    author_id = StringField()
+    author_username = StringField()
+    body = StringField()
+    commentable_id = StringField()
+    course_id = StringField()
     updated_at = DateTimeField(default=datetime.datetime.now)
     created_at = DateTimeField(default=datetime.datetime.now)
+    visible = BooleanField(default=True)
+    votes = DictField()
 
-    author_id = StringField()
+    # needed?
     @property
     def author(self):
         return User.objects.get(id=self.author_id)
 
-    #before_save :set_username
-    #def set_username(self):
-    #    # avoid having to look this attribute up later, since it does not change
-    #    self.author_username = self.author.username
-
+    # from cs Content model - move to serializer
     def author_with_anonymity(self, attr=None, attr_when_anonymous=None):
         if not attr:
             if self.anonymous or self.anonymous_to_peers:
@@ -40,6 +42,7 @@ class Content(Document):
             else:
                 return getattr(self.author, attr)
 
+    # cc compatibility
     @classmethod
     def find(cls, object_id_str):
         """
@@ -55,69 +58,41 @@ class Content(Document):
 
 class Thread(Content):
 
-    #include Mongoid::Timestamps
-    #extend Enumerize
-
-    #voteable self, :up => +1, :down => -1
-
+    closed = BooleanField(default=False)
+    comment_count = IntField(default=0)
+    group_id = IntField()
+    last_activity_at = DateTimeField(default=datetime.datetime.utcnow)
+    pinned = BooleanField(default=False)
     thread_type = StringField(default="discussion")
     #enumerize :thread_type, in: [:question, :discussion]
-    comment_count = IntField(default=0)
     title = StringField()
-    body = StringField()
-    course_id = StringField()
-    commentable_id = StringField()
-    anonymous = BooleanField(default=False)
-    anonymous_to_peers = BooleanField(default=False)
-    closed = BooleanField(default=False)
-    at_position_list = ListField(default=[])
-    last_activity_at = DateTimeField(default=datetime.datetime.utcnow)
-    group_id = IntField()
-    pinned = BooleanField(default=False)
 
     #index({author_id: 1, course_id: 1})
-
-
     #belongs_to :author, class_name: "User", inverse_of: :comment_threads, index: true#, autosave: true
     #has_many :comments, dependent: :destroy#, autosave: true# Use destroy to envoke callback on the top-level comments TODO async
     #has_many :activities, autosave: true
-
     #attr_accessible :title, :body, :course_id, :commentable_id, :anonymous, :anonymous_to_peers, :closed, :thread_type
-
     #validates_presence_of :thread_type
     #validates_presence_of :title
     #validates_presence_of :body
     #validates_presence_of :course_id # do we really need this?
     #validates_presence_of :commentable_id
     #validates_presence_of :author, autosave: false
-
     #before_create :set_last_activity_at
     #before_update :set_last_activity_at, :unless => lambda { closed_changed? }
     #after_update :clear_endorsements
-
     #before_destroy :destroy_subscriptions
-
     #scope :active_since, ->(from_time) { where(:last_activity_at => {:$gte => from_time}) }
-
     #def root_comments
     #    Comment.roots.where(comment_thread_id: self.id)
-
-
     #def commentable
     #    Commentable.find(commentable_id)
-
-
     #def subscriptions
     #    Subscription.where(source_id: id.to_s, source_type: self.class.to_s)
-
-
     #def subscribers
     #    subscriptions.map(&:subscriber)
-
-
     #def endorsed
     #    comments.where(endorsed: true).exists?
-
     #  # GET /api/v1/threads/{id}
     #
     #  begin
@@ -179,7 +154,6 @@ class Thread(Content):
         #    end
         #    top_level
         #  end
-        print 'merge response content:', list(content)
         top_level = []
         ancestry = []
         for item in content:
@@ -199,7 +173,6 @@ class Thread(Content):
                         continue
                 if len(ancestry)==0:  # invalid parent; ignore item
                     continue
-        print 'merge result:', top_level
         return top_level
 
     def get_paged_merged_responses(self, responses, skip, limit):
@@ -228,9 +201,13 @@ class Thread(Content):
 
     def to_dict(self, user=None, with_responses=False, resp_skip=0, resp_limit=None):
 
+        #  def to_hash with_responses=false, resp_skip=0, resp_limit=nil
+        #    raise ArgumentError unless resp_skip >= 0
+        #    raise ArgumentError unless resp_limit.nil? or resp_limit >= 1
         assert resp_skip >= 0
         assert resp_limit is None or resp_limit >= 1
 
+        #    h = @thread.to_hash
         hash = self.to_mongo()
         hash = {k: hash[k] for k in "thread_type title body course_id anonymous anonymous_to_peers commentable_id created_at updated_at at_position_list closed".split(' ')}
         hash.update({
@@ -245,10 +222,6 @@ class Thread(Content):
             "comments_count": self.comment_count
         })
 
-        #  def to_hash with_responses=false, resp_skip=0, resp_limit=nil
-        #    raise ArgumentError unless resp_skip >= 0
-        #    raise ArgumentError unless resp_limit.nil? or resp_limit >= 1
-        #    h = @thread.to_hash
         #    h["read"] = @is_read
         #    h["unread_comments_count"] = @unread_count
         #    h["endorsed"] = @is_endorsed || false
@@ -265,7 +238,6 @@ class Thread(Content):
                 content = Comment.objects(comment_thread_id=self.id).order_by("+sk")
                 hash["children"] = self.merge_response_content(content)
                 hash["resp_total"] = len(filter(lambda item: item.depth == 0, content))
-                print 'discussion responses default', hash
             #      else
             else:
                 #        responses = Content.where(comment_thread_id: @thread._id).exists(parent_id: false)
@@ -292,7 +264,6 @@ class Thread(Content):
                     hash["endorsed_responses"] = endorsed_response_info["responses"]
                     hash["non_endorsed_responses"] = non_endorsed_response_info["responses"]
                     hash["non_endorsed_resp_total"] = non_endorsed_response_info["response_count"]
-                    print 'question responses', hash
                 #        when "discussion"
                 elif self.thread_type == "discussion":
                     #          response_info = get_paged_merged_responses(@thread._id, responses, resp_skip, resp_limit)
@@ -301,7 +272,6 @@ class Thread(Content):
                     response_info = self.get_paged_merged_responses(responses, resp_skip, resp_limit)
                     hash["children"] = response_info["responses"]
                     hash["resp_total"] = response_info["response_count"]
-                    print 'discussion responses', hash
                 #        end
             #      end
             #      h["resp_skip"] = resp_skip
@@ -312,17 +282,14 @@ class Thread(Content):
         #    h
         #  end
         return hash
-#
 
     @property
     def comment_thread_id(self):
         #so that we can use the comment thread id as a common attribute for flagging
         return self.id
 
-
     def set_last_activity_at(self):
         self.last_activity_at = datetime.datetime.utcnow()
-
 
     def clear_endorsements(self):
         #if self.thread_type_changed?
@@ -403,7 +370,7 @@ class Thread(Content):
         else:
             return Q(Q(group_id=group_ids[0])|Q(group_id__exists=False))
 
-
+    # cc compatibility
     @classmethod
     def search(
         cls,
@@ -639,21 +606,17 @@ class Comment(Content):
 
     #voteable self, :up => +1, :down => -1
 
-    course_id = StringField()
-    body = StringField()
+    # this may not be right
+    comment_thread_id = ReferenceField('Thread', dbref=False)
     endorsed = BooleanField(default=False)
     endorsement = DictField()
-    anonymous = BooleanField(default=False)
-    anonymous_to_peers = BooleanField(default=False)
-    at_position_list = ListField(default=[])
-
     parent_id = ReferenceField('Comment')
     parent_ids = ListField(ReferenceField('Comment'))
+    sk = StringField(default=None)
 
     #index({author_id: 1, course_id: 1})
     #index({_type: 1, comment_thread_id: 1, author_id: 1, updated_at: 1})
 
-    sk = StringField(default=None)
     #before_save :set_sk
     #def set_sk(self):
     #    # this attribute is explicitly write-once
@@ -665,7 +628,6 @@ class Comment(Content):
         return super(Comment, self).save(*args, **kwargs)
 
 
-    comment_thread_id = ReferenceField('Thread', dbref=False)
     #belongs_to :comment_thread, index: true
     #belongs_to :author, class_name: "User", index: true
 
@@ -754,36 +716,12 @@ class Comment(Content):
     def thread(self):
         return Thread.objects.get(id=self.comment_thread_id)
 
-    @property
-    def commentable_id(self):
-        raise NotImplementedError
-        ##we need this to have a universal access point for the flag rake task
-        #if self.comment_thread_id
-        #t = CommentThread.find self.comment_thread_id
-        #if t
-        #t.commentable_id
-        #
-        #rescue Mongoid::Errors::DocumentNotFound
-        #None
-
-    @property
-    def group_id(self):
-        raise NotImplementedError
-        #if self.comment_thread_id
-        #t = CommentThread.find self.comment_thread_id
-        #if t
-        #t.group_id
-        #
-        #rescue Mongoid::Errors::DocumentNotFound
-        #None
-
     @classmethod
     def by_date_range_and_thread_ids(cls, from_when, to_when, thread_ids):
         raise NotImplementedError
         #return all content between from_when and to_when
         #self.where(:created_at.gte => (from_when)).where(:created_at.lte => (to_when)).
         #where(:comment_thread_id.in => thread_ids)
-
 
     def set_thread_last_activity_at(self):
         raise NotImplementedError
