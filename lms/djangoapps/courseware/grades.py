@@ -282,8 +282,10 @@ def _grade(student, request, course, keep_raw_scores, field_data_cache):
                     '''creates an XModule instance given a descriptor'''
                     # TODO: We need the request to pass into here. If we could forego that, our arguments
                     # would be simpler
-                    with manual_transaction():
-                        field_data_cache = FieldDataCache([descriptor], course.id, student)
+
+                    # Is it safe to do this?
+#                    with manual_transaction():
+#                        field_data_cache = FieldDataCache([descriptor], course.id, student)
                     return get_module_for_descriptor(student, request, descriptor, field_data_cache, course.id)
 
                 for module_descriptor in yield_dynamic_descriptor_descendents(section_descriptor, create_module):
