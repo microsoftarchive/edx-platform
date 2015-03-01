@@ -31,7 +31,7 @@ from django_comment_client.utils import (
 )
 from django_comment_client.permissions import check_permissions_by_view, cached_has_permission
 from eventtracking import tracker
-import lms.lib.comment_client as cc
+from openedx.feature.djangoapps.forum import cc
 
 log = logging.getLogger(__name__)
 

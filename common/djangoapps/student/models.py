@@ -43,7 +43,7 @@ from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from xmodule.modulestore import Location
 from opaque_keys import InvalidKeyError
 
-import lms.lib.comment_client as cc
+from openedx.feature.djangoapps.forum import cc
 from util.query import use_read_replica_if_available
 from xmodule_django.models import CourseKeyField, NoneToEmptyManager
 from xmodule.modulestore.exceptions import ItemNotFoundError

@@ -463,8 +463,8 @@ class TestCreateAccountValidation(TestCase):
 
 
 @mock.patch.dict("student.models.settings.FEATURES", {"ENABLE_DISCUSSION_SERVICE": True})
-@mock.patch("lms.lib.comment_client.User.base_url", TEST_CS_URL)
-@mock.patch("lms.lib.comment_client.utils.requests.request", return_value=mock.Mock(status_code=200, text='{}'))
+@mock.patch("openedx.feature.lib.forum.cc.User.base_url", TEST_CS_URL)
+@mock.patch("openedx.feature.lib.forum.cc.utils.requests.request", return_value=mock.Mock(status_code=200, text='{}'))
 class TestCreateCommentsServiceUser(TransactionTestCase):
 
     def setUp(self):

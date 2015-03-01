@@ -5,7 +5,7 @@ Module for checking permissions with the comment_client backend
 import logging
 from types import NoneType
 from django.core import cache
-from lms.lib.comment_client import Thread
+from openedx.feature.djangoapps.forum.cc import Thread
 from opaque_keys.edx.keys import CourseKey
 
 CACHE = cache.get_cache('default')

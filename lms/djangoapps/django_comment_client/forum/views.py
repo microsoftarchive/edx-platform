@@ -34,7 +34,7 @@ from django_comment_client.utils import (
     get_group_id_for_comments_service
 )
 import django_comment_client.utils as utils
-import lms.lib.comment_client as cc
+from openedx.feature.djangoapps.forum import cc
 
 from opaque_keys.edx.keys import CourseKey
 
