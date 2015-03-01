@@ -4,7 +4,7 @@ user partitions.  It uses the user_service key/value store provided by the LMS r
 persist the assignments.
 """
 from abc import ABCMeta, abstractproperty
-
+from request_cache.middleware import RequestCache
 
 class PartitionService(object):
     """
@@ -47,6 +47,12 @@ class PartitionService(object):
         Raises:
             ValueError if the user_partition_id isn't found.
         """
+        cache_key = "PartitionService.ugidfp.{}.{}.{}".format(self._user.id, self._course_id, user_partition_id)
+        request_cache = RequestCache.get_request_cache()
+        print type(request_cache)
+        if cache_key in request_cache.data:
+            return request_cache.data[cache_key]
+
         user_partition = self._get_user_partition(user_partition_id)
         if user_partition is None:
             raise ValueError(
@@ -55,7 +61,11 @@ class PartitionService(object):
             )
 
         group = self.get_group(user_partition)
-        return group.id if group else None
+        group_id = group.id if group else None
+
+        request_cache.data[cache_key] = group_id
+
+        return group_id
 
     def _get_user_partition(self, user_partition_id):
         """
