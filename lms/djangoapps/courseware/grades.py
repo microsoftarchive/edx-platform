@@ -262,12 +262,16 @@ def _grade(student, request, course, keep_raw_scores, field_data_cache):
 
             if not should_grade_section:
                 with manual_transaction():
-                    should_grade_section = StudentModule.objects.filter(
-                        student=student,
-                        module_state_key__in=[
-                            descriptor.location for descriptor in section['xmoduledescriptors']
-                        ]
-                    ).exists()
+                    should_grade_section = any(
+                        descriptor.location in field_data_cache.scores
+                        for descriptor in section['xmoduledescriptors']
+                    )
+                    # should_grade_section = StudentModule.objects.filter(
+                    #    student=student,
+                    #    module_state_key__in=[
+                    #        descriptor.location for descriptor in section['xmoduledescriptors']
+                    #    ]
+                    #).exists()
 
             # If we haven't seen a single problem in the section, we don't have
             # to grade it at all! We can assume 0%
@@ -290,6 +294,7 @@ def _grade(student, request, course, keep_raw_scores, field_data_cache):
                         module_descriptor,
                         create_module,
                         max_scores_cache,
+                        field_data_cache=field_data_cache,
                         scores_cache=submissions_scores,
                     )
                     if correct is None and total is None:
@@ -367,19 +372,19 @@ def grade_for_percentage(grade_cutoffs, percentage):
 
 
 @transaction.commit_manually
-def progress_summary(student, request, course):
+def progress_summary(student, request, course, field_data_cache):
     """
     Wraps "_progress_summary" with the manual_transaction context manager just
     in case there are unanticipated errors.
     """
     with manual_transaction():
-        return _progress_summary(student, request, course)
+        return _progress_summary(student, request, course, field_data_cache)
 
 
 # TODO: This method is not very good. It was written in the old course style and
 # then converted over and performance is not good. Once the progress page is redesigned
 # to not have the progress summary this method should be deleted (so it won't be copied).
-def _progress_summary(student, request, course):
+def _progress_summary(student, request, course, field_data_cache):
     """
     Unwrapped version of "progress_summary".
 
@@ -401,9 +406,9 @@ def _progress_summary(student, request, course):
 
     """
     with manual_transaction():
-        field_data_cache = FieldDataCache.cache_for_descriptor_descendents(
-            course.id, student, course, depth=None, descriptor_filter=descriptor_filter
-        )
+        #field_data_cache = FieldDataCache.cache_for_descriptor_descendents(
+        #    course.id, student, course, depth=None, descriptor_filter=descriptor_filter
+        #)
         # TODO: We need the request to pass into here. If we could
         # forego that, our arguments would be simpler
         course_module = get_module_for_descriptor(student, request, course, field_data_cache, course.id)
@@ -446,6 +451,7 @@ def _progress_summary(student, request, course):
                         module_descriptor,
                         module_creator,
                         max_scores_cache,
+                        field_data_cache=field_data_cache,
                         scores_cache=submissions_scores,
                     )
                     if correct is None and total is None:
@@ -480,7 +486,7 @@ def _progress_summary(student, request, course):
     return chapters
 
 
-def get_score(course_id, user, problem_descriptor, module_creator, max_scores_cache, scores_cache=None):
+def get_score(course_id, user, problem_descriptor, module_creator, max_scores_cache, field_data_cache=None, scores_cache=None):
     """
     Return the score for a user on a problem, as a tuple (correct, total).
     e.g. (5,7) if you got 5 out of 7 points.
@@ -520,14 +526,19 @@ def get_score(course_id, user, problem_descriptor, module_creator, max_scores_ca
         # These are not problems, and do not have a score
         return (None, None)
 
-    try:
-        student_module = StudentModule.objects.get(
-            student=user,
-            course_id=course_id,
-            module_state_key=problem_descriptor.location
-        )
-    except StudentModule.DoesNotExist:
-        student_module = None
+    #try:
+    student_module = None
+    if field_data_cache:
+        student_module = field_data_cache.scores.get(problem_descriptor.location)
+
+        #if not student_module:
+        #    student_module = StudentModule.objects.get(
+        #        student=user,
+        #        course_id=course_id,
+        #        module_state_key=problem_descriptor.location
+        #    )
+    #except StudentModule.DoesNotExist:
+#        student_module = None
 
     max_score = max_scores_cache.get(problem_descriptor.location)
     if student_module is not None and student_module.max_grade is not None:

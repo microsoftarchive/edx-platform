@@ -17,6 +17,7 @@ from xmodule.graders import grader_from_conf
 from xmodule.tabs import CourseTabList
 import json
 
+from xblock.core import XBlock
 from xblock.fields import Scope, List, String, Dict, Boolean, Integer, Float
 from .fields import Date
 from django.utils.timezone import UTC
@@ -1183,12 +1184,19 @@ class CourseDescriptor(CourseFields, SequenceDescriptor):
 
 
         """
+        GRADED_LOCATION_CATEGORIES = set(
+            cat for (cat, xblock_class) in XBlock.load_classes() if (
+                getattr(xblock_class, 'has_score', True) or getattr(xblock_class, 'has_children', True)
+            )
+        )
+        def possibly_scored(usage_key):
+            return usage_key.block_type in GRADED_LOCATION_CATEGORIES
 
         all_descriptors = []
         graded_sections = {}
 
         def yield_descriptor_descendents(module_descriptor):
-            for child in module_descriptor.get_children():
+            for child in module_descriptor.get_children(usage_key_filter=possibly_scored):
                 yield child
                 for module_descriptor in yield_descriptor_descendents(child):
                     yield module_descriptor

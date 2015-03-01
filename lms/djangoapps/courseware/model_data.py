@@ -64,6 +64,7 @@ class FieldDataCache(object):
         self.cache = {}
         self.descriptors = descriptors
         self.select_for_update = select_for_update
+        self.scores = {}
 
         if asides is None:
             self.asides = []
@@ -77,7 +78,13 @@ class FieldDataCache(object):
         if user.is_authenticated():
             for scope, fields in self._fields_to_cache().items():
                 for field_object in self._retrieve_fields(scope, fields):
-                    self.cache[self._cache_key_from_field_object(scope, field_object)] = field_object
+                    cache_key = self._cache_key_from_field_object(scope, field_object)
+                    self.cache[cache_key] = field_object
+                    if scope == Scope.user_state:
+                        student_module = field_object
+                        scope, location = cache_key
+                        print location
+                        self.scores[location] = student_module # (student_module.grade, student_module.max_grade)
 
     @classmethod
     def cache_for_descriptor_descendents(cls, course_id, user, descriptor, depth=None,
@@ -184,7 +191,7 @@ class FieldDataCache(object):
             return self._chunked_query(
                 StudentModule,
                 'module_state_key__in',
-                self._all_usage_ids,
+                [usage_id for usage_id in self._all_usage_ids if usage_id.block_type != 'vertical'],
                 course_id=self.course_id,
                 student=self.user.pk,
             )
@@ -263,6 +270,11 @@ class FieldDataCache(object):
             assert key.user_id == self.user.id
 
         return self.cache.get(self._cache_key_from_kvs_key(key))
+
+    # def find_user_state(self, user_id, usage_key):
+    #     dkvs_key = DjangoKeyValueStore.Key(Scope.user_state, user_id, usage_key)
+    #     return self.find(dkvs_key)
+
 
     def find_or_create(self, key):
         '''
