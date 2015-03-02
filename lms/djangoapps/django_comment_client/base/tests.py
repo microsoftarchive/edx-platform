@@ -39,7 +39,7 @@ class MockRequestSetupMixin(object):
         mock_request.return_value = self._create_response_mock(data)
 
 
-@patch('openedx.feature.lib.forum.cc.utils.requests.request')
+@patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
 class CreateThreadGroupIdTestCase(
         MockRequestSetupMixin,
         CohortedTestCase,
@@ -74,7 +74,7 @@ class CreateThreadGroupIdTestCase(
         self._assert_json_response_contains_group_info(response)
 
 
-@patch('openedx.feature.lib.forum.cc.utils.requests.request')
+@patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
 class ThreadActionGroupIdTestCase(
         MockRequestSetupMixin,
         CohortedTestCase,
@@ -163,7 +163,7 @@ class ThreadActionGroupIdTestCase(
         )
 
 
-@patch('openedx.feature.lib.forum.cc.utils.requests.request')
+@patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
 class ViewsTestCase(UrlResetMixin, ModuleStoreTestCase, MockRequestSetupMixin):
 
     @patch.dict("django.conf.settings.FEATURES", {"ENABLE_DISCUSSION_SERVICE": True})
@@ -749,7 +749,7 @@ class ViewsTestCase(UrlResetMixin, ModuleStoreTestCase, MockRequestSetupMixin):
         assert_equal(response.status_code, 200)
 
 
-@patch("openedx.feature.lib.forum.cc.utils.requests.request")
+@patch("openedx.feature.djangoapps.forum.cc.utils.requests.request")
 class ViewPermissionsTestCase(UrlResetMixin, ModuleStoreTestCase, MockRequestSetupMixin):
     @patch.dict("django.conf.settings.FEATURES", {"ENABLE_DISCUSSION_SERVICE": True})
     def setUp(self):
@@ -852,7 +852,7 @@ class CreateThreadUnicodeTestCase(ModuleStoreTestCase, UnicodeTestMixin, MockReq
         self.student = UserFactory.create()
         CourseEnrollmentFactory(user=self.student, course_id=self.course.id)
 
-    @patch('openedx.feature.lib.forum.cc.utils.requests.request')
+    @patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
     def _test_unicode_data(self, text, mock_request,):
         """
         Test to make sure unicode data in a thread doesn't break it.
@@ -879,7 +879,7 @@ class UpdateThreadUnicodeTestCase(ModuleStoreTestCase, UnicodeTestMixin, MockReq
         CourseEnrollmentFactory(user=self.student, course_id=self.course.id)
 
     @patch('django_comment_client.base.views.get_discussion_categories_ids', return_value=["test_commentable"])
-    @patch('openedx.feature.lib.forum.cc.utils.requests.request')
+    @patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
     def _test_unicode_data(self, text, mock_request, mock_get_discussion_id_map):
         self._set_mock_request_data(mock_request, {
             "user_id": str(self.student.id),
@@ -907,7 +907,7 @@ class CreateCommentUnicodeTestCase(ModuleStoreTestCase, UnicodeTestMixin, MockRe
         self.student = UserFactory.create()
         CourseEnrollmentFactory(user=self.student, course_id=self.course.id)
 
-    @patch('openedx.feature.lib.forum.cc.utils.requests.request')
+    @patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
     def _test_unicode_data(self, text, mock_request):
         self._set_mock_request_data(mock_request, {
             "closed": False,
@@ -939,7 +939,7 @@ class UpdateCommentUnicodeTestCase(ModuleStoreTestCase, UnicodeTestMixin, MockRe
         self.student = UserFactory.create()
         CourseEnrollmentFactory(user=self.student, course_id=self.course.id)
 
-    @patch('openedx.feature.lib.forum.cc.utils.requests.request')
+    @patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
     def _test_unicode_data(self, text, mock_request):
         self._set_mock_request_data(mock_request, {
             "user_id": str(self.student.id),
@@ -967,7 +967,7 @@ class CreateSubCommentUnicodeTestCase(ModuleStoreTestCase, UnicodeTestMixin, Moc
         self.student = UserFactory.create()
         CourseEnrollmentFactory(user=self.student, course_id=self.course.id)
 
-    @patch('openedx.feature.lib.forum.cc.utils.requests.request')
+    @patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
     def _test_unicode_data(self, text, mock_request):
         """
         Create a comment with unicode in it.
@@ -1008,7 +1008,7 @@ class ForumEventTestCase(ModuleStoreTestCase, MockRequestSetupMixin):
         CourseAccessRoleFactory(course_id=self.course.id, user=self.student, role='Wizard')
 
     @patch('eventtracking.tracker.emit')
-    @patch('openedx.feature.lib.forum.cc.utils.requests.request')
+    @patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
     def test_thread_event(self, __, mock_emit):
         request = RequestFactory().post(
             "dummy_url", {
@@ -1037,7 +1037,7 @@ class ForumEventTestCase(ModuleStoreTestCase, MockRequestSetupMixin):
         self.assertEquals(event['anonymous_to_peers'], False)
 
     @patch('eventtracking.tracker.emit')
-    @patch('openedx.feature.lib.forum.cc.utils.requests.request')
+    @patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
     def test_response_event(self, mock_request, mock_emit):
         """
         Check to make sure an event is fired when a user responds to a thread.
@@ -1063,7 +1063,7 @@ class ForumEventTestCase(ModuleStoreTestCase, MockRequestSetupMixin):
         self.assertEqual(event['options']['followed'], True)
 
     @patch('eventtracking.tracker.emit')
-    @patch('openedx.feature.lib.forum.cc.utils.requests.request')
+    @patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
     def test_comment_event(self, mock_request, mock_emit):
         """
         Ensure an event is fired when someone comments on a response.
@@ -1121,7 +1121,7 @@ class UsersEndpointTestCase(ModuleStoreTestCase, MockRequestSetupMixin):
         request.view_name = "users"
         return views.users(request, course_id=course_id.to_deprecated_string())
 
-    @patch('openedx.feature.lib.forum.cc.utils.requests.request')
+    @patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
     def test_finds_exact_match(self, mock_request):
         self.set_post_counts(mock_request)
         response = self.make_request(username="other")
@@ -1131,7 +1131,7 @@ class UsersEndpointTestCase(ModuleStoreTestCase, MockRequestSetupMixin):
             [{"id": self.other_user.id, "username": self.other_user.username}]
         )
 
-    @patch('openedx.feature.lib.forum.cc.utils.requests.request')
+    @patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
     def test_finds_no_match(self, mock_request):
         self.set_post_counts(mock_request)
         response = self.make_request(username="othor")
@@ -1168,7 +1168,7 @@ class UsersEndpointTestCase(ModuleStoreTestCase, MockRequestSetupMixin):
         self.assertIn("errors", content)
         self.assertNotIn("users", content)
 
-    @patch('openedx.feature.lib.forum.cc.utils.requests.request')
+    @patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
     def test_requires_matched_user_has_forum_content(self, mock_request):
         self.set_post_counts(mock_request, 0, 0)
         response = self.make_request(username="other")

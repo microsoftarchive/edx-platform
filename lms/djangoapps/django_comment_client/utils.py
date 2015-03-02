@@ -21,6 +21,7 @@ from courseware.access import has_access
 from openedx.core.djangoapps.course_groups.cohorts import get_cohort_by_id, get_cohort_id, is_commentable_cohorted, \
     is_course_cohorted
 from openedx.core.djangoapps.course_groups.models import CourseUserGroup
+from openedx.feature.djangoapps.forum.cc import json_encoder
 
 
 log = logging.getLogger(__name__)
@@ -235,7 +236,7 @@ def get_discussion_categories_ids(course, user):
 
 class JsonResponse(HttpResponse):
     def __init__(self, data=None):
-        content = json.dumps(data, cls=i4xEncoder)
+        content = json.dumps(data, cls=i4xEncoder, default=json_encoder)
         super(JsonResponse, self).__init__(content,
                                            mimetype='application/json; charset=utf-8')
 

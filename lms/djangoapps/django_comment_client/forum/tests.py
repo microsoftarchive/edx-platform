@@ -428,7 +428,7 @@ class SingleCohortedThreadTestCase(CohortedTestCase):
         self.assertRegexpMatches(html, r'&quot;group_name&quot;: &quot;student_cohort&quot;')
 
 
-@patch('openedx.feature.lib.forum.cc.utils.requests.request')
+@patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
 class SingleThreadAccessTestCase(CohortedTestCase):
     def call_view(self, mock_request, commentable_id, user, group_id, thread_group_id=None, pass_group_id=True):
         thread_id = "test_thread_id"
@@ -513,7 +513,7 @@ class SingleThreadAccessTestCase(CohortedTestCase):
         self.assertEqual(resp.status_code, 200)
 
 
-@patch('openedx.feature.lib.forum.cc.utils.requests.request')
+@patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
 class SingleThreadGroupIdTestCase(CohortedTestCase, CohortedTopicGroupIdTestMixin):
     cs_endpoint = "/threads"
 
@@ -687,7 +687,7 @@ class SingleThreadContentGroupTestCase(ContentGroupTestCase):
         self.assert_can_access(self.non_cohorted_user, self.beta_module.discussion_id, thread_id, False)
 
 
-@patch('openedx.feature.lib.forum.cc.utils.requests.request')
+@patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
 class InlineDiscussionGroupIdTestCase(
         CohortedTestCase,
         CohortedTopicGroupIdTestMixin,
@@ -734,7 +734,7 @@ class InlineDiscussionGroupIdTestCase(
         )
 
 
-@patch('openedx.feature.lib.forum.cc.utils.requests.request')
+@patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
 class ForumFormDiscussionGroupIdTestCase(CohortedTestCase, CohortedTopicGroupIdTestMixin):
     cs_endpoint = "/threads"
 
@@ -784,7 +784,7 @@ class ForumFormDiscussionGroupIdTestCase(CohortedTestCase, CohortedTopicGroupIdT
         )
 
 
-@patch('openedx.feature.lib.forum.cc.utils.requests.request')
+@patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
 class UserProfileDiscussionGroupIdTestCase(CohortedTestCase, CohortedTopicGroupIdTestMixin):
     cs_endpoint = "/active_threads"
 
@@ -950,7 +950,7 @@ class UserProfileDiscussionGroupIdTestCase(CohortedTestCase, CohortedTopicGroupI
         verify_group_id_not_present(profiled_user=self.moderator, pass_group_id=False)
 
 
-@patch('openedx.feature.lib.forum.cc.utils.requests.request')
+@patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
 class FollowedThreadsDiscussionGroupIdTestCase(CohortedTestCase, CohortedTopicGroupIdTestMixin):
     cs_endpoint = "/subscribed_threads"
 
@@ -1003,7 +1003,7 @@ class InlineDiscussionTestCase(ModuleStoreTestCase):
             discussion_target="Discussion1"
         )
 
-    @patch('openedx.feature.lib.forum.cc.utils.requests.request')
+    @patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
     def test_courseware_data(self, mock_request):
         request = RequestFactory().get("dummy_url")
         request.user = self.student
@@ -1201,7 +1201,7 @@ class InlineDiscussionUnicodeTestCase(ModuleStoreTestCase, UnicodeTestMixin):
         self.student = UserFactory.create()
         CourseEnrollmentFactory(user=self.student, course_id=self.course.id)
 
-    @patch('openedx.feature.lib.forum.cc.utils.requests.request')
+    @patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
     def _test_unicode_data(self, text, mock_request):
         mock_request.side_effect = make_mock_request_impl(text)
         request = RequestFactory().get("dummy_url")
@@ -1222,7 +1222,7 @@ class ForumFormDiscussionUnicodeTestCase(ModuleStoreTestCase, UnicodeTestMixin):
         self.student = UserFactory.create()
         CourseEnrollmentFactory(user=self.student, course_id=self.course.id)
 
-    @patch('openedx.feature.lib.forum.cc.utils.requests.request')
+    @patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
     def _test_unicode_data(self, text, mock_request):
         mock_request.side_effect = make_mock_request_impl(text)
         request = RequestFactory().get("dummy_url")
@@ -1244,7 +1244,7 @@ class ForumDiscussionSearchUnicodeTestCase(ModuleStoreTestCase, UnicodeTestMixin
         self.student = UserFactory.create()
         CourseEnrollmentFactory(user=self.student, course_id=self.course.id)
 
-    @patch('openedx.feature.lib.forum.cc.utils.requests.request')
+    @patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
     def _test_unicode_data(self, text, mock_request):
         mock_request.side_effect = make_mock_request_impl(text)
         data = {
@@ -1270,7 +1270,7 @@ class SingleThreadUnicodeTestCase(ModuleStoreTestCase, UnicodeTestMixin):
         self.student = UserFactory.create()
         CourseEnrollmentFactory(user=self.student, course_id=self.course.id)
 
-    @patch('openedx.feature.lib.forum.cc.utils.requests.request')
+    @patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
     def _test_unicode_data(self, text, mock_request):
         thread_id = "test_thread_id"
         mock_request.side_effect = make_mock_request_impl(text, thread_id)
@@ -1293,7 +1293,7 @@ class UserProfileUnicodeTestCase(ModuleStoreTestCase, UnicodeTestMixin):
         self.student = UserFactory.create()
         CourseEnrollmentFactory(user=self.student, course_id=self.course.id)
 
-    @patch('openedx.feature.lib.forum.cc.utils.requests.request')
+    @patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
     def _test_unicode_data(self, text, mock_request):
         mock_request.side_effect = make_mock_request_impl(text)
         request = RequestFactory().get("dummy_url")
@@ -1315,7 +1315,7 @@ class FollowedThreadsUnicodeTestCase(ModuleStoreTestCase, UnicodeTestMixin):
         self.student = UserFactory.create()
         CourseEnrollmentFactory(user=self.student, course_id=self.course.id)
 
-    @patch('openedx.feature.lib.forum.cc.utils.requests.request')
+    @patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
     def _test_unicode_data(self, text, mock_request):
         mock_request.side_effect = make_mock_request_impl(text)
         request = RequestFactory().get("dummy_url")
@@ -1342,7 +1342,7 @@ class EnrollmentTestCase(ModuleStoreTestCase):
         self.student = UserFactory.create()
 
     @patch.dict("django.conf.settings.FEATURES", {"ENABLE_DISCUSSION_SERVICE": True})
-    @patch('openedx.feature.lib.forum.cc.utils.requests.request')
+    @patch('openedx.feature.djangoapps.forum.cc.utils.requests.request')
     def test_unenrolled(self, mock_request):
         mock_request.side_effect = make_mock_request_impl('dummy')
         request = RequestFactory().get('dummy_url')

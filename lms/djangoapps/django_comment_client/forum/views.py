@@ -48,7 +48,7 @@ def _attr_safe_json(obj):
     """
     return a JSON string for obj which is safe to embed as the value of an attribute in a DOM node
     """
-    return saxutils.escape(json.dumps(obj), {'"': '&quot;'})
+    return saxutils.escape(json.dumps(obj, default=cc.json_encoder), {'"': '&quot;'})
 
 
 @newrelic.agent.function_trace()
@@ -255,6 +255,9 @@ def forum_form_discussion(request, course_key):
             'course_settings': _attr_safe_json(course_settings)
         }
         # print "start rendering.."
+        print 'context'
+        import pprint
+        pprint.pprint(context)
         return render_to_response('discussion/index.html', context)
 
 
@@ -305,7 +308,7 @@ def single_thread(request, course_key, discussion_id, thread_id):
     if request.is_ajax():
         with newrelic.agent.FunctionTrace(nr_transaction, "get_annotated_content_infos"):
             annotated_content_info = utils.get_annotated_content_infos(course_key, thread, request.user, user_info=user_info)
-        content = utils.prepare_content(thread.to_dict(), course_key, is_staff)
+        content = utils.prepare_content(thread, course_key, is_staff)
         with newrelic.agent.FunctionTrace(nr_transaction, "add_courseware_context"):
             add_courseware_context([content], course, request.user)
         return utils.JsonResponse({
@@ -318,7 +321,7 @@ def single_thread(request, course_key, discussion_id, thread_id):
             threads, query_params = get_threads(request, course)
         except ValueError:
             return HttpResponseBadRequest("Invalid group_id")
-        threads.append(thread.to_dict())
+        threads.append(thread)
 
         with newrelic.agent.FunctionTrace(nr_transaction, "add_courseware_context"):
             add_courseware_context(threads, course, request.user)
@@ -394,6 +397,9 @@ def user_profile(request, course_key, user_id):
         query_params['page'] = page
         query_params['num_pages'] = num_pages
         user_info = cc.User.from_django_user(request.user).to_dict()
+        print 'threads'
+        import pprint
+        pprint.pprint(threads)
 
         with newrelic.agent.FunctionTrace(nr_transaction, "get_metadata_for_threads"):
             annotated_content_info = utils.get_metadata_for_threads(course_key, threads, request.user, user_info)

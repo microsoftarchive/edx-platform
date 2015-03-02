@@ -130,7 +130,7 @@ def create_thread(request, course_id, commentable_id):
         anonymous_to_peers=anonymous_to_peers,
         commentable_id=commentable_id,
         course_id=course_key.to_deprecated_string(),
-        user_id=request.user.id,
+        user_id=str(request.user.id),
         thread_type=post["thread_type"],
         body=post["body"],
         title=post["title"]
@@ -147,7 +147,7 @@ def create_thread(request, course_id, commentable_id):
     thread.save()
 
     # patch for backward compatibility to comments service
-    if 'pinned' not in thread.attributes:
+    if 'pinned' not in thread:
         thread['pinned'] = False
 
     follow = post.get('auto_subscribe', 'false').lower() == 'true'
