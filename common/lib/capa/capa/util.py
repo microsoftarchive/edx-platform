@@ -67,7 +67,7 @@ def compare_with_tolerance(student_complex, instructor_complex, tolerance=defaul
         return student_complex == instructor_complex
 
     if isinstance(instructor_complex, complex):
-        if instructor_complex.imag == 0 and isinstance(instructor_complex.real, float):
+        if instructor_complex.imag == 0:
             instructor_complex = instructor_complex.real
 
     if isinstance(student_complex, float) and isinstance(instructor_complex, float):
