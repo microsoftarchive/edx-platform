@@ -1,6 +1,6 @@
 """
 API related to providing field overrides for individual students.  This is used
-by the individual due dates feature.
+by the individual custom courses feature.
 """
 import json
 import threading
@@ -58,14 +58,17 @@ def get_current_ccx():
     """
     Return the ccx that is active for this request.
     """
-    ccx = _CCX_CONTEXT.ccx
-    if ccx:
-        return ccx
+    return _CCX_CONTEXT.ccx
 
 
 def get_current_request():
+    """
+    Return the active request, so that we can get context information in places
+    where it is limited, like in the tabs.
+    """
     request = _CCX_CONTEXT.request
     return request
+
 
 def get_override_for_ccx(ccx, block, name, default=None):
     """
