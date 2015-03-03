@@ -618,9 +618,25 @@ def jump_to(_request, course_id, location):
     elif section is None:
         return redirect('courseware_chapter', course_id=course_key.to_deprecated_string(), chapter=chapter)
     elif position is None:
-        return redirect('courseware_section', course_id=course_key.to_deprecated_string(), chapter=chapter, section=section)
+        return redirect(
+            'courseware_section',
+            course_id=course_key.to_deprecated_string(),
+            chapter=chapter,
+            section=section
+        )
     else:
-        return redirect('courseware_position', course_id=course_key.to_deprecated_string(), chapter=chapter, section=section, position=position)
+        try:
+            position = position.split('_', 1)[0]
+        except (ValueError, TypeError):
+            position = '1'
+
+        return redirect(
+            'courseware_position',
+            course_id=course_key.to_deprecated_string(),
+            chapter=chapter,
+            section=section,
+            position=position
+        )
 
 
 @ensure_csrf_cookie

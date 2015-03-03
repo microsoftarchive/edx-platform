@@ -73,7 +73,14 @@ class LmsSearchResultProcessor(SearchResultProcessor):
 
         def get_position_name(section, position):
             """ helper to fetch name corresponding to the position therein """
-            pos = int(position)
+            if position is None:
+                return None
+
+            try:
+                pos = int(position.split('_', 1)[0])
+            except (ValueError, TypeError):
+                pos = 1
+
             section_item = self.get_item(course_key.make_usage_key("sequential", section))
             if section_item.has_children and len(section_item.children) >= pos:
                 item = self.get_item(section_item.children[pos - 1])
