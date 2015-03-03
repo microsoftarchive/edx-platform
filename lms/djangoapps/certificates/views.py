@@ -8,6 +8,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, Http404, HttpResponseForbidden
+from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
@@ -281,25 +282,31 @@ def render_html_view(request):
     user_fullname = request.user.profile.name
     company_name = context.get('company_name')
     context['accomplishment_copy_name'] = user_fullname
-    accd = 'a course of study offered by <span class="detail--xuniversity">{0}</span>'.format(course.org)
-    accd = accd + ', through <span class="detail--company">{0}</span>.'.format(company_name)
+    accd = _(
+        'a course of study offered by <span class="detail--xuniversity">{0}</span>, '
+        'through <span class="detail--company">{1}</span>.'
+    ).format(course.org, company_name)
     context['accomplishment_copy_course_description'] = accd
     context['accomplishment_copy_course_org'] = course.org
     context['accomplishment_copy_course_name'] = course.display_name
-    context['accomplishment_more_title'] = "More Information About {0}'s Certificate:".format(user_fullname)
+    context['accomplishment_more_title'] = _("More Information About {0}'s Certificate:").format(user_fullname)
     context['certificate_date_issued'] = certificate.modified_date.strftime("%B %m, %Y")
     context['certificate_id_number'] = certificate.verify_uuid
-    context['certificate_verify_url'] = "{0}{1}{2}".format(
+    context['certificate_verify_url'] = _("{0}{1}{2}").format(
         context.get('certificate_verify_url_prefix'),
         certificate.verify_uuid,
         context.get('certificate_verify_url_suffix')
     )
-    context['copyright_text'] = "&copy; {0} {1}. All rights reserved".format(datetime.now().year, company_name)
-    dmd = "This is a valid {0} certificate for {1}, ".format(company_name, user_fullname)
-    dmd = dmd + "who participated in {0} {1}".format(course.org, course.number).format()
+    context['copyright_text'] = _("&copy; {0} {1}. All rights reserved").format(datetime.now().year, company_name)
+    dmd = "This is a valid {0} certificate for {1}, who participated in {2} {3}".format(
+        company_name,
+        user_fullname,
+        course.org,
+        course.number
+    )
     context['document_meta_description'] = dmd
-    context['document_title'] = "Valid {} {} Certificate | {}".format(course.org, course.number, company_name)
-    context['accomplishment_copy_description_full'] = '{}{}'.format(
+    context['document_title'] = _("Valid {} {} Certificate | {}").format(course.org, course.number, company_name)
+    context['accomplishment_copy_description_full'] = _('{}{}').format(
         context.get('accomplishment_copy_description'),
         context.get('accomplishment_copy_description_suffix')
     )
