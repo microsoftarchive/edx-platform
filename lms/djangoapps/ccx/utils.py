@@ -44,7 +44,7 @@ class EmailEnrollmentState(object):
         self.in_ccx = in_ccx
 
     def __repr__(self):
-        return "{}(user={}, member={}, in_ccx={}".format(
+        return "{}(user={}, member={}, in_ccx={})".format(
             self.__class__.__name__,
             self.user,
             self.member,

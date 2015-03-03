@@ -752,6 +752,11 @@ class CcxCoachTab(CourseTab):
         )
 
     def can_display(self, course, settings, *args, **kw):
+        """
+        Since we don't get the user here, we use a thread local defined in the ccx
+        overrides to get it, then use the course to get the coach role and find out if
+        the user is one.
+        """
         user_is_coach = False
         if settings.FEATURES.get('CUSTOM_COURSES_EDX', False):
             from opaque_keys.edx.locations import SlashSeparatedCourseKey

@@ -23,7 +23,6 @@ from xmodule.modulestore.tests.factories import (
     CourseFactory,
     ItemFactory,
 )
-from ccx import ACTIVE_CCX_KEY
 from ..models import (
     CustomCourseForEdX,
     CcxMembership,
