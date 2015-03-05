@@ -35,6 +35,7 @@ class TestVideoYouTube(TestVideo):
             'ajax_url': self.item_descriptor.xmodule_runtime.ajax_url + '/save_user_state',
             'autoplay': settings.FEATURES.get('AUTOPLAY_VIDEOS', False),
             'branding_info': None,
+            'license': None,
             'cdn_eval': False,
             'cdn_exp_group': None,
             'data_dir': getattr(self, 'data_dir', None),
@@ -101,6 +102,7 @@ class TestVideoNonYouTube(TestVideo):
         expected_context = {
             'ajax_url': self.item_descriptor.xmodule_runtime.ajax_url + '/save_user_state',
             'branding_info': None,
+            'license': None,
             'cdn_eval': False,
             'cdn_exp_group': None,
             'data_dir': getattr(self, 'data_dir', None),
@@ -207,6 +209,7 @@ class TestGetHtmlMethod(BaseTestXmodule):
 
         expected_context = {
             'branding_info': None,
+            'license': None,
             'cdn_eval': False,
             'cdn_exp_group': None,
             'data_dir': getattr(self, 'data_dir', None),
@@ -326,6 +329,7 @@ class TestGetHtmlMethod(BaseTestXmodule):
 
         initial_context = {
             'branding_info': None,
+            'license': None,
             'cdn_eval': False,
             'cdn_exp_group': None,
             'data_dir': getattr(self, 'data_dir', None),
@@ -468,6 +472,7 @@ class TestGetHtmlMethod(BaseTestXmodule):
         # Video found for edx_video_id
         initial_context = {
             'branding_info': None,
+            'license': None,
             'cdn_eval': False,
             'cdn_exp_group': None,
             'data_dir': getattr(self, 'data_dir', None),
@@ -580,6 +585,7 @@ class TestGetHtmlMethod(BaseTestXmodule):
         # Video found for edx_video_id
         initial_context = {
             'branding_info': None,
+            'license': None,
             'cdn_eval': False,
             'cdn_exp_group': None,
             'data_dir': getattr(self, 'data_dir', None),
@@ -701,6 +707,7 @@ class TestGetHtmlMethod(BaseTestXmodule):
                 'logo_tag': 'Video hosted by XuetangX.com',
                 'url': 'http://www.xuetangx.com'
             },
+            'license': None,
             'cdn_eval': False,
             'cdn_exp_group': None,
             'data_dir': getattr(self, 'data_dir', None),
