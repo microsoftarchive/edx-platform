@@ -234,6 +234,7 @@ def update_example_certificate(request):
     return JsonResponse({'return_code': 0})
 
 
+# pylint: disable=too-many-statements, bad-continuation
 @login_required
 def render_html_view(request):
     """
@@ -290,7 +291,7 @@ def render_html_view(request):
         uuid=certificate.verify_uuid,
         suffix=context.get('certificate_verify_url_suffix')
     )
-    context['logo_alt'] = _(company_name)
+    context['logo_alt'] = company_name
 
     accd_course_org_html = '<span class="detail--xuniversity">{org}</span>'.format(org=course.org)
     accd_company_name_html = '<span class="detail--company">{company_name}</span>'.format(company_name=company_name)
@@ -327,18 +328,17 @@ def render_html_view(request):
         tos_url=context.get('company_tos_url'),
         company_name=company_name
     )
-    cert_info_verified_identity_html = "<a href='{verified_cert_url}'>verifying your identity</a>".format(
+    cert_info_verified_html = "<a href='{verified_cert_url}'>verifying your identity</a>".format(
         verified_cert_url=context.get('company_verified_certificate_url')
     )
     # Translators:
     context['certificate_info_description'] = _("{company_name} acknowledges achievements through certificates, which "
-                                                "are awarded for various activities {company_name} students complete under the "
-                                                "{honor_code_html}.  Some certificates require completing additional "
-                                                "steps, such as {verifying_html}."
-    ).format(
+                                                "are awarded for various activities {company_name} students complete "
+                                                "under the {honor_code_html}.  Some certificates require completing "
+                                                "additional steps, such as {verifying_html}.").format(
         company_name=company_name,
         honor_code_html=cert_info_honor_code_html,
-        verifying_html=cert_info_verified_identity_html
+        verifying_html=cert_info_verified_html
     )
 
     # Translators:
@@ -355,8 +355,8 @@ def render_html_view(request):
     context['certificate_verify_description'] = _("Certificates issued by {company_name} are signed by a gpg key so "
                                                   "that they can be validated independently by anyone with the "
                                                   "{company_name} public key. For independent verification, "
-                                                  "{company_name} uses what is called a &quot;detached signature&quot;."
-    ).format(company_name=company_name)
+                                                  "{company_name} uses what is called a "
+                                                  "&quot;detached signature&quot;.").format(company_name=company_name)
 
     # Translators:
     context['certificate_verify_urltext'] = _("Validate this certificate for yourself")
@@ -364,8 +364,10 @@ def render_html_view(request):
     # Translators:
     context['company_about_description'] = _("{company_name} offers interactive online classes and MOOCs from the "
                                              "world's best universities, including MIT, Harvard, Berkeley, University "
-                                             "of Texas, and many others.  {company_name} is a non-profit online initiative created "
-                                             "by founding partners Harvard and MIT.").format(company_name=company_name)
+                                             "of Texas, and many others.  {company_name} is a non-profit online "
+                                             "initiative created by founding partners Harvard and MIT.").format(
+        company_name=company_name
+    )
 
     # Translators:
     context['company_about_title'] = _("About {company_name}").format(company_name=company_name)
@@ -389,9 +391,9 @@ def render_html_view(request):
     context['company_tos_urltext'] = _("Terms of Service &amp; Honor Code")
 
     # Translators:
-    context['document_banner'] = _("{company_name} acknowledges the following student accomplishment"
-        ).format(company_name=company_name)
-
+    context['document_banner'] = _("{company_name} acknowledges the following student accomplishment").format(
+        company_name=company_name
+    )
 
     # Translators:
     context['logo_subtitle'] = _("Certificate Validation")
@@ -401,8 +403,7 @@ def render_html_view(request):
         context['certificate_type_description'] = _("An {cert_type} Certificate signifies that an {company_name} "
                                                     "learner has agreed to abide by {company_name}'s honor code and "
                                                     "completed all of the required tasks for this course under its "
-                                                    "guidelines."
-        ).format(
+                                                    "guidelines.").format(
             cert_type=context.get('certificate_type'),
             company_name=company_name
         )
@@ -412,8 +413,7 @@ def render_html_view(request):
                                                     "learner has agreed to abide by {company_name}'s honor code and "
                                                     "completed all of the required tasks for this course under its "
                                                     "guidelines, as well as having their photo ID checked to verify "
-                                                    "their identity."
-        ).format(
+                                                    "their identity.").format(
             cert_type=context.get('certificate_type'),
             company_name=company_name
         )
@@ -421,8 +421,7 @@ def render_html_view(request):
         # Translators:
         context['certificate_type_description'] = _("An {cert_type} Certificate demonstrates a high level of "
                                                     "achievement in a program of study, and includes verification of "
-                                                    "the student's identity."
-        ).format(
+                                                    "the student's identity.").format(
             cert_type=context.get('certificate_type')
         )
 

@@ -150,6 +150,7 @@ class AdvancedSettingsPage(CoursePage):
             'allow_anonymous',
             'allow_anonymous_to_peers',
             'allow_public_wiki_access',
+            'cert_html_view_overrides',
             'cert_name_long',
             'cert_name_short',
             'certificates_display_behavior',
@@ -197,8 +198,5 @@ class AdvancedSettingsPage(CoursePage):
             'text_customization',
             'annotation_storage_url',
         ]
-
-        if settings.FEATURES.get('CERTIFICATES_HTML_VIEW', False)
-            valid_settings.append('cert_html_view_overrides')
 
         return valid_settings
