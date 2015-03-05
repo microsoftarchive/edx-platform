@@ -145,14 +145,13 @@ class AdvancedSettingsPage(CoursePage):
         If a new setting is added to the metadata list, this test will fail and you must update it.
         Basically this guards against accidental exposure of a field on the Advanced Settings screen
         """
-        return [
+        valid_settings = [
             'advanced_modules',
             'allow_anonymous',
             'allow_anonymous_to_peers',
             'allow_public_wiki_access',
             'cert_name_long',
             'cert_name_short',
-            'cert_html_view_overrides',
             'certificates_display_behavior',
             'cohort_config',
             'course_image',
@@ -198,3 +197,8 @@ class AdvancedSettingsPage(CoursePage):
             'text_customization',
             'annotation_storage_url',
         ]
+
+        if settings.FEATURES.get('CERTIFICATES_HTML_VIEW', False)
+            valid_settings.append('cert_html_view_overrides')
+
+        return valid_settings

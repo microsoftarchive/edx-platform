@@ -282,32 +282,178 @@ def render_html_view(request):
     user_fullname = request.user.profile.name
     company_name = context.get('company_name')
     context['accomplishment_copy_name'] = user_fullname
-    accd = _(
-        'a course of study offered by <span class="detail--xuniversity">{0}</span>, '
-        'through <span class="detail--company">{1}</span>.'
-    ).format(course.org, company_name)
-    context['accomplishment_copy_course_description'] = accd
     context['accomplishment_copy_course_org'] = course.org
     context['accomplishment_copy_course_name'] = course.display_name
-    context['accomplishment_more_title'] = _("More Information About {0}'s Certificate:").format(user_fullname)
-    context['certificate_date_issued'] = certificate.modified_date.strftime("%B %m, %Y")
     context['certificate_id_number'] = certificate.verify_uuid
-    context['certificate_verify_url'] = _("{0}{1}{2}").format(
-        context.get('certificate_verify_url_prefix'),
-        certificate.verify_uuid,
-        context.get('certificate_verify_url_suffix')
+    context['certificate_verify_url'] = _("{prefix}{uuid}{suffix}").format(
+        prefix=context.get('certificate_verify_url_prefix'),
+        uuid=certificate.verify_uuid,
+        suffix=context.get('certificate_verify_url_suffix')
     )
-    context['copyright_text'] = _("&copy; {0} {1}. All rights reserved").format(datetime.now().year, company_name)
-    dmd = "This is a valid {0} certificate for {1}, who participated in {2} {3}".format(
-        company_name,
-        user_fullname,
-        course.org,
-        course.number
+    context['logo_alt'] = _(company_name)
+
+    accd_course_org_html = '<span class="detail--xuniversity">{org}</span>'.format(org=course.org)
+    accd_company_name_html = '<span class="detail--company">{company_name}</span>'.format(company_name=company_name)
+    # Translators:
+    context['accomplishment_copy_course_description'] = _('a course of study offered by {org}, through {name}.').format(
+        org=accd_course_org_html,
+        name=accd_company_name_html
     )
-    context['document_meta_description'] = dmd
-    context['document_title'] = _("Valid {} {} Certificate | {}").format(course.org, course.number, company_name)
-    context['accomplishment_copy_description_full'] = _('{}{}').format(
-        context.get('accomplishment_copy_description'),
-        context.get('accomplishment_copy_description_suffix')
+
+    # Translators:
+    context['accomplishment_more_title'] = _("More Information About {user_name}'s Certificate:").format(
+        user_name=user_fullname
     )
+
+    # Translators:
+    context['certificate_date_issued_title'] = _("Issued On:")
+
+    # Translators:
+    context['certificate_date_issued'] = _('{month} {day}, {year}').format(
+        month=certificate.modified_date.strftime("%B"),
+        day=certificate.modified_date.day,
+        year=certificate.modified_date.year
+    )
+
+    # Translators:
+    context['certificate_id_number_title'] = _('Certificate ID Number')
+
+    # Translators:
+    context['certificate_info_title'] = _('About {company_name} Certificates').format(
+        company_name=company_name
+    )
+
+    cert_info_honor_code_html = "<a href='{tos_url}'>{company_name} Honor Code</a>".format(
+        tos_url=context.get('company_tos_url'),
+        company_name=company_name
+    )
+    cert_info_verified_identity_html = "<a href='{verified_cert_url}'>verifying your identity</a>".format(
+        verified_cert_url=context.get('company_verified_certificate_url')
+    )
+    # Translators:
+    context['certificate_info_description'] = _("{company_name} acknowledges achievements through certificates, which "
+                                                "are awarded for various activities {company_name} students complete under the "
+                                                "{honor_code_html}.  Some certificates require completing additional "
+                                                "steps, such as {verifying_html}."
+    ).format(
+        company_name=company_name,
+        honor_code_html=cert_info_honor_code_html,
+        verifying_html=cert_info_verified_identity_html
+    )
+
+    # Translators:
+    context['certificate_type_title'] = _('{certificate_type} Certfificate').format(
+        certificate_type=context.get('certificate_type')
+    )
+
+    # Translators:
+    context['certificate_verify_title'] = _("How {company_name} Validates Student Certificates").format(
+        company_name=company_name
+    )
+
+    # Translators:
+    context['certificate_verify_description'] = _("Certificates issued by {company_name} are signed by a gpg key so "
+                                                  "that they can be validated independently by anyone with the "
+                                                  "{company_name} public key. For independent verification, "
+                                                  "{company_name} uses what is called a &quot;detached signature&quot;."
+    ).format(company_name=company_name)
+
+    # Translators:
+    context['certificate_verify_urltext'] = _("Validate this certificate for yourself")
+
+    # Translators:
+    context['company_about_description'] = _("{company_name} offers interactive online classes and MOOCs from the "
+                                             "world's best universities, including MIT, Harvard, Berkeley, University "
+                                             "of Texas, and many others.  {company_name} is a non-profit online initiative created "
+                                             "by founding partners Harvard and MIT.").format(company_name=company_name)
+
+    # Translators:
+    context['company_about_title'] = _("About {company_name}").format(company_name=company_name)
+
+    # Translators:
+    context['company_about_urltext'] = _("Learn more about {company_name}").format(company_name=company_name)
+
+    # Translators:
+    context['company_courselist_urltext'] = _("Learn with {company_name}").format(company_name=company_name)
+
+    # Translators:
+    context['company_careers_urltext'] = _("Work at {company_name}").format(company_name=company_name)
+
+    # Translators:
+    context['company_contact_urltext'] = _("Contact {company_name}").format(company_name=company_name)
+
+    # Translators:
+    context['company_privacy_urltext'] = _("Privacy Policy")
+
+    # Translators:
+    context['company_tos_urltext'] = _("Terms of Service &amp; Honor Code")
+
+    # Translators:
+    context['document_banner'] = _("{company_name} acknowledges the following student accomplishment"
+        ).format(company_name=company_name)
+
+
+    # Translators:
+    context['logo_subtitle'] = _("Certificate Validation")
+
+    if certificate.mode == 'honor':
+        # Translators:
+        context['certificate_type_description'] = _("An {cert_type} Certificate signifies that an {company_name} "
+                                                    "learner has agreed to abide by {company_name}'s honor code and "
+                                                    "completed all of the required tasks for this course under its "
+                                                    "guidelines."
+        ).format(
+            cert_type=context.get('certificate_type'),
+            company_name=company_name
+        )
+    elif certificate.mode == 'verified':
+        # Translators:
+        context['certificate_type_description'] = _("An {cert_type} Certificate signifies that an {company_name} "
+                                                    "learner has agreed to abide by {company_name}'s honor code and "
+                                                    "completed all of the required tasks for this course under its "
+                                                    "guidelines, as well as having their photo ID checked to verify "
+                                                    "their identity."
+        ).format(
+            cert_type=context.get('certificate_type'),
+            company_name=company_name
+        )
+    elif certificate.mode == 'xseries':
+        # Translators:
+        context['certificate_type_description'] = _("An {cert_type} Certificate demonstrates a high level of "
+                                                    "achievement in a program of study, and includes verification of "
+                                                    "the student's identity."
+        ).format(
+            cert_type=context.get('certificate_type')
+        )
+
+    # Translators:
+    context['copyright_text'] = _('&copy; {year} {company_name}. All rights reserved.').format(
+        year=datetime.now().year,
+        company_name=company_name
+    )
+
+    # Translators:
+    context['document_meta_description'] = _('This is a valid {company_name} certificate for {user_name}, '
+                                             'who participated in {course_org} {course_number}').format(
+        company_name=company_name,
+        user_name=user_fullname,
+        course_org=course.org,
+        course_number=course.number
+    )
+
+    # Translators:
+    context['document_title'] = _("Valid {course_org} {course_number} Certificate | {company_name}").format(
+        course_org=course.org,
+        course_number=course.number,
+        company_name=company_name
+    )
+
+    # Translators:
+    context['accomplishment_copy_description_full'] = _("successfully completed, received a passing grade, and was "
+                                                        "awarded a {company_name} {certificate_type} "
+                                                        "Certificate of Completion in ").format(
+        company_name=company_name,
+        certificate_type=context.get("certificate_type")
+    )
+
     return render_to_response("certificates/valid.html", context)
