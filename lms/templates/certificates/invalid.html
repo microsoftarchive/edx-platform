@@ -1,3 +1,4 @@
+<%! from django.utils.translation import ugettext as _ %>
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
@@ -12,12 +13,12 @@
 
   <section>
     <header class="invalid">
-      <h1>This is an invalid edX certificate number</h1>
-      <p>Please check the number to make sure that it is the exact same as on the certificate.</p>
+      <h1>_(This is an invalid edX certificate number)</h1>
+      <p>_(Please check the number to make sure that it is the exact same as on the certificate.)</p>
     </header>
 
     <section>
-      <p>This is an unknown certificate number and therefore is a potential forgery.</p>
+      <p>_(This is an unknown certificate number and therefore is a potential forgery.)</p>
     </section>
   </section>
 </body>
