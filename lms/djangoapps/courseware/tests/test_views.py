@@ -130,12 +130,12 @@ class TestJumpTo(ModuleStoreTestCase):
         vertical = ItemFactory.create(category='vertical', parent_location=section.location)
         nested_section = ItemFactory.create(category='sequential', parent_location=vertical.location)
         nested_vertical1 = ItemFactory.create(category='vertical', parent_location=nested_section.location)
-        # put a module into vertical1 for completeness
+        # put a module into nested_vertical1 for completeness
         ItemFactory.create(category='html', parent_location=nested_vertical1.location)
         nested_vertical2 = ItemFactory.create(category='vertical', parent_location=nested_section.location)
         module2 = ItemFactory.create(category='html', parent_location=nested_vertical2.location)
 
-        # internal position of test_module will be 1_2 (2nd item withing 1st item)
+        # internal position of module2 will be 1_2 (2nd item withing 1st item)
 
         expected = 'courses/{course_id}/courseware/{chapter_id}/{section_id}/1'.format(
             course_id=unicode(course.id),

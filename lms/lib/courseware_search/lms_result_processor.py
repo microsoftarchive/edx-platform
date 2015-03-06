@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from search.result_processor import SearchResultProcessor
 from xmodule.modulestore.django import modulestore
-from xmodule.modulestore.search import path_to_location
+from xmodule.modulestore.search import path_to_location, navigation_index
 
 from courseware.access import has_access
 
@@ -73,18 +73,11 @@ class LmsSearchResultProcessor(SearchResultProcessor):
 
         def get_position_name(section, position):
             """ helper to fetch name corresponding to the position therein """
-            if position is None:
-                return None
-
-            try:
-                pos = int(position.split('_', 1)[0])
-            except (ValueError, TypeError):
-                pos = 1
-
-            section_item = self.get_item(course_key.make_usage_key("sequential", section))
-            if section_item.has_children and len(section_item.children) >= pos:
-                item = self.get_item(section_item.children[pos - 1])
-                return getattr(item, "display_name", None)
+            if position:
+                section_item = self.get_item(course_key.make_usage_key("sequential", section))
+                if section_item.has_children and len(section_item.children) >= position:
+                    item = self.get_item(section_item.children[position - 1])
+                    return getattr(item, "display_name", None)
             return None
 
         location_description = []
@@ -93,7 +86,7 @@ class LmsSearchResultProcessor(SearchResultProcessor):
         if section:
             location_description.append(get_display_name("sequential", section))
         if position:
-            location_description.append(get_position_name(section, position))
+            location_description.append(get_position_name(section, navigation_index(position)))
 
         return location_description
 
