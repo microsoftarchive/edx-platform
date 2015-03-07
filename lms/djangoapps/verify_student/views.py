@@ -601,38 +601,22 @@ class PayAndVerifyView(View):
 @require_POST
 @login_required
 def create_order(request):
+    """Create a new order for the payment / verification flow.
+
+    POST params are "course_id" (the ID of the course to purchase)
+    and "contribution" (the amount to pay).
+
+    If no contribution is specified, defaults to the value of
+    "donation_for_course" in the session, which could have been
+    chosen on the track selection page.
+
+    Arguments:
+        request (HttpRequest): The request to create a new order.
+
+    Returns:
+        HttpResponse
+
     """
-    Submit PhotoVerification and create a new Order for this verified cert
-    """
-    # Only submit photos if photo data is provided by the client.
-    # TODO (ECOM-188): Once the A/B test of decoupling verified / payment
-    # completes, we may be able to remove photo submission from this step
-    # entirely.
-    submit_photo = (
-        'face_image' in request.POST and
-        'photo_id_image' in request.POST
-    )
-
-    if (
-        submit_photo and not
-        SoftwareSecurePhotoVerification.user_has_valid_or_pending(request.user)
-    ):
-        attempt = SoftwareSecurePhotoVerification(user=request.user)
-        try:
-            b64_face_image = request.POST['face_image'].split(",")[1]
-            b64_photo_id_image = request.POST['photo_id_image'].split(",")[1]
-        except IndexError:
-            log.error(u"Invalid image data during photo verification.")
-            context = {
-                'success': False,
-            }
-            return JsonResponse(context)
-        attempt.upload_face_image(b64_face_image.decode('base64'))
-        attempt.upload_photo_id_image(b64_photo_id_image.decode('base64'))
-        attempt.mark_ready()
-
-        attempt.save()
-
     course_id = request.POST['course_id']
     course_id = CourseKey.from_string(course_id)
     donation_for_course = request.session.get('donation_for_course', {})
@@ -643,8 +627,15 @@ def create_order(request):
     except decimal.InvalidOperation:
         return HttpResponseBadRequest(_("Selected price is not valid number."))
 
-    if amount != current_donation:
-        donation_for_course[unicode(course_id)] = amount
+    # If there is a donation amount in the session variable
+    # (from the track selection page), then clear it.
+    # If users return to the flow, they will need to choose
+    # the amount again.  This ensures that we don't hide
+    # payment information if the user returns to the "make payment"
+    # part of the flow without coming from the track selection
+    # page (which is the case for professional education).
+    if unicode(course_id) in donation_for_course:
+        del donation_for_course[unicode(course_id)]
         request.session['donation_for_course'] = donation_for_course
 
     # prefer professional mode over verified_mode
