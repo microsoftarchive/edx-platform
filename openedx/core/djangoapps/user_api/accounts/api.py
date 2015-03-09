@@ -12,6 +12,10 @@ from .serializers import AccountLegacyProfileSerializer, AccountUserSerializer
 from student.models import UserProfile
 from student.views import validate_new_email, do_email_change_request
 from ..models import UserPreference
+from .helpers import (
+    get_profile_image_names as _get_profile_image_names,
+    get_profile_image_storage as _get_profile_image_storage,
+)
 from . import ACCOUNT_VISIBILITY_PREF_KEY, ALL_USERS_VISIBILITY
 
 
@@ -229,3 +233,40 @@ def _add_serializer_errors(update, serializer, field_errors):
             }
 
     return field_errors
+
+
+def set_has_profile_image(username, has_profile_image=True):
+    """
+    System (not user-facing) API call used to store whether the user has
+    uploaded a profile image.  Used by profile_image API.
+    """
+    try:
+        profile = UserProfile.objects.get(user__username=username)
+    except ObjectDoesNotExist:
+        raise AccountUserNotFound()
+
+    profile.has_profile_image = has_profile_image
+    profile.save()
+
+
+def get_profile_image_names(username):
+    """
+    System (not user-facing) API call returning a dict {size:filename} for
+    each profile image for a given username.  Used by profile_image API.
+
+    This function just proxies to the helper function.
+    """
+    return _get_profile_image_names(username)
+
+
+def get_profile_image_storage():
+    """
+    System (not user-facing) API call returning a configured instance of the
+    storage backend.
+
+    This function just proxies to the helper function.
+
+    TODO: this doesn't really belong in the account API, but rather a config
+    module that can be used by both the account API and the profile_image API.
+    """
+    return _get_profile_image_storage()
