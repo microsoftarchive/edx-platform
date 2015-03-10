@@ -20,8 +20,8 @@ define([
         initialize: function (models, options) {
             // call super constructor
             Backbone.Collection.prototype.initialize.apply(this, arguments);
-            if (options && options.course_id) {
-                this.url += options.course_id;
+            if (options && options.courseId) {
+                this.url += options.courseId;
             }
         },
 

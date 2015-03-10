@@ -12,7 +12,6 @@ define([
 
     return Backbone.View.extend({
 
-        el: '#courseware-search-results',
         events: {
             'click .search-load-next': 'loadNext'
         },
@@ -20,24 +19,28 @@ define([
 
         initialize: function () {
             this.courseName = this.$el.attr('data-course-name');
-            this.$courseContent = $('#course-content');
-            this.listTemplate = _.template($('#search_list-tpl').html());
-            this.loadingTemplate = _.template($('#search_loading-tpl').html());
-            this.errorTemplate = _.template($('#search_error-tpl').html());
+            this.$contentElement = $(this.contentElement);
+            console.log(this.resultsTemplateId)
+            console.log($(this.resultsTemplateId))
+            console.log($(this.resultsTemplateId).html())
+            this.resultsTemplate = _.template($(this.resultsTemplateId).html());
+            this.loadingTemplate = _.template($(this.loadingTemplateId).html());
+            this.errorTemplate = _.template($(this.errorTemplateId).html());
             this.collection.on('search', this.render, this);
             this.collection.on('next', this.renderNext, this);
             this.collection.on('error', this.showErrorMessage, this);
         },
 
         render: function () {
-            this.$el.html(this.listTemplate({
+            this.$el.html(this.resultsTemplate({
                 totalCount: this.collection.totalCount,
                 totalCountMsg: this.totalCountMsg(),
                 pageSize: this.collection.pageSize,
                 hasMoreResults: this.collection.hasNextPage()
             }));
             this.renderItems();
-            this.$courseContent.hide();
+            this.$el.find(this.spinner).hide();
+            this.$contentElement.hide();
             this.$el.show();
             return this;
         },
@@ -57,7 +60,7 @@ define([
                 var item = new SearchItemView({ model: result });
                 return item.render().el;
             });
-            this.$el.find('.search-results').append(items);
+            this.$el.find('ol').append(items);
         },
 
         totalCountMsg: function () {
@@ -67,19 +70,19 @@ define([
 
         clear: function () {
             this.$el.hide().empty();
-            this.$courseContent.show();
+            this.$contentElement.show();
         },
 
         showLoadingMessage: function () {
             this.$el.html(this.loadingTemplate());
             this.$el.show();
-            this.$courseContent.hide();
+            this.$contentElement.hide();
         },
 
         showErrorMessage: function () {
             this.$el.html(this.errorTemplate());
             this.$el.show();
-            this.$courseContent.hide();
+            this.$contentElement.hide();
         },
 
         loadNext: function (event) {
