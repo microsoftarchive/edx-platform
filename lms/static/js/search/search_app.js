@@ -1,21 +1,15 @@
 ;(function (define) {
 
-define([
-    'backbone',
-    'js/search/search_router',
-    'js/search/views/search_form',
-    'js/search/views/search_list_view',
-    'js/search/collections/search_collection'
-], function(Backbone, SearchRouter, SearchForm, SearchListView, SearchCollection) {
+define(function() {
     'use strict';
 
-    return function (course_id) {
+    return function (courseId, SearchRouter, SearchForm, SearchCollection, SearchListView) {
 
         var self = this;
 
         this.router = new SearchRouter();
         this.form = new SearchForm();
-        this.collection = new SearchCollection([], { course_id: course_id });
+        this.collection = new SearchCollection([], { courseId: courseId });
         this.results = new SearchListView({ collection: this.collection });
 
         this.form.on('search', this.results.showLoadingMessage, this.results);
@@ -27,6 +21,7 @@ define([
         this.form.on('clear', this.results.clear, this.results);
         this.form.on('clear', this.router.navigate, this.router);
 
+        this.results.on('reset', this.form.resetSearchForm, this.form);
         this.results.on('next', this.collection.loadNextPage, this.collection);
         this.router.on('route:search', this.form.doSearch, this.form);
 

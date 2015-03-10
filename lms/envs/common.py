@@ -1078,7 +1078,7 @@ courseware_js = (
         for pth in ['courseware', 'histogram', 'navigation', 'time']
     ] +
     ['js/' + pth + '.js' for pth in ['ajax-error']] +
-    ['js/search/main.js'] +
+    ['js/search/courseware_search.js'] +
     sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/modules/**/*.js'))
 )
 
@@ -1110,7 +1110,10 @@ main_vendor_js = base_vendor_js + [
     'js/vendor/URI.min.js',
 ]
 
-dashboard_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'js/dashboard/**/*.js'))
+dashboard_js = (
+    sorted(rooted_glob(PROJECT_ROOT / 'static', 'js/dashboard/**/*.js')) +
+    ['js/search/dashboard_search.js']
+)
 discussion_js = sorted(rooted_glob(COMMON_ROOT / 'static', 'coffee/src/discussion/**/*.js'))
 rwd_header_footer_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'js/common_helpers/rwd_header_footer.js'))
 staff_grading_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/staff_grading/**/*.js'))

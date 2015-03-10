@@ -5,7 +5,7 @@ define([
     'js/common_helpers/template_helpers',
     'js/search/views/search_form',
     'js/search/views/search_item_view',
-    'js/search/views/search_list_view',
+    'js/search/views/search_results_view',
     'js/search/models/search_result',
     'js/search/collections/search_collection',
     'js/search/search_router',
@@ -17,7 +17,7 @@ define([
     TemplateHelpers,
     SearchForm,
     SearchItemView,
-    SearchListView,
+    SearchResultsView,
     SearchResult,
     SearchCollection,
     SearchRouter,
@@ -156,9 +156,10 @@ define([
             this.server.restore();
         });
 
-        it('appends course_id to url', function () {
-            var collection = new SearchCollection([], { course_id: 'edx101' });
-            expect(collection.url).toEqual('/search/edx101');
+        it('sends a request with course ID', function () {
+            var collection = new SearchCollection([], { courseId: 'edx101' });
+            collection.performSearch('search string');
+            expect(this.server.requests[0].url).toEqual('/search/edx101');
         });
 
         it('sends a request and parses the json result', function () {
@@ -175,7 +176,7 @@ define([
                     }
                 }]
             };
-            this.server.respondWith('POST', this.collection.url, [200, {}, JSON.stringify(response)]);
+            this.server.respondWith('POST', '/search/', [200, {}, JSON.stringify(response)]);
             this.server.respond();
 
             expect(this.onSearch).toHaveBeenCalled();
@@ -210,11 +211,8 @@ define([
             spyOn($, 'ajax');
             this.collection.loadNextPage();
             expect($.ajax.mostRecentCall.args[0].url).toEqual(this.collection.url);
-            expect($.ajax.mostRecentCall.args[0].data).toEqual({
-                search_string : 'search string',
-                page_size : this.collection.pageSize,
-                page_index : 2
-            });
+            expect($.ajax.mostRecentCall.args[0].data.page_size).toEqual(this.collection.pageSize);
+            expect($.ajax.mostRecentCall.args[0].data.page_index).toEqual(2);
         });
 
         it('has next page', function () {
@@ -270,10 +268,10 @@ define([
     });
 
 
-    describe('SearchListView', function () {
+    describe('SearchResultsView', function () {
 
         beforeEach(function () {
-            setFixtures(
+            appendSetFixtures(
                 '<section id="courseware-search-results" data-course-name="Test Course"></section>' +
                 '<section id="course-content"></section>'
             );
@@ -292,11 +290,11 @@ define([
             this.collection = new MockCollection();
 
             // spy on these methods before they are bound to events
-            spyOn(SearchListView.prototype, 'render').andCallThrough();
-            spyOn(SearchListView.prototype, 'renderNext').andCallThrough();
-            spyOn(SearchListView.prototype, 'showErrorMessage').andCallThrough();
+            spyOn(SearchResultsView.prototype, 'render').andCallThrough();
+            spyOn(SearchResultsView.prototype, 'renderNext').andCallThrough();
+            spyOn(SearchResultsView.prototype, 'showErrorMessage').andCallThrough();
 
-            this.listView = new SearchListView({ collection: this.collection });
+            this.listView = new SearchResultsView({ collection: this.collection });
         });
 
         it('shows loading message', function () {
@@ -386,10 +384,12 @@ define([
             this.collection.totalCount = 123;
             this.collection.hasNextPage = function () { return true; };
             this.listView.render();
+            expect(this.listView.$el.find('a.search-load-next .icon')).toBeHidden();
             this.listView.loadNext();
-            expect(this.listView.$el.find('a.search-load-next .icon')[0]).toBeVisible();
+            // toBeVisible does not work with inline
+            expect(this.listView.$el.find('a.search-load-next .icon')).toHaveCss({ 'display': 'inline' });
             this.listView.renderNext();
-            expect(this.listView.$el.find('a.search-load-next .icon')[0]).toBeHidden();
+            expect(this.listView.$el.find('a.search-load-next .icon')).toBeHidden();
         });
 
     });
@@ -438,12 +438,8 @@ define([
                 }]
             })]);
 
-            Backbone.history.stop();
             this.app = new SearchApp('a/b/c');
-
-            // start history after the application has finished creating
-            //  all of its routers
-            Backbone.history.start();
+            spyOn(Backbone.history, 'navigate');
         });
 
         afterEach(function () {
@@ -469,7 +465,7 @@ define([
         it ('updates navigation history on search', function () {
             $('.search-field').val('edx');
             $('.search-button').trigger('click');
-            expect(Backbone.history.fragment).toEqual('search/edx');
+            expect(Backbone.history.navigate.calls[0].args).toContain('search/edx');
         });
 
         it ('aborts sent search request', function () {
@@ -492,7 +488,7 @@ define([
 
         it ('updates navigation history on clear', function () {
             $('.cancel-button').trigger('click');
-            expect(Backbone.history.fragment).toEqual('');
+            expect(Backbone.history.navigate.calls[0].args).toContain(undefined);
         });
 
         it ('loads next page', function () {

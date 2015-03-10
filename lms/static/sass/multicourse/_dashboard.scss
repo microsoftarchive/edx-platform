@@ -5,281 +5,284 @@
   @include clearfix();
   padding: ($baseline*2) 0 0 0;
 
-  .profile-sidebar {
+  .dashboard-sidebar {
     background: transparent;
     @include float(left);
     @include margin-right(flex-gutter());
     width: flex-grid(3);
-    background: transparent;
-    box-shadow: 0 0 1px $shadow-l1;
 
-    header.profile {
-      @include box-sizing(border-box);
-      border: 1px solid $border-color-2;
-      border-radius: ($baseline/4) ($baseline/4) 0 0;
-      width: flex-grid(12);
-      background: $dashboard-profile-color;
+    .profile-sidebar {
+      box-shadow: 0 0 1px $shadow-l1;
 
-      h1.user-name {
-        overflow: hidden;
-        margin: 0;
-        padding: ($baseline*0.75) ($baseline/2);
-        color: $base-font-color;
-        text-transform: none;
-        text-wrap: nowrap;
-        text-overflow: ellipsis;
-        font: 700 1.2em/1.2em $sans-serif;
-      }
-    }
-
-    .user-info {
-      @include clearfix();
-
-      > ul {
+      header.profile {
         @include box-sizing(border-box);
-        @include clearfix();
-        margin: 0;
         border: 1px solid $border-color-2;
-        border-top: none;
-        border-radius: 0 0 ($baseline/4) ($baseline/4);
-        padding: $baseline;
+        border-radius: ($baseline/4) ($baseline/4) 0 0;
         width: flex-grid(12);
-        background: $white;
+        background: $dashboard-profile-color;
 
-        li {
+        h1.user-name {
+          overflow: hidden;
+          margin: 0;
+          padding: ($baseline*0.75) ($baseline/2);
+          color: $base-font-color;
+          text-transform: none;
+          text-wrap: nowrap;
+          text-overflow: ellipsis;
+          font: 700 1.2em/1.2em $sans-serif;
+        }
+      }
+
+      .user-info {
+        @include clearfix();
+
+        > ul {
+          @include box-sizing(border-box);
           @include clearfix();
-          border-bottom: 1px dotted $border-color-2;
-          list-style: none;
-          margin-bottom: ($baseline*0.75);
-          padding-bottom: 17px;
+          margin: 0;
+          border: 1px solid $border-color-2;
+          border-top: none;
+          border-radius: 0 0 ($baseline/4) ($baseline/4);
+          padding: $baseline;
+          width: flex-grid(12);
+          background: $white;
 
-          &:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
+          li {
+            @include clearfix();
+            border-bottom: 1px dotted $border-color-2;
+            list-style: none;
+            margin-bottom: ($baseline*0.75);
+            padding-bottom: 17px;
+
+            &:last-child {
+              border-bottom: none;
+              margin-bottom: 0;
+              padding-bottom: 0;
+            }
+
+            &:hover, &:focus {
+              .title .icon {
+                opacity: 1.0;
+              }
+            }
+
+            span {
+              display: block;
+            }
+
+            span.title {
+              color: $gray;
+              font-family: $sans-serif;
+              font-size: 13px;
+              text-transform: uppercase;
+
+              a {
+                text-transform: none;
+              }
+            }
+
+            span.data {
+              color: $base-font-color;
+              font-weight: 600;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              overflow: hidden;
+
+              .third-party-auth {
+                color: inherit;
+                font-weight: inherit;
+              }
+
+              .auth-provider {
+                width: flex-grid(12);
+                display: block;
+                margin-top: ($baseline/4);
+
+                .status {
+                  width: flex-grid(1);
+                  display: inline-block;
+                  color: $gray-l2;
+
+                  .fa-link {
+                    color: $base-font-color;
+                  }
+
+                  .copy {
+                    @extend %text-sr;
+                  }
+                }
+
+                .provider {
+                  width: flex-grid(9);
+                  display: inline-block;
+                }
+
+                .control {
+                  width: flex-grid(2);
+                  display: inline-block;
+                  text-align: right;
+
+                  a:link, a:visited {
+                    @extend %t-copy-sub2;
+                  }
+                }
+              }
+            }
           }
+
+          li.order-history {
+            span a {
+              font-size: 13px;
+              line-height: 20px;
+            }
+          }
+        }
+
+        .reverify-status-list {
+          padding: 0 0 0 ($baseline/2);
+          margin: ($baseline/4) 0;
+
+          .status-item {
+            @extend %t-copy-sub2;
+            margin-bottom: 7px;
+            border-bottom: 0;
+            padding: 0;
+
+            .icon {
+              display: inline-block;
+              vertical-align: top;
+              margin: ($baseline/10) ($baseline/4) 0 0;
+            }
+
+            &.is-open .icon {
+              color: $action-primary-bg;
+            }
+
+            &.is-pending .icon {
+              color: $warning-color;
+            }
+
+            &.is-approved .icon {
+              color: $success-color;
+            }
+
+            &.is-denied .icon {
+              color: $alert-color;
+            }
+
+            .label {
+              @extend %text-sr;
+            }
+
+            .course-name {
+              @include line-height(12);
+              display: inline-block;
+              vertical-align: top;
+              width: 80%;
+              color: inherit;
+            }
+          }
+        }
+      }
+
+      .news-carousel {
+        @include clearfix();
+        margin: 30px 10px 0;
+        border: 1px solid $border-color-2;
+        background: $dashboard-profile-color;
+        box-shadow: inset 0 0 3px 0 rgba(0,0,0, 0.15);
+
+        * {
+          font-family: $sans-serif;
+        }
+
+        header {
+          @include clearfix();
+          height: 50px;
+        }
+
+        .page-dots {
+          float: right;
+          margin: 18px 15px 0 0;
+
+          li {
+            float: left;
+            margin-left: 6px;
+          }
+        }
+
+        .page-dot {
+          display: block;
+          width: 11px;
+          height: 11px;
+          border-radius: 11px;
+          background: $dot-color;
 
           &:hover, &:focus {
-            .title .icon {
-              opacity: 1.0;
-            }
+            background: $lighter-base-font-color;
           }
 
-          span {
+          &.current {
+            background: $link-color;
+          }
+        }
+
+        h4 {
+          float: left;
+          margin-left: ($baseline*0.75);
+          font-size: 15px;
+          line-height: 48px;
+          font-weight: 700;
+          text-transform: uppercase;
+        }
+
+        .pages {
+          position: relative;
+        }
+
+        .page {
+          display: none;
+          position: absolute;
+          top: 0;
+          left: 0;
+
+          &:first-child {
             display: block;
           }
+        }
 
-          span.title {
-            color: $gray;
-            font-family: $sans-serif;
-            font-size: 13px;
-            text-transform: uppercase;
+        section {
+          padding: 0 10px;
+        }
 
-            a {
-              text-transform: none;
-            }
-          }
+        .news-image {
+          height: 180px;
+          margin-bottom: ($baseline*0.75);
 
-          span.data {
-            color: $base-font-color;
-            font-weight: 600;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
-
-            .third-party-auth {
-              color: inherit;
-              font-weight: inherit;
-            }
-
-            .auth-provider {
-              width: flex-grid(12);
-              display: block;
-              margin-top: ($baseline/4);
-
-              .status {
-                width: flex-grid(1);
-                display: inline-block;
-                color: $gray-l2;
-
-                .fa-link {
-                  color: $base-font-color;
-                }
-
-                .copy {
-                  @extend %text-sr;
-                }
-              }
-
-              .provider {
-                width: flex-grid(9);
-                display: inline-block;
-              }
-
-              .control {
-                width: flex-grid(2);
-                display: inline-block;
-                text-align: right;
-
-                a:link, a:visited {
-                  @extend %t-copy-sub2;
-                }
-              }
-            }
+          img {
+            width: 100%;
+            border: 1px solid $border-color-1;
           }
         }
 
-        li.order-history {
-          span a {
-            font-size: 13px;
-            line-height: 20px;
+        h5 {
+          margin-bottom: 8px;
+          margin-left: ($baseline/4);
+
+          a {
+            font-size: 16px;
+            font-weight: 700;
           }
         }
-      }
 
-      .reverify-status-list {
-        padding: 0 0 0 ($baseline/2);
-        margin: ($baseline/4) 0;
-
-        .status-item {
-          @extend %t-copy-sub2;
-          margin-bottom: 7px;
-          border-bottom: 0;
-          padding: 0;
-
-          .icon {
-            display: inline-block;
-            vertical-align: top;
-            margin: ($baseline/10) ($baseline/4) 0 0;
-          }
-
-          &.is-open .icon {
-            color: $action-primary-bg;
-          }
-
-          &.is-pending .icon {
-            color: $warning-color;
-          }
-
-          &.is-approved .icon {
-            color: $success-color;
-          }
-
-          &.is-denied .icon {
-            color: $alert-color;
-          }
-
-          .label {
-            @extend %text-sr;
-          }
-
-          .course-name {
-            @include line-height(12);
-            display: inline-block;
-            vertical-align: top;
-            width: 80%;
-            color: inherit;
-          }
+        .excerpt {
+          margin-left: ($baseline/4);
+          font-size: 13px;
+          padding-bottom: 40px;
         }
       }
     }
 
-    .news-carousel {
-      @include clearfix();
-      margin: 30px 10px 0;
-      border: 1px solid $border-color-2;
-      background: $dashboard-profile-color;
-      box-shadow: inset 0 0 3px 0 rgba(0,0,0, 0.15);
-
-      * {
-        font-family: $sans-serif;
-      }
-
-      header {
-        @include clearfix();
-        height: 50px;
-      }
-
-      .page-dots {
-        float: right;
-        margin: 18px 15px 0 0;
-
-        li {
-          float: left;
-          margin-left: 6px;
-        }
-      }
-
-      .page-dot {
-        display: block;
-        width: 11px;
-        height: 11px;
-        border-radius: 11px;
-        background: $dot-color;
-
-        &:hover, &:focus {
-          background: $lighter-base-font-color;
-        }
-
-        &.current {
-          background: $link-color;
-        }
-      }
-
-      h4 {
-        float: left;
-        margin-left: ($baseline*0.75);
-        font-size: 15px;
-        line-height: 48px;
-        font-weight: 700;
-        text-transform: uppercase;
-      }
-
-      .pages {
-        position: relative;
-      }
-
-      .page {
-        display: none;
-        position: absolute;
-        top: 0;
-        left: 0;
-
-        &:first-child {
-          display: block;
-        }
-      }
-
-      section {
-        padding: 0 10px;
-      }
-
-      .news-image {
-        height: 180px;
-        margin-bottom: ($baseline*0.75);
-
-        img {
-          width: 100%;
-          border: 1px solid $border-color-1;
-        }
-      }
-
-      h5 {
-        margin-bottom: 8px;
-        margin-left: ($baseline/4);
-
-        a {
-          font-size: 16px;
-          font-weight: 700;
-        }
-      }
-
-      .excerpt {
-        margin-left: ($baseline/4);
-        font-size: 13px;
-        padding-bottom: 40px;
-      }
-    }
   }
 
   // ====================
