@@ -16,9 +16,69 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save
+from django.db.models.query import QuerySet
 from django.dispatch import receiver
 
 from xmodule_django.models import CourseKeyField, LocationKeyField, BlockTypeKeyField
+
+
+class CourseToDB(object):
+
+    COURSE_TO_DB_MAP = {
+        'edX/DemoX/Demo_Course': 'shard1',
+        'course-v1:MITx+6.002_4x+3T2014': 'shard2'
+    }
+
+    @staticmethod
+    def _map_course_to_db(course_id):
+        if course_id in CourseToDB.COURSE_TO_DB_MAP:
+            return CourseToDB.COURSE_TO_DB_MAP[course_id]
+        else:
+            return 'default'
+
+
+class DisallowQueryManager(models.Manager):
+    """
+    Used to disallow the use of a model's 'objects' attribute.
+    """
+    def get_query_set(self):
+        raise Exception("'objects' is invalid for this model - use 'course_objects'.")
+
+
+class MappingManager(models.Manager):
+    """
+    Base class for StudentModule and StudentModuleHistory managers.
+    """
+    def __init__(self, course_id):
+        self.course_id = course_id
+        # Map the course_id to the appropriate database.
+        self._django_db = CourseToDB._map_course_to_db(course_id)
+
+
+class CoursewareStudentModuleManager(MappingManager):
+    """
+    Manager for StudentModule model.
+    """
+    def __init__(self, course_id):
+        super(CoursewareStudentModuleManager, self).__init__(course_id)
+
+    def get_query_set(self):
+        # Use the proper DB via 'using'.
+        qs = QuerySet(StudentModule).using(self._django_db)
+        return qs
+
+
+class CoursewareStudentModuleHistoryManager(MappingManager):
+    """
+    Manager for StudentModuleHistory model.
+    """
+    def __init__(self, course_id):
+        super(CoursewareStudentModuleHistoryManager, self).__init__(course_id)
+
+    def get_query_set(self):
+        # Use the proper DB via 'using'.
+        qs = QuerySet(StudentModuleHistory).using(self._django_db)
+        return qs
 
 
 class StudentModule(models.Model):
@@ -37,7 +97,6 @@ class StudentModule(models.Model):
                     ('sequential', 'Subsection'),
                     ('library_content', 'Library Content'),
                     )
-    ## These three are the key for the object
     module_type = models.CharField(max_length=32, choices=MODULE_TYPES, default='problem', db_index=True)
 
     # Key used to share state. This is the XBlock usage_id
@@ -46,6 +105,7 @@ class StudentModule(models.Model):
 
     course_id = CourseKeyField(max_length=255, db_index=True)
 
+    ## These three are the key for the object
     class Meta:
         unique_together = (('student', 'module_state_key', 'course_id'),)
 
@@ -64,6 +124,29 @@ class StudentModule(models.Model):
 
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     modified = models.DateTimeField(auto_now=True, db_index=True)
+
+    # Disallow querying via the 'objects' attribute.
+    objects = DisallowQueryManager()
+
+    @staticmethod
+    def course_objects(course_id):
+        return CoursewareStudentModuleManager(course_id)
+
+    def save(self, *args, **kwargs):
+        """
+        Overrides the model's save method to route to the proper DB.
+        """
+        # Ensure the course_id is filled-in before continuing.
+        if not self.course_id or len(self.course_id) == 0:
+            raise Exception
+        # Map the course_id into a DB.
+        django_db = CourseToDB._map_course_to_db(self.course_id)
+
+        # Set the 'using' parameter in kwargs, which directs the save to a particular DB.
+        kwargs['using'] = django_db
+
+        # Save.
+        super(StudentModule, self).save(*args, **kwargs)
 
     @classmethod
     def all_submitted_problems_read_only(cls, course_id):
@@ -95,7 +178,7 @@ class StudentModule(models.Model):
         return unicode(repr(self))
 
 
-class StudentModuleHistory(models.Model):
+class StudentModuleHistory(CourseToDB, models.Model):
     """Keeps a complete history of state changes for a given XModule for a given
     Student. Right now, we restrict this to problems so that the table doesn't
     explode in size."""
@@ -114,6 +197,13 @@ class StudentModuleHistory(models.Model):
     grade = models.FloatField(null=True, blank=True)
     max_grade = models.FloatField(null=True, blank=True)
 
+    # Disallow querying via the 'objects' attribute.
+    objects = DisallowQueryManager()
+
+    @staticmethod
+    def course_objects(course_id):
+        return CoursewareStudentModuleHistoryManager(course_id)
+
     @receiver(post_save, sender=StudentModule)
     def save_history(sender, instance, **kwargs):  # pylint: disable=no-self-argument, unused-argument
         """
@@ -128,7 +218,9 @@ class StudentModuleHistory(models.Model):
                                                  state=instance.state,
                                                  grade=instance.grade,
                                                  max_grade=instance.max_grade)
-            history_entry.save()
+            django_db = CourseToDB._map_course_to_db(instance.course_id)
+            history_entry.save(using=django_db)
+
 
 
 class XBlockFieldBase(models.Model):

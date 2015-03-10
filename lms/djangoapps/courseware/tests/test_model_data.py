@@ -2,24 +2,28 @@
 Test for lms courseware app, module data (runtime data storage for XBlocks)
 """
 import json
+import datetime
 from mock import Mock, patch
 from functools import partial
 
 from courseware.model_data import DjangoKeyValueStore
 from courseware.model_data import InvalidScopeError, FieldDataCache
-from courseware.models import StudentModule
+from courseware.models import StudentModule, StudentModuleHistory
 from courseware.models import XModuleStudentInfoField, XModuleStudentPrefsField
 
 from student.tests.factories import UserFactory
 from courseware.tests.factories import StudentModuleFactory as cmfStudentModuleFactory, location, course_id
 from courseware.tests.factories import UserStateSummaryFactory
 from courseware.tests.factories import StudentPrefsFactory, StudentInfoFactory
+from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
+from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 
 from xblock.fields import Scope, BlockScope, ScopeIds
 from xblock.exceptions import KeyValueMultiSaveError
 from xblock.core import XBlock
 from django.test import TestCase
 from django.db import DatabaseError
+from django.utils.timezone import utc
 
 
 def mock_field(scope, name):
@@ -94,6 +98,42 @@ class OtherUserFailureTestMixin(object):
         """
         with self.assertRaises(AssertionError):
             self.kvs.set(self.other_key_factory(self.existing_field_name), "new_value")
+
+
+class TestStudentModuleModel(ModuleStoreTestCase):
+    def setUp(self):
+        super(TestStudentModuleModel, self).setUp()
+
+    def test_sm_objects_blocked(self):
+        with self.assertRaises(Exception):
+            StudentModule.objects.all()
+
+    def test_course_id_required(self):
+        with self.assertRaises(Exception):
+            StudentModule.course_objects().all()
+
+    def test_course_id_used(self):
+        self.assertEqual(StudentModule.course_objects(unicode(course_id)).all(), 0)
+
+    def test_student_module_save(self):
+        user = UserFactory.create(username='user')
+
+        due = datetime.datetime(2010, 5, 12, 2, 42, tzinfo=utc)
+        course = CourseFactory.create()
+        week = ItemFactory.create(due=due, parent=course)
+        homework = ItemFactory.create(
+            parent=week,
+            due=due
+        )
+        self.assertEqual(StudentModule.course_objects(unicode(course_id)).all().count(), 0)
+        self.assertEqual(StudentModuleHistory.course_objects(unicode(course_id)).all().count(), 0)
+        StudentModule(
+            state='{}',
+            student_id=user.id,
+            course_id=course_id,
+            module_state_key=homework.location).save()
+        self.assertEqual(StudentModule.course_objects(unicode(course_id)).all().count(), 1)
+        self.assertEqual(StudentModuleHistory.course_objects(unicode(course_id)).all().count(), 1)
 
 
 class TestStudentModuleStorage(OtherUserFailureTestMixin, TestCase):
