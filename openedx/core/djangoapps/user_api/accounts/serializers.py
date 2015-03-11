@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from student.models import UserProfile
 from openedx.core.djangoapps.user_api.accounts import NAME_MIN_LENGTH
+from .helpers import get_profile_image_url_for_user
 
 
 class AccountUserSerializer(serializers.HyperlinkedModelSerializer):
@@ -18,6 +19,8 @@ class AccountLegacyProfileSerializer(serializers.HyperlinkedModelSerializer):
     """
     Class that serializes the portion of UserProfile model needed for account information.
     """
+    profile_image_url = serializers.SerializerMethodField("get_profile_image_url")
+    
     class Meta:
         model = UserProfile
         fields = (
@@ -54,3 +57,7 @@ class AccountLegacyProfileSerializer(serializers.HyperlinkedModelSerializer):
     def convert_empty_to_None(value):
         """ Helper method to convert empty string to None (other values pass through). """
         return None if value == "" else value
+
+    def get_profile_image_url(self, obj):
+        """ Returns the URL of a user's profile image"""
+        return get_profile_image_url_for_user(obj.user)

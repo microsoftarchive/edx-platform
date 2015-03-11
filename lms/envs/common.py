@@ -2088,3 +2088,7 @@ ACCOUNT_VISIBILITY_CONFIGURATION = {
         'profile_image',
     ],
 }
+
+# PROFILE IMAGE CONFIG
+PROFILE_IMAGE_BACKEND = 'django.core.files.storage.FileSystemStorage'
+PROFILE_IMAGE_DEFAULT_FILENAME = 'default_profile_image.jpg'
