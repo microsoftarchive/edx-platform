@@ -1,20 +1,6 @@
 <%! from django.utils.translation import ugettext as _ %>
 <%page args="section_data"/>
 
-<script type="text/template" id="profile-distribution-widget-template">
-  <div class="profile-distribution-widget">
-    <div class="header">
-      <h2 class="title"> {{title}} </h2>
-    </div>
-    <div class="view">
-      <div class="display-errors"></div>
-      <div class="display-text"></div>
-      <div class="display-graph"></div>
-      <div class="display-table"></div>
-    </div>
-  </div>
-</script>
-
 %if settings.FEATURES['DISPLAY_ANALYTICS_DEMOGRAPHICS']:
     <div class="profile-distribution-widget-container"
       data-title="${_("Year of Birth")}"
