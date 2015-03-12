@@ -216,7 +216,7 @@ FEATURES = {
     'ENABLE_HINTER_INSTRUCTOR_VIEW': False,
 
     # for load testing
-    'AUTOMATIC_AUTH_FOR_TESTING': False,
+    'AUTOMATIC_AUTH_FOR_TESTING': True,
 
     # Toggle to enable chat availability (configured on a per-course
     # basis in Studio)

@@ -74,7 +74,7 @@ FEATURES['ENABLE_COMBINED_LOGIN_REGISTRATION'] = True
 
 # Enable changing MySQL database transaction isolation levels ('REPEATABLE READ',
 # 'READ COMMITTED') for tests
-DB_UTILS_ENABLE_TRANSACTIONS = False
+DB_UTILS_ENABLE_TRANSACTIONS = True
 
 # Need wiki for courseware views to work. TODO (vshnayder): shouldn't need it.
 WIKI_ENABLED = True
