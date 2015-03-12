@@ -1,6 +1,4 @@
 """Tests for certificate Django models. """
-import json
-
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.test import TestCase
@@ -134,16 +132,13 @@ class CertificateHtmlViewConfigurationTest(TestCase):
         }
         self.assertEquals(self.config.get_config(), expected_config)
 
-    def test_get_not_enabled_uses_file(self):
+    def test_get_not_enabled_returns_blank(self):
         """
         Tests get configuration that is not enabled.
         """
         self.config.enabled = False
         self.config.save()
-        file_name = '{}/envs/certificates_html_view.json'.format(settings.PROJECT_ROOT)
-        with open(file_name) as json_file:
-            json_data = json.load(json_file)
-        self.assertEquals(self.config.get_config(), json_data)
+        self.assertEquals(len(self.config.get_config()), 0)
 
     @override_settings(FEATURES=FEATURES_INVALID_FILE_PATH)
     def test_get_no_database_no_file(self):

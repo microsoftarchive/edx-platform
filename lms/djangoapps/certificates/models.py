@@ -546,11 +546,4 @@ class CertificateHtmlViewConfiguration(ConfigurationModel):
         """
         instance = cls.current()
         json_data = json.loads(instance.configuration) if instance.enabled else {}
-        config_path = settings.FEATURES.get('CERTS_HTML_VIEW_CONFIG_PATH')
-        if not json_data and config_path:
-            try:
-                with open(config_path) as json_file:
-                    json_data = json.load(json_file)
-            except IOError:
-                pass
         return json_data
