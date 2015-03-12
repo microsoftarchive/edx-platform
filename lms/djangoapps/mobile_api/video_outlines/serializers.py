@@ -7,7 +7,7 @@ from xmodule.modulestore.mongo.base import BLOCK_TYPES_WITH_CHILDREN
 from courseware.access import has_access
 
 from edxval.api import (
-    get_video_info_for_course_and_profile, ValInternalError
+    get_video_info_for_course_and_profiles, ValInternalError
 )
 
 
@@ -23,8 +23,8 @@ class BlockOutline(object):
         self.request = request  # needed for making full URLS
         self.local_cache = {}
         try:
-            self.local_cache['course_videos'] = get_video_info_for_course_and_profile(
-                unicode(course_id), "mobile_low"
+            self.local_cache['course_videos'] = get_video_info_for_course_and_profiles(
+                unicode(course_id), "mobile_low", "mobile_high"
             )
         except ValInternalError:  # pragma: nocover
             self.local_cache['course_videos'] = {}
