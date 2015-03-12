@@ -2088,3 +2088,11 @@ ACCOUNT_VISIBILITY_CONFIGURATION = {
         'profile_image',
     ],
 }
+
+# PROFILE IMAGE CONFIG
+# TODO: add these settings to aws.py as well
+PROFILE_IMAGE_BACKEND = 'django.core.files.storage.FileSystemStorage'
+PROFILE_IMAGE_DEFAULT_FILENAME = 'default_profile_image.jpg'  # TODO: determine final name
+PROFILE_IMAGE_SECRET_KEY = ''
+PROFILE_IMAGE_BASE_URL = '/'
+PROFILE_IMAGE_URL_PATH = 'media/profile_images/'

@@ -48,7 +48,8 @@ class ProfileApiTest(ModuleStoreTestCase):
             'mailing_address': None,
             'year_of_birth': None,
             'country': None,
-            'bio': None
+            'bio': None,
+            'profile_image': {'image_url': u'/media/profile_images/default_profile_image.jpg', 'has_image': False},
         })
 
     def test_update_and_retrieve_preference_info(self):

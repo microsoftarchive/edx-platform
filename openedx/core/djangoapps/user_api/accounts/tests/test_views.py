@@ -83,6 +83,19 @@ class TestAccountAPI(UserAPITestCase):
 
         self.url = reverse("accounts_api", kwargs={'username': self.user.username})
 
+    def _verify_profile_image_data(self, data):
+        """
+        Verify the profile image data in a GET response for self.user is
+        what we expect.
+        """
+        profile_image_url = (
+            settings.PROFILE_IMAGE_BASE_URL + settings.PROFILE_IMAGE_URL_PATH + settings.PROFILE_IMAGE_DEFAULT_FILENAME
+        )
+        self.assertEqual(
+            data['profile_image'],
+            {'has_image': self.user.profile.has_profile_image, 'image_url': profile_image_url}
+        )
+
     def _verify_full_shareable_account_response(self, response):
         """
         Verify that the shareable fields from the account are returned
@@ -91,7 +104,7 @@ class TestAccountAPI(UserAPITestCase):
         self.assertEqual(6, len(data))
         self.assertEqual(self.user.username, data["username"])
         self.assertEqual("US", data["country"])
-        self.assertIsNone(data["profile_image"])
+        self._verify_profile_image_data(data)
         self.assertIsNone(data["time_zone"])
         self.assertIsNone(data["languages"])
         self.assertEqual("Tired mother of twins", data["bio"])
@@ -103,14 +116,14 @@ class TestAccountAPI(UserAPITestCase):
         data = response.data
         self.assertEqual(2, len(data))
         self.assertEqual(self.user.username, data["username"])
-        self.assertIsNone(data["profile_image"])
+        self._verify_profile_image_data(data)
 
     def _verify_full_account_response(self, response):
         """
         Verify that all account fields are returned (even those that are not shareable).
         """
         data = response.data
-        self.assertEqual(12, len(data))
+        self.assertEqual(13, len(data))
         self.assertEqual(self.user.username, data["username"])
         self.assertEqual(self.user.first_name + " " + self.user.last_name, data["name"])
         self.assertEqual("US", data["country"])
@@ -224,7 +237,7 @@ class TestAccountAPI(UserAPITestCase):
         self.client.login(username=self.user.username, password=TEST_PASSWORD)
         response = self.send_get(self.client)
         data = response.data
-        self.assertEqual(12, len(data))
+        self.assertEqual(13, len(data))
         self.assertEqual(self.user.username, data["username"])
         self.assertEqual(self.user.first_name + " " + self.user.last_name, data["name"])
         for empty_field in ("year_of_birth", "level_of_education", "mailing_address", "bio"):
