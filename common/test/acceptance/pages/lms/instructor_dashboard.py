@@ -477,9 +477,16 @@ class DataDownloadPage(PageObject):
     Data Download section of the Instructor dashboard.
     """
     url = None
+    resp_report_button_selector = '.reports-download-container input[name="get-student-responses"]'
 
     def is_browser_on_page(self):
         return self.q(css='a[data-section=data_download].active-section').present
+
+    def click_responses_report_button(self):
+        """
+        Finds & clicks the 'Generate Student Responses Report' button
+        """
+        self.q(css=self.resp_report_button_selector).click()
 
     def get_available_reports_for_download(self):
         """
@@ -487,6 +494,15 @@ class DataDownloadPage(PageObject):
         """
         reports = self.q(css="#report-downloads-table .file-download-link>a").map(lambda el: el.text)
         return reports.results
+
+    def get_report_generation_msg(self):
+        """
+        Waits for and returns the message populated in the report request-response section
+        after a report generation task is kicked off.
+        """
+        self.wait_for_element_visibility('#report-request-response', 'Grade report task success message is shown')
+        text = self.q(css="#report-request-response").text[0]
+        return text
 
 
 class StudentAdminPage(PageObject):
