@@ -8,7 +8,7 @@ define(['backbone', 'jquery', 'underscore', 'js/common_helpers/ajax_helpers', 'j
             var createAccountSettingsView, accountSettingsView, requests, createMockAccountSettingsModel,
                 createMockAccountSettingsModelJson, createMockAccountSettingsSections, verifyFieldValues,
                 createMockAccountSettingsSectionsField, createMockAccountSettingsSectionsFieldJson, getFieldInfo,
-                createMockSectionsFields;
+                createMockSectionsFields, fieldValueChangeEventHandler;
 
             var MOCK_USERNAME, MOCK_FULLNAME, MOCK_EMAIL, MOCK_LANGUAGE, MOCK_COUNTRY, MOCK_DATE_JOINED, MOCK_GENDER,
                 MOCK_GOALS, MOCK_LEVEL_OF_EDUCATION, MOCK_MAILING_ADDRESS, MOCK_YEAR_OF_BIRTH, SECTIONS_TITLES,
@@ -45,6 +45,18 @@ define(['backbone', 'jquery', 'underscore', 'js/common_helpers/ajax_helpers', 'j
                 fieldViews.LinkFieldView,
                 fieldViews.PasswordFieldView
             ];
+
+            fieldValueChangeEventHandler = function(test, data, respondWithErrorCode) {
+                AjaxHelpers.expectJsonRequest(
+                    requests, 'PATCH', '/mock_service/api/user/v0/accounts/user', data
+                );
+
+                if (_.isUndefined(respondWithErrorCode)) {
+                    AjaxHelpers.respondWithNoContent(requests);
+                } else {
+                    AjaxHelpers.respondWithError(requests, respondWithErrorCode || 400);
+                }
+            };
 
             getFieldInfo = function (fieldType, fieldElement) {
                 var fieldValue, fieldInfo = {};
@@ -131,12 +143,15 @@ define(['backbone', 'jquery', 'underscore', 'js/common_helpers/ajax_helpers', 'j
 
                 switch (fieldType) {
                     case TYPE_DROPDOWN:
-                        data['defaultValue'] = fieldData.defaultValue || 'Default Value';
+                        data['defaultValue'] = fieldData.defaultValue || 'dv';
                         data['required'] = fieldData.required || false;
                         data['options'] = fieldData.options || [['1', 'Option1'], ['2', 'Option2'], ['3', 'Option3']];
                         break;
                     case TYPE_LINK:
+                    case TYPE_PASSWORD:
                         data['linkTitle'] = fieldData.linkTitle || "Link Title";
+                        data['linkHref'] = fieldData.linkHref || "/path/to/resource";
+                        data['dataAttribute'] = 'email';
                         break;
                 }
 
@@ -318,27 +333,97 @@ define(['backbone', 'jquery', 'underscore', 'js/common_helpers/ajax_helpers', 'j
                 expect(fieldInfo.helpMessage).toBe(fieldData.helpMessage);
             });
 
-            it("can correctly render the success message", function() {
+            it("can correctly render the text field help messages", function() {
+                var textFieldSelector = '.account-settings-field-value > input';
+                var messageSelector = '.account-settings-field-message';
+                var data = {'name': 'Legolas Thranduil'};
                 var fieldData = {
                     title: 'Full Name',
                     valueAttribute: 'name',
-                    helpMessage: 'This is used on your edX certificates, and all changes are reviewed.'
+                    helpMessage: 'edX full name'
                 };
                 var textFieldView = createMockAccountSettingsSectionsField(TYPE_TEXT, fieldData);
-                expect(textFieldView.$('.account-settings-field-message').text().trim()).toBe(fieldData.helpMessage);
-
                 requests = AjaxHelpers.requests(this);
 
-                textFieldView.$('.account-settings-field-value > input').trigger('change');
+                // Verify default message
+                expect(textFieldView.$(messageSelector).text().trim()).toBe(fieldData.helpMessage);
 
-                AjaxHelpers.expectJsonRequest(
-                    requests, 'PATCH', '/mock_service/api/user/v0/accounts/user',
-                    {'name': 'Legolas Thranduil'}
-                );
-                AjaxHelpers.respondToDelete(requests);
+                // Verify change in-progress message
+                textFieldView.$(textFieldSelector).trigger('change');
+                expect(textFieldView.$(messageSelector).text().trim()).toBe('Saving...');
 
-                expect(textFieldView.$('.account-settings-field-message').text().trim()).toBe('Successfully changed.');
+                // Verify change completion message
+                textFieldView.$(textFieldSelector).trigger('change');
+                fieldValueChangeEventHandler(this, data);
+                expect(textFieldView.$(messageSelector).text().trim()).toBe('Successfully changed.');
+
+                // Verify server side issue/failure message
+                textFieldView.$(textFieldSelector).val(data.name).change();
+                fieldValueChangeEventHandler(this, data, 500);
+                expect(textFieldView.$(messageSelector).text().trim()).toBe('An error occurred, please try again.');
+
+                // Verify wrong input message
+                // Empty the text field which is not a valid value, so we should get an error message
+                textFieldView.errorMessage = '<i class="fa fa-exclamation-triangle"></i> Invalid Full Name value.';
+                textFieldView.$(textFieldSelector).val('').change();
+                fieldValueChangeEventHandler(this, {'name': ''}, 400);
+                expect(textFieldView.$(messageSelector).text().trim()).toBe('Invalid Full Name value.');
             });
 
+            it("can correctly render the dropdown field help messages", function() {
+                var fieldValueSelector = '.account-settings-field-value > select';
+                var messageSelector = '.account-settings-field-message';
+                var data = {'language': 'si'};
+                var fieldData = {
+                    title: 'Language',
+                    valueAttribute: 'language',
+                    required: true,
+                    options: MOCK_LANGUAGE,
+                    helpMessage: 'edX Languge'
+                };
+                var dropdownFieldView = createMockAccountSettingsSectionsField(TYPE_DROPDOWN, fieldData);
+                requests = AjaxHelpers.requests(this);
+
+                // Verify default message
+                expect(dropdownFieldView.$(messageSelector).text().trim()).toBe(fieldData.helpMessage);
+
+                // Verify change in-progress message
+                dropdownFieldView.$(fieldValueSelector).trigger('change');
+                expect(dropdownFieldView.$(messageSelector).text().trim()).toBe('Saving...');
+
+                // Verify change completion message
+                dropdownFieldView.$(fieldValueSelector).trigger('change');
+                fieldValueChangeEventHandler(this, data);
+                expect(dropdownFieldView.$(messageSelector).text().trim()).toBe('Successfully changed.');
+
+                // Verify server side issue/failure message
+                dropdownFieldView.$(fieldValueSelector).trigger('change');
+                fieldValueChangeEventHandler(this, data, 500);
+                expect(dropdownFieldView.$(messageSelector).text().trim()).toBe('An error occurred, please try again.');
+
+                // Verify wrong input message
+                // Empty the text field which is not a valid value, so we should get an error message
+                dropdownFieldView.errorMessage = '<i class="fa fa-exclamation-triangle"></i> Invalid language value.';
+                dropdownFieldView.$(fieldValueSelector).change();
+                fieldValueChangeEventHandler(this, data, 400);
+                expect(dropdownFieldView.$(messageSelector).text().trim()).toBe('Invalid language value.');
+            });
+
+            it("shows correct behaviour for password reset", function() {
+                var fieldData = {
+                    linkHref: '/password_reset'
+                };
+                spyOn($, "ajax");
+                var passwordFieldView = createMockAccountSettingsSectionsField(TYPE_PASSWORD, fieldData);
+                passwordFieldView.$('.account-settings-field-value > a').click();
+                expect($.ajax.mostRecentCall.args[0]["url"]).toEqual(fieldData.linkHref);
+                expect($.ajax.mostRecentCall.args[0]["type"].toUpperCase()).toEqual("POST");
+                expect($.ajax.mostRecentCall.args[0]["data"]).toEqual({email: MOCK_EMAIL});
+
+                // TODO! send 200
+                //expect(passwordFieldView.$('.account-settings-field-message').text().trim()).toBe(
+                //    "We have sent an email to your new address. Click the link."
+                //);
+            });
         });
     });
