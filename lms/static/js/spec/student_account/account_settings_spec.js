@@ -416,14 +416,13 @@ define(['backbone', 'jquery', 'underscore', 'js/common_helpers/ajax_helpers', 'j
                 spyOn($, "ajax");
                 var passwordFieldView = createMockAccountSettingsSectionsField(TYPE_PASSWORD, fieldData);
                 passwordFieldView.$('.account-settings-field-value > a').click();
+                $.ajax.mostRecentCall.args[0].success();
                 expect($.ajax.mostRecentCall.args[0]["url"]).toEqual(fieldData.linkHref);
                 expect($.ajax.mostRecentCall.args[0]["type"].toUpperCase()).toEqual("POST");
                 expect($.ajax.mostRecentCall.args[0]["data"]).toEqual({email: MOCK_EMAIL});
-
-                // TODO! send 200
-                //expect(passwordFieldView.$('.account-settings-field-message').text().trim()).toBe(
-                //    "We have sent an email to your new address. Click the link."
-                //);
+                expect(passwordFieldView.$('.account-settings-field-message').text().trim()).toBe(
+                    "We have sent an email to your new address. Click the link."
+                );
             });
         });
     });
