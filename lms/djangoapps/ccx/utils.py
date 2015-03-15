@@ -266,6 +266,7 @@ def get_all_ccx_for_user(user):
         })
     return memberships
 
+
 def get_ccx_membership_triplets(user, course_org_filter, org_filter_out_set):
     """
     Get the relevant set of (CustomCourseForEdX, CcxMembership, Course)

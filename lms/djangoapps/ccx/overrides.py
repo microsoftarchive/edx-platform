@@ -113,16 +113,16 @@ def override_field_for_ccx(ccx, block, name, value):
     value = json.dumps(field.to_json(value))
     try:
         override = CcxFieldOverride.objects.create(
-        ccx=ccx,
-        location=block.location,
-        field=name,
-        value=value)
+            ccx=ccx,
+            location=block.location,
+            field=name,
+            value=value)
     except IntegrityError:
         transaction.commit()
         override = CcxFieldOverride.objects.get(
-        ccx=ccx,
-        location=block.location,
-        field=name)
+            ccx=ccx,
+            location=block.location,
+            field=name)
         override.value = value
     override.save()
     if hasattr(block, '_ccx_overrides'):
