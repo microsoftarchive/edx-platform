@@ -13,6 +13,7 @@ from ..overrides import override_field_for_ccx
 
 from .test_views import flatten, iter_blocks
 
+
 @override_settings(FIELD_OVERRIDE_PROVIDERS=(
     'ccx.overrides.CustomCoursesForEdxOverrideProvider',))
 class TestFieldOverrides(ModuleStoreTestCase):

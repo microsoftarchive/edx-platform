@@ -181,7 +181,7 @@ def save_ccx(request, course):
                 clear_override_for_ccx(ccx, block, 'due')
 
             if not unit['hidden'] and block.graded:
-               graded[block.format] = graded.get(block.format, 0) + 1
+                graded[block.format] = graded.get(block.format, 0) + 1
 
             children = unit.get('children', None)
             if children:
