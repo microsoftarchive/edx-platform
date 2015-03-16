@@ -9,8 +9,8 @@ from contextlib import contextmanager
 
 from django.db import transaction, IntegrityError
 
-from courseware.field_overrides import FieldOverrideProvider
-from ccx import ACTIVE_CCX_KEY
+from courseware.field_overrides import FieldOverrideProvider  # pylint: disable=import-error
+from ccx import ACTIVE_CCX_KEY  # pylint: disable=import-error
 
 from .models import CcxMembership, CcxFieldOverride
 
@@ -22,6 +22,9 @@ class CustomCoursesForEdxOverrideProvider(FieldOverrideProvider):
     overrides to be made on a per user basis.
     """
     def get(self, block, name, default):
+        """
+        Just call the get_override_for_ccx method if there is a ccx
+        """
         ccx = get_current_ccx()
         if ccx:
             return get_override_for_ccx(ccx, block, name, default)
@@ -77,11 +80,11 @@ def get_override_for_ccx(ccx, block, name, default=None):
     overridden for the given ccx, returns `default`.
     """
     if not hasattr(block, '_ccx_overrides'):
-        block._ccx_overrides = {}
-    overrides = block._ccx_overrides.get(ccx.id)
+        block._ccx_overrides = {}  # pylint: disable=protected-access
+    overrides = block._ccx_overrides.get(ccx.id)  # pylint: disable=protected-access
     if overrides is None:
         overrides = _get_overrides_for_ccx(ccx, block)
-        block._ccx_overrides[ccx.id] = overrides
+        block._ccx_overrides[ccx.id] = overrides  # pylint: disable=protected-access
     return overrides.get(name, default)
 
 
@@ -126,7 +129,7 @@ def override_field_for_ccx(ccx, block, name, value):
         override.value = value
     override.save()
     if hasattr(block, '_ccx_overrides'):
-        del block._ccx_overrides[ccx.id]
+        del block._ccx_overrides[ccx.id]  # pylint: disable=protected-access
 
 
 def clear_override_for_ccx(ccx, block, name):
@@ -143,7 +146,7 @@ def clear_override_for_ccx(ccx, block, name):
             field=name).delete()
 
         if hasattr(block, '_ccx_overrides'):
-            del block._ccx_overrides[ccx.id]
+            del block._ccx_overrides[ccx.id]  # pylint: disable=protected-access
 
     except CcxFieldOverride.DoesNotExist:
         pass
@@ -172,7 +175,7 @@ class CcxMiddleware(object):
 
         _CCX_CONTEXT.request = request
 
-    def process_response(self, request, response):
+    def process_response(self, request, response):  # pylint: disable=unused-argument
         """
         Clean up afterwards.
         """
