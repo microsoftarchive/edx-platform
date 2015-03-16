@@ -4,7 +4,7 @@ from openedx.core.djangoapps.user_api.accounts import NAME_MIN_LENGTH
 from openedx.core.djangoapps.user_api.serializers import ReadOnlyFieldsSerializerMixin
 
 from student.models import UserProfile
-from .helpers import get_profile_image_url_for_user
+from .helpers import get_profile_image_url_for_user, PROFILE_IMAGE_SIZES
 
 
 class AccountUserSerializer(serializers.HyperlinkedModelSerializer, ReadOnlyFieldsSerializerMixin):
@@ -64,7 +64,9 @@ class AccountLegacyProfileSerializer(serializers.HyperlinkedModelSerializer, Rea
 
     def get_profile_image(self, obj):
         """ Returns metadata about a user's profile image. """
-        return {
-            'has_image': obj.has_profile_image,
-            'image_url': get_profile_image_url_for_user(obj.user)
-        }
+        data = {'has_image': obj.has_profile_image}
+        data.update({
+            'image_url_{key}'.format(key=size_display_name): get_profile_image_url_for_user(obj.user, size_value)
+            for size_display_name, size_value in PROFILE_IMAGE_SIZES.items()
+        })
+        return data

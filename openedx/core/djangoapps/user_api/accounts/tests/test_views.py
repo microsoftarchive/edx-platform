@@ -13,6 +13,7 @@ from student.models import UserProfile, PendingEmailChange
 from openedx.core.djangoapps.user_api.accounts import ACCOUNT_VISIBILITY_PREF_KEY
 from openedx.core.djangoapps.user_api.models import UserPreference
 from .. import PRIVATE_VISIBILITY, ALL_USERS_VISIBILITY
+from .utils import ProfileImageUrlTestCaseMixin
 
 TEST_PASSWORD = "test"
 
@@ -74,7 +75,10 @@ class UserAPITestCase(APITestCase):
 
 @ddt.ddt
 @unittest.skipUnless(settings.ROOT_URLCONF == 'lms.urls', 'Account APIs are only supported in LMS')
-class TestAccountAPI(UserAPITestCase):
+@patch.dict(
+    'openedx.core.djangoapps.user_api.accounts.helpers.PROFILE_IMAGE_SIZES', {'full': 50}, clear=True
+)
+class TestAccountAPI(ProfileImageUrlTestCaseMixin, UserAPITestCase):
     """
     Unit tests for the Account API.
     """
@@ -86,14 +90,16 @@ class TestAccountAPI(UserAPITestCase):
     def _verify_profile_image_data(self, data):
         """
         Verify the profile image data in a GET response for self.user is
-        what we expect.
+        what we expect.  Note that we mocked out the URL generation
+        logic, so we only expect a single image url in the dict pointing
+        to a mock URL ending in 'mock_image_url'.
         """
-        profile_image_url = (
-            settings.PROFILE_IMAGE_BASE_URL + settings.PROFILE_IMAGE_URL_PATH + settings.PROFILE_IMAGE_DEFAULT_FILENAME
-        )
         self.assertEqual(
             data['profile_image'],
-            {'has_image': self.user.profile.has_profile_image, 'image_url': profile_image_url}
+            {
+                'has_image': False,
+                'image_url_full': 'http://example-storage.com/profile_images/default_50.jpg'
+            }
         )
 
     def _verify_full_shareable_account_response(self, response):

@@ -25,6 +25,7 @@ from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from third_party_auth.tests.testutil import simulate_running_pipeline
 
 from ..accounts.api import get_account_settings
+from ..accounts.tests.utils import ProfileImageUrlTestCaseMixin
 from ..api import account as account_api, profile as profile_api
 from ..models import UserOrgTag
 from ..tests.factories import UserPreferenceFactory
@@ -1517,9 +1518,8 @@ class RegistrationViewTest(ApiTestCase):
         form_desc = json.loads(response.content)
         self.assertIn(expected_field, form_desc["fields"])
 
-
 @ddt.ddt
-class UpdateEmailOptInTestCase(ApiTestCase, ModuleStoreTestCase):
+class UpdateEmailOptInTestCase(ProfileImageUrlTestCaseMixin, ApiTestCase, ModuleStoreTestCase):
     """Tests the UpdateEmailOptInPreference view. """
 
     USERNAME = "steve"

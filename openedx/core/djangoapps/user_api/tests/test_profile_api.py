@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 import ddt
 from django.test.utils import override_settings
+from mock import patch
 from nose.tools import raises
 from dateutil.parser import parse as parse_datetime
 from pytz import UTC
@@ -12,13 +13,17 @@ from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 import datetime
 
 from ..accounts.api import get_account_settings
+from ..accounts.tests.utils import ProfileImageUrlTestCaseMixin
 from ..api import account as account_api
 from ..api import profile as profile_api
 from ..models import UserProfile, UserOrgTag
 
 
 @ddt.ddt
-class ProfileApiTest(ModuleStoreTestCase):
+@patch.dict(
+    'openedx.core.djangoapps.user_api.accounts.helpers.PROFILE_IMAGE_SIZES', {'full': 50}, clear=True
+)
+class ProfileApiTest(ProfileImageUrlTestCaseMixin, ModuleStoreTestCase):
 
     USERNAME = u'frank-underwood'
     PASSWORD = u'ṕáśśẃőŕd'
@@ -49,7 +54,10 @@ class ProfileApiTest(ModuleStoreTestCase):
             'year_of_birth': None,
             'country': None,
             'bio': None,
-            'profile_image': {'image_url': u'/media/profile_images/default_profile_image.jpg', 'has_image': False},
+            'profile_image': {
+                 'has_image': False,
+                 'image_url_full': u'http://example-storage.com/profile_images/default_50.jpg'
+            },
         })
 
     def test_update_and_retrieve_preference_info(self):
