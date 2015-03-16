@@ -245,7 +245,7 @@ class TestCoachDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
         )
         data = {
             'enrollment-button': 'Enroll',
-            'student-ids': u','.join([student.email, ]),
+            'student-ids': u','.join([student.email, ]),  # pylint: disable=no-member
             'email-students': 'Notify-students-by-email',
         }
         response = self.client.post(url, data=data, follow=True)
@@ -254,7 +254,7 @@ class TestCoachDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
         self.assertEqual(len(response.redirect_chain), 1)
         self.assertTrue(302 in response.redirect_chain[0])
         self.assertEqual(len(outbox), 1)
-        self.assertTrue(student.email in outbox[0].recipients())
+        self.assertTrue(student.email in outbox[0].recipients())  # pylint: disable=no-member
         # a CcxMembership exists for this student
         self.assertTrue(
             CcxMembership.objects.filter(ccx=ccx, student=student).exists()
@@ -278,7 +278,7 @@ class TestCoachDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
         )
         data = {
             'enrollment-button': 'Unenroll',
-            'student-ids': u','.join([student.email, ]),
+            'student-ids': u','.join([student.email, ]),  # pylint: disable=no-member
             'email-students': 'Notify-students-by-email',
         }
         response = self.client.post(url, data=data, follow=True)
@@ -287,7 +287,7 @@ class TestCoachDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
         self.assertEqual(len(response.redirect_chain), 1)
         self.assertTrue(302 in response.redirect_chain[0])
         self.assertEqual(len(outbox), 1)
-        self.assertTrue(student.email in outbox[0].recipients())
+        self.assertTrue(student.email in outbox[0].recipients())  # pylint: disable=no-member
         # the membership for this student is gone
         self.assertFalse(
             CcxMembership.objects.filter(ccx=ccx, student=student).exists()
@@ -373,7 +373,7 @@ class TestCoachDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
         )
         data = {
             'student-action': 'add',
-            'student-id': u','.join([student.email, ]),
+            'student-id': u','.join([student.email, ]),  # pylint: disable=no-member
         }
         response = self.client.post(url, data=data, follow=True)
         self.assertEqual(response.status_code, 200)
@@ -404,7 +404,7 @@ class TestCoachDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
         )
         data = {
             'student-action': 'revoke',
-            'student-id': u','.join([student.email, ]),
+            'student-id': u','.join([student.email, ]),  # pylint: disable=no-member
         }
         response = self.client.post(url, data=data, follow=True)
         self.assertEqual(response.status_code, 200)
