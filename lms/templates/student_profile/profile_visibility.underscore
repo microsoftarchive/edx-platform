@@ -1,0 +1,16 @@
+<div cass="profile-visibility">
+    <label class="profile-visibility-title">
+        <%- gettext(edX learners can see my:) %>
+    </label>
+    <span class="profile-visibility-value">
+        <select name="select">
+            <option value="lp"><%- gettext(Limited Profile) %></option>
+            <option value="fp"><%- gettext(Full Profile) %></option>
+        </select>
+    </span>
+
+    <div class="profile-visibility-message">
+        <%- gettext(Your profile is set to limited because you have not set your birth year yet.) %>
+        <a class="link-to-account-settings" href="<%- accountSettingsUrl %>"><%- gettext("Account Settings page") %></a>
+    </div>
+</div>

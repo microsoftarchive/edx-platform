@@ -1,0 +1,167 @@
+.profile-visibility {
+  margin: $baseline/2 0 $baseline/2 $baseline*2;
+}
+
+.profile-visibility-title {
+  font-size: 0.9em;
+  font-weight: bold;
+  @include margin-right($baseline/5)
+}
+
+.profile-visibility-value {
+  width: flex-grid(2, 12);
+}
+
+.profile-visibility-message {
+  font-size: 0.8em;
+  margin-top: $baseline/4;
+}
+
+
+.profile-data {
+  overflow: hidden;
+  padding: $baseline/2 0 $baseline $baseline*2;
+  background-color: $white;
+}
+
+.profile-data-userimage {
+  float: left;
+  @include margin-right($baseline);
+
+  border-radius: 6px;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+}
+
+.profile-data-userinfo {
+  float: left;
+}
+
+.profile-data-info-title {
+  font-size: 1.5em;
+  font-weight: bold
+}
+
+$selectWidth: 320px;
+
+i {
+  color: $gray;
+}
+
+.profile-data-userinfo-country {
+  select {
+    width: $selectWidth;
+    @include margin-left($baseline/2);
+  }
+}
+
+.profile-data-userinfo-language {
+  select {
+    width: $selectWidth;
+    @include margin-left($baseline/2);
+  }
+}
+
+.profile-data-useraboutme {
+  width: 100%;
+  float: left;
+  margin: $baseline/2 0 $baseline/2;
+
+  label {
+    font-size: 1em;
+    font-weight: bold;
+  }
+}
+
+.profile-data-aboutme-detail {
+  margin-top: $baseline/4;
+
+  textarea {
+    resize: none;
+    height: 120px;
+    width: 470px;
+  }
+}
+
+.profile-data-useraboutme-limited-message {
+  color: $gray-l2;
+}
+
+
+// Profile States Styling
+
+.profile-data-empty-state {
+	select {
+
+	}
+
+	textarea {
+
+	}
+}
+
+.profile-data-empty-hover-state {
+	select {
+
+	}
+
+	textarea {
+
+	}
+}
+
+.profile-data-empty-edit-state {
+	select {
+
+	}
+
+	textarea {
+
+	}
+}
+
+
+.profile-data-set-state {
+	select {
+      padding: $baseline/2;
+      background-color: transparent;
+      background-image: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      border: none;
+      box-shadow: none;
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+	}
+
+	textarea {
+      @include margin-left(-12px);
+      border-style: none;
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      box-shadow: none;
+	}
+}
+
+.profile-data-set-hover-state {
+	select {
+
+	}
+
+	textarea {
+
+	}
+}
+
+.profile-data-set-edit-state {
+	select {
+
+	}
+
+	textarea {
+
+	}
+}
+
+
+

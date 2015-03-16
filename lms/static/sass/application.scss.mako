@@ -51,6 +51,7 @@
 @import 'shared/modal';
 @import 'shared/activation_messages';
 @import 'shared/unsubscribe';
+@import 'views/learner_profile';
 
 @import 'developer'; // used for any developer-created scss that needs further polish/refactoring
 @import 'shame';     // used for any bad-form/orphaned scss
