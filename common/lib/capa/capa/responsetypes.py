@@ -820,47 +820,51 @@ class ChoiceResponse(LoncapaResponse):
                <choicehint selected="false">Another hint!</choicehint>
              </choice>
         """
-        if self.answer_id in student_answers:
-            # Compound hints are a special thing just for checkboxgroup, trying
-            # them first before the regular extended hints.
-            if self.get_compound_hints(new_cmap, student_answers):
-                return
+        # Tricky: student_answers may be *empty* here. That is the representation that
+        # no checkboxes were selected. For typical responsetypes, you look at
+        # student_answers[self.answer_id], but that does not work here.
 
-            # Look at all the choices - each can generate some hint text
-            choices = self.xml.xpath('//checkboxgroup[@id=$id]/choice', id=self.answer_id)
-            hint_divs = ''
-            label = None
-            label_count = 0
-            # We build up several hints in hint_divs, then wrap it once at the end.
-            for choice in choices:
-                name = choice.get('name')  # generated name, e.g. choice_2
-                if name in student_answers[self.answer_id]:
-                    selector = 'true'  # true/false attribute used in the hint xml
-                else:
-                    selector = 'false'
-                # We find the matching <choicehint> in python vs xpath so we can be case-insensitive
-                hint_nodes = choice.findall('./choicehint')
-                for hint_node in hint_nodes:
-                    if hint_node.get('selected', '').lower() == selector:
-                        text = hint_node.text.strip()
-                        if hint_node.get('label') is not None:  # tricky: label '' vs None is significant
-                            label = hint_node.get('label')
-                            label_count += 1
-                        if text:
-                            # Unusual: there can be multiple hint divs across the choices, all cat'd together
-                            hint_divs += '<div class="{0}">{1}</div>'.format(QUESTION_HINT_TEXT_STYLE, text)
-                        break
-            if hint_divs:
-                # Complication: if there is only a single label specified, we use it.
-                # However if there are multiple, we use none.
-                if label_count > 1:
-                    label = None
-                new_cmap[self.answer_id]['msg'] += self.make_hint_div(
-                    None,
-                    new_cmap[self.answer_id]['correctness'] == 'correct',
-                    label,
-                    hint_divs
-                )
+        # Compound hints are a special thing just for checkboxgroup, trying
+        # them first before the regular extended hints.
+        if self.get_compound_hints(new_cmap, student_answers):
+            return
+
+        # Look at all the choices - each can generate some hint text
+        choices = self.xml.xpath('//checkboxgroup[@id=$id]/choice', id=self.answer_id)
+        hint_divs = ''
+        label = None
+        label_count = 0
+        # We build up several hints in hint_divs, then wrap it once at the end.
+        for choice in choices:
+            name = choice.get('name')  # generated name, e.g. choice_2
+            # since student_answers may be empty, we guard checking if name is in there
+            if self.answer_id in student_answers and name in student_answers[self.answer_id]:
+                selector = 'true'  # true/false attribute used in the hint xml
+            else:
+                selector = 'false'
+            # We find the matching <choicehint> in python vs xpath so we can be case-insensitive
+            hint_nodes = choice.findall('./choicehint')
+            for hint_node in hint_nodes:
+                if hint_node.get('selected', '').lower() == selector:
+                    text = hint_node.text.strip()
+                    if hint_node.get('label') is not None:  # tricky: label '' vs None is significant
+                        label = hint_node.get('label')
+                        label_count += 1
+                    if text:
+                        # Unusual: there can be multiple hint divs across the choices, all cat'd together
+                        hint_divs += '<div class="{0}">{1}</div>'.format(QUESTION_HINT_TEXT_STYLE, text)
+                    break
+        if hint_divs:
+            # Complication: if there is only a single label specified, we use it.
+            # However if there are multiple, we use none.
+            if label_count > 1:
+                label = None
+            new_cmap[self.answer_id]['msg'] += self.make_hint_div(
+                None,
+                new_cmap[self.answer_id]['correctness'] == 'correct',
+                label,
+                hint_divs
+            )
 
     def get_compound_hints(self, new_cmap, student_answers):
         """

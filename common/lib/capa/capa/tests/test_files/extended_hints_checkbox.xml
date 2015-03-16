@@ -103,6 +103,15 @@
         <compoundhint value="A B" label="">compoundo</compoundhint>
       </checkboxgroup>
     </choiceresponse>
-    
+
+    <p>Case where the student selects nothing, but there's feedback</p>
+    <choiceresponse>
+      <checkboxgroup direction="vertical">
+        <choice correct="true">A <choicehint selected="true">aa</choicehint></choice>
+        <choice correct="false">B <choicehint selected="false">bb</choicehint></choice>
+      </checkboxgroup>
+    </choiceresponse>
+
+
 </problem>
 

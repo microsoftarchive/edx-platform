@@ -274,6 +274,15 @@ class CheckboxHintsTest(HintTest):
         {'problem_id': '1_6_1', 'choice': ['choice_0', 'choice_1'],
          'expected_string': '<div class="feedback_hint_correct"><div class="feedback_hint_text">compoundo</div></div>'},
 
+        # The user selects *nothing*, but can still get "unselected" feedback
+        {'problem_id': '1_7_1', 'choice': [],
+         'expected_string': '<div class="feedback_hint_incorrect">Incorrect: <div class="feedback_hint_text">bb</div></div>'},
+        # 100% not match of sel/unsel feedback
+        {'problem_id': '1_7_1', 'choice': ['choice_1'],
+         'expected_string': ''},
+        # Here we have the correct combination, and that makes feedback too
+        {'problem_id': '1_7_1', 'choice': ['choice_0'],
+         'expected_string': '<div class="feedback_hint_correct">Correct: <div class="feedback_hint_text">aa</div><div class="feedback_hint_text">bb</div></div>'},
     )
     @unpack
     def test_checkbox_hints(self, problem_id, choice, expected_string):
