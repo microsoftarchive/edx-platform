@@ -1,14 +1,15 @@
 <problem>
-<p>Translation between Dropdown and ________ is straightforward.</p>
+<p>Translation between Dropdown and ________ is straightforward.
+And not confused by whitespace around the answer.</p>
 <optionresponse>
     <optioninput>
-        <option correct="True">Multiple Choice
+        <option correct="True"> Multiple Choice
            <optionhint label="Good Job">Yes, multiple choice is the right answer.
            </optionhint> </option>
-        <option correct="False">Text Input
+        <option correct="False">  Text Input
            <optionhint>No, text input problems do not present options.
            </optionhint> </option>
-        <option correct="False">Numerical Input
+        <option correct="False">   Numerical Input
            <optionhint>No, numerical input problems do not present options.
            </optionhint> </option>
     </optioninput>
@@ -24,6 +25,17 @@
            </optionhint> </option>
         <option correct="False">money
            <optionhint>Clowns do not have any money, of course
+           </optionhint> </option>
+    </optioninput>
+</optionresponse>
+<p>Regression case where feedback includes answer substring, confusing the match logic</p>
+<optionresponse>
+    <optioninput>
+        <option correct="False">AAA
+           <optionhint>AAABBB1
+           </optionhint> </option>
+        <option correct="True">BBB
+           <optionhint>AAABBB2
            </optionhint> </option>
     </optioninput>
 </optionresponse>

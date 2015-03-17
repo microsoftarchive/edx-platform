@@ -339,6 +339,14 @@ class DropdownHintsTest(HintTest):
          'expected_string': '<div class="feedback_hint_incorrect">NOPE: Not dogs, not cats, not toads</div>'},
         {'problem_id': u'1_3_1', 'choice': 'wrongo',
          'expected_string': ''},
+
+        # Regression case where feedback includes answer substring
+        {'problem_id': u'1_4_1', 'choice': 'AAA',
+         'expected_string': '<div class="feedback_hint_incorrect">Incorrect: AAABBB1</div>'},
+        {'problem_id': u'1_4_1', 'choice': 'BBB',
+         'expected_string': '<div class="feedback_hint_correct">Correct: AAABBB2</div>'},
+        {'problem_id': u'1_4_1', 'choice': 'not going to match',
+         'expected_string': ''},
     )
     @unpack
     def test_dropdown_hints(self, problem_id, choice, expected_string):

@@ -1311,15 +1311,16 @@ class OptionResponse(LoncapaResponse):
     def get_extended_hints(self, student_answers, new_cmap):
         """
         Extract optioninput extended hint, e.g.
-        <optioninput correct="Multiple Choice">
+        <optioninput>
           <option correct="True">Donut <optionhint>Of course</optionhint> </option>
         """
         answer_id = self.answer_ids[0]  # Note *not* self.answer_id
         if answer_id in student_answers:
             student_answer = student_answers[answer_id]
-            # If we run into an old-style optioninput, there is not <option> tag, so we just won't find anything
-            options = self.xml.xpath('//optioninput[@id=$id]/option[contains(.,$ans)]',
-                                     id=answer_id, ans=student_answer)
+            # If we run into an old-style optioninput, there is no <option> tag, so this safely does nothing
+            options = self.xml.xpath('//optioninput[@id=$id]/option', id=answer_id)
+            # Extra pass here to ignore whitespace around the answer in the matching
+            options = [option for option in options if option.text.strip() ==  student_answer]
             if options:
                 option = options[0]
                 hint_node = option.find('./optionhint')
@@ -1652,8 +1653,10 @@ class StringResponse(LoncapaResponse):
 
     def match_hint_node(self, node, given, regex_mode, ci_mode):
         """
-        Given an xml node such as additional_answer or regexphint, which contain an answer=,
-        returns True if the given student answer is a match.
+        Given an xml extended hint node such as additional_answer or regexphint,
+        which contain an answer= attribute, returns True if the given student answer is a match.
+        The boolean arguments regex_mode and ci_mode control how the answer stored in
+        the question is treated for the comparison (analogously to check_string).
         """
         answer = node.get('answer', '').strip()
         if not answer:
