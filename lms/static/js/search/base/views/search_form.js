@@ -5,6 +5,7 @@ define(['jquery', 'backbone'], function ($, Backbone) {
 
     return Backbone.View.extend({
 
+        el: '',
         events: {
             'submit form': 'submitForm',
             'click .cancel-button': 'clearSearch',

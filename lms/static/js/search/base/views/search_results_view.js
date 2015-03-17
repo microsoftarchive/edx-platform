@@ -5,12 +5,19 @@ define([
     'underscore',
     'backbone',
     'gettext',
-    'js/search/views/search_item_view'
+    'js/search/base/views/search_item_view'
 ], function ($, _, Backbone, gettext, SearchItemView) {
 
    'use strict';
 
     return Backbone.View.extend({
+
+        // to be overridden by subclasses
+        el: '',
+        contentElement: '',
+        resultsTemplateId: '',
+        loadingTemplateId: '',
+        errorTemplateId: '',
 
         events: {
             'click .search-load-next': 'loadNext'
@@ -20,9 +27,6 @@ define([
         initialize: function () {
             this.courseName = this.$el.attr('data-course-name');
             this.$contentElement = $(this.contentElement);
-            console.log(this.resultsTemplateId)
-            console.log($(this.resultsTemplateId))
-            console.log($(this.resultsTemplateId).html())
             this.resultsTemplate = _.template($(this.resultsTemplateId).html());
             this.loadingTemplate = _.template($(this.loadingTemplateId).html());
             this.errorTemplate = _.template($(this.errorTemplateId).html());

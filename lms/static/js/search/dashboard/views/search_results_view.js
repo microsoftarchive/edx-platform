@@ -1,12 +1,13 @@
 ;(function (define) {
 
 define([
-    'js/search/views/search_results_view'
+    'js/search/base/views/search_results_view'
 ], function (SearchResultsView) {
 
    'use strict';
 
     return SearchResultsView.extend({
+
         el: '#dashboard-search-results',
         contentElement: '#my-courses',
         resultsTemplateId: '#dashboard_search_results-tpl',
@@ -20,6 +21,7 @@ define([
             this.clear();
             this.trigger('reset');
         }
+
     });
 
 });

@@ -351,7 +351,7 @@ FEATURES = {
     'MODE_CREATION_FOR_TESTING': False,
 
     # Courseware search feature
-    'ENABLE_COURSEWARE_SEARCH': False,
+    'ENABLE_COURSEWARE_SEARCH': True,
 
     # log all information from cybersource callbacks
     'LOG_POSTPAY_CALLBACKS': True,
@@ -1078,7 +1078,7 @@ courseware_js = (
         for pth in ['courseware', 'histogram', 'navigation', 'time']
     ] +
     ['js/' + pth + '.js' for pth in ['ajax-error']] +
-    ['js/search/courseware_search.js'] +
+    ['js/search/course/main.js'] +
     sorted(rooted_glob(PROJECT_ROOT / 'static', 'coffee/src/modules/**/*.js'))
 )
 
@@ -1112,7 +1112,7 @@ main_vendor_js = base_vendor_js + [
 
 dashboard_js = (
     sorted(rooted_glob(PROJECT_ROOT / 'static', 'js/dashboard/**/*.js')) +
-    ['js/search/dashboard_search.js']
+    ['js/search/dashboard/main.js']
 )
 discussion_js = sorted(rooted_glob(COMMON_ROOT / 'static', 'coffee/src/discussion/**/*.js'))
 rwd_header_footer_js = sorted(rooted_glob(PROJECT_ROOT / 'static', 'js/common_helpers/rwd_header_footer.js'))
