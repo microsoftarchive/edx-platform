@@ -78,10 +78,21 @@ def instructor_dashboard_2(request, course_id):
         _section_membership(course, access),
         _section_student_admin(course, access),
         _section_data_download(course, access),
-        _section_analytics(course, access),
     ]
 
-    #check if there is corresponding entry in the CourseMode Table related to the Instructor Dashboard course
+    analytics_dashboard_message = None
+    if settings.ANALYTICS_DASHBOARD_URL:
+        # Construct a URL to the external analytics dashboard
+        analytics_dashboard_url = '{0}/courses/{1}'.format(settings.ANALYTICS_DASHBOARD_URL, unicode(course_key))
+        link_start = "<a href=\"{}\" target=\"_blank\">".format(analytics_dashboard_url)
+        analytics_dashboard_message = _("To gain insights into student enrollment and participation {link_start}visit {analytics_dashboard_name}, our new course analytics product{link_end}.")
+        analytics_dashboard_message = analytics_dashboard_message.format(
+            link_start=link_start, link_end="</a>", analytics_dashboard_name=settings.ANALYTICS_DASHBOARD_NAME)
+
+        # Temporarily show the "Analytics" section until we have a better way of linking to Insights
+        sections.append(_section_analytics(course, access))
+
+    # Check if there is corresponding entry in the CourseMode Table related to the Instructor Dashboard course
     course_mode_has_price = False
     paid_modes = CourseMode.paid_modes_for_course(course_key)
     if len(paid_modes) == 1:
@@ -118,15 +129,6 @@ def instructor_dashboard_2(request, course_id):
         sections.append(_section_certificates(course))
 
     disable_buttons = not _is_small_course(course_key)
-
-    analytics_dashboard_message = None
-    if settings.ANALYTICS_DASHBOARD_URL:
-        # Construct a URL to the external analytics dashboard
-        analytics_dashboard_url = '{0}/courses/{1}'.format(settings.ANALYTICS_DASHBOARD_URL, unicode(course_key))
-        link_start = "<a href=\"{}\" target=\"_blank\">".format(analytics_dashboard_url)
-        analytics_dashboard_message = _("To gain insights into student enrollment and participation {link_start}visit {analytics_dashboard_name}, our new course analytics product{link_end}.")
-        analytics_dashboard_message = analytics_dashboard_message.format(
-            link_start=link_start, link_end="</a>", analytics_dashboard_name=settings.ANALYTICS_DASHBOARD_NAME)
 
     context = {
         'course': course,
@@ -475,14 +477,7 @@ def _section_analytics(course, access):
         'section_key': 'instructor_analytics',
         'section_display_name': _('Analytics'),
         'access': access,
-        'get_distribution_url': reverse('get_distribution', kwargs={'course_id': unicode(course_key)}),
-        'proxy_legacy_analytics_url': reverse('proxy_legacy_analytics', kwargs={'course_id': unicode(course_key)}),
     }
-
-    if settings.ANALYTICS_DASHBOARD_URL:
-        dashboard_link = _get_dashboard_link(course_key)
-        message = _("Demographic data is now available in {dashboard_link}.").format(dashboard_link=dashboard_link)
-        section_data['demographic_message'] = message
 
     return section_data
 
