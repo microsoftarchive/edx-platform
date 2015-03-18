@@ -3,121 +3,33 @@ define([
     'sinon',
     'backbone',
     'js/common_helpers/template_helpers',
-    'js/search/views/search_form',
-    'js/search/views/search_item_view',
-    'js/search/views/search_results_view',
-    'js/search/models/search_result',
-    'js/search/collections/search_collection',
-    'js/search/search_router',
-    'js/search/search_app'
+    'js/search/base/models/search_result',
+    'js/search/base/collections/search_collection',
+    'js/search/base/routers/search_router',
+    'js/search/base/views/search_item_view',
+    'js/search/course/views/search_form',
+    'js/search/dashboard/views/search_form',
+    'js/search/course/views/search_results_view',
+    'js/search/dashboard/views/search_results_view',
+    'js/search/course/search_app',
+    'js/search/dashboard/search_app'
 ], function(
     $,
     Sinon,
     Backbone,
     TemplateHelpers,
-    SearchForm,
-    SearchItemView,
-    SearchResultsView,
     SearchResult,
     SearchCollection,
     SearchRouter,
-    SearchApp
+    SearchItemView,
+    CourseSearchForm,
+    DashSearchForm,
+    CourseSearchResultsView,
+    DashSearchResultsView,
+    CourseSearchApp,
+    DashSearchApp
 ) {
     'use strict';
-
-    describe('SearchForm', function () {
-
-        beforeEach(function () {
-            loadFixtures('js/fixtures/search_form.html');
-            this.form = new SearchForm();
-            this.onClear = jasmine.createSpy('onClear');
-            this.onSearch = jasmine.createSpy('onSearch');
-            this.form.on('clear', this.onClear);
-            this.form.on('search', this.onSearch);
-        });
-
-        it('trims input string', function () {
-            var term = '  search string  ';
-            $('.search-field').val(term);
-            $('form').trigger('submit');
-            expect(this.onSearch).toHaveBeenCalledWith($.trim(term));
-        });
-
-        it('handles calls to doSearch', function () {
-            var term = '  search string  ';
-            $('.search-field').val(term);
-            this.form.doSearch(term);
-            expect(this.onSearch).toHaveBeenCalledWith($.trim(term));
-            expect($('.search-field').val()).toEqual(term);
-            expect($('.search-field')).toHaveClass('is-active');
-            expect($('.search-button')).toBeHidden();
-            expect($('.cancel-button')).toBeVisible();
-        });
-
-        it('triggers a search event and changes to active state', function () {
-            var term = 'search string';
-            $('.search-field').val(term);
-            $('form').trigger('submit');
-            expect(this.onSearch).toHaveBeenCalledWith(term);
-            expect($('.search-field')).toHaveClass('is-active');
-            expect($('.search-button')).toBeHidden();
-            expect($('.cancel-button')).toBeVisible();
-        });
-
-        it('clears search when clicking on cancel button', function () {
-            $('.search-field').val('search string');
-            $('.cancel-button').trigger('click');
-            expect($('.search-field')).not.toHaveClass('is-active');
-            expect($('.search-button')).toBeVisible();
-            expect($('.cancel-button')).toBeHidden();
-            expect($('.search-field')).toHaveValue('');
-        });
-
-        it('clears search when search box is empty', function() {
-            $('.search-field').val('');
-            $('form').trigger('submit');
-            expect(this.onClear).toHaveBeenCalled();
-            expect($('.search-field')).not.toHaveClass('is-active');
-            expect($('.cancel-button')).toBeHidden();
-            expect($('.search-button')).toBeVisible();
-        });
-
-    });
-
-
-    describe('SearchItemView', function () {
-
-        beforeEach(function () {
-            TemplateHelpers.installTemplate('templates/courseware_search/search_item');
-            TemplateHelpers.installTemplate('templates/courseware_search/search_item_seq');
-            this.model = {
-                attributes: {
-                    location: ['section', 'subsection', 'unit'],
-                    content_type: 'Video',
-                    excerpt: 'A short excerpt.',
-                    url: 'path/to/content'
-                }
-            };
-            this.item = new SearchItemView({ model: this.model });
-        });
-
-        it('has useful html attributes', function () {
-            expect(this.item.$el).toHaveAttr('role', 'region');
-            expect(this.item.$el).toHaveAttr('aria-label', 'search result');
-        });
-
-        it('renders correctly', function () {
-            var href = this.model.attributes.url;
-            var breadcrumbs = 'section ▸ subsection ▸ unit';
-
-            this.item.render();
-            expect(this.item.$el).toContainHtml(this.model.attributes.content_type);
-            expect(this.item.$el).toContainHtml(this.model.attributes.excerpt);
-            expect(this.item.$el).toContain('a[href="'+href+'"]');
-            expect(this.item.$el).toContainHtml(breadcrumbs);
-        });
-
-    });
 
 
     describe('SearchResult', function () {
@@ -154,6 +66,12 @@ define([
 
         afterEach(function () {
             this.server.restore();
+        });
+
+        it('sends a request without a course ID', function () {
+            var collection = new SearchCollection([]);
+            collection.performSearch('search string');
+            expect(this.server.requests[0].url).toEqual('/search/');
         });
 
         it('sends a request with course ID', function () {
@@ -268,74 +186,206 @@ define([
     });
 
 
-    describe('SearchResultsView', function () {
+    describe('SearchRouter', function () {
 
         beforeEach(function () {
-            appendSetFixtures(
-                '<section id="courseware-search-results" data-course-name="Test Course"></section>' +
-                '<section id="course-content"></section>'
-            );
+            this.router = new SearchRouter();
+            this.onSearch = jasmine.createSpy('onSearch');
+            this.router.on('search', this.onSearch);
+        });
 
+        it ('has a search route', function () {
+            expect(this.router.routes['search/:query']).toEqual('search');
+        });
+
+        it ('triggers a search event', function () {
+            var query = 'mercury';
+            this.router.search(query);
+            expect(this.onSearch).toHaveBeenCalledWith(query);
+        });
+
+    });
+
+
+    describe('SearchItemView', function () {
+
+        beforeEach(function () {
             TemplateHelpers.installTemplates([
-                'templates/courseware_search/search_item',
-                'templates/courseware_search/search_item_seq',
-                'templates/courseware_search/search_list',
-                'templates/courseware_search/search_loading',
-                'templates/courseware_search/search_error'
+                'templates/search/search_item',
+                'templates/search/search_item_seq',
             ]);
+        });
 
-            var MockCollection = Backbone.Collection.extend({
-                hasNextPage: function (){}
+        it('renders items correctly', function () {
+            var model = new SearchResult({
+                location: ['section', 'subsection', 'unit'],
+                content_type: 'Video',
+                excerpt: 'A short excerpt.',
+                url: 'path/to/content'
             });
-            this.collection = new MockCollection();
-
-            // spy on these methods before they are bound to events
-            spyOn(SearchResultsView.prototype, 'render').andCallThrough();
-            spyOn(SearchResultsView.prototype, 'renderNext').andCallThrough();
-            spyOn(SearchResultsView.prototype, 'showErrorMessage').andCallThrough();
-
-            this.listView = new SearchResultsView({ collection: this.collection });
+            var item = new SearchItemView({ model: model });
+            var breadcrumbs = 'section ▸ subsection ▸ unit';
+            var anchor = 'a[href="' + model.get('url') + '"]';
+            item.render();
+            expect(item.$el).toHaveAttr('role', 'region');
+            expect(item.$el).toHaveAttr('aria-label', 'search result');
+            expect(item.$el).toContainHtml(model.get('content_type'));
+            expect(item.$el).toContainHtml(model.get('excerpt'));
+            expect(item.$el).toContain(anchor);
+            expect(item.$el).toContainHtml(breadcrumbs);
         });
 
-        it('shows loading message', function () {
-            this.listView.showLoadingMessage();
-            expect($('#course-content')).toBeHidden();
-            expect(this.listView.$el).toBeVisible();
-            expect(this.listView.$el).not.toBeEmpty();
+        it('renders Sequence items correctly', function () {
+            var model = new SearchResult({
+                location: ['section', 'subsection'],
+                content_type: 'Sequence',
+                excerpt: 'A short excerpt.',
+                url: 'path/to/content'
+            });
+            var item = new SearchItemView({ model: model });
+            var breadcrumbs = 'section ▸ subsection';
+            var anchor = 'a[href="' + model.get('url') + '"]';
+            item.render();
+            expect(item.$el).toHaveAttr('role', 'region');
+            expect(item.$el).toHaveAttr('aria-label', 'search result');
+            expect(item.$el.find('.sri-type')).toBeEmpty();
+            expect(item.$el.find('.sri-excerpt')).toBeEmpty();
+            expect(item.$el).toContain(anchor);
+            expect(item.$el).toContainHtml(breadcrumbs);
         });
 
-        it('shows error message', function () {
-            this.listView.showErrorMessage();
-            expect($('#course-content')).toBeHidden();
-            expect(this.listView.$el).toBeVisible();
-            expect(this.listView.$el).not.toBeEmpty();
+    });
+
+
+    describe('SearchForm', function () {
+
+        function trimsInputString() {
+            var term = '    search string  ';
+            $('.search-field').val(term);
+            $('form').trigger('submit');
+            expect(this.onSearch).toHaveBeenCalledWith($.trim(term));
+        }
+
+        function doesSearch() {
+            var term = '  search string  ';
+            $('.search-field').val(term);
+            this.form.doSearch(term);
+            expect(this.onSearch).toHaveBeenCalledWith($.trim(term));
+            expect($('.search-field').val()).toEqual(term);
+            expect($('.search-field')).toHaveClass('is-active');
+            expect($('.search-button')).toBeHidden();
+            expect($('.cancel-button')).toBeVisible();
+        }
+
+        function triggersSearchEvent() {
+            var term = 'search string';
+            $('.search-field').val(term);
+            $('form').trigger('submit');
+            expect(this.onSearch).toHaveBeenCalledWith(term);
+        }
+
+        function changesToActiveState() {
+            var term = 'search string';
+            $('.search-field').val(term);
+            $('form').trigger('submit');
+            expect($('.search-field')).toHaveClass('is-active');
+            expect($('.search-button')).toBeHidden();
+            expect($('.cancel-button')).toBeVisible();
+        }
+
+        function clearsSearchOnCancel() {
+            $('.search-field').val('search string');
+            $('.cancel-button').trigger('click');
+            expect($('.search-field')).not.toHaveClass('is-active');
+            expect($('.search-button')).toBeVisible();
+            expect($('.cancel-button')).toBeHidden();
+            expect($('.search-field')).toHaveValue('');
+        }
+
+        function clearsSearchOnEmpty() {
+            $('.search-field').val('');
+            $('form').trigger('submit');
+            expect(this.onClear).toHaveBeenCalled();
+            expect($('.search-field')).not.toHaveClass('is-active');
+            expect($('.cancel-button')).toBeHidden();
+            expect($('.search-button')).toBeVisible();
+        }
+
+        describe('CourseSearchForm', function () {
+            beforeEach(function () {
+                loadFixtures('js/fixtures/search/course_search_form.html');
+                this.form = new CourseSearchForm();
+                this.onClear = jasmine.createSpy('onClear');
+                this.onSearch = jasmine.createSpy('onSearch');
+                this.form.on('clear', this.onClear);
+                this.form.on('search', this.onSearch);
+            });
+            it('trims input string', trimsInputString);
+            it('handles calls to doSearch', doesSearch);
+            it('triggers a search event and changes to active state', triggersSearchEvent);
+            it('clears search when clicking on cancel button', clearsSearchOnCancel);
+            it('clears search when search box is empty', clearsSearchOnEmpty);
         });
 
-        it('returns to content', function () {
-            this.listView.clear();
-            expect($('#course-content')).toBeVisible();
-            expect(this.listView.$el).toBeHidden();
-            expect(this.listView.$el).toBeEmpty();
+        describe('DashSearchForm', function () {
+            beforeEach(function () {
+                loadFixtures('js/fixtures/search/dashboard_search_form.html');
+                this.form = new DashSearchForm();
+                this.onClear = jasmine.createSpy('onClear');
+                this.onSearch = jasmine.createSpy('onSearch');
+                this.form.on('clear', this.onClear);
+                this.form.on('search', this.onSearch);
+            });
+            it('trims input string', trimsInputString);
+            it('handles calls to doSearch', doesSearch);
+            it('triggers a search event and changes to active state', triggersSearchEvent);
+            it('clears search when clicking on cancel button', clearsSearchOnCancel);
+            it('clears search when search box is empty', clearsSearchOnEmpty);
         });
 
-        it('handles events', function () {
+    });
+
+
+    describe('SearchResultsView', function () {
+
+        function showsLoadingMessage () {
+            this.resultsView.showLoadingMessage();
+            expect(this.resultsView.$contentElement).toBeHidden();
+            expect(this.resultsView.$el).toBeVisible();
+            expect(this.resultsView.$el).not.toBeEmpty();
+        }
+
+        function showsErrorMessage () {
+            this.resultsView.showErrorMessage();
+            expect(this.resultsView.$contentElement).toBeHidden();
+            expect(this.resultsView.$el).toBeVisible();
+            expect(this.resultsView.$el).not.toBeEmpty();
+        }
+
+        function returnsToContent () {
+            this.resultsView.clear();
+            expect(this.resultsView.$contentElement).toBeVisible();
+            expect(this.resultsView.$el).toBeHidden();
+            expect(this.resultsView.$el).toBeEmpty();
+        }
+
+        function handlesEvents () {
             this.collection.trigger('search');
             this.collection.trigger('next');
             this.collection.trigger('error');
+            expect(this.resultsView.render).toHaveBeenCalled();
+            expect(this.resultsView.renderNext).toHaveBeenCalled();
+            expect(this.resultsView.showErrorMessage).toHaveBeenCalled();
+        }
 
-            expect(this.listView.render).toHaveBeenCalled();
-            expect(this.listView.renderNext).toHaveBeenCalled();
-            expect(this.listView.showErrorMessage).toHaveBeenCalled();
-        });
-
-        it('renders a message when there are no results', function () {
+        function showsNoResultsMessage() {
             this.collection.reset();
-            this.listView.render();
-            expect(this.listView.$el).toContainHtml('no results');
-            expect(this.listView.$el.find('ol')).not.toExist();
-        });
+            this.resultsView.render();
+            expect(this.resultsView.$el).toContainHtml('no results');
+            expect(this.resultsView.$el.find('ol')).not.toExist();
+        }
 
-        it('renders search results', function () {
+        function rendersSearchResults () {
             var searchResults = [{
                 location: ['section', 'subsection', 'unit'],
                 url: '/some/url/to/content',
@@ -345,64 +395,123 @@ define([
             this.collection.set(searchResults);
             this.collection.totalCount = 1;
 
-            this.listView.render();
-            expect(this.listView.$el.find('ol')[0]).toExist();
-            expect(this.listView.$el.find('li').length).toEqual(1);
-            expect(this.listView.$el).toContainHtml('Search Results');
-            expect(this.listView.$el).toContainHtml('this is a short excerpt');
+            this.resultsView.render();
+            expect(this.resultsView.$el.find('ol')[0]).toExist();
+            expect(this.resultsView.$el.find('li').length).toEqual(1);
+            expect(this.resultsView.$el).toContainHtml('Search Results');
+            expect(this.resultsView.$el).toContainHtml('this is a short excerpt');
 
             this.collection.set(searchResults);
             this.collection.totalCount = 2;
-            this.listView.renderNext();
-            expect(this.listView.$el.find('.search-count')).toContainHtml('2');
-            expect(this.listView.$el.find('li').length).toEqual(2);
-        });
+            this.resultsView.renderNext();
+            expect(this.resultsView.$el.find('.search-count')).toContainHtml('2');
+            expect(this.resultsView.$el.find('li').length).toEqual(2);
+        }
 
-        it('shows a link to load more results', function () {
+        function showsMoreResultsLink () {
             this.collection.totalCount = 123;
             this.collection.hasNextPage = function () { return true; };
-            this.listView.render();
-            expect(this.listView.$el.find('a.search-load-next')[0]).toExist();
+            this.resultsView.render();
+            expect(this.resultsView.$el.find('a.search-load-next')[0]).toExist();
 
             this.collection.totalCount = 123;
             this.collection.hasNextPage = function () { return false; };
-            this.listView.render();
-            expect(this.listView.$el.find('a.search-load-next')[0]).not.toExist();
-        });
+            this.resultsView.render();
+            expect(this.resultsView.$el.find('a.search-load-next')[0]).not.toExist();
+        }
 
-        it('triggers an event for next page', function () {
+        function triggersNextPageEvent () {
             var onNext = jasmine.createSpy('onNext');
-            this.listView.on('next', onNext);
+            this.resultsView.on('next', onNext);
             this.collection.totalCount = 123;
             this.collection.hasNextPage = function () { return true; };
-            this.listView.render();
-            this.listView.$el.find('a.search-load-next').click();
+            this.resultsView.render();
+            this.resultsView.$el.find('a.search-load-next').click();
             expect(onNext).toHaveBeenCalled();
-        });
+        }
 
-        it('shows a spinner when loading more results', function () {
+        function showsLoadMoreSpinner () {
             this.collection.totalCount = 123;
             this.collection.hasNextPage = function () { return true; };
-            this.listView.render();
-            expect(this.listView.$el.find('a.search-load-next .icon')).toBeHidden();
-            this.listView.loadNext();
+            this.resultsView.render();
+            expect(this.resultsView.$el.find('a.search-load-next .icon')).toBeHidden();
+            this.resultsView.loadNext();
             // toBeVisible does not work with inline
-            expect(this.listView.$el.find('a.search-load-next .icon')).toHaveCss({ 'display': 'inline' });
-            this.listView.renderNext();
-            expect(this.listView.$el.find('a.search-load-next .icon')).toBeHidden();
+            expect(this.resultsView.$el.find('a.search-load-next .icon')).toHaveCss({ 'display': 'inline' });
+            this.resultsView.renderNext();
+            expect(this.resultsView.$el.find('a.search-load-next .icon')).toBeHidden();
+        }
+
+        function beforeEachHelper(SearchResultsView) {
+            appendSetFixtures(
+                '<section id="courseware-search-results"></section>' +
+                '<section id="course-content"></section>' +
+                '<section id="dashboard-search-results"></section>' +
+                '<section id="my-courses"></section>'
+            );
+
+            TemplateHelpers.installTemplates([
+                'templates/search/search_item',
+                'templates/search/search_item_seq',
+                'templates/search/course_search_results',
+                'templates/search/dashboard_search_results',
+                'templates/search/search_list',
+                'templates/search/search_loading',
+                'templates/search/search_error'
+            ]);
+
+            var MockCollection = Backbone.Collection.extend({
+                hasNextPage: function () {},
+                pageSize: 20
+            });
+            this.collection = new MockCollection();
+
+            // spy on these methods before they are bound to events
+            spyOn(SearchResultsView.prototype, 'render').andCallThrough();
+            spyOn(SearchResultsView.prototype, 'renderNext').andCallThrough();
+            spyOn(SearchResultsView.prototype, 'showErrorMessage').andCallThrough();
+
+            this.resultsView = new SearchResultsView({ collection: this.collection });
+        }
+
+        describe('CourseSearchResultsView', function () {
+            beforeEach(function() {
+                beforeEachHelper.call(this, CourseSearchResultsView);
+            });
+            it('shows loading message', showsLoadingMessage);
+            it('shows error message', showsErrorMessage);
+            it('returns to content', returnsToContent);
+            it('handles events', handlesEvents);
+            it('shows a message when there are no results', showsNoResultsMessage);
+            it('renders search results', rendersSearchResults);
+            it('shows a link to load more results', showsMoreResultsLink);
+            it('triggers an event for next page', triggersNextPageEvent);
+            it('shows a spinner when loading more results', showsLoadMoreSpinner);
         });
 
-    });
-
-
-    describe('SearchRouter', function () {
-
-        beforeEach(function () {
-            this.router = new SearchRouter();
-        });
-
-        it ('has a search route', function () {
-            expect(this.router.routes['search/:query']).toEqual('search');
+        describe('DashSearchResultsView', function () {
+            beforeEach(function() {
+                beforeEachHelper.call(this, DashSearchResultsView);
+            });
+            it('shows loading message', showsLoadingMessage);
+            it('shows error message', showsErrorMessage);
+            it('returns to content', returnsToContent);
+            it('handles events', handlesEvents);
+            it('shows a message when there are no results', showsNoResultsMessage);
+            it('renders search results', rendersSearchResults);
+            it('shows a link to load more results', showsMoreResultsLink);
+            it('triggers an event for next page', triggersNextPageEvent);
+            it('shows a spinner when loading more results', showsLoadMoreSpinner);
+            it('returns back to courses', function () {
+                var onReset = jasmine.createSpy('onReset');
+                this.resultsView.on('reset', onReset);
+                this.resultsView.render();
+                expect(this.resultsView.$el.find('a.search-back-to-courses')).toExist();
+                this.resultsView.$el.find('.search-back-to-courses').click();
+                expect(onReset).toHaveBeenCalled();
+                expect(this.resultsView.$contentElement).toBeVisible();
+                expect(this.resultsView.$el).toBeHidden();
+            });
         });
 
     });
@@ -410,20 +519,76 @@ define([
 
     describe('SearchApp', function () {
 
-        beforeEach(function () {
-            loadFixtures('js/fixtures/search_form.html');
-            appendSetFixtures(
-                '<section id="courseware-search-results" data-course-name="Test Course"></section>' +
-                '<section id="course-content"></section>'
-            );
-            TemplateHelpers.installTemplates([
-                'templates/courseware_search/search_item',
-                'templates/courseware_search/search_item_seq',
-                'templates/courseware_search/search_list',
-                'templates/courseware_search/search_loading',
-                'templates/courseware_search/search_error'
-            ]);
+        function showsLoadingMessage () {
+            $('.search-field').val('search string');
+            $('.search-button').trigger('click');
+            expect(this.$contentElement).toBeHidden();
+            expect(this.$searchResults).toBeVisible();
+            expect(this.$searchResults).not.toBeEmpty();
+        }
 
+        function performsSearch () {
+            $('.search-field').val('search string');
+            $('.search-button').trigger('click');
+            this.server.respond();
+            expect($('.search-info')).toExist();
+            expect($('.search-result-list')).toBeVisible();
+        }
+
+        function updatesNavigationHistory () {
+            $('.search-field').val('edx');
+            $('.search-button').trigger('click');
+            expect(Backbone.history.navigate.calls[0].args).toContain('search/edx');
+            $('.cancel-button').trigger('click');
+            expect(Backbone.history.navigate.calls[1].args).toContain('');
+        }
+
+        function cancelsSearchRequest () {
+            // send search request to server
+            $('.search-field').val('search string');
+            $('.search-button').trigger('click');
+            // cancel search
+            $('.cancel-button').trigger('click');
+            this.server.respond();
+            // there should be no results
+            expect(this.$contentElement).toBeVisible();
+            expect(this.$searchResults).toBeHidden();
+        }
+
+        function clearsResults () {
+            $('.cancel-button').trigger('click');
+            expect(this.$contentElement).toBeVisible();
+            expect(this.$searchResults).toBeHidden();
+        }
+
+        function loadsNextPage () {
+            $('.search-field').val('query');
+            $('.search-button').trigger('click');
+            this.server.respond();
+            expect($('.search-load-next')).toBeVisible();
+            $('.search-load-next').trigger('click');
+            var body = this.server.requests[1].requestBody;
+            expect(body).toContain('search_string=query');
+            expect(body).toContain('page_index=1');
+        }
+
+        function navigatesToSearch () {
+            Backbone.history.loadUrl('search/query');
+            expect(this.server.requests[0].requestBody).toContain('search_string=query');
+        }
+
+        function loadTemplates () {
+            TemplateHelpers.installTemplates([
+                'templates/search/search_item',
+                'templates/search/search_item_seq',
+                'templates/search/search_loading',
+                'templates/search/search_error',
+                'templates/search/course_search_results',
+                'templates/search/dashboard_search_results'
+            ]);
+        }
+
+        function startFakeServer () {
             this.server = Sinon.fakeServer.create();
             this.server.respondWith([200, {}, JSON.stringify({
                 total: 1337,
@@ -437,74 +602,91 @@ define([
                     }
                 }]
             })]);
+        }
 
-            this.app = new SearchApp('a/b/c');
-            spyOn(Backbone.history, 'navigate');
-        });
-
-        afterEach(function () {
+        function restoreServer () {
             this.server.restore();
+        }
+
+        describe('CourseSearchApp', function () {
+
+            beforeEach(function () {
+                loadFixtures('js/fixtures/search/course_search_form.html');
+                appendSetFixtures(
+                    '<section id="courseware-search-results"></section>' +
+                    '<section id="course-content"></section>'
+                );
+                loadTemplates.call(this);
+                startFakeServer.call(this);
+
+                var courseId = 'a/b/c';
+                this.app = new CourseSearchApp(
+                    courseId,
+                    SearchRouter,
+                    CourseSearchForm,
+                    SearchCollection,
+                    CourseSearchResultsView
+                );
+                spyOn(Backbone.history, 'navigate');
+                this.$contentElement = $('#course-content');
+                this.$searchResults = $('#courseware-search-results');
+            });
+
+            afterEach(restoreServer);
+
+            it('shows loading message on search', showsLoadingMessage);
+            it('performs search', performsSearch);
+            it('updates navigation history', updatesNavigationHistory);
+            it('cancels search request', cancelsSearchRequest);
+            it('clears results', clearsResults);
+            it('loads next page', loadsNextPage);
+            it('navigates to search', navigatesToSearch);
+
         });
 
-        it ('shows loading message on search', function () {
-            $('.search-field').val('search string');
-            $('.search-button').trigger('click');
-            expect($('#course-content')).toBeHidden();
-            expect($('#courseware-search-results')).toBeVisible();
-            expect($('#courseware-search-results')).not.toBeEmpty();
-        });
+        describe('DashSearchApp', function () {
 
-        it ('performs search', function () {
-            $('.search-field').val('search string');
-            $('.search-button').trigger('click');
-            this.server.respond();
-            expect($('.search-info')).toExist();
-            expect($('.search-results')).toBeVisible();
-        });
+            beforeEach(function () {
+                loadFixtures('js/fixtures/search/dashboard_search_form.html');
+                appendSetFixtures(
+                    '<section id="dashboard-search-results"></section>' +
+                    '<section id="my-courses"></section>'
+                );
+                loadTemplates.call(this);
+                startFakeServer.call(this);
 
-        it ('updates navigation history on search', function () {
-            $('.search-field').val('edx');
-            $('.search-button').trigger('click');
-            expect(Backbone.history.navigate.calls[0].args).toContain('search/edx');
-        });
+                this.app = new DashSearchApp(
+                    SearchRouter,
+                    DashSearchForm,
+                    SearchCollection,
+                    DashSearchResultsView
+                );
 
-        it ('aborts sent search request', function () {
-            // send search request to server
-            $('.search-field').val('search string');
-            $('.search-button').trigger('click');
-            // cancel search
-            $('.cancel-button').trigger('click');
-            this.server.respond();
-            // there should be no results
-            expect($('#course-content')).toBeVisible();
-            expect($('#courseware-search-results')).toBeHidden();
-        });
+                spyOn(Backbone.history, 'navigate');
+                this.$contentElement = $('#my-courses');
+                this.$searchResults = $('#dashboard-search-results');
+            });
 
-        it ('clears results', function () {
-            $('.cancel-button').trigger('click');
-            expect($('#course-content')).toBeVisible();
-            expect($('#courseware-search-results')).toBeHidden();
-        });
+            afterEach(restoreServer);
 
-        it ('updates navigation history on clear', function () {
-            $('.cancel-button').trigger('click');
-            expect(Backbone.history.navigate.calls[0].args).toContain(undefined);
-        });
+            it('shows loading message on search', showsLoadingMessage);
+            it('performs search', performsSearch);
+            it('updates navigation history', updatesNavigationHistory);
+            it('cancels search request', cancelsSearchRequest);
+            it('clears results', clearsResults);
+            it('loads next page', loadsNextPage);
+            it('navigates to search', navigatesToSearch);
+            it('returns to course list', function () {
+                $('.search-field').val('search string');
+                $('.search-button').trigger('click');
+                this.server.respond();
+                expect($('.search-back-to-courses')).toExist();
+                $('.search-back-to-courses').trigger('click');
+                expect(this.$contentElement).toBeVisible();
+                expect(this.$searchResults).toBeHidden();
+                expect(this.$searchResults).toBeEmpty();
+            });
 
-        it ('loads next page', function () {
-            $('.search-field').val('query');
-            $('.search-button').trigger('click');
-            this.server.respond();
-            expect($('.search-load-next')).toBeVisible();
-            $('.search-load-next').trigger('click');
-            var body = this.server.requests[1].requestBody;
-            expect(body).toContain('search_string=query');
-            expect(body).toContain('page_index=1');
-        });
-
-        it ('navigates to search', function () {
-            Backbone.history.loadUrl('search/query');
-            expect(this.server.requests[0].requestBody).toContain('search_string=query');
         });
 
     });

@@ -12,16 +12,13 @@ define([
 
     return Backbone.View.extend({
 
-        // to be overridden by subclasses
+        // these should be defined by subclasses
         el: '',
         contentElement: '',
         resultsTemplateId: '',
         loadingTemplateId: '',
         errorTemplateId: '',
-
-        events: {
-            'click .search-load-next': 'loadNext'
-        },
+        events: {},
         spinner: '.icon',
 
         initialize: function () {

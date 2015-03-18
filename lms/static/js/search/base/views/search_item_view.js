@@ -18,7 +18,9 @@ define([
         },
 
         initialize: function () {
-            var template_name = (this.model.attributes.content_type === "Sequence") ? '#search_item_seq-tpl' : '#search_item-tpl';
+            var template_name = (this.model.attributes.content_type === 'Sequence')
+                ? '#search_item_seq-tpl'
+                : '#search_item-tpl';
             this.tpl = _.template($(template_name).html());
         },
 

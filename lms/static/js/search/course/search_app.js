@@ -27,7 +27,7 @@ define(function() {
             router.navigate('');
         });
 
-        dispatcher.listenTo(form, 'next', function () {
+        dispatcher.listenTo(results, 'next', function () {
             collection.loadNextPage();
         });
 

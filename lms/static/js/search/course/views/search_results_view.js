@@ -12,7 +12,10 @@ define([
         contentElement: '#course-content',
         resultsTemplateId: '#course_search_results-tpl',
         loadingTemplateId: '#search_loading-tpl',
-        errorTemplateId: '#search_error-tpl'
+        errorTemplateId: '#search_error-tpl',
+        events: {
+            'click .search-load-next': 'loadNext',
+        }
 
     });
 

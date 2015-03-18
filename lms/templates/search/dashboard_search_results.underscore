@@ -1,5 +1,5 @@
 <header class="search-info">
-    <a class="search-back-to-course" href="javascript:void(0);"><%= gettext("Back to Courses") %></a>
+    <a class="search-back-to-courses" href="javascript:void(0);"><%= gettext("Back to Courses") %></a>
     <h2><%= gettext("Search Results") %></h2>
     <div class="search-count"><%= totalCountMsg %></div>
 </header>

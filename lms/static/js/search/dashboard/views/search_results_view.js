@@ -14,7 +14,8 @@ define([
         loadingTemplateId: '#search_loading-tpl',
         errorTemplateId: '#search_error-tpl',
         events: {
-            'click .search-back-to-course': 'backToCourses'
+            'click .search-load-next': 'loadNext',
+            'click .search-back-to-courses': 'backToCourses'
         },
 
         backToCourses: function () {

@@ -77,7 +77,9 @@ define([
             this.totalCount = response.total;
             this.accessDeniedCount += response.access_denied_count;
             this.totalCount -= this.accessDeniedCount;
-            return _.map(response.results, function(result){ return result.data; });
+            return _.map(response.results, function (result) {
+                return result.data;
+            });
         },
 
         hasNextPage: function () {
