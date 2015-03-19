@@ -1,0 +1,42 @@
+.progress-certificates {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+    border-bottom: 0 !important;
+
+    .title-no-float {
+        float: none !important;
+    }
+}
+
+.wrapper-auto-cert {
+    @include margin(0, 0, 0, 0); // Overrides .wrapper-msg
+    @include padding(0, 0, 0, 0); // Overrides .wrapper-msg
+    background: none; // Overrides .wrapper-msg
+
+    .auto-cert-message {
+        margin: $baseline 0;
+        padding: $baseline;
+        border: 1px solid $m-blue-d1;
+        border-radius: 3px;
+        background: $m-blue-l4;
+
+        .has-actions {
+
+            .msg-content {
+                width: flex-grid(9,12);
+            }
+
+            .msg-actions {
+                @extend %t-copy-base;
+                display: inline-block;
+                width: flex-grid(3,12);
+
+                .btn {
+                    @extend %btn-primary-blue;
+                    @extend %t-weight4;
+                    text-shadow: none;
+                }
+            }
+        }
+    }
+}
