@@ -36,7 +36,7 @@ site_status_msg = get_site_status_msg(course_id)
 % endif
 </%block>
 
-<header id="global-navigation" class="global ${"slim" if course else ""}" aria-label="Main" role="banner">
+<header id="global-navigation" class="${"global slim" if course and not disable_courseware_header else "global-new"}" aria-label="Main" role="banner">
   <div class="${'rwd ' if responsive else ''}wrapper-header nav-container">
     <h1 class="logo" itemscope="" itemtype="http://schema.org/Organization">
       <a href="${marketing_link('ROOT')}" title="Home page" itemprop="url">
@@ -52,22 +52,24 @@ site_status_msg = get_site_status_msg(course_id)
     % endif
 
     % if user.is_authenticated():
-    <nav aria-label="Main" class="nav-main">
-      <ul class="left nav-global authenticated">
-        <%block name="navigation_global_links_authenticated">
-          % if settings.FEATURES.get('COURSES_ARE_BROWSABLE'):
-            <li class="nav-global-01">
-              <a href="${marketing_link('COURSES')}">${_('Find Courses')}</a>
-            </li>
-          % endif
-          %if settings.FEATURES.get('ENABLE_SYSADMIN_DASHBOARD','') and user.is_staff:
-            <li>
-              <a href="${reverse('sysadmin')}">Sysadmin</a>
-            </li>
-          %endif
-        </%block>
-      </ul>
-    </nav>
+      % if not course or disable_courseware_header:
+      <nav aria-label="Main" class="nav-main">
+        <ul class="left nav-global authenticated">
+          <%block name="navigation_global_links_authenticated">
+            % if settings.FEATURES.get('COURSES_ARE_BROWSABLE'):
+              <li class="nav-global-01">
+                <a href="${marketing_link('COURSES')}">${_('Find Courses')}</a>
+              </li>
+            % endif
+            %if settings.FEATURES.get('ENABLE_SYSADMIN_DASHBOARD','') and user.is_staff:
+              <li>
+                <a href="${reverse('sysadmin')}">Sysadmin</a>
+              </li>
+            %endif
+          </%block>
+        </ul>
+      </nav>
+      % endif
     <ul class="user">
       <li class="primary">
         <a href="${reverse('dashboard')}" class="user-link">
