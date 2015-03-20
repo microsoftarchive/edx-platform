@@ -201,7 +201,6 @@ class DraftVersioningModuleStore(SplitMongoModuleStore, ModuleStoreDraftAndPubli
                     ]
                 )
 
-            self._flag_publish_event(location.course_key)
             for branch in branches_to_delete:
                 branched_location = location.for_branch(branch)
                 parent_loc = self.get_parent_location(branched_location)
@@ -357,7 +356,7 @@ class DraftVersioningModuleStore(SplitMongoModuleStore, ModuleStoreDraftAndPubli
             blacklist=blacklist
         )
 
-        self._flag_publish_event(location.course_key)
+        self._flag_publish_event(location.course_key, location)
 
         # Now it's been published, add the object to the courseware search index so that it appears in search results
         CoursewareSearchIndexer.do_publish_index(self, location)

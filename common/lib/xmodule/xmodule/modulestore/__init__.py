@@ -119,7 +119,7 @@ class BulkOpsRecord(object):
     """
     def __init__(self):
         self._active_count = 0
-        self.has_publish_item = False
+        self._publish_items = set()
 
     @property
     def active(self):
@@ -139,6 +139,20 @@ class BulkOpsRecord(object):
         Record the completion of a level of nesting of the bulk write operation
         """
         self._active_count -= 1
+
+    def add_publish_item(self, location):
+        """
+        Adds an item to the set of things that have been published
+        """
+        self._publish_items.add(location.version_agnostic().for_branch(None))
+
+    def pull_publish_items(self):
+        """
+        Extracts the set of things that have been published; creating a new set to collect newly published items
+        """
+        publish_items = list(self._publish_items)
+        self._publish_items.clear()
+        return publish_items
 
     @property
     def is_root(self):
@@ -284,12 +298,16 @@ class BulkOperationsMixin(object):
 
     def send_bulk_published_signal(self, bulk_ops_record, course_id):
         """
-        Sends out the signal that items have been published from within this course.
+        Sends out the signal that items have been published from within this course. All items that have been marked as
+        published are sent within the item_keys argument
         """
         signal_handler = getattr(self, 'signal_handler', None)
-        if signal_handler and bulk_ops_record.has_publish_item:
-            signal_handler.send("course_published", course_key=course_id)
-            bulk_ops_record.has_publish_item = False
+        if not signal_handler:
+            return
+
+        publish_items = bulk_ops_record.pull_publish_items()
+        if publish_items:
+            signal_handler.send("course_published", course_key=course_id, item_keys=publish_items)
 
 
 class EditInfo(object):
@@ -1307,22 +1325,23 @@ class ModuleStoreWriteBase(ModuleStoreReadBase, ModuleStoreWrite):
         parent.children.append(item.location)
         self.update_item(parent, user_id)
 
-    def _flag_publish_event(self, course_key):
+    def _flag_publish_event(self, course_key, item_key):
         """
         Wrapper around calls to fire the course_published signal
-        Unless we're nested in an active bulk operation, this simply fires the signal
-        otherwise a publish will be signalled at the end of the bulk operation
+        Unless we're nested in an active bulk operation, this simply fires the signal, otherwise the item_key item
+        is added to the list of items which will be signalled at the end of the bulk operation
 
         Arguments:
             course_key - course_key to which the signal applies
+            item_key - module being published (could also be the course_key to indicate (m)any change therein)
         """
         signal_handler = getattr(self, 'signal_handler', None)
         if signal_handler:
             bulk_record = self._get_bulk_ops_record(course_key) if isinstance(self, BulkOperationsMixin) else None
             if bulk_record and bulk_record.active:
-                bulk_record.has_publish_item = True
+                bulk_record.add_publish_item(item_key)
             else:
-                signal_handler.send("course_published", course_key=course_key)
+                signal_handler.send("course_published", course_key=course_key, item_keys=[item_key])
 
 
 def only_xmodules(identifier, entry_points):

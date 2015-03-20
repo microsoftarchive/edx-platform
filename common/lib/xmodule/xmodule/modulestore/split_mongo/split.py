@@ -2354,6 +2354,7 @@ class SplitMongoModuleStore(SplitBulkWriteMixin, ModuleStoreWriteBase):
                 self.decache_block(usage_locator.course_key, new_id, parent_block_key)
 
             self._remove_subtree(BlockKey.from_usage_key(usage_locator), new_blocks)
+            self._flag_publish_event(usage_locator.course_key, usage_locator)
 
             # update index if appropriate and structures
             self.update_structure(usage_locator.course_key, new_structure)

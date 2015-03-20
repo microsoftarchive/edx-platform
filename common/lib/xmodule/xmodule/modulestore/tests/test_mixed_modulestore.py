@@ -1976,6 +1976,11 @@ class TestMixedModuleStore(CourseComparisonTest):
             dest_store = self.store._get_modulestore_by_type(ModuleStoreEnum.Type.split)
             self.assertCoursesEqual(source_store, source_course_key, dest_store, dest_course_id)
 
+    def assertBlockInItemKeys(self, block, receiver, index=-1):
+        """ Helper to inspect item_keys from most-recent call to signal receiver """
+        call_wrap = receiver.call_args_list[index]
+        self.assertIn(block.location, call_wrap.__getitem__(-1)['item_keys'])
+
     @ddt.data(ModuleStoreEnum.Type.mongo, ModuleStoreEnum.Type.split)
     def test_course_publish_signal_direct_firing(self, default):
         with MongoContentstoreBuilder().build() as contentstore:
@@ -2007,13 +2012,16 @@ class TestMixedModuleStore(CourseComparisonTest):
                         receiver.reset_mock()
                         block = self.store.create_item(self.user_id, course_key, block_type)
                         self.assertEqual(receiver.call_count, 1)
+                        self.assertBlockInItemKeys(block, receiver)
 
                         block.display_name = block_type
                         self.store.update_item(block, self.user_id)
                         self.assertEqual(receiver.call_count, 2)
+                        self.assertBlockInItemKeys(block, receiver)
 
                         self.store.publish(block.location, self.user_id)
                         self.assertEqual(receiver.call_count, 3)
+                        self.assertBlockInItemKeys(block, receiver)
 
     @ddt.data(ModuleStoreEnum.Type.mongo, ModuleStoreEnum.Type.split)
     def test_course_publish_signal_rerun_firing(self, default):
@@ -2102,9 +2110,11 @@ class TestMixedModuleStore(CourseComparisonTest):
                     receiver.reset_mock()
                     section = self.store.create_item(self.user_id, course.id, 'chapter')
                     self.assertEqual(receiver.call_count, 1)
+                    self.assertBlockInItemKeys(section, receiver)
 
                     subsection = self.store.create_child(self.user_id, section.location, 'sequential')
                     self.assertEqual(receiver.call_count, 2)
+                    self.assertBlockInItemKeys(subsection, receiver)
 
                     # 'units' and 'blocks' are draftable types
                     receiver.reset_mock()
@@ -2119,12 +2129,15 @@ class TestMixedModuleStore(CourseComparisonTest):
 
                     self.store.publish(unit.location, self.user_id)
                     self.assertEqual(receiver.call_count, 1)
+                    self.assertBlockInItemKeys(unit, receiver)
 
                     self.store.unpublish(unit.location, self.user_id)
                     self.assertEqual(receiver.call_count, 2)
+                    self.assertBlockInItemKeys(unit, receiver)
 
                     self.store.delete_item(unit.location, self.user_id)
                     self.assertEqual(receiver.call_count, 3)
+                    self.assertBlockInItemKeys(unit, receiver)
 
     @ddt.data(ModuleStoreEnum.Type.mongo, ModuleStoreEnum.Type.split)
     def test_bulk_course_publish_signal_direct_firing(self, default):
@@ -2152,11 +2165,13 @@ class TestMixedModuleStore(CourseComparisonTest):
 
                     # Test non-draftable block types. No signals should be received until
                     receiver.reset_mock()
+                    direct_category_block_list = []
                     with self.store.bulk_operations(course_key):
                         categories = DIRECT_ONLY_CATEGORIES
                         for block_type in categories:
                             log.debug('Testing with block type %s', block_type)
                             block = self.store.create_item(self.user_id, course_key, block_type)
+                            direct_category_block_list.append(block)
                             self.assertEqual(receiver.call_count, 0)
 
                             block.display_name = block_type
@@ -2167,6 +2182,9 @@ class TestMixedModuleStore(CourseComparisonTest):
                             self.assertEqual(receiver.call_count, 0)
 
                     self.assertEqual(receiver.call_count, 1)
+
+                    for direct_category_block in direct_category_block_list:
+                        self.assertBlockInItemKeys(direct_category_block, receiver)
 
     @ddt.data(ModuleStoreEnum.Type.mongo, ModuleStoreEnum.Type.split)
     def test_bulk_course_publish_signal_publish_firing(self, default):
@@ -2196,6 +2214,7 @@ class TestMixedModuleStore(CourseComparisonTest):
                     # normal structure - this is important because some implementors change the parent when adding a
                     # non-published child; if parent is in DIRECT_ONLY_CATEGORIES then this should not fire the event
                     receiver.reset_mock()
+                    section = subsection = unit = None
                     with self.store.bulk_operations(course_key):
                         section = self.store.create_item(self.user_id, course_key, 'chapter')
                         self.assertEqual(receiver.call_count, 0)
@@ -2223,6 +2242,9 @@ class TestMixedModuleStore(CourseComparisonTest):
                         self.assertEqual(receiver.call_count, 0)
 
                     self.assertEqual(receiver.call_count, 1)
+                    self.assertBlockInItemKeys(section, receiver)
+                    self.assertBlockInItemKeys(subsection, receiver)
+                    self.assertBlockInItemKeys(unit, receiver)
 
                     # Test editing draftable block type without publish
                     receiver.reset_mock()

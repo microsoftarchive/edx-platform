@@ -460,7 +460,7 @@ class DraftModuleStore(MongoModuleStore):
             item = super(DraftModuleStore, self).update_item(xblock, user_id, allow_not_found)
             course_key = xblock.location.course_key
             if isPublish or (item.category in DIRECT_ONLY_CATEGORIES and not child_update):
-                self._flag_publish_event(course_key)
+                self._flag_publish_event(course_key, item.location)
             return item
 
         if not super(DraftModuleStore, self).has_item(draft_loc):
@@ -540,7 +540,7 @@ class DraftModuleStore(MongoModuleStore):
             parent_block.children.remove(location)
             parent_block.location = parent_location  # ensure the location is with the correct revision
             self.update_item(parent_block, user_id, child_update=True)
-        self._flag_publish_event(location.course_key)
+        self._flag_publish_event(location.course_key, location)
 
         if is_item_direct_only or revision == ModuleStoreEnum.RevisionOption.all:
             as_functions = [as_draft, as_published]
@@ -736,7 +736,7 @@ class DraftModuleStore(MongoModuleStore):
             bulk_record.dirty = True
             self.collection.remove({'_id': {'$in': to_be_deleted}})
 
-        self._flag_publish_event(course_key)
+        self._flag_publish_event(course_key, location)
 
         # Now it's been published, add the object to the courseware search index so that it appears in search results
         CoursewareSearchIndexer.do_publish_index(self, location)
@@ -754,7 +754,7 @@ class DraftModuleStore(MongoModuleStore):
         self._convert_to_draft(location, user_id, delete_published=True)
 
         course_key = location.course_key
-        self._flag_publish_event(course_key)
+        self._flag_publish_event(course_key, location)
 
     def revert_to_published(self, location, user_id=None):
         """
