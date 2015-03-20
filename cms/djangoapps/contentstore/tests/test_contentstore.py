@@ -543,6 +543,25 @@ class ImportRequiredTestCases(ContentStoreTestCase):
             'test_no_xml_attributes'
         )
 
+    def test_import_openassessment(self):
+        store = modulestore()
+        courses = import_course_from_xml(
+            store,
+            self.user.id,
+            TEST_DATA_DIR,
+            ['openassessment_draft'],
+            create_if_not_present=True,
+        )
+        course = courses[0]
+        openassessment_draft_location = course.id.make_usage_key(
+            'openassessment', 'openassessment_draft'
+        )
+        openassessment_draft = store.get_item(openassessment_draft_location)
+        self.assertTrue(openassessment_draft.is_draft)
+        self.assertEqual(len(openassessment_draft.rubric_criteria), 1)
+        criterion = openassessment_draft.rubric_criteria[0]
+        self.assertEqual(criterion['prompt'], u"What is all this juice and all this joy?")
+
 
 class MiscCourseTests(ContentStoreTestCase):
     """

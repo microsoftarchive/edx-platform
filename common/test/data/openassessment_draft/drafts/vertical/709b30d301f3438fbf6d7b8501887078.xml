@@ -1,0 +1,44 @@
+<vertical display_name="Unit" parent_url="i4x://ora/test2/sequential/a004b17335c64738b4270e22d9eacc26" index_in_children_list="0">
+  <openassessment url_name="openassessment_draft" submission_start="2001-01-01T00:00:00+00:00" submission_due="2029-01-09T00:00:00+00:00" allow_file_upload="False" allow_latex="False">
+    <title></title>
+    <assessments>
+      <assessment name="student-training">
+        <example>
+          <answer>
+            <part>training</part>
+          </answer>
+          <select criterion="Content" option="Excellente"/>
+        </example>
+        <example>
+          <answer>
+            <part>Part</part>
+          </answer>
+          <select criterion="Content" option="Excellente"/>
+        </example>
+      </assessment>
+      <assessment name="peer-assessment" must_grade="5" must_be_graded_by="3" start="2001-01-19T00:00:00+00:00" due="2029-01-20T00:00:00+00:00"/>
+      <assessment name="self-assessment" start="2001-01-22T00:00:00+00:00" due="2029-01-23T00:00:00+00:00"/>
+    </assessments>
+    <prompts>
+      <prompt>
+        <description>What do you read, my lord?</description>
+      </prompt>
+    </prompts>
+    <rubric>
+      <criterion>
+        <name>Content</name>
+        <label>label</label>
+        <prompt>What is all this juice and all this joy?</prompt>
+        <option points="3">
+          <name>Excellent</name>
+          <label>label</label>
+          <explanation>explanation</explanation>
+        </option>
+      </criterion>
+      <feedbackprompt>feedback
+</feedbackprompt>
+      <feedback_default_text>feedback
+</feedback_default_text>
+    </rubric>
+  </openassessment>
+</vertical>
