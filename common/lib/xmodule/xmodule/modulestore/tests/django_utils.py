@@ -4,7 +4,6 @@ Modulestore configuration for test cases.
 """
 import datetime
 import pytz
-from tempfile import mkdtemp
 from uuid import uuid4
 
 from mock import patch
@@ -14,6 +13,8 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.test.utils import override_settings
 from request_cache.middleware import RequestCache
+
+from openedx.core.lib.tempdir import mkdtemp_clean
 
 from xmodule.contentstore.django import _CONTENTSTORE
 from xmodule.modulestore import ModuleStoreEnum
@@ -184,13 +185,13 @@ TEST_DATA_MIXED_GRADED_MODULESTORE = mixed_store_config(
 # All store requests now go through mixed
 # Use this modulestore if you specifically want to test mongo and not a mocked modulestore.
 # This modulestore definition below will not load any xml courses.
-TEST_DATA_MONGO_MODULESTORE = mixed_store_config(mkdtemp(), {}, include_xml=False)
+TEST_DATA_MONGO_MODULESTORE = mixed_store_config(mkdtemp_clean(), {}, include_xml=False)
 
 # All store requests now go through mixed
 # Use this modulestore if you specifically want to test split-mongo and not a mocked modulestore.
 # This modulestore definition below will not load any xml courses.
 TEST_DATA_SPLIT_MODULESTORE = mixed_store_config(
-    mkdtemp(),
+    mkdtemp_clean(),
     {},
     include_xml=False,
     store_order=[StoreConstructors.split, StoreConstructors.draft]
@@ -235,7 +236,7 @@ class ModuleStoreTestCase(TestCase):
           your `setUp()` method.
     """
 
-    MODULESTORE = mixed_store_config(mkdtemp(), {}, include_xml=False)
+    MODULESTORE = mixed_store_config(mkdtemp_clean(), {}, include_xml=False)
 
     def setUp(self, **kwargs):
         """

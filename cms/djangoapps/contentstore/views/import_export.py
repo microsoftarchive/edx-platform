@@ -405,7 +405,7 @@ def create_export_tarball(course_module, course_key, context):
             'raw_err_msg': str(exc)})
         raise
     finally:
-        shutil.rmtree(root_dir / name)
+        shutil.rmtree(root_dir)
 
     return export_file
 
