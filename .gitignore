@@ -58,7 +58,6 @@ jscover.log.*
 .tddium*
 common/test/data/test_unicode/static/
 django-pyfs
-test_root/uploads/*.txt
 
 ### Installation artifacts
 *.egg-info
