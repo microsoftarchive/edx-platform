@@ -343,7 +343,6 @@ for static_dir in STATICFILES_DIRS:
         _NEW_STATICFILES_DIRS.append(static_dir)
 STATICFILES_DIRS = _NEW_STATICFILES_DIRS
 
-FILE_UPLOAD_TEMP_DIR = TEST_ROOT / "uploads"
 FILE_UPLOAD_HANDLERS = (
     'django.core.files.uploadhandler.MemoryFileUploadHandler',
     'django.core.files.uploadhandler.TemporaryFileUploadHandler',
