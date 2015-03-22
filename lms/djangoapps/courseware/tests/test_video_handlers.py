@@ -163,20 +163,29 @@ class TestTranscriptAvailableTranslationsDispatch(TestVideo):
 
     Tests for `available_translations` dispatch.
     """
-    non_en_file = _create_srt_file()
-    DATA = """
-        <video show_captions="true"
-        display_name="A Name"
-        >
-            <source src="example.mp4"/>
-            <source src="example.webm"/>
-            <transcript language="uk" src="{}"/>
-        </video>
-    """.format(os.path.split(non_en_file.name)[1])
+    @classmethod
+    def setUpClass(cls):
+        super(TestTranscriptAvailableTranslationsDispatch, cls).setUpClass()
+        cls.non_en_file = _create_srt_file()
 
-    MODEL_DATA = {
-        'data': DATA
-    }
+        cls.DATA = """
+            <video show_captions="true"
+            display_name="A Name"
+            >
+                <source src="example.mp4"/>
+                <source src="example.webm"/>
+                <transcript language="uk" src="{}"/>
+            </video>
+        """.format(os.path.split(cls.non_en_file.name)[1])
+
+        cls.MODEL_DATA = {
+            'data': cls.DATA
+        }
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.non_en_file.close()
+        super(TestTranscriptAvailableTranslationsDispatch, cls).tearDownClass()
 
     def setUp(self):
         super(TestTranscriptAvailableTranslationsDispatch, self).setUp()
@@ -287,20 +296,29 @@ class TestTranscriptTranslationGetDispatch(TestVideo):
     Tests for `translation` dispatch.
     """
 
-    non_en_file = _create_srt_file()
-    DATA = """
-        <video show_captions="true"
-        display_name="A Name"
-        >
-            <source src="example.mp4"/>
-            <source src="example.webm"/>
-            <transcript language="uk" src="{}"/>
-        </video>
-    """.format(os.path.split(non_en_file.name)[1])
+    @classmethod
+    def setUpClass(cls):
+        super(TestTranscriptTranslationGetDispatch, cls).setUpClass()
+        cls.non_en_file = _create_srt_file()
 
-    MODEL_DATA = {
-        'data': DATA
-    }
+        cls.DATA = """
+            <video show_captions="true"
+            display_name="A Name"
+            >
+                <source src="example.mp4"/>
+                <source src="example.webm"/>
+                <transcript language="uk" src="{}"/>
+            </video>
+        """.format(os.path.split(cls.non_en_file.name)[1])
+
+        cls.MODEL_DATA = {
+            'data': cls.DATA
+        }
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.non_en_file.close()
+        super(TestTranscriptTranslationGetDispatch, cls).tearDownClass()
 
     def setUp(self):
         super(TestTranscriptTranslationGetDispatch, self).setUp()
@@ -491,19 +509,30 @@ class TestStudioTranscriptTranslationGetDispatch(TestVideo):
 
     Tests for `translation` dispatch GET HTTP method.
     """
-    non_en_file = _create_srt_file()
-    DATA = """
-        <video show_captions="true"
-        display_name="A Name"
-        >
-            <source src="example.mp4"/>
-            <source src="example.webm"/>
-            <transcript language="uk" src="{}"/>
-            <transcript language="zh" src="{}"/>
-        </video>
-    """.format(os.path.split(non_en_file.name)[1], u"塞.srt".encode('utf8'))
+    @classmethod
+    def setUpClass(cls):
+        super(TestStudioTranscriptTranslationGetDispatch, cls).setUpClass()
+        cls.non_en_file = _create_srt_file()
 
-    MODEL_DATA = {'data': DATA}
+        cls.DATA = """
+            <video show_captions="true"
+            display_name="A Name"
+            >
+                <source src="example.mp4"/>
+                <source src="example.webm"/>
+                <transcript language="uk" src="{}"/>
+                <transcript language="zh" src="{}"/>
+            </video>
+        """.format(os.path.split(cls.non_en_file.name)[1], u"塞.srt".encode('utf8'))
+
+        cls.MODEL_DATA = {
+            'data': cls.DATA
+        }
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.non_en_file.close()
+        super(TestStudioTranscriptTranslationGetDispatch, cls).tearDownClass()
 
     def test_translation_fails(self):
         # No language
@@ -606,21 +635,31 @@ class TestGetTranscript(TestVideo):
     """
     Make sure that `get_transcript` method works correctly
     """
-    non_en_file = _create_srt_file()
-    DATA = """
-        <video show_captions="true"
-        display_name="A Name"
-        >
-            <source src="example.mp4"/>
-            <source src="example.webm"/>
-            <transcript language="uk" src="{}"/>
-            <transcript language="zh" src="{}"/>
-        </video>
-    """.format(os.path.split(non_en_file.name)[1], u"塞.srt".encode('utf8'))
+    @classmethod
+    def setUpClass(cls):
+        super(TestGetTranscript, cls).setUpClass()
+        cls.non_en_file = _create_srt_file()
 
-    MODEL_DATA = {
-        'data': DATA
-    }
+        cls.DATA = """
+            <video show_captions="true"
+            display_name="A Name"
+            >
+                <source src="example.mp4"/>
+                <source src="example.webm"/>
+                <transcript language="uk" src="{}"/>
+                <transcript language="zh" src="{}"/>
+            </video>
+        """.format(os.path.split(cls.non_en_file.name)[1], u"塞.srt".encode('utf8'))
+
+        cls.MODEL_DATA = {
+            'data': cls.DATA
+        }
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.non_en_file.close()
+        super(TestGetTranscript, cls).tearDownClass()
+
     METADATA = {}
 
     def setUp(self):
