@@ -581,12 +581,10 @@ class TestMongoModuleStore(TestMongoModuleStoreBase):
         self.content_store.find(location)
 
         root_dir = path(mkdtemp())
-        try:
-            export_course_to_xml(self.draft_store, self.content_store, course_key, root_dir, 'test_export')
-            assert_true(path(root_dir / 'test_export/static/images/course_image.jpg').isfile())
-            assert_true(path(root_dir / 'test_export/static/images_course_image.jpg').isfile())
-        finally:
-            shutil.rmtree(root_dir)
+        self.addCleanup(shutil.rmtree, root_dir)
+        export_course_to_xml(self.draft_store, self.content_store, course_key, root_dir, 'test_export')
+        self.assertTrue(path(root_dir / 'test_export/static/images/course_image.jpg').isfile())
+        self.assertTrue(path(root_dir / 'test_export/static/images_course_image.jpg').isfile())
 
     def test_export_course_image_nondefault(self):
         """
@@ -597,12 +595,10 @@ class TestMongoModuleStore(TestMongoModuleStoreBase):
         assert_true(course.course_image, 'just_a_test.jpg')
 
         root_dir = path(mkdtemp())
-        try:
-            export_course_to_xml(self.draft_store, self.content_store, course.id, root_dir, 'test_export')
-            assert_true(path(root_dir / 'test_export/static/just_a_test.jpg').isfile())
-            assert_false(path(root_dir / 'test_export/static/images/course_image.jpg').isfile())
-        finally:
-            shutil.rmtree(root_dir)
+        self.addCleanup(shutil.rmtree, root_dir)
+        export_course_to_xml(self.draft_store, self.content_store, course.id, root_dir, 'test_export')
+        self.assertTrue(path(root_dir / 'test_export/static/just_a_test.jpg').isfile())
+        self.assertFalse(path(root_dir / 'test_export/static/images/course_image.jpg').isfile())
 
     def test_course_without_image(self):
         """
@@ -611,12 +607,10 @@ class TestMongoModuleStore(TestMongoModuleStoreBase):
         """
         course = self.draft_store.get_course(SlashSeparatedCourseKey('edX', 'simple_with_draft', '2012_Fall'))
         root_dir = path(mkdtemp())
-        try:
-            export_course_to_xml(self.draft_store, self.content_store, course.id, root_dir, 'test_export')
-            assert_false(path(root_dir / 'test_export/static/images/course_image.jpg').isfile())
-            assert_false(path(root_dir / 'test_export/static/images_course_image.jpg').isfile())
-        finally:
-            shutil.rmtree(root_dir)
+        self.addCleanup(shutil.rmtree, root_dir)
+        export_course_to_xml(self.draft_store, self.content_store, course.id, root_dir, 'test_export')
+        self.assertFalse(path(root_dir / 'test_export/static/images/course_image.jpg').isfile())
+        self.assertFalse(path(root_dir / 'test_export/static/images_course_image.jpg').isfile())
 
     def _create_test_tree(self, name, user_id=None):
         """
@@ -737,15 +731,13 @@ class TestMongoModuleStore(TestMongoModuleStoreBase):
         self.assertEqual(unicode(component.link_to_location), unicode(problem_location))
 
         root_dir = path(mkdtemp())
+        self.addCleanup(shutil.rmtree, root_dir)
 
         # export_course_to_xml should work.
-        try:
-            export_course_to_xml(
-                self.draft_store, self.content_store, interface_location.course_key,
-                root_dir, 'test_export'
-            )
-        finally:
-            shutil.rmtree(root_dir)
+        export_course_to_xml(
+            self.draft_store, self.content_store, interface_location.course_key,
+            root_dir, 'test_export'
+        )
 
     def test_draft_modulestore_create_child_with_position(self):
         """
