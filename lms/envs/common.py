@@ -208,7 +208,7 @@ FEATURES = {
     'ENABLE_INSTRUCTOR_BACKGROUND_TASKS': True,
 
     # Enable instructor to assign individual due dates
-    'INDIVIDUAL_DUE_DATES': False,
+    'INDIVIDUAL_DUE_DATES': True,
 
     # Enable legacy instructor dashboard
     'ENABLE_INSTRUCTOR_LEGACY_DASHBOARD': True,
