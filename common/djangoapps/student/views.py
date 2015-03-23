@@ -23,7 +23,7 @@ from django.core.urlresolvers import reverse
 from django.core.validators import validate_email, validate_slug, ValidationError
 from django.db import IntegrityError, transaction
 from django.http import (HttpResponse, HttpResponseBadRequest, HttpResponseForbidden,
-                         Http404)
+                         HttpResponseServerError, Http404)
 from django.shortcuts import redirect
 from django.utils.translation import ungettext
 from django_future.csrf import ensure_csrf_cookie
@@ -1426,6 +1426,19 @@ def create_account(request, post_override=None):  # pylint: disable-msg=too-many
     """
     JSON call to create new edX account.
     Used by form in signup_modal.html, which is included into navigation.html
+
+    Issues with this code:
+    * It is not transactional. If there is a failure part-way, an incomplete
+      account will be created and left in the database.
+    * Third-party auth passwords are not verified. There is a comment that
+      they are unused, but it would be helpful to have a sanity check that
+      they are sane.
+    * It is over 300 lines long (!) and includes disprate functionality, from
+      registration e-mails to all sorts of other things. It should be broken
+      up into semantically meaningful functions.
+    * The user-facing text is rather unfriendly (e.g. "Username must be a
+      minimum of two characters long" rather than "Please use a username of
+      at least two characters").
     """
     js = {'success': False}  # pylint: disable-msg=invalid-name
 
@@ -1653,6 +1666,7 @@ def create_account(request, post_override=None):  # pylint: disable-msg=too-many
     # don't send email if we are doing load testing or random user generation for some reason
     # or external auth with bypass activated
     send_email = (
+        not settings.FEATURES.get('SKIP_EMAIL_VALIDATION', None) and
         not settings.FEATURES.get('AUTOMATIC_AUTH_FOR_TESTING') and
         not (do_external_auth and settings.FEATURES.get('BYPASS_ACTIVATION_EMAIL_FOR_EXTAUTH'))
     )
@@ -1676,6 +1690,8 @@ def create_account(request, post_override=None):  # pylint: disable-msg=too-many
             # the problem is on the server's end -- but also, the account was created.
             # Seems like the core part of the request was successful.
             return JsonResponse(js, status=500)
+    else:
+        registration.activate()
 
     # Immediately after a user creates an account, we log them in. They are only
     # logged in until they close the browser. They can't log in again until they click
@@ -1862,7 +1878,7 @@ def activate_account(request, key):
             "registration/activation_invalid.html",
             {'csrf': csrf(request)['csrf_token']}
         )
-    return HttpResponse(_("Unknown error. Please e-mail us to let us know how it happened."))
+    return HttpResponseServerError(_("Unknown error. Please e-mail us to let us know how it happened."))
 
 
 @csrf_exempt
