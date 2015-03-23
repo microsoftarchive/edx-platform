@@ -1337,17 +1337,20 @@ def generate_user_cert(request, course_id):
 
     certificate_status = certs_api.certificate_downloadable_status(student, course.id)
 
-    if not certificate_status["is_downloadable"] and not certificate_status["is_generating"]:
+    if certificate_status["is_downloadable"]:
+        return HttpResponseBadRequest(_("Certificate has already been created."))
+    elif certificate_status["is_generating"]:
+        return HttpResponseBadRequest(_("Certificate is already being created."))
+    else:
+        # If the certificate is not already in-process or completed,
+        # then create a new certificate generation task.
+        # If the certificate cannot be added to the queue, this will
+        # mark the certificate with "error" status, so it can be re-run
+        # with a management command.  From the user's perspective,
+        # it will appear that the certificate task was submitted successfully.
         certs_api.generate_user_certificates(student, course.id)
         _track_successful_certificate_generation(student.id, course.id)
-        return HttpResponse(_("Creating certificate"))
-
-    # if certificate_status is not is_downloadable and is_generating or
-    # if any error appears during certificate generation return the message cert is generating.
-    # with badrequest
-    # at backend debug the issue and re-submit the task.
-
-    return HttpResponseBadRequest(_("Creating certificate"))
+        return HttpResponse()
 
 
 def _track_successful_certificate_generation(user_id, course_id):  # pylint: disable=invalid-name
