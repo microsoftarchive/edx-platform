@@ -1,9 +1,9 @@
 ;(function (define) {
 
 define([
-    'js/search/base/views/search_results_view'
-], function (SearchResultsView) {
-
+    'js/search/base/views/search_results_view',
+    'js/search/course/views/search_item_view'
+], function (SearchResultsView, CourseSearchItemView) {
    'use strict';
 
     return SearchResultsView.extend({
@@ -15,7 +15,8 @@ define([
         errorTemplateId: '#search_error-tpl',
         events: {
             'click .search-load-next': 'loadNext',
-        }
+        },
+        SearchItemView: CourseSearchItemView
 
     });
 

@@ -62,6 +62,14 @@ class LmsSearchResultProcessor(SearchResultProcessor):
         )
 
     @property
+    def course_name(self):
+        """
+        Display the course name when searching multiple courses
+        """
+        course = self.get_module_store().get_course(self.get_course_key())
+        return course.display_name_with_default
+
+    @property
     def location(self):
         """
         Blend "location" property into the resultset, so that the path to the found component can be shown within the UI

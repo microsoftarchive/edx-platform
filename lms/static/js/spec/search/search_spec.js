@@ -6,7 +6,8 @@ define([
     'js/search/base/models/search_result',
     'js/search/base/collections/search_collection',
     'js/search/base/routers/search_router',
-    'js/search/base/views/search_item_view',
+    'js/search/course/views/search_item_view',
+    'js/search/dashboard/views/search_item_view',
     'js/search/course/views/search_form',
     'js/search/dashboard/views/search_form',
     'js/search/course/views/search_results_view',
@@ -21,7 +22,8 @@ define([
     SearchResult,
     SearchCollection,
     SearchRouter,
-    SearchItemView,
+    CourseSearchItemView,
+    DashSearchItemView,
     CourseSearchForm,
     DashSearchForm,
     CourseSearchResultsView,
@@ -209,49 +211,69 @@ define([
 
     describe('SearchItemView', function () {
 
-        beforeEach(function () {
+        function beforeEachHelper(SearchItemView) {
             TemplateHelpers.installTemplates([
-                'templates/search/search_item',
-                'templates/search/search_item_seq',
+                'templates/search/course_search_item',
+                'templates/search/dashboard_search_item'
             ]);
-        });
 
-        it('renders items correctly', function () {
-            var model = new SearchResult({
+            this.model = new SearchResult({
                 location: ['section', 'subsection', 'unit'],
                 content_type: 'Video',
+                course_name: 'Course Name',
                 excerpt: 'A short excerpt.',
                 url: 'path/to/content'
             });
-            var item = new SearchItemView({ model: model });
-            var breadcrumbs = 'section ▸ subsection ▸ unit';
-            var anchor = 'a[href="' + model.get('url') + '"]';
-            item.render();
-            expect(item.$el).toHaveAttr('role', 'region');
-            expect(item.$el).toHaveAttr('aria-label', 'search result');
-            expect(item.$el).toContainHtml(model.get('content_type'));
-            expect(item.$el).toContainHtml(model.get('excerpt'));
-            expect(item.$el).toContain(anchor);
-            expect(item.$el).toContainHtml(breadcrumbs);
-        });
 
-        it('renders Sequence items correctly', function () {
-            var model = new SearchResult({
+            this.seqModel = new SearchResult({
                 location: ['section', 'subsection'],
                 content_type: 'Sequence',
+                course_name: 'Course Name',
                 excerpt: 'A short excerpt.',
                 url: 'path/to/content'
             });
-            var item = new SearchItemView({ model: model });
-            var breadcrumbs = 'section ▸ subsection';
-            var anchor = 'a[href="' + model.get('url') + '"]';
-            item.render();
-            expect(item.$el).toHaveAttr('role', 'region');
-            expect(item.$el).toHaveAttr('aria-label', 'search result');
-            expect(item.$el.find('.sri-type')).toBeEmpty();
-            expect(item.$el.find('.sri-excerpt')).toBeEmpty();
-            expect(item.$el).toContain(anchor);
-            expect(item.$el).toContainHtml(breadcrumbs);
+
+            this.item = new SearchItemView({ model: this.model });
+            this.item.render();
+            this.seqItem = new SearchItemView({ model: this.seqModel });
+            this.seqItem.render();
+        }
+
+        function rendersItem() {
+            expect(this.item.$el).toHaveAttr('role', 'region');
+            expect(this.item.$el).toHaveAttr('aria-label', 'search result');
+            expect(this.item.$el).toContain('a[href="' + this.model.get('url') + '"]');
+            expect(this.item.$el.find('.sri-type')).toContainHtml(this.model.get('content_type'));
+            expect(this.item.$el.find('.sri-excerpt')).toContainHtml(this.model.get('excerpt'));
+            expect(this.item.$el.find('.sri-location')).toContainHtml('section ▸ subsection ▸ unit');
+        }
+
+        function rendersSequentialItem() {
+            expect(this.seqItem.$el).toHaveAttr('role', 'region');
+            expect(this.seqItem.$el).toHaveAttr('aria-label', 'search result');
+            expect(this.seqItem.$el).toContain('a[href="' + this.seqModel.get('url') + '"]');
+            expect(this.seqItem.$el.find('.sri-type')).toBeEmpty();
+            expect(this.seqItem.$el.find('.sri-excerpt')).toBeEmpty();
+            expect(this.seqItem.$el.find('.sri-location')).toContainHtml('section ▸ subsection');
+        }
+
+        describe('CourseSearchItemView', function () {
+            beforeEach(function () {
+                beforeEachHelper.call(this, CourseSearchItemView);
+            });
+            it('renders items correctly', rendersItem);
+            it('renders Sequence items correctly', rendersSequentialItem);
+        });
+
+        describe('DashSearchItemView', function () {
+            beforeEach(function () {
+                beforeEachHelper.call(this, DashSearchItemView);
+            });
+            it('renders items correctly', rendersItem);
+            it('renders Sequence items correctly', rendersSequentialItem);
+            it('displays course name in breadcrumbs', function () {
+                expect(this.seqItem.$el.find('.sri-course-name')).toContainHtml(this.model.get('course_name'));
+            });
         });
 
     });
@@ -390,6 +412,7 @@ define([
                 location: ['section', 'subsection', 'unit'],
                 url: '/some/url/to/content',
                 content_type: 'text',
+                course_name: '',
                 excerpt: 'this is a short excerpt'
             }];
             this.collection.set(searchResults);
@@ -451,8 +474,8 @@ define([
             );
 
             TemplateHelpers.installTemplates([
-                'templates/search/search_item',
-                'templates/search/search_item_seq',
+                'templates/search/course_search_item',
+                'templates/search/dashboard_search_item',
                 'templates/search/course_search_results',
                 'templates/search/dashboard_search_results',
                 'templates/search/search_list',

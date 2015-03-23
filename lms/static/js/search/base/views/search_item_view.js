@@ -6,11 +6,12 @@ define([
     'backbone',
     'gettext'
 ], function ($, _, Backbone, gettext) {
-   'use strict';
+    'use strict';
 
     return Backbone.View.extend({
 
         tagName: 'li',
+        templateId: '',
         className: 'search-results-item',
         attributes: {
             'role': 'region',
@@ -18,14 +19,18 @@ define([
         },
 
         initialize: function () {
-            var template_name = (this.model.attributes.content_type === 'Sequence')
-                ? '#search_item_seq-tpl'
-                : '#search_item-tpl';
-            this.tpl = _.template($(template_name).html());
+            this.tpl = _.template($(this.templateId).html());
         },
 
         render: function () {
-            this.$el.html(this.tpl(this.model.attributes));
+            var data = _.clone(this.model.attributes);
+            // Drop the preview text and result type if the search term is found
+            //  in the title/location in the course hierarchy
+            if (this.model.get('content_type') === 'Sequence') {
+                data.excerpt = '';
+                data.content_type = '';
+            }
+            this.$el.html(this.tpl(data));
             return this;
         }
     });

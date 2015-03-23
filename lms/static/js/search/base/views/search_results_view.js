@@ -5,8 +5,7 @@ define([
     'underscore',
     'backbone',
     'gettext',
-    'js/search/base/views/search_item_view'
-], function ($, _, Backbone, gettext, SearchItemView) {
+], function ($, _, Backbone, gettext) {
 
    'use strict';
 
@@ -20,6 +19,7 @@ define([
         errorTemplateId: '',
         events: {},
         spinner: '.icon',
+        SearchItemView: function () {},
 
         initialize: function () {
             this.courseName = this.$el.attr('data-course-name');
@@ -58,9 +58,9 @@ define([
 
         renderItems: function () {
             var items = this.collection.map(function (result) {
-                var item = new SearchItemView({ model: result });
+                var item = new this.SearchItemView({ model: result });
                 return item.render().el;
-            });
+            }, this);
             this.$el.find('ol').append(items);
         },
 
