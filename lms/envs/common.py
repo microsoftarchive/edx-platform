@@ -1177,6 +1177,15 @@ verify_student_js = [
     'js/verify_student/pay_and_verify.js',
 ]
 
+reverify_js = [
+    'js/verify_student/views/error_view.js',
+    'js/verify_student/views/image_input_view.js',
+    'js/verify_student/views/webcam_photo_view.js',
+    'js/verify_student/models/reverification_model.js',
+    'js/verify_student/views/incourse_reverify_view.js',
+    'js/verify_student/incourse_reverify.js',
+]
+
 PIPELINE_CSS = {
     'style-vendor': {
         'source_filenames': [
@@ -1366,6 +1375,10 @@ PIPELINE_JS = {
     'verify_student': {
         'source_filenames': verify_student_js,
         'output_filename': 'js/verify_student.js'
+    },
+    'reverify': {
+        'source_filenames': reverify_js,
+        'output_filename': 'js/reverify.js'
     }
 }
 

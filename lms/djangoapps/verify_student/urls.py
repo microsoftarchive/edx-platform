@@ -80,6 +80,15 @@ urlpatterns = patterns(
         }
     ),
 
+    # Endpoint for in-course reverification
+    # Users are sent to this end-point from within courseware
+    # to re-verify their identities by re-submitting face photos.
+    url(
+        r'^reverify/{course_id}/(?P<checkpoint_name>\w+)/$'.format(course_id=settings.COURSE_ID_PATTERN),
+        views.InCourseReverifyView.as_view(),
+        name="verify_student_incourse_reverify"
+    ),
+
     url(
         r'^create_order',
         views.create_order,

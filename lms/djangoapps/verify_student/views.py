@@ -611,6 +611,40 @@ class PayAndVerifyView(View):
         return (has_paid, bool(is_active))
 
 
+class InCourseReverifyView(View):
+    """In-course re-verification.
+
+    This view allows students to re-verify their identities
+    by re-submitting face photos.  Users are sent to this
+    view from within courseware.
+    """
+
+    @method_decorator(login_required)
+    def get(self, request, course_id, checkpoint_name):
+        """Render the UI for reverification. """
+        # TODO: Validate the course id and checkpoint name.
+
+        # TODO: include all the context needed
+        # for the Backbone view to render the page.
+        # For example, we may need to add the full course title.
+        # These variables are rendered in the DOM as "data-*" attributes,
+        # which are then accessed by the Backbone view.
+        context = {
+            'course_key': course_id,
+            'checkpoint_name': checkpoint_name,
+        }
+        return render_to_response("verify_student/incourse_reverification.html", context)
+
+    @method_decorator(login_required)
+    def post(self, request, course_id, checkpoint_name):
+        """Submit photos for re-verification. """
+        # TODO: update the user's verification status
+        # TODO: submit updated photo to Software Secure
+        # TODO: redirect the user back into the courseware.  For the initial story,
+        # we can redirect the user to the dashboard instead.
+        return HttpResponse(json.dumps("Completed!"), content_type="application/json")
+
+
 def create_order_with_ecommerce_service(user, course_key, course_mode):     # pylint: disable=invalid-name
     """ Create a new order using the E-Commerce API. """
     try:

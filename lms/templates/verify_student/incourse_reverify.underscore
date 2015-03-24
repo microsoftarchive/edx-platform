@@ -1,0 +1,6 @@
+<p><%= gettext("TODO: markup here") %></p>
+<p><%= gettext("Course key: ") + courseKey %></p>
+<p><%= gettext("Checkpoint name: ") + checkpointName %></p>
+
+<div id="webcam"></div>
+<button id="submit"><%= gettext("Submit") %></button>
