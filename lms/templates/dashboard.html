@@ -82,7 +82,7 @@
 <section class="container dashboard" id="dashboard-main">
 
   <div class="dashboard-sidebar">
-    ## % if settings.FEATURES.get('ENABLE_DASHBOARD_SEARCH'):
+    % if settings.FEATURES.get('ENABLE_DASHBOARD_SEARCH'):
       <div id="dashboard-search-bar" class="search-bar" role="search" aria-label="Dashboard">
         <form>
           <label for="dashboard-search-input">${_('Search Your Courses')}</label>
@@ -97,7 +97,7 @@
           </div>
         </form>
       </div>
-    ## % endif
+    % endif
 
     <section class="profile-sidebar">
       <header class="profile">
@@ -251,10 +251,10 @@
     % endif
   </section>
 
-  ## % if settings.FEATURES.get('ENABLE_COURSEWARE_SEARCH'):
+  % if settings.FEATURES.get('ENABLE_DASHBOARD_SEARCH'):
     <section id="dashboard-search-results" class="search-results">
     </section>
-  ## % endif
+  % endif
 </section>
 
 <section id="email-settings-modal" class="modal" aria-hidden="true">
