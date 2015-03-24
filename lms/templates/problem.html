@@ -20,7 +20,7 @@
     <button class="check ${ check_button }" data-checking="${ check_button_checking }" data-value="${ check_button }"><span class="check-label">${ check_button }</span><span class="sr"> ${_("your answer")}</span></button>
     % endif
     % if show_hint_button:
-    <input class="hint_button" type="button" value="${_('Hint')}" next_hint_index="${ next_hint_index }"/>
+    <button class="hint_button" data-value="${_('Hint')}" next_hint_index="${ next_hint_index }">${_('Hint')}</button>
     % endif
     % if reset_button:
     <button class="reset" data-value="${_('Reset')}">${_('Reset')}<span class="sr"> ${_("your answer")}</span></button>
