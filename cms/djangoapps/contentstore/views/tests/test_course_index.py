@@ -18,7 +18,7 @@ from xmodule.modulestore import ModuleStoreEnum
 from xmodule.modulestore.courseware_index import CoursewareSearchIndexer
 from xmodule.modulestore.exceptions import ItemNotFoundError
 from xmodule.modulestore.django import modulestore
-from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory, LibraryFactory
+from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory, LibraryFactory, check_mongo_calls
 from xmodule.modulestore.courseware_index import SearchIndexingError
 from opaque_keys.edx.locator import CourseLocator
 from student.tests.factories import UserFactory
@@ -457,7 +457,15 @@ class TestCourseReIndex(CourseTestCase):
         # Start manual reindex
         reindex_course_and_check_access(self.course.id, self.user)
 
-        self.html.display_name = "My expanded HTML"
+        response = perform_search(
+            "unique",
+            user=self.user,
+            size=10,
+            from_=0,
+            course_id=unicode(self.course.id))
+        self.assertEqual(response['total'], 1)
+
+        self.html.display_name = "My expanded unique HTML"
         modulestore().update_item(self.html, ModuleStoreEnum.UserID.test)
 
         # Start manual reindex
@@ -470,7 +478,7 @@ class TestCourseReIndex(CourseTestCase):
             size=10,
             from_=0,
             course_id=unicode(self.course.id))
-        self.assertEqual(response['total'], 1)
+        self.assertEqual(response['total'], 2)
 
     @mock.patch('xmodule.video_module.VideoDescriptor.index_dictionary')
     def test_reindex_video_error_json_responses(self, mock_index_dictionary):
@@ -559,7 +567,7 @@ class TestCourseReIndex(CourseTestCase):
 
     def test_indexing_responses(self):
         """
-        Test add_to_search_index response with real data
+        Test do_course_reindex response with real data
         """
         # Check results not indexed
         response = perform_search(
@@ -571,15 +579,9 @@ class TestCourseReIndex(CourseTestCase):
         self.assertEqual(response['results'], [])
 
         # Start manual reindex
-        CoursewareSearchIndexer.do_course_reindex(modulestore(), self.course.id)
+        store = modulestore()
+        CoursewareSearchIndexer.do_course_reindex(store, self.course.id)
 
-        self.html.display_name = "My expanded HTML"
-        modulestore().update_item(self.html, ModuleStoreEnum.UserID.test)
-
-        # Start manual reindex
-        CoursewareSearchIndexer.do_course_reindex(modulestore(), self.course.id)
-
-        # Check results indexed now
         response = perform_search(
             "unique",
             user=self.user,
@@ -588,10 +590,25 @@ class TestCourseReIndex(CourseTestCase):
             course_id=unicode(self.course.id))
         self.assertEqual(response['total'], 1)
 
+        self.html.display_name = "My expanded HTML which is unique"
+        modulestore().update_item(self.html, ModuleStoreEnum.UserID.test)
+
+        # Start manual reindex
+        CoursewareSearchIndexer.do_course_reindex(store, self.course.id)
+
+        # Check results indexed now
+        response = perform_search(
+            "unique",
+            user=self.user,
+            size=10,
+            from_=0,
+            course_id=unicode(self.course.id))
+        self.assertEqual(response['total'], 2)
+
     @mock.patch('xmodule.video_module.VideoDescriptor.index_dictionary')
     def test_indexing_video_error_responses(self, mock_index_dictionary):
         """
-        Test add_to_search_index response with mocked error data for video
+        Test do_course_reindex response with mocked error data for video
         """
         # Check results not indexed
         response = perform_search(
@@ -613,7 +630,7 @@ class TestCourseReIndex(CourseTestCase):
     @mock.patch('xmodule.html_module.HtmlDescriptor.index_dictionary')
     def test_indexing_html_error_responses(self, mock_index_dictionary):
         """
-        Test add_to_search_index response with mocked error data for html
+        Test do_course_reindex response with mocked error data for html
         """
         # Check results not indexed
         response = perform_search(
@@ -635,7 +652,7 @@ class TestCourseReIndex(CourseTestCase):
     @mock.patch('xmodule.seq_module.SequenceDescriptor.index_dictionary')
     def test_indexing_seq_error_responses(self, mock_index_dictionary):
         """
-        Test add_to_search_index response with mocked error data for sequence
+        Test do_course_reindex response with mocked error data for sequence
         """
         # Check results not indexed
         response = perform_search(
