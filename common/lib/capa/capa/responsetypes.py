@@ -1320,7 +1320,7 @@ class OptionResponse(LoncapaResponse):
             # If we run into an old-style optioninput, there is no <option> tag, so this safely does nothing
             options = self.xml.xpath('//optioninput[@id=$id]/option', id=answer_id)
             # Extra pass here to ignore whitespace around the answer in the matching
-            options = [option for option in options if option.text.strip() ==  student_answer]
+            options = [option for option in options if option.text.strip() == student_answer]
             if options:
                 option = options[0]
                 hint_node = option.find('./optionhint')
