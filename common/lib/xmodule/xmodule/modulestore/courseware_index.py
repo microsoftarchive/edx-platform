@@ -1,6 +1,7 @@
 """ Code to allow module store to interface with courseware index """
 from __future__ import absolute_import
 
+from datetime import timedelta
 import logging
 
 from django.utils.translation import ugettext as _
@@ -15,6 +16,7 @@ from .exceptions import ItemNotFoundError
 # Use default index and document names for now
 INDEX_NAME = "courseware_index"
 DOCUMENT_TYPE = "courseware_content"
+REINDEX_AGE = timedelta(0, 60)
 
 log = logging.getLogger('edx.modulestore')
 
@@ -33,7 +35,7 @@ class CoursewareSearchIndexer(object):
     """
 
     @staticmethod
-    def index_course(modulestore, course_key, raise_on_error=False):
+    def index_course(modulestore, course_key, raise_on_error=False, triggered_at=None):
         """
         Process course for indexing
         """
@@ -49,22 +51,30 @@ class CoursewareSearchIndexer(object):
 
         indexed_items = set()
 
-        course = modulestore.get_course(course_key, depth=None)
+        course = modulestore.get_course(course_key, depth=None, revision=ModuleStoreEnum.RevisionOption.published_only)
 
-        def index_item(item, current_start_date):
+        def index_item(item, current_start_date, skip_index=False):
             """ add this item to the search index """
             is_indexable = hasattr(item, "index_dictionary")
             # if it's not indexable and it does not have children, then ignore
             if not is_indexable and not item.has_children:
                 return
 
+            item_id = unicode(item.scope_ids.usage_id)
+            indexed_items.add(item_id)
+
             # if it has a defined start, then apply it and to it's children
             if item.start and (not current_start_date or item.start > current_start_date):
                 current_start_date = item.start
 
             if item.has_children:
+                skip_child_index = skip_index or \
+                    (triggered_at is not None and (triggered_at - item.subtree_edited_on) > REINDEX_AGE)
                 for child_item in item.get_children():
-                    index_item(child_item, current_start_date)
+                    index_item(child_item, current_start_date, skip_index=skip_child_index)
+
+            if skip_index:
+                return
 
             item_index = {}
             item_index_dictionary = item.index_dictionary() if is_indexable else None
@@ -74,8 +84,7 @@ class CoursewareSearchIndexer(object):
                 try:
                     item_index.update(location_info)
                     item_index.update(item_index_dictionary)
-                    item_index['id'] = unicode(item.scope_ids.usage_id)
-                    indexed_items.add(item_index['id'])
+                    item_index['id'] = item_id
                     if current_start_date:
                         item_index['start_date'] = current_start_date
 
@@ -101,7 +110,7 @@ class CoursewareSearchIndexer(object):
 
         try:
             for item in course.get_children():
-                index_item(item, None)
+                index_item(item, course.start)
             remove_deleted_items()
         except Exception as err:  # pylint: disable=broad-except
             # broad exception so that index operation does not prevent the rest of the application from working
@@ -118,11 +127,11 @@ class CoursewareSearchIndexer(object):
         return indexed_count
 
     @classmethod
-    def do_course_reindex(cls, modulestore, course_key):
+    def do_course_reindex(cls, modulestore, course_key, triggered_at=None):
         """
         (Re)index all content within the given course
         """
-        indexed_count = cls.index_course(modulestore, course_key, raise_on_error=True)
+        indexed_count = cls.index_course(modulestore, course_key, raise_on_error=True, triggered_at=triggered_at)
         cls._track_index_request('edx.course.index.reindexed', indexed_count)
         return indexed_count
 
