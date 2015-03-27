@@ -299,6 +299,146 @@ def chat_settings(course, user):
 @cache_control(no_cache=True, no_store=True, must_revalidate=True)
 @ensure_valid_course_key
 @commit_on_success_with_read_committed
+def xblock_iframe(request, course_id, usage_id):
+    """
+    Displays courseware accordion and associated content.
+    Returns:
+
+     - HTTPresponse
+    """
+    course_key = CourseKey.from_string(course_id)
+    usage_key = UsageKey.from_string(usage_id).replace(course_key=course_key)
+    user = User.objects.prefetch_related("groups").get(id=request.user.id)
+    redeemed_registration_codes = CourseRegistrationCode.objects.filter(
+        course_id=course_key,
+        registrationcoderedemption__redeemed_by=request.user
+    )
+
+    # Redirect to dashboard if the course is blocked due to non-payment.
+    # TODO: Figure this out later.
+    if is_course_blocked(request, redeemed_registration_codes, course_key):
+        # registration codes may be generated via Bulk Purchase Scenario
+        # we have to check only for the invoice generated registration codes
+        # that their invoice is valid or not
+        log.warning(
+            u'User %s cannot access the course %s because payment has not yet been received',
+            user,
+            course_key.to_deprecated_string()
+        )
+        raise Http404("Nothing to see here, move along.")
+
+    request.user = user  # keep just one instance of User
+    with modulestore().bulk_operations(course_key):
+        return _xblock_iframe_bulk_op(request, course_key, usage_key)
+
+
+def _xblock_iframe_bulk_op(request, course_key, usage_key):
+    """
+    Render the index page for the specified course.
+    """
+    user = request.user
+    course = get_course_with_access(user, 'load', course_key, depth=0)
+    staff_access = has_access(user, 'staff', course)
+    registered = registered_for_course(course, user)
+    if not registered:
+        # TODO (vshnayder): do course instructors need to be registered to see course?
+        log.debug(u'User %s tried to view course %s but is not enrolled', user, course.location.to_deprecated_string())
+        return redirect(reverse('about_course', args=[course_key.to_deprecated_string()]))
+
+    # see if all pre-requisites (as per the milestones app feature) have been fulfilled
+    # Note that if the pre-requisite feature flag has been turned off (default) then this check will
+    # always pass
+    # if not has_access(user, 'view_courseware_with_prerequisites', course):
+    #     # prerequisites have not been fulfilled therefore redirect to the Dashboard
+    #     log.info(
+    #         u'User %d tried to view course %s '
+    #         u'without fulfilling prerequisites',
+    #         user.id, unicode(course.id))
+    #     return redirect(reverse('dashboard'))
+    # 
+    # # check to see if there is a required survey that must be taken before
+    # # the user can access the course.
+    # if survey.utils.must_answer_survey(course, user):
+    #     return redirect(reverse('course_survey', args=[unicode(course.id)]))
+    # 
+    # masquerade = setup_masquerade(request, course_key, staff_access)
+
+    try:
+        descriptor = modulestore().get_item(usage_key)
+        field_data_cache = FieldDataCache.cache_for_descriptor_descendents(
+            course_key, user, descriptor, depth=None
+        )
+        block = get_module_for_descriptor(user, request, descriptor, field_data_cache, course_key)
+        if block is None:
+            log.warning(u'If you see this, something went wrong: if we got this'
+                        u' far, should have gotten a course module for this user')
+            raise Http404("Couldn't find block for {}".format(usage_key))
+
+        context = {
+            'csrf': csrf(request)['csrf_token'],
+            'COURSE_TITLE': course.display_name_with_default,
+            'course': course,
+            'init': '',
+            'fragment': block.render(STUDENT_VIEW),
+            'section_title': block.display_name_with_default,
+            'staff_access': staff_access,
+            # 'masquerade': masquerade,
+            # 'studio_url': studio_url
+            'xqa_server': settings.FEATURES.get('USE_XQA_SERVER', 'http://xqa:server@content-qa.mitx.mit.edu/xqa'),
+        }
+
+        now = datetime.now(UTC())
+        effective_start = _adjust_start_date_for_beta_testers(user, block, course_key)
+        #if staff_access and now < effective_start:
+        #    # Disable student view button if user is staff and
+        #    # course is not yet visible to students.
+        #    context['disable_student_access'] = True
+        #    context['fragment'] = block.render(STUDENT_VIEW)
+        #    context['section_title'] = block.display_name_with_default
+
+        result = render_to_response('courseware/xblock_iframe.html', context)
+    except Exception as e:
+        # Doesn't bar Unicode characters from URL, but if Unicode characters do
+        # cause an error it is a graceful failure.
+        if isinstance(e, UnicodeEncodeError):
+            raise Http404("URL contains Unicode characters")
+
+        if isinstance(e, Http404):
+            # let it propagate
+            raise
+
+        # In production, don't want to let a 500 out for any reason
+        if settings.DEBUG:
+            raise
+        else:
+            log.exception(
+                u"Error in index view: user={user}, course={course}, chapter={chapter}"
+                u" section={section} position={position}".format(
+                    user=user,
+                    course=course,
+                    chapter=chapter,
+                    section=section,
+                    position=position
+                ))
+            try:
+                result = render_to_response('courseware/courseware-error.html', {
+                    'staff_access': staff_access,
+                    'course': course
+                })
+            except:
+                # Let the exception propagate, relying on global config to at
+                # at least return a nice error message
+                log.exception("Error while rendering courseware-error page")
+                raise
+
+    return result
+
+
+@login_required
+@ensure_csrf_cookie
+@cache_control(no_cache=True, no_store=True, must_revalidate=True)
+@ensure_valid_course_key
+@commit_on_success_with_read_committed
 def index(request, course_id, chapter=None, section=None,
           position=None):
     """

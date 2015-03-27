@@ -334,6 +334,14 @@ if settings.COURSEWARE_ENABLED:
         url(r'^courses/{}/courseware/(?P<chapter>[^/]*)/(?P<section>[^/]*)/(?P<position>[^/]*)/?$'.format(settings.COURSE_ID_PATTERN),
             'courseware.views.index', name="courseware_position"),
 
+        # See if we can get rid of the course part later
+        url(
+            r'^courses/{course_key}/xblock/{usage_key}$'.format(
+                course_key=settings.COURSE_ID_PATTERN, usage_key=settings.USAGE_ID_PATTERN
+            ),
+            'courseware.views.xblock_iframe', name="xblock_iframe"
+        ),
+
         url(r'^courses/{}/progress$'.format(settings.COURSE_ID_PATTERN),
             'courseware.views.progress', name="progress"),
         # Takes optional student_id for instructor use--shows profile as that student sees it.
