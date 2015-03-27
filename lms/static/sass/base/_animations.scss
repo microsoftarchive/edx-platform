@@ -258,6 +258,18 @@
   }
 }
 
+@mixin fade-transition {
+  -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+      transition: all 0.2s ease-out;
+}
+
+@mixin fade-transition-delay( $delay ) {
+  -webkit-transition: all 0.2s $delay ease-out;
+    -moz-transition: all 0.2s $delay ease-out;
+      transition: all 0.2s $delay ease-out;
+}
+
 @-webkit-keyframes fade-in-animation{ @include fade-in-keyframes; }
    @-moz-keyframes fade-in-animation{ @include fade-in-keyframes; }
         @keyframes fade-in-animation{ @include fade-in-keyframes; }

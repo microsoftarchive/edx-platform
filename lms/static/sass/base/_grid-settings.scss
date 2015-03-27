@@ -7,7 +7,7 @@ $border-box-sizing: false;
 
 
 /* Breakpoints */
-$mobile: new-breakpoint(max-width 320px 4);
-$tablet: new-breakpoint(min-width 321px max-width 768px, 8);
+$mobile: new-breakpoint(max-width 540px 4);
+$tablet: new-breakpoint(min-width 541px max-width 768px, 8);
 $desktop: new-breakpoint(min-width 769px 12);
 $xl-desktop:  new-breakpoint(min-width 980px 12);
