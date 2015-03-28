@@ -479,7 +479,7 @@ class TestCCXGrades(ModuleStoreTestCase, LoginEnrollmentTestCase):
         for block in iter_blocks(course):
             block._field_data = OverrideFieldData.wrap(   # pylint: disable=protected-access
                 coach, block._field_data)   # pylint: disable=protected-access
-            block._field_data_cache = {}  # pylint: disable=protected-access
+            block._field_data_cache = {'tabs':[],'discussion_topics':[]}  # pylint: disable=protected-access
             visible_children(block)
 
         def cleanup_provider_classes():
