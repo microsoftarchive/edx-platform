@@ -1419,9 +1419,11 @@ class XMLParsingSystem(DescriptorSystem):
         url_name = node.get('url_name')  # difference from XBlock.runtime
         def_id = id_generator.create_definition(block_type, url_name)
         usage_id = id_generator.create_usage(def_id)
+        if block_type == 'openassessment':
+            import ipdb; ipdb.set_trace()
         if branch_settings == ModuleStoreEnum.RevisionOption.draft_only:
-            # Change revision of definition key to 'draft'
-            def_id = modulestore.mongo.base.as_draft(def_id)
+            # Change revision of definition key to draft
+            def_id = def_id.for_branch('draft')
 
         keys = ScopeIds(None, block_type, def_id, usage_id)
         block_class = self.mixologist.mix(self.load_block_type(block_type))

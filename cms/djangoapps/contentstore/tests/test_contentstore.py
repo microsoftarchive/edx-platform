@@ -90,7 +90,7 @@ class ContentStoreTestCase(CourseTestCase):
     Base class for Content Store Test Cases
     """
 
-
+@ddt.ddt
 class ImportRequiredTestCases(ContentStoreTestCase):
     """
     Tests which legitimately need to import a course
@@ -543,8 +543,12 @@ class ImportRequiredTestCases(ContentStoreTestCase):
             'test_no_xml_attributes'
         )
 
-    def test_import_openassessment(self):
-        store = modulestore()
+    @ddt.data(ModuleStoreEnum.Type.mongo, ModuleStoreEnum.Type.split)
+    def test_import_openassessment_draft(self, modulestore_type):
+        """
+        Tests that openassesment drafts import correctly
+        """
+        store = modulestore()._get_modulestore_by_type(modulestore_type)
         courses = import_course_from_xml(
             store,
             self.user.id,
@@ -557,9 +561,16 @@ class ImportRequiredTestCases(ContentStoreTestCase):
             'openassessment', 'openassessment_draft'
         )
         openassessment_draft = store.get_item(openassessment_draft_location)
-        self.assertTrue(openassessment_draft.is_draft)
+        if modulestore_type == ModuleStoreEnum.Type.mongo:
+            self.assertTrue(openassessment_draft.is_draft)
+        else:
+            self.assertEqual(
+                openassessment_draft.location.revision,
+                ModuleStoreEnum.BranchName.draft
+            )
         self.assertEqual(len(openassessment_draft.rubric_criteria), 1)
         criterion = openassessment_draft.rubric_criteria[0]
+        # make sure criteria don't revert to default
         self.assertEqual(criterion['prompt'], u"What is all this juice and all this joy?")
 
 
