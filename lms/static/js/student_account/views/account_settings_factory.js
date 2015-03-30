@@ -132,7 +132,7 @@
                                 connected: provider['connected'],
                                 connectUrl: provider['connect_url'],
                                 disconnectUrl: provider['disconnect_url'],
-                                screenReaderText: interpolate_text('Connect your {accountName} account', {accountName: this.title})
+                                screenReaderText: interpolate_text('Connect your {accountName} account', {accountName: provider['name']})
                             })
                         }
                     })
