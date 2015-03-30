@@ -10,6 +10,6 @@
         } else {
         %><span aria-hidden="true"><%- value %></span><%
         }
-    %><span class="sr" id="u-field-placeholder-value-<%- id %>">Tell other edX learners a little about yourself: where you live, what your interests are, why you're taking courses on edX, or what you hope to learn.</span>
+    %><span class="sr" id="u-field-placeholder-value-<%- id %>"><%- gettext(placeholderValue) %></span>
     </div>
 </div>

@@ -23,7 +23,7 @@
                 'canEdit': '<i class="icon fa fa-pencil message-can-edit" aria-hidden="true"><span class="sr">Editable</span></i>',
                 'error': '<i class="fa fa-exclamation-triangle message-error" aria-hidden="true"><span class="sr">Error</span></i>',
                 'validationError': '<i class="fa fa-exclamation-triangle message-validation-error" aria-hidden="true"><span class="sr"Validation Error</span></i>',
-                'inProgress': '<i class="fa fa-spinner fa-pulse message-in-progress" aria-hidden="true"><span class="sr">In Porgress</span></i>',
+                'inProgress': '<i class="fa fa-spinner fa-pulse message-in-progress" aria-hidden="true"><span class="sr">In Prgress</span></i>',
                 'success': '<i class="fa fa-check message-success" aria-hidden="true"><span class="sr">Success</span></i>',
                 'plus': '<i class="fa fa-plus placeholder" aria-hidden="true"><span class="sr">Placeholder</span></i>'
             },
@@ -352,7 +352,7 @@
                     if (this.modelValueIsSet() === false) {
                         value = this.options.placeholderValue || '';
                     }
-                    this.$('.u-field-value').attr('aria-label', this.options.valueAttribute.replace(/_/g , " "));
+                    this.$('.u-field-value').attr('aria-label', this.options.title);
                     this.$('.u-field-value').html(Mustache.escapeHtml(value));
                     this.showDisplayMode(false);
                 } else {
@@ -413,7 +413,8 @@
                     id: this.options.valueAttribute,
                     mode: this.mode,
                     value: value,
-                    message: this.helpMessage
+                    message: this.helpMessage,
+                    placeholderValue: this.options.placeholderValue
                 }));
 
                 this.title((this.modelValue() || this.mode === 'edit') ? this.options.title : this.indicators['plus'] + this.options.title);
@@ -490,6 +491,7 @@
                     linkTitle: this.options.linkTitle,
                     linkHref: this.options.linkHref,
                     message: this.helpMessage,
+                    screenReaderText: this.options.screenReaderText
                 }));
                 return this;
             },
