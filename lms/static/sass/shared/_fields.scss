@@ -102,16 +102,6 @@
     select, input {
         width: 100%;
     }
-
-    a span {
-        color: $link-color;
-    }
-    a span {
-        &:hover, &:focus {
-            color: $pink;
-            text-decoration: none !important;
-        }
-    }
 }
 
 .u-field-message {
