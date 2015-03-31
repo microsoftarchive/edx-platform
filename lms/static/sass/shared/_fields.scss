@@ -87,6 +87,7 @@
     color: $gray;
     vertical-align: top;
     margin-bottom: 0;
+    -webkit-font-smoothing: antialiased;
 
     label, span {
         @include margin-left($baseline/2);
@@ -101,6 +102,16 @@
     select, input {
         width: 100%;
     }
+
+    a span {
+        color: $link-color;
+    }
+    a span {
+        &:hover, &:focus {
+            color: $pink;
+            text-decoration: none !important;
+        }
+    }
 }
 
 .u-field-message {
@@ -113,5 +124,10 @@
 
     i {
         @include margin-right($baseline/4);
+    }
+
+    .u-field-message-help,
+    .u-field-message-notification {
+        color: $gray-l1;
     }
 }
