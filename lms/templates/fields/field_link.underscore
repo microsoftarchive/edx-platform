@@ -3,7 +3,7 @@
 </span>
 <span class="u-field-value">
     <a id="u-field-link-<%- id %>" href="<%- gettext(linkHref) %>" aria-describedby="u-field-help-message-<%- id %>">
-       <span class="sr">gettext(screenReaderText)</span>
+       <span class="sr"><%- gettext(screenReaderText) %></span>
        <span aria-hidden="true"><%- gettext(linkTitle) %></span>
     </a>
 </span>

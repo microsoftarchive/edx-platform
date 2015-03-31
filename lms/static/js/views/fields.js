@@ -20,12 +20,12 @@
             tagName: 'div',
 
             indicators: {
-                'canEdit': '<i class="icon fa fa-pencil message-can-edit" aria-hidden="true"><span class="sr">Editable</span></i>',
-                'error': '<i class="fa fa-exclamation-triangle message-error" aria-hidden="true"><span class="sr">Error</span></i>',
-                'validationError': '<i class="fa fa-exclamation-triangle message-validation-error" aria-hidden="true"><span class="sr"Validation Error</span></i>',
-                'inProgress': '<i class="fa fa-spinner fa-pulse message-in-progress" aria-hidden="true"><span class="sr">In Prgress</span></i>',
-                'success': '<i class="fa fa-check message-success" aria-hidden="true"><span class="sr">Success</span></i>',
-                'plus': '<i class="fa fa-plus placeholder" aria-hidden="true"><span class="sr">Placeholder</span></i>'
+                'canEdit': '<i class="icon fa fa-pencil message-can-edit" aria-hidden="true"></i><span class="sr">Editable</span>',
+                'error': '<i class="fa fa-exclamation-triangle message-error" aria-hidden="true"></i><span class="sr">Error</span>',
+                'validationError': '<i class="fa fa-exclamation-triangle message-validation-error" aria-hidden="true"></i><span class="sr">Validation Error</span>',
+                'inProgress': '<i class="fa fa-spinner fa-pulse message-in-progress" aria-hidden="true"></i><span class="sr">In Prgress</span>',
+                'success': '<i class="fa fa-check message-success" aria-hidden="true"></i><span class="sr">Success</span>',
+                'plus': '<i class="fa fa-plus placeholder" aria-hidden="true"></i><span class="sr">Placeholder</span>'
             },
 
             messages: {
@@ -309,7 +309,8 @@
                     iconName: this.options.iconName,
                     required: this.options.required,
                     selectOptions: this.options.options,
-                    message: this.helpMessage
+                    message: this.helpMessage,
+                    srText: this.options.srText
                 }));
 
                 this.updateValueInField();
@@ -353,7 +354,7 @@
                         value = this.options.placeholderValue || '';
                     }
                     this.$('.u-field-value').attr('aria-label', this.options.title);
-                    this.$('.u-field-value').html(Mustache.escapeHtml(value));
+                    this.$('.u-field-value-readonly').html(Mustache.escapeHtml(value));
                     this.showDisplayMode(false);
                 } else {
                     this.$('.u-field-value select').val(this.modelValue() || '');
@@ -414,7 +415,8 @@
                     mode: this.mode,
                     value: value,
                     message: this.helpMessage,
-                    placeholderValue: this.options.placeholderValue
+                    placeholderValue: this.options.placeholderValue,
+                    srText: this.options.title
                 }));
 
                 this.title((this.modelValue() || this.mode === 'edit') ? this.options.title : this.indicators['plus'] + this.options.title);
