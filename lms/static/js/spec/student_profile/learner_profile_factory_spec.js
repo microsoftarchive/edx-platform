@@ -132,8 +132,8 @@ define(['backbone', 'jquery', 'underscore', 'js/common_helpers/ajax_helpers', 'j
                     'country_options': Helpers.FIELD_OPTIONS,
                     'language_options': Helpers.FIELD_OPTIONS,
                     'has_preferences_access': true
-                }),
-                    learnerProfileView = context.learnerProfileView;
+                });
+                var learnerProfileView = context.learnerProfileView;
 
                 Helpers.expectLoadingIndicatorIsVisible(learnerProfileView, true);
                 Helpers.expectLoadingErrorIsVisible(learnerProfileView, false);

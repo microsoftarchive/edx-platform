@@ -55,14 +55,22 @@
                 return (this.modelValue() == true);
             },
 
+            notification: function(message) {
+                return this.$('.u-field-message-notification').html(message);
+            },
+
+            help: function(message) {
+                return this.$('.u-field-message-help').html(message);
+            },
+
             message: function (message, notification) {
                 notification = _.isUndefined(notification) ? true : notification;
                 if (notification) {
-                    this.$('.u-field-message-help').html('');
-                    return this.$('.u-field-message-notification').html(message);
+                    this.help('');
+                    this.notification(message);
                 } else {
-                    this.$('.u-field-message-notification').html('');
-                    return this.$('.u-field-message-help').html(message);
+                    this.notification('');
+                    this.help(message);
                 }
             },
 
@@ -109,7 +117,7 @@
                 this.lastSuccessMessageContext = context;
 
                 setTimeout(function () {
-                    if ((context === view.lastSuccessMessageContext) && (view.message().html() == successMessage)) {
+                    if ((context === view.lastSuccessMessageContext) && (view.notification().html() == successMessage)) {
                         view.showHelpMessage();
                     }
                 }, messageRevertDelay);
