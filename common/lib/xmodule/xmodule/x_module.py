@@ -1419,8 +1419,8 @@ class XMLParsingSystem(DescriptorSystem):
         url_name = node.get('url_name')  # difference from XBlock.runtime
         def_id = id_generator.create_definition(block_type, url_name)
         usage_id = id_generator.create_usage(def_id)
-        if block_type == 'openassessment':
-            import ipdb; ipdb.set_trace()
+        # if block_type == 'openassessment':
+        #     import ipdb; ipdb.set_trace()
         if branch_settings == ModuleStoreEnum.RevisionOption.draft_only:
             # Change revision of definition key to draft
             def_id = def_id.for_branch('draft')
