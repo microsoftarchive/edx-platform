@@ -26,3 +26,17 @@ class LicenseMixin(XBlockMixin):
         default=None,
         scope=Scope.settings
     )
+
+    @classmethod
+    def definition_from_xml(cls, xml_object, system):
+        import nose.tools; nose.tools.set_trace()
+        license = xml_object.get("license", default=None)
+        definition, children = super(LicenseMixin, cls).definition_from_xml(xml_object, system)
+        definition['license'] = license
+        return definition, children
+
+    def definition_to_xml(self, resource_fs):
+        xml_object = super(LicenseMixin, self).definition_to_xml(resource_fs)
+        if self.license:
+            xml_object.set("license", self.license)
+        return xml_object

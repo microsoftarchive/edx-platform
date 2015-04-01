@@ -5,6 +5,7 @@ import mock
 from mock import patch
 import shutil
 import lxml.html
+from lxml import etree
 import ddt
 
 from datetime import timedelta
@@ -1834,6 +1835,29 @@ class RerunCourseTest(ContentStoreTestCase):
             self.assertEquals(rerun_state.state, CourseRerunUIStateManager.State.FAILED)
             self.assertTrue(rerun_state.message.endswith("traceback"))
             self.assertEqual(len(rerun_state.message), CourseRerunState.MAX_MESSAGE_LENGTH)
+
+
+class ContentLicenseTest(ContentStoreTestCase):
+    """
+    Tests around content licenses
+    """
+    def test_course_license_export(self):
+        content_store = contentstore()
+        root_dir = path(mkdtemp_clean())
+        self.course.license = "creative-commons: BY SA"
+        self.store.update_item(self.course, None)
+        export_course_to_xml(self.store, content_store, self.course.id, root_dir, 'test_license')
+        run_file_path = root_dir / "test_license" / "course" / "Run_0.xml"
+        run_xml = etree.parse(run_file_path.open())
+        self.assertEqual(run_xml.getroot().get("license"), "creative-commons: BY SA")
+        import nose.tools; nose.tools.set_trace()
+
+    def test_course_license_import(self):
+        course_items = import_course_from_xml(
+            self.store, self.user.id, TEST_DATA_DIR, ['toy'], create_if_not_present=True
+        )
+        import nose.tools; nose.tools.set_trace()
+        self.assertEqual(course_items[0].license, "creative-commons: BY")
 
 
 class EntryPageTestCase(TestCase):
