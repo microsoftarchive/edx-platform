@@ -202,7 +202,7 @@ class IndexPageCourseCardsSortingTests(ModuleStoreTestCase):
         ((template, context), _) = RENDER_MOCK.call_args  # pylint: disable=unpacking-non-sequence
         self.assertEqual(template, 'index.html')
 
-        # Now the courses will be stored in their announcement dates.
+        # by default the courses will be sorted by their creation dates, earliest first.
         self.assertEqual(context['courses'][0].id, self.starting_earlier.id)
         self.assertEqual(context['courses'][1].id, self.starting_later.id)
         self.assertEqual(context['courses'][2].id, self.course_with_default_start_date.id)
@@ -213,7 +213,7 @@ class IndexPageCourseCardsSortingTests(ModuleStoreTestCase):
         ((template, context), _) = RENDER_MOCK.call_args  # pylint: disable=unpacking-non-sequence
         self.assertEqual(template, 'courseware/courses.html')
 
-        # Now the courses will be stored in their announcement dates.
+        # by default the courses will be sorted by their creation dates, earliest first.
         self.assertEqual(context['courses'][0].id, self.starting_earlier.id)
         self.assertEqual(context['courses'][1].id, self.starting_later.id)
         self.assertEqual(context['courses'][2].id, self.course_with_default_start_date.id)
@@ -227,7 +227,7 @@ class IndexPageCourseCardsSortingTests(ModuleStoreTestCase):
         ((template, context), _) = RENDER_MOCK.call_args  # pylint: disable=unpacking-non-sequence
         self.assertEqual(template, 'index.html')
 
-        # now the courses will be sorted by their creation dates, earliest first.
+        # now the courses will be sorted by their announcement dates.
         self.assertEqual(context['courses'][0].id, self.starting_later.id)
         self.assertEqual(context['courses'][1].id, self.starting_earlier.id)
         self.assertEqual(context['courses'][2].id, self.course_with_default_start_date.id)
@@ -238,7 +238,7 @@ class IndexPageCourseCardsSortingTests(ModuleStoreTestCase):
         ((template, context), _) = RENDER_MOCK.call_args  # pylint: disable=unpacking-non-sequence
         self.assertEqual(template, 'courseware/courses.html')
 
-        # now the courses will be sorted by their creation dates, earliest first.
+        # now the courses will be sorted by their announcement dates.
         self.assertEqual(context['courses'][0].id, self.starting_later.id)
         self.assertEqual(context['courses'][1].id, self.starting_earlier.id)
         self.assertEqual(context['courses'][2].id, self.course_with_default_start_date.id)

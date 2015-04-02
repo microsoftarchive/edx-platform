@@ -53,13 +53,13 @@
 
       % if settings.FEATURES.get('COURSES_ARE_BROWSABLE'):
         <section class="courses">
-            <div class="courses-listing">
+            <ul class="courses-listing">
             %for course in courses[:9]:
-              <div class="courses-listing-item">
+              <li class="courses-listing-item">
                 <%include file="course.html" args="course=course" />
-              </div>
+              </li>
             %endfor
-            </div>
+            </ul>
             <div class="more-courses">
               <a class="more-link-arrow" title="View all Courses" href="${marketing_link('COURSES')}" >
                 ${_("View all Courses")}
