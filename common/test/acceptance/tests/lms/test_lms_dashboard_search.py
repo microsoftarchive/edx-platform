@@ -112,7 +112,7 @@ class DashboardSearchTest(WebAppTest):
         # create a unit in course outline
         course_outline.visit()
         subsection = course_outline.section_at(0).subsection_at(0)
-        subsection.toggle_expand()
+        subsection.expand_subsection()
         subsection.add_unit()
 
         # got to unit and create an HTML component and save (not publish)
@@ -131,7 +131,7 @@ class DashboardSearchTest(WebAppTest):
         """
         course_outline.visit()
         subsection = course_outline.section_at(0).subsection_at(0)
-        subsection.toggle_expand()
+        subsection.expand_subsection()
         unit = subsection.unit_at(0)
         unit.publish()
 
