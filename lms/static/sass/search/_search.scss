@@ -1,0 +1,165 @@
+.search-bar,
+.course-index .search-bar,
+.dashboard .search-bar {
+
+  @include box-sizing(border-box);
+  position: relative;
+  padding: 5px;
+  font-family: $sans-serif;
+
+  form > div {
+    position: relative;
+  }
+
+  .search-field {
+    @include box-sizing(border-box);
+    @include border-radius(4px);
+    top: 5px;
+    width: 100%;
+    background: $white-t1;
+    font-family: $sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    letter-spacing: normal;
+    &.is-active {
+      background: $white;
+    }
+  }
+
+  .search-button, .cancel-button {
+    @include box-sizing(border-box);
+    display: block;
+    position: absolute;
+    top: 0;
+    @include right(12px);
+    height: 35px;
+    padding: 0;
+    color: #888;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 35px;
+    border: none;
+    box-shadow: none;
+    text-shadow: none;
+    text-transform: none;
+    letter-spacing: normal;
+    background: transparent;
+  }
+
+  .cancel-button {
+    display: none;
+  }
+
+}
+
+
+.search-results {
+
+  display: none;
+
+  .search-info {
+    padding-bottom: lh(.75);
+    margin-bottom: lh(.50);
+    border-bottom: 1px solid $gray-l2;
+    .search-count {
+      @include float(right);
+      color: $gray;
+    }
+  }
+
+  .search-result-list {
+    padding: 0;
+  }
+
+  .search-results-item {
+    position: relative;
+    border-bottom: 1px solid $gray-l4;
+    list-style-type: none;
+    margin-bottom: lh(.75);
+    padding-bottom: lh(.75);
+    @include padding-right(140px);
+
+    .sri-excerpt {
+      color: $gray;
+      margin-bottom: lh(1);
+    }
+    .sri-type {
+      position: absolute;
+      @include right(0);
+      top: 0;
+      color: $gray;
+    }
+    .sri-course-name {
+      @include margin-right(1em);
+    }
+    .sri-link {
+      position: absolute;
+      @include right(0);
+      line-height: 1.6em;
+      bottom: lh(.75);
+      text-transform: uppercase;
+    }
+  }
+
+  .search-load-next {
+    display: block;
+    text-transform: uppercase;
+    color: $base-font-color;
+    border: 2px solid $link-color;
+    @include border-radius(3px);
+    padding: 1rem;
+  }
+
+}
+
+
+#courseware-search-bar  {
+  box-shadow: 0 1px 0 #fff inset, 0 -1px 0 rgba(0, 0, 0, .1) inset;
+}
+
+
+#dashboard-search-bar  {
+  @include float(right);
+  @include margin-left(flex-gutter());
+  width: flex-grid(3);
+  background: $gray-l6;
+  border: 1px solid $gray-l4;
+  border-radius: ($baseline/4);
+  margin-bottom: $baseline;
+  label {
+    color: $gray;
+    font-family: $sans-serif;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: normal;
+    letter-spacing: normal;
+    text-transform: uppercase;
+  }
+  .search-field {
+    background: $white;
+  }
+}
+
+#dashboard-search-results {
+  @include float(left);
+  width: flex-grid(9);
+  min-height: 300px;
+  margin: 0;
+  padding: 0;
+  .search-info {
+    padding-bottom: lh(1.75);
+    a {
+      display: block;
+      font-size: 13px;
+      margin-bottom: lh(.5);
+    }
+    h2 {
+      @include float(left);
+      @include clear(left);
+    }
+  }
+}
+
+#courseware-search-results {
+  padding: 40px;
+}
