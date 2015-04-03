@@ -40,18 +40,14 @@
   	            return response;
             },
 
-            isAboveMinimumAge: function() {
-                var isBirthDefined = !(_.isUndefined(this.get('year_of_birth')) || _.isNull(this.get('year_of_birth')));
-                return isBirthDefined && !(this.get("requires_parental_consent"));
-            },
-            
             has_profile_image: function () {
                 var profile_image = this.get('profile_image');
                 return (_.isObject(profile_image) && _.has(profile_image, 'has_profile') && profile_image['has_image']);
             },
-            
-            profile_image: function () {
 
+            isAboveMinimumAge: function() {
+                var isBirthDefined = !(_.isUndefined(this.get('year_of_birth')) || _.isNull(this.get('year_of_birth')));
+                return isBirthDefined && !(this.get("requires_parental_consent"));
             }
         });
         return UserAccountModel;
