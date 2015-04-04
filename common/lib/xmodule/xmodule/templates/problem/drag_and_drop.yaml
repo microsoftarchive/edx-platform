@@ -4,19 +4,23 @@ metadata:
     markdown: !!null
 data: |
     <problem>
-      Here's an example of a "Drag and Drop" question set. Click and drag each word in the scrollbar below, up to the numbered bucket which matches the number of letters in the word.
+      This template includes two example problems. You can replace the example problem images and text with your own images and text.
        <customresponse>
+            <text>
+                <h2>Simple Drag and Drop</h2>
+                <p>Drag each word in the scrollbar to the bucket that matches the number of letters in the word.</p>
+            </text>
             <drag_and_drop_input img="https://studio.edx.org/c4x/edX/DemoX/asset/L9_buckets.png">
                 <draggable id="1" label="a"/>
-                <draggable id="2" label="cat"/>
-                <draggable id="3" label="there"/>
-                <draggable id="4" label="pear"/>
-                <draggable id="5" label="kitty"/>
+                <draggable id="2" label="bog"/>
+                <draggable id="3" label="droll"/>
+                <draggable id="4" label="oboe"/>
+                <draggable id="5" label="swain"/>
                 <draggable id="6" label="in"/>
-                <draggable id="7" label="them"/>
-                <draggable id="8" label="za"/>
-                <draggable id="9" label="dog"/>
-                <draggable id="10" label="slate"/>
+                <draggable id="7" label="onyx"/>
+                <draggable id="8" label="of"/>
+                <draggable id="9" label="tap"/>
+                <draggable id="10" label="strop"/>
                 <draggable id="11" label="few"/>
             </drag_and_drop_input>
             <answer type="loncapa/python">
@@ -41,7 +45,7 @@ data: |
         <customresponse>
             <text>
                 <h2>Drag and Drop with Outline</h2>
-                <p>Please label hydrogen  atoms connected with left carbon atom.</p>
+                <p>Label the hydrogen atoms connected with the left carbon atom.</p>
             </text>
             <drag_and_drop_input img="https://studio.edx.org/c4x/edX/DemoX/asset/ethglycol.jpg" target_outline="true" one_per_target="true" no_labels="true" label_bg_color="rgb(222, 139, 238)">
                 <draggable id="1" label="Hydrogen" />

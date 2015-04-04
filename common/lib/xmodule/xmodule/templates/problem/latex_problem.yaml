@@ -3,7 +3,7 @@ metadata:
     display_name: Problem Written in LaTeX
     source_code: |
         % Nearly any kind of edX problem can be authored using Latex as
-        % the source language.  Write latex as usual, including equations.  The
+        % the source language.  Write latex as usual, including equations. The
         % key new feature is the \edXabox{} macro, which specifies an "Answer
         % Box" that queries students for a response, and specifies what the
         % epxected (correct) answer is.
@@ -92,30 +92,36 @@ data: |
     <problem showanswer="closed" rerandomize="never" weight="10" display_name="lec1_Q2">
       <text>
         <p>
-          <h4>Example "option" problem</h4>
+          <h4>Example Multiple Choice Problems</h4>
         </p>
         <p>
-    Where is the earth? </p>
+          <h5>Example Dropdown Problem</h5>
+        </p>
+        <p>
+    Which of the following countries celebrates its Independence Day on August 15?</p>
         <p>
           <optionresponse>
-            <optioninput options="('up','down')" correct="down"/>
+            <optioninput options="('India','Spain','China','Bermuda')" correct="India"/>
           </optionresponse>
         </p>
+          <h5>Example Multiple Choice Problem</h4>
+        </p>
+   <p>
+   Which of the following countries has the largest population?
+   </p>
+      <multiplechoiceresponse label="Which of the following countries has the largest population?">
+       <choicegroup direction="vertical">
+          <choice correct="false" name="brazil"><text>Brazil</text></choice>
+          <choice correct="false" name="germany"><text>Germany</text></choice>
+          <choice correct="true" name="indonesia"><text>Indonesia</text></choice>
+          <choice correct="false" name="russia"><text>Russia</text></choice>
+       </choicegroup>
+      </multiplechoiceresponse>
         <p>
-          <h4>Example "symbolic" problem</h4>
+          <h4>Example Numerical Problem</h4>
         </p>
         <p>
-    What is Einstein's equation for the energy equivalent of a mass [mathjaxinline]m[/mathjaxinline]? </p>
-        <p>
-          <symbolicresponse expect="m*c^2">
-            <textline size="90" correct_answer="m*c^2" math="1"/>
-          </symbolicresponse>
-        </p>
-        <p>
-          <h4>Example "numerical" problem</h4>
-        </p>
-        <p>
-    Estimate the energy savings (in J/y) if all the people ([mathjaxinline]3\times 10^8[/mathjaxinline]) in the U.&#xA0;S. switched from U.&#xA0;S. code to low flow shower heads. </p>
+    Estimate the energy savings (in J/y) if all the people ([mathjaxinline]3\times 10^8[/mathjaxinline]) in the U.&#xA0;S. switched from U.&#xA0;S. code to low-flow shower heads. </p>
         <p>
           <p style="display:inline">Energy saved = </p>
           <numericalresponse inline="1" answer="0.52">
@@ -126,88 +132,72 @@ data: |
           <p style="display:inline">&#xA0;EJ/year</p>
         </p>
         <p>
-          <h4>Example "multiple choice" problem</h4>
+          <h4>Example Math Expression Problem</h4>
         </p>
         <p>
-    What color is a banana? </p>
+    What is Einstein's equation for the energy equivalent of a mass [mathjaxinline]m[/mathjaxinline]? </p>
         <p>
-          <multiplechoiceresponse>
-            <choicegroup direction="vertical">
-              <choice correct="false" name="1">
-                <text> Red</text>
-              </choice>
-              <choice correct="false" name="2">
-                <text> Green</text>
-              </choice>
-              <choice correct="true" name="3">
-                <text> Yellow</text>
-              </choice>
-              <choice correct="false" name="4">
-                <text> Blue</text>
-              </choice>
-            </choicegroup>
-          </multiplechoiceresponse>
+          <symbolicresponse expect="m*c^2">
+            <textline size="90" correct_answer="m*c^2" math="1"/>
+          </symbolicresponse>
         </p>
         <p>
-          <h4>Example "string response" problem</h4>
+        <p>
+          <h4>Example Fill-in-the-Blank Problem</h4>
         </p>
         <p>
-    In what U.S. state is Detroit located? </p>
+    What was the first post-secondary school in China to allow both male and female students?</p>
         <p>
-          <stringresponse answer="Michigan">
-            <textline/>
+          <stringresponse answer="Nanjing Higher Normal Institute" type="ci">
+          <additional_answer>National Central University</additional_answer>
+          <additional_answer>Nanjing University</additional_answer>
+            <textline label="What was the first post-secondary school in China to allow both male and female students?" size="40"/>
           </stringresponse>
         </p>
         <p>
-    An explanation of the answer can be provided by using the edXsolution macro. Click on "Show Answer" to see the solution. </p>
-        <p>
-          <solution>
-            <font color="blue">Answer: </font>
-            <font color="blue">Detroit is near Canada, but it is actually in the United States. </font>
-          </solution>
+          <h4>Example Custom Python-Evaluated Input Problem</h4>
         </p>
         <p>
-          <h4>Example "custom response" problem</h4>
-        </p>
-        <p>
-    This problem demonstrates the use of a custom python script used for checking the answer. </p>
+    In this problem, a custom python script determines if the answer is correct. </p>
         <script type="text/python" system_path="python_lib">
     def sumtest(expect,ans):
         (a1,a2) = map(float,eval(ans))
         return (a1+a2)==10
     </script>
         <p>
-    Enter a python list of two numbers which sum to 10, eg [9,1]: </p>
+    Enter a Python list of two numbers that sum to 10. For example, your answer might be [9,1] or [4,6]. </p>
         <p>
           <customresponse cfn="sumtest" expect="[1,9]">
             <textline correct_answer="[1,9]"/>
           </customresponse>
         </p>
         <p>
-          <h4>Example image</h4>
+          <h4>Example Image Mapped Input Problem</h4>
+        </p>
+        <p>What country is home to the Pyramids as well as the cities of Cairo and
+          Memphis? Click the country on the map below.</p>
+          <imageresponse>
+            <imageinput src="https://studio.edx.org/c4x/edX/DemoX/asset/Africa.png"
+            width="600" height="638" rectangle="(338,98)-(412,168)" alt="Map of
+            Africa"/>
+          </imageresponse>
+        <p>
+          <h4>Example Hidden Explanation</h4>
         </p>
         <p>
-    Include image by using the edXxml macro: </p>
-        <p>
-          <img src="https://courses.edx.org/static/images/placeholder-image.png"/>
-        </p>
-        <p>
-          <h4>Example show/hide explanation</h4>
-        </p>
-        <p>
-    Extra explanations can be tucked away behind a "showhide" toggle flag: </p>
+    You can provide additional information that only appears at certain times by including a "showhide" flag. </p>
         <p>
           <table class="wikitable collapsible collapsed">
             <tbody>
               <tr>
-                <th> More explanation [<a href="javascript:$('#sh1').toggle()" id="sh1l">show</a>]</th>
+                <th> More Information [<a href="javascript:$('#sh1').toggle()" id="sh1l">show</a>]</th>
               </tr>
               <tr id="sh1" style="display:none">
                 <td>
                   <p>
-    This is a hidden explanation. It can contain equations: [mathjaxinline]\alpha = \frac{2}{\sqrt {1+\gamma }}[/mathjaxinline]  </p>
+    This is a hidden explanation. It can contain equations, such as [mathjaxinline]\alpha = \frac{2}{\sqrt {1+\gamma }}[/mathjaxinline].  </p>
                   <p>
-    This is some text after the showhide example. </p>
+    This is additional text after the hidden explanation. </p>
                 </td>
               </tr>
             </tbody>
