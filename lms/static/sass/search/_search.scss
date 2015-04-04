@@ -58,12 +58,15 @@
   display: none;
 
   .search-info {
-    padding-bottom: lh(.75);
-    margin-bottom: lh(.50);
-    border-bottom: 1px solid $gray-l2;
+    padding-bottom: $baseline;
+    border-bottom: 4px solid $border-color-l4;
+    margin-bottom: $baseline;
+    h2 {
+      font-family: $sans-serif;
+    }
     .search-count {
       @include float(right);
-      color: $gray;
+      color: $gray-l1;
     }
   }
 
@@ -75,28 +78,34 @@
     position: relative;
     border-bottom: 1px solid $gray-l4;
     list-style-type: none;
-    margin-bottom: lh(.75);
-    padding-bottom: lh(.75);
+    margin-bottom: $baseline;
+    padding-bottom: $baseline;
     @include padding-right(140px);
 
     .sri-excerpt {
-      color: $gray;
-      margin-bottom: lh(1);
+      margin-bottom: $baseline;
     }
     .sri-type {
       position: absolute;
       @include right(0);
-      top: 0;
-      color: $gray;
+      bottom: $baseline;
+      color: $gray-l1;
+      font-size: 14px;
     }
     .sri-course-name {
       @include margin-right(1em);
+      color: $gray-l1;
+      font-size: 14px;
+    }
+    .sri-location {
+      color: $gray-l1;
+      font-size: 14px;
     }
     .sri-link {
       position: absolute;
       @include right(0);
+      top: 0;
       line-height: 1.6em;
-      bottom: lh(.75);
       text-transform: uppercase;
     }
   }
