@@ -24,9 +24,17 @@
     }
 
     .u-field-image {
-          width: $profile-image-dimension;
+        width: $profile-image-dimension;
 
-         .image-frame {
+        .profile-image-status {
+            margin-bottom: ($baseline/10);
+
+            i {
+                color: $black;
+            }
+        }
+
+        .image-frame {
             position: relative;
             height: $profile-image-dimension;
             width: $profile-image-dimension;
@@ -41,48 +49,52 @@
             right: 0;
         }
 
-        .u-field-upload-button {
-            opacity: 0;
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            padding-top: 30%;
-            overflow: hidden;
-            text-align: center;
-            color: $white;
+        .u-field-actions {
 
-            i {
-                color: $white;
-            }
-
-            .upload-button-title {
-                margin: ($baseline/4) ($baseline/2);
-            }
-
-            .upload-button-input {
+            .u-field-upload-button {
                 opacity: 0;
                 position: absolute;
-                top: 0;
-                right: 0;
-                height: 100%;
-                cursor: pointer;
-                font-size: 100px;
+//                top: 0;
+                bottom: 0;
+                padding-top: 30%;
+                overflow: hidden;
+                text-align: center;
+                color: $white;
+
+                i {
+                    color: $white;
+                }
+
+                .upload-button-title {
+                    margin: ($baseline/4) ($baseline/2);
+                }
+
+                .upload-button-input {
+                    opacity: 0;
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    height: 100%;
+                    cursor: pointer;
+                    font-size: 100px;
+                }
+            }
+
+            .u-field-remove-button {
+                opacity: 0;
+                position: relative;
+                margin-top: 2px;
+                text-align: center;
             }
         }
 
-        .u-field-remove-button {
-            opacity: 0;
-            position: relative;
-            margin-top: 2px;
-            text-align: center;
-        }
-
-        &:hover {
-            .u-field-upload-button, .u-field-remove-button {
-                opacity: 1;
+        .enable-image-upload {
+            &:hover {
+                .u-field-upload-button, .u-field-remove-button {
+                    opacity: 1;
+                }
             }
         }
-
     }
 
     .wrapper-profile {

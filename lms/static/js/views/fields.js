@@ -500,6 +500,10 @@
             fieldType: 'image',
 
             templateSelector: '#field_image-tpl',
+            uploadButtonSelector: '.upload-button-input',
+
+            minImageBytes: 100,
+            maxImageBytes: 1024,
 
             titleAdd: 'upload a photo',
             titleEdit: 'change photo',
@@ -507,6 +511,11 @@
 
             iconUpload: '<i class="icon fa fa-camera" aria-hidden="true"></i>',
             iconRemove: '<i class="icon fa fa-remove" aria-hidden="true"></i>',
+            iconProgress: '<i class="icon fa fa-spinner fa-spin" aria-hidden="true"></i>',
+
+            statuses: {'upload': 'uploaded', 'remove': 'removed'},
+
+            errorMessage: gettext("We've encountered an error. Refresh your browser and then try again."),
 
             events: {
                 'click .u-field-upload-button': 'clickedUploadButton',
@@ -515,40 +524,70 @@
 
             initialize: function (options) {
                 this._super(options);
-                _.bindAll(this, 'render');
+                _.bindAll(this, 'render', 'successHandler', 'failureHandler', 'fileUploadHandler', 'addWindowActions',
+                          'onBeforeUnload');
                 this.listenTo(this.model, "change:" + this.options.valueAttribute, this.render);
             },
 
             render: function () {
                 this.$el.html(this.template({
                     id: this.options.valueAttribute,
-                    imageLink: this.imageLink(),
+                    imageLink: this.model.profileImageUrl(),
                     uploadButtonIcon: _.result(this, 'iconUpload'),
                     uploadButtonTitle: _.result(this, 'uploadButtonTitle'),
                     removeButtonIcon: _.result(this, 'iconRemove'),
-                    removeButtonTitle: _.result(this, 'removeButtonTitle')
+                    removeButtonTitle: _.result(this, 'removeButtonTitle'),
+                    isAboveMinimumAge: this.model.isAboveMinimumAge()
                 }));
+                this.addWindowActions();
                 return this;
+            },
+
+            addWindowActions: function () {
+                $(window).on('beforeunload', this.onBeforeUnload);
+            },
+
+            onBeforeUnload: function () {
+                var status = this.getCurrentStatus();
+                var message = gettext("{status} is in progress. Navigating away will abort it.");
+
+                if (status === 'upload') {
+                    return interpolate_text(message, {status: 'Uploading'});
+                } else if (status === 'remove') {
+                    return interpolate_text(message, {status: 'Removing'});
+                }
             },
 
             clickedUploadButton: function () {
                 console.log('upload');
+                $(this.uploadButtonSelector).fileupload({
+                    url: this.options.profileImageUploadUrl,
+                    type: 'POST',
+                    autoUpload: true,
+                    add: this.fileUploadHandler,
+                    done: this.successHandler,
+                    fail: this.failureHandler
+                });
             },
 
             clickedRemoveButton: function () {
-                console.log('remove');
-            },
-
-            hasImage: function () {
-                return false;
-            },
-
-            imageLink: function () {
-                return 'http://www.teachthought.com/wp-content/uploads/2012/07/edX-120x120.jpg';
+                var self = this;
+                this.setCurrentStatus('remove');
+                this.showInProgressMessage('Removing...');
+                 $.ajax({
+                    type: 'POST',
+                    url: this.options.profileImageRemoveUrl,
+                    success: function (data, status, xhr) {
+                        self.successHandler();
+                    },
+                    error: function (xhr, status, error) {
+                       self.failureHandler();
+                    }
+                });
             },
 
             uploadButtonTitle: function () {
-                if (this.hasImage()) {
+                if (this.model.get('profile_image')['has_image']) {
                     return _.result(this, 'titleEdit')
                 } else {
                     return _.result(this, 'titleAdd')
@@ -557,6 +596,76 @@
 
             removeButtonTitle: function () {
                 return this.titleRemove;
+            },
+
+            successHandler: function (e, data) {
+                this.hideInProgressMessage();
+                // Update model to get the latest urls of profile image.
+                this.model.fetch();
+                if (this.getCurrentStatus === 'upload') {
+                    this.showUserMessage('Your profile image has uploaded successfully.');
+                } else {
+                    this.showUserMessage('Your profile image has removed successfully.');
+                }
+                this.setCurrentStatus('');
+            },
+
+            failureHandler: function (e, data) {
+                this.setCurrentStatus('');
+                this.hideInProgressMessage();
+                 if (_.contains([400, 404], data.jqXHR.status)) {
+                    try {
+                        var errors = JSON.parse(data.jqXHR.responseText);
+                        this.showUserMessage(errors.user_message);
+                    } catch (error) {
+                        this.showUserMessage(this.errorMessage);
+                    }
+                } else {
+                    this.showUserMessage(this.errorMessage);
+                }
+            },
+
+            fileUploadHandler: function (e, data) {
+                if (this.validateImageSize(data.files[0])) {
+                    data.formData = {file: data.files[0]};
+                    this.setCurrentStatus('upload');
+                    this.showInProgressMessage('Uploading...');
+                    data.submit();
+                }
+            },
+
+            validateImageSize: function (imageBytes) {
+                if (imageBytes < this.minImageBytes) {
+                    this.showUserMessage('Minimum file size not met.');
+                    return false;
+                } else if (imageBytes > this.maxImageBytes) {
+                    this.showUserMessage('Maximum file size exceeded.');
+                    return false;
+                }
+                return true;
+            },
+
+            showInProgressMessage: function (message) {
+                this.$('.profile-image-status-icon').html(this.iconProgress);
+                this.$('.profile-image-status-message').html(message);
+            },
+
+            hideInProgressMessage: function () {
+                this.$('.profile-image-status-icon').html('');
+                this.$('.profile-image-status-message').html('');
+            },
+
+            setCurrentStatus: function (status) {
+                this.$('.image-wrapper').attr('data-status', status);
+            },
+
+            getCurrentStatus: function () {
+                return this.$('.image-wrapper').attr('data-status');
+            },
+
+            showUserMessage: function (message, status) {
+                //TODO! Show message to user at top of the page
+                alert(message);
             }
 
         });

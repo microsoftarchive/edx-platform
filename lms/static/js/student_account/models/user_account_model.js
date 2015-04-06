@@ -48,6 +48,13 @@
             isAboveMinimumAge: function() {
                 var isBirthDefined = !(_.isUndefined(this.get('year_of_birth')) || _.isNull(this.get('year_of_birth')));
                 return isBirthDefined && !(this.get("requires_parental_consent"));
+            },
+
+            profileImageUrl: function () {
+                // TODO! URL should be replaced by our own default profile image
+                var defaultImageUrl = 'http://www.teachthought.com/wp-content/uploads/2012/07/edX-120x120.jpg';
+                var profileImage = this.get('profile_image');
+                return profileImage['has_image'] ? profileImage['image_url_large'] : defaultImageUrl;
             }
         });
         return UserAccountModel;

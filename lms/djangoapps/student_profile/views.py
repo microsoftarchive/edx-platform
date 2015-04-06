@@ -60,6 +60,8 @@ def learner_profile_context(logged_in_username, profile_username, user_is_staff)
             'default_public_account_fields': settings.ACCOUNT_VISIBILITY_CONFIGURATION['public_fields'],
             'accounts_api_url': reverse("accounts_api", kwargs={'username': profile_username}),
             'preferences_api_url': reverse('preferences_api', kwargs={'username': profile_username}),
+            'profile_image_upload_url': reverse('profile_image_upload', kwargs={'username': profile_username}),
+            'profile_image_remove_url': reverse('profile_image_remove', kwargs={'username': profile_username}),
             'account_settings_page_url': reverse('account_settings'),
             'has_preferences_access': (logged_in_username == profile_username or user_is_staff),
             'own_profile': (logged_in_username == profile_username),
