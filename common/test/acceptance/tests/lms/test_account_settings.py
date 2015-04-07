@@ -9,9 +9,10 @@ from bok_choy.web_app_test import WebAppTest
 from ...pages.lms.account_settings import AccountSettingsPage
 from ...pages.lms.auto_auth import AutoAuthPage
 from ...pages.lms.dashboard import DashboardPage
+from ..helpers import EventsTestMixin
 
 
-class AccountSettingsPageTest(WebAppTest):
+class AccountSettingsPageTest(EventsTestMixin, WebAppTest):
     """
     Tests that verify behaviour of the Account Settings page.
     """
@@ -27,7 +28,9 @@ class AccountSettingsPageTest(WebAppTest):
         """
         super(AccountSettingsPageTest, self).setUp()
 
-        AutoAuthPage(self.browser, username=self.USERNAME, password=self.PASSWORD, email=self.EMAIL).visit()
+        self.user_id = AutoAuthPage(
+            self.browser, username=self.USERNAME, password=self.PASSWORD, email=self.EMAIL
+        ).visit().get_user_id()
 
         self.account_settings_page = AccountSettingsPage(self.browser)
         self.account_settings_page.visit()
@@ -159,6 +162,8 @@ class AccountSettingsPageTest(WebAppTest):
             [u'another name', self.USERNAME],
         )
 
+        self.assert_event_emitted_num_times('edx.user.settings.changed', self.start_time, self.user_id, 2)
+
     def test_email_field(self):
         """
         Test behaviour of "Email" field.
@@ -210,6 +215,7 @@ class AccountSettingsPageTest(WebAppTest):
             u'',
             [u'Bachelor\'s degree', u''],
         )
+        self.assert_event_emitted_num_times('edx.user.settings.changed', self.start_time, self.user_id, 2)
 
     def test_gender_field(self):
         """
@@ -221,6 +227,7 @@ class AccountSettingsPageTest(WebAppTest):
             u'',
             [u'Female', u''],
         )
+        self.assert_event_emitted_num_times('edx.user.settings.changed', self.start_time, self.user_id, 2)
 
     def test_year_of_birth_field(self):
         """
@@ -233,6 +240,7 @@ class AccountSettingsPageTest(WebAppTest):
             u'',
             [u'1980', u''],
         )
+        self.assert_event_emitted_num_times('edx.user.settings.changed', self.start_time, self.user_id, 2)
 
     def test_country_field(self):
         """
@@ -244,6 +252,7 @@ class AccountSettingsPageTest(WebAppTest):
             u'',
             [u'Pakistan', u''],
         )
+        self.assert_event_emitted_num_times('edx.user.settings.changed', self.start_time, self.user_id, 2)
 
     def test_prefered_language_field(self):
         """
