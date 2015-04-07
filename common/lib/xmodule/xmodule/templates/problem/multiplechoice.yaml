@@ -8,7 +8,7 @@ metadata:
        - Multiple choice problems allow learners to select only one option. Learners can see all the options along with the problem text.
 
        To create a multiple choice problem in the simple editor:
-       1. Enter the text of the main question between angle brackets.
+       1. Enter the text of the main question between two pairs of angle brackets that point inward (>><<).
        2. Enter each answer option on a separate line.
        3. Add parentheses that contain a space before each answer option: ( )
        4. For the correct answer, add an x between the parentheses: (x)
@@ -43,14 +43,14 @@ data: |
    <p>Multiple choice problems allow learners to select only one option.
        Learners can see all the options along with the problem text.</p>
    <p>To create a multiple choice problem in the simple editor:</p>
-   <p>1. Enter the text of the main question between angle brackets.</p>
+   <p>1. Enter the text of the main question between two pairs of angle brackets that point inward (>><<).</p>
    <p>2. Add parentheses that contain a space before each answer option: ( )</p>
    <p>3. For the correct answer, add an x between the parentheses: (x)</p>
    <p>4. To add an explanation, enter the text of the explanation, and then highlight the explanation and click the light bulb icon.</p>
    <p>You can use the following example problem as a model.</p>
    <p>_____________________________________________________________________________</p>
       <fieldset>
-      <legend>The following languages are in the Indo-European family:</legend>
+      <legend>Which of the following countries has the largest population?</legend>
       <multiplechoiceresponse>
        <choicegroup type="MultipleChoice">
           <choice correct="false" name="brazil">Brazil</choice>

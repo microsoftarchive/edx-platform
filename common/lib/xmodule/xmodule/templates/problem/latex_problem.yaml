@@ -96,26 +96,25 @@ data: |
         <p>
           <h5>Example Dropdown Problem</h5>
         </p>
-        <p>
-    Which of the following countries celebrates its independence on August 15?</p>
-        <p>
-          <optionresponse>
-            <optioninput options="('India','Spain','China','Bermuda')" correct="India"/>
-          </optionresponse>
-        </p>
+      <fieldset>
+      <legend>Which of the following countries celebrates its independence on August 15?</legend>
+      <optionresponse>
+        <optioninput options="('India','Spain','China','Bermuda')" correct="India"></optioninput>
+      </optionresponse>
+      </fieldset>
           <h5>Example Multiple Choice Problem</h4>
         </p>
-   <p>
-   Which of the following countries has the largest population?
-   </p>
-      <multiplechoiceresponse label="Which of the following countries has the largest population?">
-       <choicegroup direction="vertical">
-          <choice correct="false" name="brazil"><text>Brazil</text></choice>
-          <choice correct="false" name="germany"><text>Germany</text></choice>
-          <choice correct="true" name="indonesia"><text>Indonesia</text></choice>
-          <choice correct="false" name="russia"><text>Russia</text></choice>
+      <fieldset>
+      <legend>Which of the following countries has the largest population?</legend>
+      <multiplechoiceresponse>
+       <choicegroup type="MultipleChoice">
+          <choice correct="false" name="brazil">Brazil</choice>
+          <choice correct="false" name="germany">Germany</choice>
+          <choice correct="true" name="indonesia">Indonesia</choice>
+          <choice correct="false" name="russia">Russia</choice>
        </choicegroup>
       </multiplechoiceresponse>
+      </fieldset>
         <p>
           <h4>Example Numerical Problem</h4>
         </p>
@@ -174,7 +173,7 @@ data: |
         <p>
           <h4>Example Image Mapped Input Problem</h4>
         </p>
-        <p>What country is home to the Pyramids as well as the cities of Cairo and
+        <p>What country is home to the Great Pyramid of Giza as well as the cities of Cairo and
           Memphis? Click the country on the map below.</p>
           <imageresponse>
             <imageinput src="https://studio.edx.org/c4x/edX/DemoX/asset/Africa.png"

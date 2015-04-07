@@ -22,9 +22,10 @@ data: |
       "solution" tags, and that learners do not see these images until they
       click the "Show Answer" button.      
       </p>
-      <p>
-      For more information, see the documentation for these problems in the
-      <i>Building and Running an edX Course</i> guide.
+      <p> For more information, see <a
+      href="http://edx.readthedocs.org/projects/edx-partner-course-
+      staff/en/latest/exercises_tools/custom_python.html">Write-Your-Own-
+      Grader Problem</a> in <i>Building and Running an edX Course</i>.
       </p>      
       <p>You can use the following example problem as a model.</p>
       <p>______________________________________________________________________________</p>
@@ -61,7 +62,7 @@ data: |
                   <p>Explanation</p>
                   <p>Any set of integers on the line \(y = 10 - x\) and \(y = 20 - x\) satisfy these constraints.</p>
                   <p>To add an image to the solution, use an HTML "img" tag. Make sure to include alt text.</p>
-                  <img src="/static/images/placeholder-image.png width="400" alt="Scene of a river and evergreen trees, with mountains in the background"/>
+                  <img src="/static/images/placeholder-image.png width="400" alt="Description of image"/>
               </div>
           </solution>
       </problem>

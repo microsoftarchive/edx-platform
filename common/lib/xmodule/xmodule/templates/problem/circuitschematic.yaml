@@ -51,9 +51,9 @@ data: |
           <solution>
               <div class="detailed-solution">
                   <p>Explanation</p>
-                  <p>A voltage divider that evenly divides the input voltage can be formed with two identically valued resistors, with the sampled voltage taken in between the two.</p>
+                  <p>You can form a voltage divider that evenly divides the input voltage with two identically valued resistors, with the sampled voltage taken in between the two.</p>
                   <p><img src="/static/images/voltage_divider.png"/></p>
-                  <p>A simple high-pass filter without any further constaints can be formed by simply putting a resistor in series with a capacitor. The actual values of the components do not really matter in this problem.</p>
+                  <p>You can form a simple high-pass filter without any further constaints by simply putting a resistor in series with a capacitor. The actual values of the components do not really matter in this problem.</p>
                   <p><img src="/static/images/high_pass_filter.png"/></p>
               </div>
           </solution>

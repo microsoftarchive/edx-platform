@@ -4,7 +4,18 @@ metadata:
     markdown: !!null
 data: |
     <problem>
-      This template includes two example problems. You can replace the example problem images and text with your own images and text.
+      <p>
+      In drag and drop problems, students respond to a question by dragging text or objects to a specific location on an image.
+      </p>
+      <p>
+      For more information, see <a href="http://edx.readthedocs.org/projects
+      /edx-partner-course-
+      staff/en/latest/exercises_tools/drag_and_drop.html">Drag and Drop
+      Problem</a> in <i>Building and Running an edX Course</i>.
+      </p>
+      <p>
+      You can use the following example problems as models.
+      </p>
        <customresponse>
             <text>
                 <h2>Simple Drag and Drop</h2>

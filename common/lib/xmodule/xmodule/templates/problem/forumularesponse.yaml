@@ -7,8 +7,10 @@ data: |
   <p>
   In math expression input problems, learners enter text that represents a
   mathematical expression into a field, and text is converted to a symbolic
-  expression that appears below that field. Learners can see "Entering
-  Mathematical and Scientific Expressions" in the <i>edX Guide for
+  expression that appears below that field. Learners can see <a href="http
+  ://edx-guide-for-
+  students.readthedocs.org/en/latest/SFD_mathformatting.html">Entering
+  Mathematical and Scientific Expressions</a> in the <i>edX Guide for
   Students</i> for information about how to enter text into the field.
   </p>
   <p>
@@ -30,8 +32,8 @@ data: |
   <p>_____________________________________________________________________________</p>
 
 
-  <p>Write an expression for the product of R<sub>1</sub>, R<sub>2</sub>, and
-  the inverse of R<sub>3</sub>.</p>
+  <p>Write an expression for the product of \( R_1\), \( R_2\), and
+  the inverse of \( R_3\) .</p>
   <formularesponse type="ci" samples="R_1,R_2,R_3@1,2,3:3,4,5#10" answer="$VoVi">
     <responseparam type="tolerance" default="0.00001"/>
     <formulaequationinput size="40" label="Enter the equation"/>
@@ -41,8 +43,8 @@ data: |
 VoVi = "(R_1*R_2)/R_3"
 </script>
 
-  <p>Let <i>x</i> be a variable, and let <i>n</i> be an arbitrary constant.
-  What is the derivative of <i>x<sup>n</sup></i>?</p>
+  <p>Let \( x\) be a variable, and let \( n\) be an arbitrary constant.
+  What is the derivative of \( x^n\)?</p>
   
 <script type="loncapa/python">
 derivative = "n*x^(n-1)"

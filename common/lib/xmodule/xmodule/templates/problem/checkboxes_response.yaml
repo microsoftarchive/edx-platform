@@ -8,10 +8,10 @@ metadata:
        - Multiple choice problems allow learners to select only one option. Learners can see all the options along with the problem text.
 
        To create a checkbox problem in the simple editor:
-       1. Enter the text of the main question between angle brackets.
+       1. Enter the text of the main question between two pairs of angle brackets that point inward (>><<).
        2. Enter the text of each answer option on a separate line.
        3. Add brackets that contain a space before each answer option: [ ]
-       4. For each correct answer, add an x between the parentheses: [x]
+       4. For each correct answer, add an x between the brackets: [x]
        Note that a checkbox problem can have more than one correct answer.
        5. To add an explanation, enter the text of the explanation, and then highlight the explanation and click the light bulb icon.
 
@@ -34,11 +34,11 @@ metadata:
 data: |
       <problem>
       <p>To create a checkbox problem in the simple editor:</p>
-      <p>- Enter the text of the main question between angle brackets.</p>
-      <p>- Add brackets that contain a space before each answer option: [ ]</p>
-      <p>- For each correct answer, add an x between the parentheses: [x] </p>
+      <p>1. Enter the text of the main question between two pairs of angle brackets that point inward (>><<).</p>
+      <p>2. Add brackets that contain a space before each answer option: [ ]</p>
+      <p>3. For each correct answer, add an x between the parentheses: [x] </p>
       <p>Note that a problem can have more than one correct answer.</p>
-      <p>- To add an explanation, enter the text of the explanation, and then highlight the explanation and click the light bulb icon.</p>
+      <p>4. To add an explanation, enter the text of the explanation, and then highlight the explanation and click the light bulb icon.</p>
       <p>You can use the following example problem as a model.</p>
       <p>_____________________________________________________________________________</p>
 

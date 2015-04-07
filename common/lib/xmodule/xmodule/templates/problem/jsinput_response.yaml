@@ -17,6 +17,12 @@ data: |
       style sheets (CSS). You can use any application creation tool, such as the
       Google Web Toolkit (GWT), to create your JS Input problem.
       </p>
+      <p>      
+      For more information, see <a href="http://edx.readthedocs.org/projects
+      /edx-partner-course-
+      staff/en/latest/exercises_tools/custom_javascript">Custom JavaScript
+      Problem</a> in <i>Building and Running an edX Course</i>.
+      </p>
       <p>You can use the following example problem as a model.</p>
       <p>_____________________________________________________________________________</p>
 

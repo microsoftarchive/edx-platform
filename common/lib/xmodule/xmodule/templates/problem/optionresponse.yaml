@@ -8,7 +8,7 @@ metadata:
          - Multiple choice problems allow learners to select only one option. Learners can see all the options along with the problem text.
 
          To create a dropdown problem in the simple editor:
-         1. Enter the text of the main question between angle brackets.
+         1. Enter the text of the main question between two pairs of angle brackets that point inward (>><<).
          2. On a new line, enter the answer options separated by commas.
          3. Surround the correct answer with parentheses. Make sure to keep the comma outside the parentheses.
          4. Select all the answer options, and then click the dropdown icon in the component editor toolbar.
@@ -25,20 +25,25 @@ metadata:
           [explanation]
 data: |
   <problem>
-    <p>Studio offers three types of problems that allow learners to select one or more options from a list that you provide.</p>
-
-    <p>- Checkbox problems allow learners to select multiple options. Learners can see all the options along with the problem text.</p>
-
-    <p>- Dropdown problems allow learners to select only one option. Learners only see all the options after they click the dropdown list.</p>
-
-    <p>- Multiple choice problems allow learners to select only one option. Learners can see all the options along with the problem text.</p>
-
+   
+    <p>Studio offers three types of problems that allow learners to select one
+    or more options from a list that you provide.</p>
+    <p>- Checkbox problems allow learners to select multiple options. Learners
+    can see all the options along with the problem text.</p>
+    <p>- Dropdown problems allow learners to select only one option. Learners
+    only see all the options after they click the dropdown list.</p>
+    <p>- Multiple choice problems allow learners to select only one option.
+    Learners can see all the options along with the problem text.</p>
     <p>To create a dropdown problem in the simple editor:</p>
-    <p>1. Enter the text of the main question between angle brackets.</p>
+    <p>1. Enter the text of the main question between two pairs of angle
+    brackets that point inward (>><<).</p>
     <p>2. Enter the answer options on the same line, separated by a comma.</p>
-    <p>3. Surround the correct answer with parentheses. Make sure to keep the comma outside the parentheses.</p>
-    <p>4. Select all the answer options, and then click the dropdown icon in the component editor toolbar.</p>
-    <p>5. To add an explanation, enter the text of the explanation, and then select the explanation and click the light bulb icon.</p>
+    <p>3. Surround the correct answer with parentheses. Make sure to keep the
+    comma outside the parentheses.</p>
+    <p>4. Select all the answer options, and then click the dropdown icon in
+    the component editor toolbar.</p>
+    <p>5. To add an explanation, enter the text of the explanation, and then
+    select the explanation and click the light bulb icon.</p>
     <p>You can use the following example problem as a model.</p>
     <p>_____________________________________________________________________________</p>
 
