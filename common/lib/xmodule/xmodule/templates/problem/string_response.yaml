@@ -2,38 +2,45 @@
 metadata:
     display_name: Text Input
     markdown: |
-        A text input problem accepts a line of text from the student, and evaluates the input for correctness based on an expected answer.
-    
-        The answer is correct if it matches every character of the expected answer. This can be a problem with international spelling, dates, or anything where the format of the answer is not clear.
-    
-        >>Which US state has Lansing as its capital?<<
+        In fill-in-the-blank problems, also known as "text input" problems, learners enter text into a response field. The text can include letters and characters such as punctuation marks. The text that the learner enters must match your specified answer text exactly.
+        To create a fill-in-the-blank problem in the simple editor:
+        1. Enter the text of the main question between angle brackets.
+        2. On a new line, enter an equal sign (=) followed by a space and the text of the correct answer.
+        3. (optional) To specify more than one answer, on a new line, enter "or=" followed by a space and the text of the answer. Repeat this step for each additional correct answer.
 
-        = Michigan
-        
+         You can use the following example problem as a model.
+         _____________________________________________________________________________
+
+        >>What was the first post-secondary school in China to allow both male and female students?<<
+
+        = Nanjing Higher Normal Institute
+        or= National Central University
+        or= Nanjing University
 
         [explanation]
-        Lansing is the capital of Michigan, although it is not Michigan's largest city, or even the seat of the county in which it resides.
+        Nanjing Higher Normal Institute first admitted female students in 1920.
         [explanation]
+
 data: |
     <problem>
-    <p>
+    <p>In fill-in-the-blank problems, also known as "text input" problems, learners enter text into a response field. The text can include letters and characters such as punctuation marks. The text that the learner enters must match your specified answer text exactly.</p>
+    <p>To create a fill-in-the-blank problem in the simple editor:</p>
+    <p>1. Enter the text of the main question between angle brackets.</p>
+    <p>2. On a new line, enter an equal sign (=) followed by the text of the correct answer.</p>
+    <p>3. (optional) To specify more than one answer, on a new line, enter "or=" followed by the text of the answer. Repeat this step for each additional correct answer.</p>
 
-    A text input problem accepts a line of text from the
-    student, and evaluates the input for correctness based on an expected
-    answer.
-    </p>
-    <p>
-    The answer is correct if it matches every character of the expected answer. This can be a problem with international spelling, dates, or anything where the format of the answer is not clear. 
-    </p>
+    <p> You can use the following example problem as a model.</p>
+    <p> _____________________________________________________________________________</p>
 
-     <p>Which US state has Lansing as its capital? </p>
-     <stringresponse answer="Michigan" type="ci">
-      <textline size="20" label="Which US state has Lansing as its capital?"/>
-     </stringresponse>
-        <solution>
-            <div class="detailed-solution">
-                <p>Explanation</p>
-                <p>Lansing is the capital of Michigan, although it is not Michigan's largest city, or even the seat of the county in which it resides.</p>
-            </div>
-        </solution>
+    <p>What was the first post-secondary school in China to allow both male and female students?</p>
+
+        <stringresponse answer="Nanjing Higher Normal Institute" type="ci" >
+          <additional_answer>National Central University</additional_answer>
+          <additional_answer>Nanjing University</additional_answer>
+          <textline label="What was the first post-secondary school in China to allow both male and female students?" size="40"/>
+        </stringresponse>
+
+        <p>[explanation]</p>
+        <p>Nanjing Higher Normal Institute first admitted female students in 1920.</p>
+        <p>[explan</p>
     </problem>

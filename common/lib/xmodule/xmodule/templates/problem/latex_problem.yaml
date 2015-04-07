@@ -2,18 +2,25 @@
 metadata:
     display_name: Problem Written in LaTeX
     source_code: |
-        % Nearly any kind of edX problem can be authored using Latex as
-        % the source language.  Write latex as usual, including equations. The
-        % key new feature is the \edXabox{} macro, which specifies an "Answer
-        % Box" that queries students for a response, and specifies what the
-        % epxected (correct) answer is.
+        % Nearly any kind of edX problem can be authored using LaTeX as
+        % the source language.  Write LaTeX as usual, including equations. The
+        % key new feature is the \edXabox{} macro, which specifies an "answer
+        % box" that queries students for a response, and specifies what the
+        % expected (correct) answer is.
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         \subsection{Example "option" problem}
 
-        Where is the earth?
+        Which of the following countries celebrates its independence on August 15?
 
-        \edXabox{options='up','down' expect='down'}
+        \edXabox{options='India','Spain','China','Bermuda' expect='India'}
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        \subsection{Example "multiple choice" problem}
+
+        Which of the following countries has the largest population?
+
+        \edXabox{ type="multichoice" expect="Indonesia" options="Brazil","Germany","Indonesia","Russia" }
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         \subsection{Example "symbolic" problem}
@@ -26,38 +33,30 @@ metadata:
         \subsection{Example "numerical" problem}
 
         Estimate the energy savings (in J/y) if all the people
-        ($3\times 10^8$) in the U.~S. switched from U.~S. code to low flow
+        ($3\times 10^8$) in the U.~S. switched from U.~S. code to low-flow
         shower heads.
 
         \edXinline{Energy saved = }\edXabox{expect="0.52" type="numerical" tolerance='0.02' inline='1' } %
         \edXinline{~EJ/year}
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        \subsection{Example "multiple choice" problem}
-
-        What color is a banana?
-
-        \edXabox{ type="multichoice" expect="Yellow" options="Red","Green","Yellow","Blue" }
-
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         \subsection{Example "string response" problem}
 
-        In what U.S. state is Detroit located?
+        What was the first post-secondary school in China to allow both male and female students?
 
-        \edXabox{ type="string" expect="Michigan" options="ci" }
+        \edXabox{ type="string" expect="Nanjing Higher Normal Institute" options="ci" }
 
-        An explanation of the answer can be provided by using the edXsolution
-        macro.  Click on "Show Answer" to see the solution.
+        You can include an explanation of the answer by using the edXsolution
+        macro. Click "Show Answer" to see the explanation.
 
         \begin{edXsolution}
-        Detroit is near Canada, but it is actually in the United States.
+        Nanjing Higher Normal Institute first admitted female students in 1920.
         \end{edXsolution}
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         \subsection{Example "custom response" problem}
 
-        This problem demonstrates the use of a custom python script used for
-        checking the answer.
+        In this problem, a custom Python script determines if the answer is correct.
 
         \begin{edXscript}
         def sumtest(expect,ans):
@@ -65,26 +64,26 @@ metadata:
             return (a1+a2)==10
         \end{edXscript}
 
-        Enter a python list of two numbers which sum to 10, eg [9,1]:
+        Enter a Python list of two numbers that sum to 10. For example, your answer might be [9,1] or [4,6].
 
         \edXabox{expect="[1,9]" type="custom" cfn="sumtest"}
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         \subsection{Example image}
 
-        Include image by using the edXxml macro:
+        Include an image by using the following macro:
 
         \edXxml{<img src="https://courses.edx.org/static/images/placeholder-image.png"/>}
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         \subsection{Example show/hide explanation}
 
-        Extra explanations can be tucked away behind a "showhide" toggle flag:
+        You can provide additional information that only appears at certain times by including a "showhide" flag.
 
-        \edXshowhide{sh1}{More explanation}{This is a hidden explanation.  It
-        can contain equations: $\alpha = \frac{2}{\sqrt{1+\gamma}}$ }
+        \edXshowhide{sh1}{More explanation}{This is a hidden explanation. It
+        can contain equations, such as $\alpha = \frac{2}{\sqrt{1+\gamma}}$ }.
 
-        This is some text after the showhide example.
+        This is additional text after the hidden explanation.
     markdown: !!null
 
 data: |
@@ -98,7 +97,7 @@ data: |
           <h5>Example Dropdown Problem</h5>
         </p>
         <p>
-    Which of the following countries celebrates its Independence Day on August 15?</p>
+    Which of the following countries celebrates its independence on August 15?</p>
         <p>
           <optionresponse>
             <optioninput options="('India','Spain','China','Bermuda')" correct="India"/>
@@ -142,11 +141,9 @@ data: |
           </symbolicresponse>
         </p>
         <p>
-        <p>
           <h4>Example Fill-in-the-Blank Problem</h4>
         </p>
-        <p>
-    What was the first post-secondary school in China to allow both male and female students?</p>
+        <p>What was the first post-secondary school in China to allow both male and female students?</p>
         <p>
           <stringresponse answer="Nanjing Higher Normal Institute" type="ci">
           <additional_answer>National Central University</additional_answer>
@@ -154,18 +151,21 @@ data: |
             <textline label="What was the first post-secondary school in China to allow both male and female students?" size="40"/>
           </stringresponse>
         </p>
+       <p>You can include an explanation of the answer by using the edXsolution macro. Click "Show Answer" to see the explanation. </p>
         <p>
-          <h4>Example Custom Python-Evaluated Input Problem</h4>
+          <solution>
+            <font color="blue">Answer: </font>
+            <font color="blue">Nanjing Higher Normal Institute first admitted female students in 1920.</font>
+          </solution>
         </p>
-        <p>
-    In this problem, a custom python script determines if the answer is correct. </p>
+          <h4>Example Custom Python-Evaluated Input Problem</h4>
+        <p>In this problem, a custom Python script determines if the answer is correct. </p>
         <script type="text/python" system_path="python_lib">
     def sumtest(expect,ans):
         (a1,a2) = map(float,eval(ans))
         return (a1+a2)==10
     </script>
-        <p>
-    Enter a Python list of two numbers that sum to 10. For example, your answer might be [9,1] or [4,6]. </p>
+        <p>Enter a Python list of two numbers that sum to 10. For example, your answer might be [9,1] or [4,6]. </p>
         <p>
           <customresponse cfn="sumtest" expect="[1,9]">
             <textline correct_answer="[1,9]"/>

@@ -2,18 +2,27 @@
 metadata:
     display_name: Multiple Choice
     markdown: |
+       Studio offers three types of problems that allow learners to select one or more options from a list that you provide.
+       - Checkbox problems allow learners to select multiple options. Learners can see all the options along with the problem text.
+       - Dropdown problems allow learners to select only one option. Learners only see all the options after they click the dropdown list.
+       - Multiple choice problems allow learners to select only one option. Learners can see all the options along with the problem text.
+
        To create a multiple choice problem in the simple editor:
-       - Enter the text of the main question between angle brackets.
-       - Add parentheses that contain a space before each answer option: ( )
-       - For the correct answer, add an x between the parentheses: (x)
+       1. Enter the text of the main question between angle brackets.
+       2. Enter each answer option on a separate line.
+       3. Add parentheses that contain a space before each answer option: ( )
+       4. For the correct answer, add an x between the parentheses: (x)
        - To add an explanation, enter the text of the explanation, and then highlight the explanation and click the light bulb icon.
-       You can replace the text in the following example problem with your own text.
+
+       You can use the following example problem as a model.
        _____________________________________________________________________________
+
        >>Which of the following countries has the largest population?<<
        ( ) Brazil
        ( ) Germany
        (x) Indonesia
        ( ) Russia
+
        [explanation]
        According to September 2014 estimates:
        The population of Indonesia is approximately 250 million.
@@ -21,19 +30,28 @@ metadata:
        The population of Russia is approximately 146 million.
        The population of Germany is approximately 81 million.
        [explanation]
+
 data: |
    <problem>
+
+   <p>Studio offers three types of problems that allow learners to select one
+   or more options from a list that you provide.</p>
+   <p>Checkbox problems allow learners to select multiple options. Learners
+    can see all the options along with the problem text.</p>
+   <p>Dropdown problems allow learners to select only one option. Learners
+    only see all the options after they click the dropdown list.</p>
+   <p>Multiple choice problems allow learners to select only one option.
+       Learners can see all the options along with the problem text.</p>
    <p>To create a multiple choice problem in the simple editor:</p>
-   <p>- Enter the text of the main question between angle brackets.</p>
-   <p>- Add parentheses that contain a space before each answer option: ( )</p>
-   <p>- For the correct answer, add an x between the parentheses: (x)</p>
-   <p>- To add an explanation, enter the text of the explanation, and then highlight the explanation and click the light bulb icon.</p>
+   <p>1. Enter the text of the main question between angle brackets.</p>
+   <p>2. Add parentheses that contain a space before each answer option: ( )</p>
+   <p>3. For the correct answer, add an x between the parentheses: (x)</p>
+   <p>4. To add an explanation, enter the text of the explanation, and then highlight the explanation and click the light bulb icon.</p>
    <p>You can use the following example problem as a model.</p>
    <p>_____________________________________________________________________________</p>
-   <p>
-   Which of the following countries has the largest population?
-   </p>
-      <multiplechoiceresponse label="Which of the following countries has the largest population?">
+      <fieldset>
+      <legend>The following languages are in the Indo-European family:</legend>
+      <multiplechoiceresponse>
        <choicegroup type="MultipleChoice">
           <choice correct="false" name="brazil">Brazil</choice>
           <choice correct="false" name="germany">Germany</choice>
@@ -41,6 +59,7 @@ data: |
           <choice correct="false" name="russia">Russia</choice>
        </choicegroup>
       </multiplechoiceresponse>
+      </fieldset>
       <solution>
         <div class="detailed-solution">
             <p>Explanation</p>

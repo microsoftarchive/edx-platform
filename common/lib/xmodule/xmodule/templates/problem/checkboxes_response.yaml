@@ -2,17 +2,23 @@
 metadata:
     display_name: Checkbox
     markdown: |
+       Studio offers three types of problems that allow learners to select one or more options from a list that you provide.
+       - Checkbox problems allow learners to select multiple options. Learners can see all the options along with the problem text.
+       - Dropdown problems allow learners to select only one option. Learners only see all the options after they click the dropdown list.
+       - Multiple choice problems allow learners to select only one option. Learners can see all the options along with the problem text.
+
        To create a checkbox problem in the simple editor:
-       - Enter the text of the main question between angle brackets.
-       - Add brackets that contain a space before each answer option: [ ]
-       - For each correct answer, add an x between the parentheses: [x] 
-         Note that a problem can have more than one correct answer.
-       - To add an explanation, enter the text of the explanation, and then highlight the explanation and click the light bulb icon.
-       You can replace the text in the following example problem with your own text.
+       1. Enter the text of the main question between angle brackets.
+       2. Enter the text of each answer option on a separate line.
+       3. Add brackets that contain a space before each answer option: [ ]
+       4. For each correct answer, add an x between the parentheses: [x]
+       Note that a checkbox problem can have more than one correct answer.
+       5. To add an explanation, enter the text of the explanation, and then highlight the explanation and click the light bulb icon.
+
+       You can use the following example problem as a model.
        _____________________________________________________________________________
 
-      >>The following languages  are in the Indo-European family:<<
-
+      >>The following languages are in the Indo-European family:<<
       [x] Urdu
       [ ] Finnish
       [x] Marathi
@@ -22,7 +28,7 @@ metadata:
       Note: Make sure you select all of the correct options—there may be more than one!
 
       [explanation]
-      Urdu, Marathi, and French are all Indo-European languages, while Finnish and  Hungarian are in the Uralic family.
+      Urdu, Marathi, and French are all Indo-European languages, while Finnish and Hungarian are in the Uralic family.
       [explanation]
 
 data: |
@@ -36,9 +42,10 @@ data: |
       <p>You can use the following example problem as a model.</p>
       <p>_____________________________________________________________________________</p>
 
-      <p>The following languages  are in the Indo-European family:</p>
+      <fieldset>
+      <legend>The following languages are in the Indo-European family:</legend>
         <choiceresponse>
-          <checkboxgroup label="The following languages  are in the Indo-European family:" direction="vertical">
+          <checkboxgroup direction="vertical">
             <choice correct="true" name="urdu">Urdu</choice>
             <choice correct="false" name="finnish">Finnish</choice>
             <choice correct="true" name="marathi">Marathi</choice>
@@ -46,6 +53,7 @@ data: |
             <choice correct="false" name="hungarian">Hungarian</choice>
           </checkboxgroup>
         </choiceresponse>
+      </fieldset>
 
       <p>Note: Make sure you select all of the correct options—there may be more than one!</p>
 

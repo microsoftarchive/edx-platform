@@ -1,51 +1,54 @@
 ---
 metadata:
-    display_name: Numerical Input
+    display_name: Numerical Response
     markdown: |
-        In a numerical answer problem, learners enter numbers or a specific and relatively simple mathematical expression. Learners enter the answer in plain text, and the system then converts the text to a symbolic expression that learners can see below the response field.
+        In a numerical response problem, learners enter numbers or a specific and relatively simple mathematical expression. Learners enter the response in plain text, and the system then converts the text to a symbolic expression that learners can see below the response field.
 
-        The system can handle several types of characters, including basic operators, fractions, exponents, and common constants such as i. Learners can see "Entering Mathematical and Scientific Expressions" in the edX Guide for Students for information about how to enter text into the field.
+        The system can handle several types of characters, including basic operators, fractions, exponents, and common constants such as "i". Learners can see "Entering Mathematical and Scientific Expressions" in the edX Guide for Students for information about how to enter text into the field.
 
         You can use the following example problems as models.
         _____________________________________________________________________________
 
-        >>How many million miles are between Earth and the sun? Use scientific notation to answer.<<
-
-        9.3*10^6 
+        >>How many miles away from Earth is the sun? Use scientific notation to answer.<<
 
         = 9.3*10^6 
         or= 9.296*10^6 
 
         >>The square of what number is -100?<<
 
-        10*i
-
         = 10*i 
 
        [explanation]
-       There are 93,000,000, or 9.3*10^6, miles between Earth and the sun.
+       The sun is 93,000,000, or 9.3*10^6, miles away from Earth.
        -100 is the square of 10 times the imaginary number, i.
        [explanation]
 data: |
     <problem>
-    <p>In a numerical answer problem, learners enter numbers or a specific and relatively simple mathematical expression. Learners enter the answer in plain text, and the system then converts the text to a symbolic expression that learners can see below the response field.</p>
 
-    <p>The system can handle several types of characters, including basic operators, fractions, exponents, and common constants such as i. Learners can see "Entering Mathematical and Scientific Expressions" in the edX Guide for Students for information about how to enter text into the field.</p>
+    <p>In a numerical response problem, learners enter numbers or a specific and
+    relatively simple mathematical expression. Learners enter the response in
+    plain text, and the system then converts the text to a symbolic expression
+    that learners can see below the response field.</p>
+
+    <p>The system can handle several types of characters, including basic
+    operators, fractions, exponents, and common constants such as i. Learners
+    can see "Entering Mathematical and Scientific Expressions" in the edX
+    Guide for Students for information about how to enter text into the
+    field.</p>
 
     <p>You can use the following example problems as models.</p>
     <p>_____________________________________________________________________________</p>
 
-    <p>How many million miles are between Earth and the sun? Use scientific notation to answer.</p>
-
-    <p>9.3*10^6 </p>
+    <p>How many miles away from Earth is the sun? Use scientific notation to answer.</p>
 
     <numericalresponse answer="9.3*10^6">
-      <formulaequationinput label="How many million miles are between Earth and the sun? Use scientific notation to answer." />
+
+      <formulaequationinput label="How many million miles are between Earth
+      and the sun? Use scientific notation to answer." />
+
     </numericalresponse>
 
     <p>The square of what number is -100?</p>
-
-    <p>10*i</p>
 
     <numericalresponse answer="10*i">
       <formulaequationinput label="The square of what number is -100?" />
@@ -55,7 +58,7 @@ data: |
     <div class="detailed-solution">
     <p>Explanation</p>
 
-    <p>There are 93,000,000, or 9.3*10^6, miles between Earth and the sun.</p>
+    <p>The sun is 93,000,000, or 9.3*10^6, miles away from Earth.</p>
     <p>-100 is the square of 10 times the imaginary number, i.</p>
 
     </div>

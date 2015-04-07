@@ -3,14 +3,14 @@ metadata:
     display_name: Announcement
 data: |
       <p>To use this template, replace the example text with your own text.</p>
-      <h2>Announcement Date</h2>
+      <h3>Announcement Date</h3>
       <section class='update-description'>
                    <section class='primary'>
                               <p>Short note that introduces the topic</p>
                               <p class='author'>Instructor's name</p>
                    </section>
-                   <h3>Heading for announcement 1</h3>
+                   <h4>Heading for announcement 1</h4>
                    <p>Announcement 1 text</p>
-                   <h3>Heading for announcement 2</h3>
+                   <h4>Heading for announcement 2</h4>
                    <p>Announcement 2 text</p>
       </section>
