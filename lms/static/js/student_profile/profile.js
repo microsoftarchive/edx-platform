@@ -1,6 +1,6 @@
 var edx = edx || {};
 
-(function($, _, Backbone, gettext) {
+(function($, _, Backbone, gettext, Logger) {
     'use strict';
 
     edx.student = edx.student || {};
@@ -133,6 +133,12 @@ var edx = edx || {};
                         .text(gettext("We couldn't populate the list of language choices."));
                 });
 
+//            debugger
+//            Logger.log('edx.user.settings.viewed', {
+//                username: this.model.get('username'),
+//                visibility: this.preferencesModel.get('account_privacy'),
+//                requires_parental_content: this.profileModel.get('requires_parental_consent')
+//            });
             return this;
         },
 
@@ -202,4 +208,4 @@ var edx = edx || {};
         el: $('#profile-container')
     }).render();
 
-})(jQuery, _, Backbone, gettext);
+})(jQuery, _, Backbone, gettext, logger);

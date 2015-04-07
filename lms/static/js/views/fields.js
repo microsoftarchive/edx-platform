@@ -1,8 +1,8 @@
 ;(function (define, undefined) {
     'use strict';
     define([
-        'gettext', 'jquery', 'underscore', 'backbone', 'js/mustache', 'backbone-super'
-    ], function (gettext, $, _, Backbone, RequireMustache) {
+        'gettext', 'jquery', 'underscore', 'backbone', 'js/mustache', 'logger', 'backbone-super'
+    ], function (gettext, $, _, Backbone, RequireMustache, Logger) {
 
         var Mustache = window.Mustache || RequireMustache;
 
@@ -154,6 +154,15 @@
                     }
                 };
                 this.showInProgressMessage();
+                // Logging that a change was initiated. Need to get
+                // setting name and old and new values.
+                Logger.log('edx.user.settings.change_initiated', {
+                    username: this.model.get('username'),
+                    settings: {
+                        name: {old_value: "foo", new_value: "bar"},
+                        email: {old_value: "christina", new_value: "chris"}
+                    }
+                });
                 this.model.save(attributes, _.extend(defaultOptions, options));
             },
 

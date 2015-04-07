@@ -1,8 +1,8 @@
 ;(function (define, undefined) {
     'use strict';
     define([
-        'gettext', 'jquery', 'underscore', 'backbone'
-    ], function (gettext, $, _, Backbone) {
+        'gettext', 'jquery', 'underscore', 'backbone', 'logger'
+    ], function (gettext, $, _, Backbone, Logger) {
 
         var LearnerProfileView = Backbone.View.extend({
 
@@ -28,6 +28,14 @@
                     showFullProfile: this.showFullProfile()
                 }));
                 this.renderFields();
+
+                // Logging that profile page was viewed.
+                Logger.log('edx.user.settings.viewed', {
+                    username: this.options.accountSettingsModel.get('username'),
+                    visibility: this.options.preferencesModel.get('account_privacy'),
+                    page: "profile",
+                    requires_parental_content: this.options.accountSettingsModel.get('requires_parental_consent')
+                });
                 return this;
             },
 

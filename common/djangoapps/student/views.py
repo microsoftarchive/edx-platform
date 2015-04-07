@@ -1907,6 +1907,19 @@ def password_reset_confirm_wrapper(
                 entry = PasswordHistory()
                 entry.create(updated_user)
 
+            # Tracking that password was changed. I think we don't need this because we will get it
+            # directly from listening to presave/postsave changes on the User model.
+            tracker.emit(
+                'edx.user.settings.changed',
+                {
+                    'setting':  "password",
+                    'old_value': None,
+                    'new_value': None,
+                    'username': user.username,
+                    'table': None
+                }
+            )
+
             return result
         else:
             return password_reset_confirm(

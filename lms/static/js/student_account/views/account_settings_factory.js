@@ -143,6 +143,7 @@
             ];
 
             var accountSettingsView = new AccountSettingsView({
+                model: userAccountModel,
                 el: accountSettingsElement,
                 sectionsData: sectionsData
             });

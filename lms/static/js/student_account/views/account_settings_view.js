@@ -1,8 +1,8 @@
 ;(function (define, undefined) {
     'use strict';
     define([
-        'gettext', 'jquery', 'underscore', 'backbone',
-    ], function (gettext, $, _, Backbone) {
+        'gettext', 'jquery', 'underscore', 'backbone', 'logger'
+    ], function (gettext, $, _, Backbone, Logger) {
 
         var AccountSettingsView = Backbone.View.extend({
 
@@ -26,6 +26,14 @@
                     _.each(view.options.sectionsData[index].fields, function (field, index) {
                         $(sectionEl).append(field.view.render().el);
                     });
+                });
+
+                // Rendering that account settings were viewed.
+                Logger.log('edx.user.settings.viewed', {
+                    username: this.model.get('username'),
+                    page: "account",
+                    visibility: null,
+                    requires_parental_content: this.model.get('requires_parental_consent')
                 });
                 return this;
             },

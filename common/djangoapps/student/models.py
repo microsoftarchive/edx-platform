@@ -28,7 +28,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.db import models, IntegrityError
 from django.db.models import Count
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver, Signal
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_noop
@@ -315,13 +315,92 @@ class UserProfile(models.Model):
 @receiver(pre_save, sender=UserProfile)
 def user_profile_pre_save_callback(sender, **kwargs):
     """
-    Ensure consistency of a user profile before saving it.
+    Get information about which fields are changing
     """
     user_profile = kwargs['instance']
+    # TODO: replace with call go general create_changed_dict below
+    user_profile.changed_fields = []
+    try:
+        old_profile = sender.objects.get(pk=user_profile.pk)
+    except sender.DoesNotExist:
+        pass # Object is new, so field hasn't technically changed, but you may want to do something else here.
+    else:
+        field_names = sender._meta.get_all_field_names()
+        # TODO: Language proficiencies is a separate table, which is going to cause this to always get called.
+        user_profile.updated_fields = [field_name for field_name in field_names if getattr(old_profile, field_name) != getattr(user_profile, field_name)]
 
     # Remove profile images for users who require parental consent
     if user_profile.requires_parental_consent() and user_profile.has_profile_image:
         user_profile.has_profile_image = False
+
+
+# We want a general way to get the "Changed dict" from the information passed to a pre_save event.
+# We will want the fields that have changed, with their old and new values.
+def create_changed_dict(instance, sender):
+    changed_items = {}
+    try:
+        old_object = sender.objects.get(pk=user_profile.pk)
+    except sender.DoesNotExist:
+        pass # Object is new, so field hasn't technically changed, but you may want to do something else here.
+    else:
+        # Build up changed_items here
+        changed_items = {}
+
+
+@receiver(post_save, sender=UserProfile)
+def user_profile_post_save_callback(sender, **kwargs):
+    user_profile = kwargs['instance']
+    if user_profile.updated_fields:
+        for field in user_profile.updated_fields:
+            tracker.emit(
+                'edx.user.settings.changed',
+                {
+                    'setting':  field,
+                    'old_value': 'still need to store',
+                    'new_value': getattr(user_profile, field),
+                    'username': user_profile.user.username,
+                    'table': sender._meta.db_table
+                }
+            )
+
+
+@receiver(pre_save, sender=User)
+def user_pre_save_callback(sender, **kwargs):
+    """
+    Note-- this method will probably be identical to user_profile_pre_save_callback.
+    Can multiple receivers be specified?
+    """
+    user = kwargs['instance']
+    # TODO: replace with call go general create_changed_dict
+    user.changed_fields = []
+    try:
+        old_user = sender.objects.get(pk=user.pk)
+    except sender.DoesNotExist:
+        pass # Object is new, so field hasn't technically changed, but you may want to do something else here.
+    else:
+        field_names = ["email"]
+        user.updated_fields = [field_name for field_name in field_names if getattr(old_user, field_name) != getattr(user, field_name)]
+
+
+@receiver(post_save, sender=User)
+def user_post_save_callback(sender, **kwargs):
+    """
+    Note-- this method will probably be identical to user_profile_post_save_callback.
+    Can multiple receivers be specified?
+    """
+    user = kwargs['instance']
+    if user.updated_fields:
+        for field in user.updated_fields:
+            tracker.emit(
+                'edx.user.settings.changed',
+                {
+                    'setting':  field,
+                    'old_value': 'still need to store',
+                    'new_value': getattr(user, field),
+                    'username': user.username,
+                    'table': sender._meta.db_table
+                }
+            )
 
 
 class UserSignupSource(models.Model):
