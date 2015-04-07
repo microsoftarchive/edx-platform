@@ -98,7 +98,7 @@ define([
                     }
                 }]
             };
-            this.server.respondWith('POST', '/search/', [200, {}, JSON.stringify(response)]);
+            this.server.respondWith('POST', this.collection.url, [200, {}, JSON.stringify(response)]);
             this.server.respond();
 
             expect(this.onSearch).toHaveBeenCalled();
@@ -125,8 +125,9 @@ define([
         });
 
         it('sends correct paging parameters', function () {
-            this.collection.performSearch('search string');
+            var searchString = 'search string';
             var response = { total: 52, results: [] };
+            this.collection.performSearch(searchString);
             this.server.respondWith('POST', this.collection.url, [200, {}, JSON.stringify(response)]);
             this.server.respond();
             this.collection.loadNextPage();
@@ -134,6 +135,7 @@ define([
             spyOn($, 'ajax');
             this.collection.loadNextPage();
             expect($.ajax.mostRecentCall.args[0].url).toEqual(this.collection.url);
+            expect($.ajax.mostRecentCall.args[0].data.search_string).toEqual(searchString);
             expect($.ajax.mostRecentCall.args[0].data.page_size).toEqual(this.collection.pageSize);
             expect($.ajax.mostRecentCall.args[0].data.page_index).toEqual(2);
         });
@@ -337,6 +339,7 @@ define([
 
         function clearsSearchOnCancel() {
             $('.search-field').val('search string');
+            $('.search-button').trigger('click');
             $('.cancel-button').trigger('click');
             expect($('.search-field')).not.toHaveClass('is-active');
             expect($('.search-button')).toBeVisible();
