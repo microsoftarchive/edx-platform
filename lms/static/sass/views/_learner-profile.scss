@@ -26,73 +26,53 @@
     .u-field-image {
         width: $profile-image-dimension;
 
-        .profile-image-status {
-            margin-bottom: ($baseline/10);
-
-            i {
-                color: $black;
-            }
-        }
-
-        .image-frame {
+        .u-field-upload-button {
             position: relative;
-            height: $profile-image-dimension;
-            width: $profile-image-dimension;
-            vertical-align: top;
+            width: 120px;
+            height: 120px;
         }
 
-        .u-field-img {
+        .upload-button-wrapper {
+            width: 120px;
+            height: 120px;
             position: absolute;
             top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-        }
+            opacity: 0;
+            color: $white;
 
-        .u-field-actions {
-
-            .u-field-upload-button {
-                opacity: 0;
-                position: absolute;
-//                top: 0;
-                bottom: 0;
-                padding-top: 30%;
-                overflow: hidden;
-                text-align: center;
+            i {
                 color: $white;
-
-                i {
-                    color: $white;
-                }
-
-                .upload-button-title {
-                    margin: ($baseline/4) ($baseline/2);
-                }
-
-                .upload-button-input {
-                    opacity: 0;
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                    height: 100%;
-                    cursor: pointer;
-                    font-size: 100px;
-                }
-            }
-
-            .u-field-remove-button {
-                opacity: 0;
-                position: relative;
-                margin-top: 2px;
-                text-align: center;
             }
         }
 
-        .enable-image-upload {
-            &:hover {
-                .u-field-upload-button, .u-field-remove-button {
-                    opacity: 1;
-                }
+        .upload-button-icon, .upload-button-title {
+            text-align: center;
+            transform: translateY(45px);
+        }
+
+        .upload-button-input {
+            width: 120px;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .u-field-remove-button {
+            width: 120px;
+            height: 20px;
+            opacity: 0;
+            position: relative;
+            margin-top: 2px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        &:hover {
+            .upload-button-wrapper, .u-field-remove-button {
+                opacity: 1;
             }
         }
     }

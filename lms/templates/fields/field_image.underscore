@@ -1,15 +1,14 @@
-<div class="image-wrapper <%- isAboveMinimumAge ? 'enable-image-upload' : 'disable-image-upload' %>">
-    <div class="profile-image-status">
-        <span class="profile-image-status-icon" aria-hidden="true"></span>
-        <span class="profile-image-status-message" aria-live="polite"></span>
-    </div>
-    <img class="image-frame" src="<%- gettext(imageLink) + '?bust=' + (new Date()).getTime() %>"/>
+<div class="image-wrapper">
     <div class="u-field-actions">
         <div class="u-field-upload-button">
-            <div class="upload-button-icon" aria-hidden="true"><%= uploadButtonIcon %></div>
-            <div class="upload-button-title" aria-hidden="true"><%= uploadButtonTitle %></div>
-            <input class="upload-button-input" type="file" name="<%= id %>" <%- isAboveMinimumAge ? '' : 'disabled' %>/>
-        </div>
+            <img class="image-frame" src="<%- gettext(imageLink) + '?bust=' + (new Date()).getTime() %>"/>
+            <div class="upload-button-wrapper">
+                <div class="upload-button-icon"><%= uploadButtonIcon %></div>
+                <div class="upload-button-title"><%= uploadButtonTitle %></div>
+                <input class="upload-button-input" type="file" name="<%= id %>"/>
+            </div>
+       	</div>
+        
         <div class="u-field-remove-button">
             <span class="remove-button-icon" aria-hidden="true"><%= removeButtonIcon %></span>
             <span class="remove-button-title" aria-hidden="true"><%= removeButtonTitle %></span>

@@ -45,6 +45,8 @@
             var profileImageFieldView = new FieldsView.ImageFieldView({
                     model: accountSettingsModel,
                     valueAttribute: "profile_image",
+                    minImageBytes: 100,
+                    maxImageBytes: 1024,
                     profileImageUploadUrl: options['profile_image_upload_url'],
                     profileImageRemoveUrl: options['profile_image_remove_url']
             });

@@ -502,18 +502,13 @@
             templateSelector: '#field_image-tpl',
             uploadButtonSelector: '.upload-button-input',
 
-            minImageBytes: 100,
-            maxImageBytes: 1024,
-
             titleAdd: 'upload a photo',
             titleEdit: 'change photo',
             titleRemove: 'remove',
 
             iconUpload: '<i class="icon fa fa-camera" aria-hidden="true"></i>',
             iconRemove: '<i class="icon fa fa-remove" aria-hidden="true"></i>',
-            iconProgress: '<i class="icon fa fa-spinner fa-spin" aria-hidden="true"></i>',
-
-            statuses: {'upload': 'uploaded', 'remove': 'removed'},
+            iconProgress: '<i class="icon fa fa-spinner fa-pulse fa-spin" aria-hidden="true"></i>',
 
             errorMessage: gettext("We've encountered an error. Refresh your browser and then try again."),
 
@@ -572,7 +567,9 @@
 
             clickedRemoveButton: function () {
                 var self = this;
+                this.hideUserMessage();
                 this.setCurrentStatus('remove');
+                this.showRemovalInProgressMessage();
                 this.showInProgressMessage('Removing...');
                  $.ajax({
                     type: 'POST',
@@ -599,7 +596,6 @@
             },
 
             successHandler: function (e, data) {
-                this.hideInProgressMessage();
                 // Update model to get the latest urls of profile image.
                 this.model.fetch();
                 if (this.getCurrentStatus === 'upload') {
@@ -607,12 +603,12 @@
                 } else {
                     this.showUserMessage('Your profile image has removed successfully.');
                 }
+                this.render();
                 this.setCurrentStatus('');
             },
 
             failureHandler: function (e, data) {
                 this.setCurrentStatus('');
-                this.hideInProgressMessage();
                  if (_.contains([400, 404], data.jqXHR.status)) {
                     try {
                         var errors = JSON.parse(data.jqXHR.responseText);
@@ -623,36 +619,40 @@
                 } else {
                     this.showUserMessage(this.errorMessage);
                 }
+                this.render();
             },
 
             fileUploadHandler: function (e, data) {
                 if (this.validateImageSize(data.files[0])) {
                     data.formData = {file: data.files[0]};
+                    this.hideUserMessage();
                     this.setCurrentStatus('upload');
-                    this.showInProgressMessage('Uploading...');
+                    this.showUploadInProgressMessage();
                     data.submit();
                 }
             },
 
             validateImageSize: function (imageBytes) {
-                if (imageBytes < this.minImageBytes) {
+                if (imageBytes < this.options.minImageBytes) {
                     this.showUserMessage('Minimum file size not met.');
                     return false;
-                } else if (imageBytes > this.maxImageBytes) {
+                } else if (imageBytes > this.options.maxImageBytes) {
                     this.showUserMessage('Maximum file size exceeded.');
                     return false;
                 }
                 return true;
             },
 
-            showInProgressMessage: function (message) {
-                this.$('.profile-image-status-icon').html(this.iconProgress);
-                this.$('.profile-image-status-message').html(message);
+            showUploadInProgressMessage: function () {
+                this.$('.upload-button-wrapper').css('opacity', 1);
+                this.$('.upload-button-icon').html(this.iconProgress);
+                this.$('.upload-button-title').html('Uploading...');
             },
 
-            hideInProgressMessage: function () {
-                this.$('.profile-image-status-icon').html('');
-                this.$('.profile-image-status-message').html('');
+            showRemovalInProgressMessage: function () {
+                this.$('.u-field-remove-button').css('opacity', 1);
+                this.$('.remove-button-icon').html(this.iconProgress);
+                this.$('.remove-button-title').html('Removing...');
             },
 
             setCurrentStatus: function (status) {
@@ -664,8 +664,13 @@
             },
 
             showUserMessage: function (message, status) {
-                //TODO! Show message to user at top of the page
+                this.$('.error-message-banner').html(_.template($('#message_banner-tpl').text())());
+                this.$('.wrapper-msg .copy').html(message);
                 alert(message);
+            },
+
+            hideUserMessage: function () {
+                //this.$('.error-message-banner').html('');
             }
 
         });
