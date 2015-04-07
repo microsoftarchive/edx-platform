@@ -7,6 +7,7 @@ RequireJS.require([
     'js/search/base/collections/search_collection',
     'js/search/course/views/search_results_view'
 ], function ($, Backbone, SearchApp, SearchRouter, CourseSearchForm, SearchCollection, CourseSearchResultsView) {
+    'use strict';
 
     var courseId = $('#courseware-search-results').attr('data-course-id');
     var app = new SearchApp(

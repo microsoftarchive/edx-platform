@@ -6,6 +6,7 @@ RequireJS.require([
     'js/search/base/collections/search_collection',
     'js/search/dashboard/views/search_results_view'
 ], function (Backbone, SearchApp, SearchRouter, DashSearchForm, SearchCollection, DashSearchResultsView) {
+    'use strict';
 
     var app = new SearchApp(
         SearchRouter,
