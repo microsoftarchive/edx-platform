@@ -22,7 +22,6 @@ define([
         SearchItemView: function () {},
 
         initialize: function () {
-            this.courseName = this.$el.attr('data-course-name');
             this.$contentElement = $(this.contentElement);
             this.resultsTemplate = _.template($(this.resultsTemplateId).html());
             this.loadingTemplate = _.template($(this.loadingTemplateId).html());
