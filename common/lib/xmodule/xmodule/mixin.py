@@ -24,19 +24,16 @@ class LicenseMixin(XBlockMixin):
         display_name=_("License"),
         help=_("A license defines how the contents of this block can be shared and reused."),
         default=None,
-        scope=Scope.settings
+        scope=Scope.content,
     )
 
     @classmethod
-    def definition_from_xml(cls, xml_object, system):
-        import nose.tools; nose.tools.set_trace()
-        license = xml_object.get("license", default=None)
-        definition, children = super(LicenseMixin, cls).definition_from_xml(xml_object, system)
-        definition['license'] = license
-        return definition, children
+    def parse_license_from_xml(cls, definition, node):
+        license = node.get('license', default=None)
+        if license:
+            definition['license'] = license
+        return definition
 
-    def definition_to_xml(self, resource_fs):
-        xml_object = super(LicenseMixin, self).definition_to_xml(resource_fs)
-        if self.license:
-            xml_object.set("license", self.license)
-        return xml_object
+    def add_license_to_xml(self, node):
+        if getattr(self, "license", None):
+            node.set('license', self.license)

@@ -967,15 +967,12 @@ class CourseDescriptor(CourseFields, LicenseMixin, SequenceDescriptor):
             wiki_slug = wiki_tag.attrib.get("slug", default=None)
             xml_object.remove(wiki_tag)
 
-        # # load license if it exists
-        # import nose.tools; nose.tools.set_trace()
-        # license = xml_object.get("license", default=None)
-
         definition, children = super(CourseDescriptor, cls).definition_from_xml(xml_object, system)
-
         definition['textbooks'] = textbooks
         definition['wiki_slug'] = wiki_slug
-        # definition['license'] = license
+
+        # load license if it exists
+        definition = LicenseMixin.parse_license_from_xml(definition, xml_object)
 
         return definition, children
 
@@ -995,8 +992,8 @@ class CourseDescriptor(CourseFields, LicenseMixin, SequenceDescriptor):
             wiki_xml_object.set('slug', self.wiki_slug)
             xml_object.append(wiki_xml_object)
 
-        # if self.license:
-        #     xml_object.set("license", self.license)
+        # handle license specifically
+        self.add_license_to_xml(xml_object)
 
         return xml_object
 

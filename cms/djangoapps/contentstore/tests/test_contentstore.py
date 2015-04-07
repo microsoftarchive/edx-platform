@@ -1850,7 +1850,6 @@ class ContentLicenseTest(ContentStoreTestCase):
         run_file_path = root_dir / "test_license" / "course" / "Run_0.xml"
         run_xml = etree.parse(run_file_path.open())
         self.assertEqual(run_xml.getroot().get("license"), "creative-commons: BY SA")
-        import nose.tools; nose.tools.set_trace()
 
     def test_course_license_import(self):
         course_items = import_course_from_xml(
