@@ -39,19 +39,19 @@ class DashboardSearchTest(WebAppTest):
         self.dashboard = DashboardSearchPage(self.browser)
 
         self.courses = {
-            'A' : {
+            'A': {
                 'org': 'test_org',
                 'number': self.unique_id,
                 'run': 'test_run_A',
                 'display_name': 'Test Course A '
             },
-            'B' : {
+            'B': {
                 'org': 'test_org',
                 'number': self.unique_id,
                 'run': 'test_run_B',
                 'display_name': 'Test Course B '
             },
-            'C' : {
+            'C': {
                 'org': 'test_org',
                 'number': self.unique_id,
                 'run': 'test_run_C',
