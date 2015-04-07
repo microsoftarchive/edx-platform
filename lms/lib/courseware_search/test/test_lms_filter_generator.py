@@ -61,3 +61,12 @@ class LmsSearchFilterGeneratorTestCase(ModuleStoreTestCase):
 
         self.assertTrue('start_date' in filter_dictionary)
         self.assertEqual(unicode(self.courses[0].id), field_dictionary['course'])
+
+    def test_user_not_provided(self):
+        """
+        Tests that we get empty list of courses in case the user is not provided
+        """
+        field_dictionary, filter_dictionary = LmsSearchFilterGenerator.generate_field_filters()
+
+        self.assertTrue('start_date' in filter_dictionary)
+        self.assertEqual(0, len(field_dictionary['course']))
