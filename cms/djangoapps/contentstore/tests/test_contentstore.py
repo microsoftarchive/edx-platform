@@ -1851,12 +1851,26 @@ class ContentLicenseTest(ContentStoreTestCase):
         run_xml = etree.parse(run_file_path.open())
         self.assertEqual(run_xml.getroot().get("license"), "creative-commons: BY SA")
 
-    def test_course_license_import(self):
+    def test_video_license_export(self):
+        content_store = contentstore()
+        root_dir = path(mkdtemp_clean())
+        self.video_descriptor = ItemFactory.create(
+            parent_location=self.course.location, category='video',
+            license="all-rights-reserved"
+        )
+        export_course_to_xml(self.store, content_store, self.course.id, root_dir, 'test_license')
+        video_file_path = root_dir / "test_license" / "video" / "video_3.xml"
+        video_xml = etree.parse(video_file_path.open())
+        self.assertEqual(video_xml.getroot().get("license"), "all-rights-reserved")
+
+    def test_license_import(self):
         course_items = import_course_from_xml(
             self.store, self.user.id, TEST_DATA_DIR, ['toy'], create_if_not_present=True
         )
-        import nose.tools; nose.tools.set_trace()
-        self.assertEqual(course_items[0].license, "creative-commons: BY")
+        course = course_items[0]
+        self.assertEqual(course.license, "creative-commons: BY")
+        videos = self.store.get_items(course.id, qualifiers={'category': 'video'})
+        self.assertEqual(videos[0].license, "all-rights-reserved")
 
 
 class EntryPageTestCase(TestCase):

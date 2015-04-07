@@ -84,9 +84,6 @@ class ImportSystem(XMLParsingSystem, MakoDescriptorSystem):
             """Takes an xml string, and returns a XBlock created from
             that xml.
             """
-            if "license" in xml:
-                import nose.tools; nose.tools.set_trace()
-
             def make_name_unique(xml_data):
                 """
                 Make sure that the url_name of xml_data is unique.  If a previously loaded
@@ -210,7 +207,7 @@ class ImportSystem(XMLParsingSystem, MakoDescriptorSystem):
                     # Normally, we don't want lots of exception traces in our logs from common
                     # content problems.  But if you're debugging the xml loading code itself,
                     # uncomment the next line.
-                    exc_info=True
+                    # exc_info=True
                 )
 
                 msg = msg % (unicode(err)[:200])
