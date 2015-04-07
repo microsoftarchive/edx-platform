@@ -24,9 +24,11 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-from opaque_keys.edx.keys import CourseKey
+from opaque_keys.edx.keys import CourseKey, UsageKey
 from xmodule.modulestore.django import modulestore
-from xmodule.modulestore.exceptions import ItemNotFoundError
+from xmodule.modulestore.exceptions import ItemNotFoundError, NoPathToItem
+from xmodule.modulestore.search import path_to_location, navigation_index
+from opaque_keys import InvalidKeyError
 
 from edxmako.shortcuts import render_to_response, render_to_string
 from openedx.core.djangoapps.user_api.accounts.api import get_account_settings, update_account_settings
@@ -1089,7 +1091,7 @@ class InCourseReverifyView(View):
     Does not need to worry about pricing
     """
     @method_decorator(login_required)
-    def get(self, request, course_id, checkpoint_name):
+    def get(self, request, course_id, checkpoint_name, location):
         """ Display the view for face photo submission"""
         # Check the in-course re-verification is enabled or not
         incourse_reverify_enabled = InCourseReverificationConfiguration.current().enabled
@@ -1120,11 +1122,12 @@ class InCourseReverifyView(View):
             'course_name': course.display_name_with_default,
             'checkpoint_name': checkpoint_name,
             'platform_name': settings.PLATFORM_NAME,
+            'location': location
         }
         return render_to_response("verify_student/incourse_reverify.html", context)
 
     @method_decorator(login_required)
-    def post(self, request, course_id, checkpoint_name):
+    def post(self, request, course_id, checkpoint_name, location):
         """Submits the re-verification attempt to SoftwareSecure
 
         Args:
@@ -1156,6 +1159,7 @@ class InCourseReverifyView(View):
                 'error': True,
                 'errorMsg': _("No checkpoint found"),
                 'platform_name': settings.PLATFORM_NAME,
+                'location': location
             }
             return render_to_response("verify_student/incourse_reverify.html", context)
         init_verification = SoftwareSecurePhotoVerification.get_initial_verification(user)
@@ -1174,13 +1178,50 @@ class InCourseReverifyView(View):
             self._track_reverification_events(
                 EVENT_NAME_USER_SUBMITTED_INCOURSE_REVERIFY, user.id, course_id, checkpoint_name
             )
+            try:
+                course_key = CourseKey.from_string(course_id)
+                usage_key = UsageKey.from_string(location).replace(course_key=course_key)
+            except InvalidKeyError:
+                raise Http404(u"Invalid course_key or usage_key")
+            try:
+                (course_key, chapter, section, position) = path_to_location(modulestore(), usage_key)
+            except ItemNotFoundError:
+                raise Http404(u"No data at this location: {0}".format(usage_key))
+            except NoPathToItem:
+                raise Http404(u"This location is not in any class: {0}".format(usage_key))
 
-            return HttpResponse()
+            # choose the appropriate view (and provide the necessary args) based on the
+            # args provided by the redirect.
+            # Rely on index to do all error handling and access control.
+            if chapter is None:
+                return redirect('courseware', course_id=unicode(course_key))
+            elif section is None:
+                return redirect('courseware_chapter', course_id=unicode(course_key), chapter=chapter)
+            elif position is None:
+                return redirect(
+                    'courseware_section',
+                    course_id=unicode(course_key),
+                    chapter=chapter,
+                    section=section
+                )
+            else:
+                # Here we use the navigation_index from the position returned from
+                # path_to_location - we can only navigate to the topmost vertical at the
+                # moment
+
+                redirect_url = reverse(
+                    'courseware_position',
+                    args=(unicode(course_key), chapter, section, navigation_index(position))
+                )
+
+            return JsonResponse({
+                'url': redirect_url
+            })
         except IndexError:
             log.exception("Invalid image data during photo verification.")
             return HttpResponseBadRequest(_("Invalid image data during photo verification."))
         except Exception:  # pylint: disable=broad-except
-            log.exception("Could not submit verification attempt for user {}.").format(request.user.id)
+            log.exception("Could not submit verification attempt for user {}.".format(request.user.id))
             msg = _("Could not submit photos")
             return HttpResponseBadRequest(msg)
 
