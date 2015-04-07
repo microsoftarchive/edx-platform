@@ -1178,45 +1178,14 @@ class InCourseReverifyView(View):
             self._track_reverification_events(
                 EVENT_NAME_USER_SUBMITTED_INCOURSE_REVERIFY, user.id, course_id, checkpoint_name
             )
-            try:
-                course_key = CourseKey.from_string(course_id)
-                usage_key = UsageKey.from_string(location).replace(course_key=course_key)
-            except InvalidKeyError:
-                raise Http404(u"Invalid course_key or usage_key")
-            try:
-                (course_key, chapter, section, position) = path_to_location(modulestore(), usage_key)
-            except ItemNotFoundError:
-                raise Http404(u"No data at this location: {0}".format(usage_key))
-            except NoPathToItem:
-                raise Http404(u"This location is not in any class: {0}".format(usage_key))
 
-            # choose the appropriate view (and provide the necessary args) based on the
-            # args provided by the redirect.
-            # Rely on index to do all error handling and access control.
-            if chapter is None:
-                return redirect('courseware', course_id=unicode(course_key))
-            elif section is None:
-                return redirect('courseware_chapter', course_id=unicode(course_key), chapter=chapter)
-            elif position is None:
-                return redirect(
-                    'courseware_section',
-                    course_id=unicode(course_key),
-                    chapter=chapter,
-                    section=section
-                )
-            else:
-                # Here we use the navigation_index from the position returned from
-                # path_to_location - we can only navigate to the topmost vertical at the
-                # moment
-
-                redirect_url = reverse(
-                    'courseware_position',
-                    args=(unicode(course_key), chapter, section, navigation_index(position))
-                )
-
+            redirect_url = self._get_redirect_url(course_id, location)
             return JsonResponse({
                 'url': redirect_url
             })
+        except Http404 as e:
+            log.exception("Invalid location during photo verification.")
+            return HttpResponseBadRequest(_(e.message))
         except IndexError:
             log.exception("Invalid image data during photo verification.")
             return HttpResponseBadRequest(_("Invalid image data during photo verification."))
@@ -1224,6 +1193,54 @@ class InCourseReverifyView(View):
             log.exception("Could not submit verification attempt for user {}.".format(request.user.id))
             msg = _("Could not submit photos")
             return HttpResponseBadRequest(msg)
+
+    def _get_redirect_url(self, course_id, location):
+        """ Returns the redirect url back to courseware
+
+        Args:
+            course_id(str): Course Id string
+            location(str): The location id of course component
+
+        Raises:
+            Https404 if invalid course_id or invalid location
+
+        Returns:
+            Redirect url string
+        """
+        try:
+            course_key = CourseKey.from_string(course_id)
+            usage_key = UsageKey.from_string(location).replace(course_key=course_key)
+        except InvalidKeyError:
+            raise Http404(u"Invalid course_key or usage_key")
+        try:
+            (course_key, chapter, section, position) = path_to_location(modulestore(), usage_key)
+        except ItemNotFoundError:
+            raise Http404(u"No data at this location: {0}".format(usage_key))
+        except NoPathToItem:
+            raise Http404(u"This location is not in any class: {0}".format(usage_key))
+
+        # choose the appropriate view (and provide the necessary args) based on the
+        # args provided by the redirect.
+        # Rely on index to do all error handling and access control.
+        if chapter is None:
+            redirect_url = reverse('courseware', args=(unicode(course_key), ))
+        elif section is None:
+            redirect_url = reverse('courseware_chapter', args=(unicode(course_key), chapter))
+        elif position is None:
+            redirect_url = reverse(
+                'courseware_section',
+                args=(unicode(course_key), chapter, section)
+            )
+        else:
+            # Here we use the navigation_index from the position returned from
+            # path_to_location - we can only navigate to the topmost vertical at the
+            # moment
+
+            redirect_url = reverse(
+                'courseware_position',
+                args=(unicode(course_key), chapter, section, navigation_index(position))
+            )
+        return redirect_url
 
     def _track_reverification_events(self, event_name, user_id, course_id, checkpoint):  # pylint: disable=invalid-name
         """Track re-verification events for user against course checkpoints
