@@ -42,7 +42,7 @@
 
             has_profile_image: function () {
                 var profile_image = this.get('profile_image');
-                return (_.isObject(profile_image) && _.has(profile_image, 'has_profile') && profile_image['has_image']);
+                return (_.isObject(profile_image) && profile_image['has_image']);
             },
 
             isAboveMinimumAge: function() {

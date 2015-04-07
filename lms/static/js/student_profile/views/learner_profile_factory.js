@@ -47,6 +47,7 @@
                     valueAttribute: "profile_image",
                     minImageBytes: 100,
                     maxImageBytes: 1024 * 1024, // 1 MB
+                    editable: editable,
                     profileImageUploadUrl: options['profile_image_upload_url'],
                     profileImageRemoveUrl: options['profile_image_remove_url']
             });

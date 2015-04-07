@@ -531,15 +531,35 @@
                     uploadButtonIcon: _.result(this, 'iconUpload'),
                     uploadButtonTitle: _.result(this, 'uploadButtonTitle'),
                     removeButtonIcon: _.result(this, 'iconRemove'),
-                    removeButtonTitle: _.result(this, 'removeButtonTitle'),
-                    isAboveMinimumAge: this.model.isAboveMinimumAge()
+                    removeButtonTitle: _.result(this, 'removeButtonTitle')
                 }));
+                this.setElementVisibility('none');
                 this.addWindowActions();
                 return this;
             },
 
+            setElementVisibility: function (state) {
+                if (!this.model.isAboveMinimumAge()) {
+                    this.$('.upload-button-wrapper').css('display', state);
+                }
+
+                if (!this.model.has_profile_image()) {
+                    this.$('.u-field-remove-button').css('display', state);
+                }
+
+                if(this.inProgress() ||  this.options.editable === 'never') {
+                    this.$('.upload-button-wrapper').css('display', state);
+                    this.$('.u-field-remove-button').css('display', state);
+                }
+            },
+
             addWindowActions: function () {
                 $(window).on('beforeunload', this.onBeforeUnload);
+            },
+
+            inProgress: function() {
+                var status = this.getCurrentStatus();
+                return _.isUndefined(status) ? false : true;
             },
 
             onBeforeUnload: function () {
@@ -584,7 +604,7 @@
             },
 
             uploadButtonTitle: function () {
-                if (this.model.get('profile_image')['has_image']) {
+                if (this.model.has_profile_image()) {
                     return _.result(this, 'titleEdit')
                 } else {
                     return _.result(this, 'titleAdd')

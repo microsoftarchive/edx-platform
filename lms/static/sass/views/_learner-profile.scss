@@ -75,6 +75,14 @@
                 opacity: 1;
             }
         }
+
+        .upload-button-wrapper.disabled, .u-field-remove-button.disabled {
+            display: none;
+        }
+
+        .upload-button-wrapper.enabled, .u-field-remove-button.enabled {
+            display: block;
+        }
     }
 
     .wrapper-profile {
