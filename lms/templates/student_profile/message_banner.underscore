@@ -3,7 +3,7 @@
         <div class="msg-content">
             <h2 class="sr" aria-live="polite"></h2>
             <div class="copy">
-                <p>message</p>
+                <p><%-message%></p>
             </div>
         </div>
     </div>

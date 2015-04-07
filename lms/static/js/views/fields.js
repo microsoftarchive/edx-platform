@@ -1,8 +1,8 @@
 ;(function (define, undefined) {
     'use strict';
     define([
-        'gettext', 'jquery', 'underscore', 'backbone', 'js/mustache', 'backbone-super'
-    ], function (gettext, $, _, Backbone, RequireMustache) {
+        'gettext', 'jquery', 'underscore', 'backbone', 'js/mustache', 'js/views/message_banner', 'backbone-super'
+    ], function (gettext, $, _, Backbone, RequireMustache, MessageBannerView) {
 
         var Mustache = window.Mustache || RequireMustache;
 
@@ -598,11 +598,11 @@
             successHandler: function (e, data) {
                 // Update model to get the latest urls of profile image.
                 this.model.fetch();
-                if (this.getCurrentStatus === 'upload') {
-                    this.showUserMessage('Your profile image has uploaded successfully.');
-                } else {
-                    this.showUserMessage('Your profile image has removed successfully.');
-                }
+                //if (this.getCurrentStatus === 'upload') {
+                //    this.showUserMessage('Your profile image has uploaded successfully.');
+                //} else {
+                //    this.showUserMessage('Your profile image has removed successfully.');
+                //}
                 this.render();
                 this.setCurrentStatus('');
             },
@@ -623,7 +623,7 @@
             },
 
             fileUploadHandler: function (e, data) {
-                if (this.validateImageSize(data.files[0])) {
+                if (this.validateImageSize(data.files[0].size)) {
                     data.formData = {file: data.files[0]};
                     this.hideUserMessage();
                     this.setCurrentStatus('upload');
@@ -663,14 +663,16 @@
                 return this.$('.image-wrapper').attr('data-status');
             },
 
-            showUserMessage: function (message, status) {
-                this.$('.error-message-banner').html(_.template($('#message_banner-tpl').text())());
-                this.$('.wrapper-msg .copy').html(message);
-                alert(message);
+            showUserMessage: function (message) {
+                 var messageBannerView = new MessageBannerView({
+                    el: '.error-message-banner',
+                    message: message
+                });
+                messageBannerView.render();
             },
 
             hideUserMessage: function () {
-                //this.$('.error-message-banner').html('');
+                $('.error-message-banner').html('');
             }
 
         });
