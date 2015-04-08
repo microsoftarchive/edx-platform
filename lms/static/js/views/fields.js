@@ -538,6 +538,126 @@
                 return this;
             },
 
+            clickedUploadButton: function () {
+                $(this.uploadButtonSelector).fileupload({
+                    url: this.options.profileImageUploadUrl,
+                    type: 'POST',
+                    autoUpload: true,
+                    add: this.fileUploadHandler,
+                    done: this.successHandler,
+                    fail: this.failureHandler
+                });
+            },
+
+            clickedRemoveButton: function () {
+                var self = this;
+                this.hideUserErrorMessage();
+                this.setCurrentStatus('remove');
+                this.showRemovalInProgressMessage();
+                this.showInProgressMessage('Removing...');
+                 $.ajax({
+                    type: 'POST',
+                    url: this.options.profileImageRemoveUrl,
+                    success: function (data, status, xhr) {
+                        self.successHandler();
+                    },
+                    error: function (xhr, status, error) {
+                       self.failureHandler();
+                    }
+                });
+            },
+
+            uploadButtonTitle: function () {
+                if (this.model.has_profile_image()) {
+                    return _.result(this, 'titleEdit')
+                } else {
+                    return _.result(this, 'titleAdd')
+                }
+            },
+
+            removeButtonTitle: function () {
+                return this.titleRemove;
+            },
+
+            successHandler: function (e, data) {
+                var self = this;
+                // Update model to get the latest urls of profile image.
+                this.model.fetch().done(function () {
+                    self.render();
+                    self.setCurrentStatus('');
+                }).fail(function () {
+                    self.showUserErrorMessage(self.errorMessage);
+                });
+            },
+
+            failureHandler: function (e, data) {
+                this.setCurrentStatus('');
+                 if (_.contains([400, 404], data.jqXHR.status)) {
+                    try {
+                        var errors = JSON.parse(data.jqXHR.responseText);
+                        this.showUserErrorMessage(errors.user_message);
+                    } catch (error) {
+                        this.showUserErrorMessage(this.errorMessage);
+                    }
+                } else {
+                    this.showUserErrorMessage(this.errorMessage);
+                }
+                this.render();
+            },
+
+            fileUploadHandler: function (e, data) {
+                if (this.validateImageSize(data.files[0].size)) {
+                    data.formData = {file: data.files[0]};
+                    this.hideUserErrorMessage();
+                    this.setCurrentStatus('upload');
+                    this.showUploadInProgressMessage();
+                    data.submit();
+                }
+            },
+
+            validateImageSize: function (imageBytes) {
+                if (imageBytes < this.options.imageMinBytes) {
+                    this.showUserErrorMessage('Minimum file size not met.');
+                    return false;
+                } else if (imageBytes > this.options.imageMaxBytes) {
+                    this.showUserErrorMessage('Maximum file size exceeded.');
+                    return false;
+                }
+                return true;
+            },
+
+            showUploadInProgressMessage: function () {
+                this.$('.upload-button-wrapper').css('opacity', 1);
+                this.$('.upload-button-icon').html(this.iconProgress);
+                this.$('.upload-button-title').html('Uploading...');
+            },
+
+            showRemovalInProgressMessage: function () {
+                this.$('.u-field-remove-button').css('opacity', 1);
+                this.$('.remove-button-icon').html(this.iconProgress);
+                this.$('.remove-button-title').html('Removing...');
+            },
+
+            setCurrentStatus: function (status) {
+                this.$('.image-wrapper').attr('data-status', status);
+            },
+
+            getCurrentStatus: function () {
+                return this.$('.image-wrapper').attr('data-status');
+            },
+
+            showUserErrorMessage: function (message) {
+                 var messageBannerView = new MessageBannerView({
+                    el: '.error-message-banner',
+                    message: message
+                });
+                messageBannerView.render();
+            },
+
+            hideUserErrorMessage: function () {
+                $('.error-message-banner').html('');
+            },
+
             setElementVisibility: function (state) {
                 if (!this.model.isAboveMinimumAge()) {
                     this.$('.upload-button-wrapper').css('display', state);
@@ -569,132 +689,9 @@
                 if (status === 'upload') {
                     return interpolate_text(message, {status: 'Uploading'});
                 } else if (status === 'remove') {
-                    return interpolate_text(message, {status: 'Removing'});
+                    return interpolate_text(message, {status: 'Removal'});
                 }
-            },
-
-            clickedUploadButton: function () {
-                console.log('upload');
-                $(this.uploadButtonSelector).fileupload({
-                    url: this.options.profileImageUploadUrl,
-                    type: 'POST',
-                    autoUpload: true,
-                    add: this.fileUploadHandler,
-                    done: this.successHandler,
-                    fail: this.failureHandler
-                });
-            },
-
-            clickedRemoveButton: function () {
-                var self = this;
-                this.hideUserMessage();
-                this.setCurrentStatus('remove');
-                this.showRemovalInProgressMessage();
-                this.showInProgressMessage('Removing...');
-                 $.ajax({
-                    type: 'POST',
-                    url: this.options.profileImageRemoveUrl,
-                    success: function (data, status, xhr) {
-                        self.successHandler();
-                    },
-                    error: function (xhr, status, error) {
-                       self.failureHandler();
-                    }
-                });
-            },
-
-            uploadButtonTitle: function () {
-                if (this.model.has_profile_image()) {
-                    return _.result(this, 'titleEdit')
-                } else {
-                    return _.result(this, 'titleAdd')
-                }
-            },
-
-            removeButtonTitle: function () {
-                return this.titleRemove;
-            },
-
-            successHandler: function (e, data) {
-                // Update model to get the latest urls of profile image.
-                this.model.fetch();
-                //if (this.getCurrentStatus === 'upload') {
-                //    this.showUserMessage('Your profile image has uploaded successfully.');
-                //} else {
-                //    this.showUserMessage('Your profile image has removed successfully.');
-                //}
-                this.render();
-                this.setCurrentStatus('');
-            },
-
-            failureHandler: function (e, data) {
-                this.setCurrentStatus('');
-                 if (_.contains([400, 404], data.jqXHR.status)) {
-                    try {
-                        var errors = JSON.parse(data.jqXHR.responseText);
-                        this.showUserMessage(errors.user_message);
-                    } catch (error) {
-                        this.showUserMessage(this.errorMessage);
-                    }
-                } else {
-                    this.showUserMessage(this.errorMessage);
-                }
-                this.render();
-            },
-
-            fileUploadHandler: function (e, data) {
-                if (this.validateImageSize(data.files[0].size)) {
-                    data.formData = {file: data.files[0]};
-                    this.hideUserMessage();
-                    this.setCurrentStatus('upload');
-                    this.showUploadInProgressMessage();
-                    data.submit();
-                }
-            },
-
-            validateImageSize: function (imageBytes) {
-                if (imageBytes < this.options.minImageBytes) {
-                    this.showUserMessage('Minimum file size not met.');
-                    return false;
-                } else if (imageBytes > this.options.maxImageBytes) {
-                    this.showUserMessage('Maximum file size exceeded.');
-                    return false;
-                }
-                return true;
-            },
-
-            showUploadInProgressMessage: function () {
-                this.$('.upload-button-wrapper').css('opacity', 1);
-                this.$('.upload-button-icon').html(this.iconProgress);
-                this.$('.upload-button-title').html('Uploading...');
-            },
-
-            showRemovalInProgressMessage: function () {
-                this.$('.u-field-remove-button').css('opacity', 1);
-                this.$('.remove-button-icon').html(this.iconProgress);
-                this.$('.remove-button-title').html('Removing...');
-            },
-
-            setCurrentStatus: function (status) {
-                this.$('.image-wrapper').attr('data-status', status);
-            },
-
-            getCurrentStatus: function () {
-                return this.$('.image-wrapper').attr('data-status');
-            },
-
-            showUserMessage: function (message) {
-                 var messageBannerView = new MessageBannerView({
-                    el: '.error-message-banner',
-                    message: message
-                });
-                messageBannerView.render();
-            },
-
-            hideUserMessage: function () {
-                $('.error-message-banner').html('');
             }
-
         });
 
         return FieldViews;

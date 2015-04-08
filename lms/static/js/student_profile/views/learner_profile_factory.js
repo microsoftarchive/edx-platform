@@ -45,9 +45,9 @@
             var profileImageFieldView = new FieldsView.ImageFieldView({
                     model: accountSettingsModel,
                     valueAttribute: "profile_image",
-                    minImageBytes: 100,
-                    maxImageBytes: 1024 * 1024, // 1 MB
                     editable: editable,
+                    imageMaxBytes: options['profile_image_max_bytes'],
+                    imageMinBytes: options['profile_image_min_bytes'],
                     profileImageUploadUrl: options['profile_image_upload_url'],
                     profileImageRemoveUrl: options['profile_image_remove_url']
             });
@@ -59,8 +59,6 @@
             });
 
             var sectionOneFieldViews = [
-                usernameFieldView,
-                profileImageFieldView,
                 new FieldsView.DropdownFieldView({
                     model: accountSettingsModel,
                     required: true,
