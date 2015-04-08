@@ -9,7 +9,7 @@ RequireJS.require([
 ], function ($, Backbone, SearchApp, SearchRouter, CourseSearchForm, SearchCollection, CourseSearchResultsView) {
     'use strict';
 
-    var courseId = $('#courseware-search-results').attr('data-course-id');
+    var courseId = $('#courseware-search-results').data('courseId');
     var app = new SearchApp(
         courseId,
         SearchRouter,
