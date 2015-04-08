@@ -502,13 +502,13 @@
             templateSelector: '#field_image-tpl',
             uploadButtonSelector: '.upload-button-input',
 
-            titleAdd: 'upload a photo',
-            titleEdit: 'change photo',
-            titleRemove: 'remove',
+            titleAdd: gettext("upload a photo"),
+            titleEdit: gettext("change photo"),
+            titleRemove: gettext("remove"),
 
-            iconUpload: '<i class="icon fa fa-camera" aria-hidden="true"></i>',
-            iconRemove: '<i class="icon fa fa-remove" aria-hidden="true"></i>',
-            iconProgress: '<i class="icon fa fa-spinner fa-pulse fa-spin" aria-hidden="true"></i>',
+            iconUpload: '<i class="icon fa fa-camera" aria-hidden="true"></i><span class="sr">Upload Profile Image</span>',
+            iconRemove: '<i class="icon fa fa-remove" aria-hidden="true"></i><span class="sr">Remove Profile Image</span>',
+            iconProgress: '<i class="icon fa fa-spinner fa-pulse fa-spin" aria-hidden="true"></i></i><span class="sr">In Progress</span>',
 
             errorMessage: gettext("We've encountered an error. Refresh your browser and then try again."),
 
@@ -554,7 +554,6 @@
                 this.hideUserErrorMessage();
                 this.setCurrentStatus('remove');
                 this.showRemovalInProgressMessage();
-                this.showInProgressMessage('Removing...');
                  $.ajax({
                     type: 'POST',
                     url: this.options.profileImageRemoveUrl,
@@ -583,7 +582,6 @@
                 var self = this;
                 // Update model to get the latest urls of profile image.
                 this.model.fetch().done(function () {
-                    self.render();
                     self.setCurrentStatus('');
                 }).fail(function () {
                     self.showUserErrorMessage(self.errorMessage);
@@ -617,10 +615,10 @@
 
             validateImageSize: function (imageBytes) {
                 if (imageBytes < this.options.imageMinBytes) {
-                    this.showUserErrorMessage('Minimum file size not met.');
+                    this.showUserErrorMessage(gettext("Minimum file size not met."));
                     return false;
                 } else if (imageBytes > this.options.imageMaxBytes) {
-                    this.showUserErrorMessage('Maximum file size exceeded.');
+                    this.showUserErrorMessage(gettext("Maximum file size exceeded."));
                     return false;
                 }
                 return true;
@@ -629,13 +627,13 @@
             showUploadInProgressMessage: function () {
                 this.$('.upload-button-wrapper').css('opacity', 1);
                 this.$('.upload-button-icon').html(this.iconProgress);
-                this.$('.upload-button-title').html('Uploading...');
+                this.$('.upload-button-title').html(gettext("Uploading..."));
             },
 
             showRemovalInProgressMessage: function () {
                 this.$('.u-field-remove-button').css('opacity', 1);
                 this.$('.remove-button-icon').html(this.iconProgress);
-                this.$('.remove-button-title').html('Removing...');
+                this.$('.remove-button-title').html(gettext("Removing..."));
             },
 
             setCurrentStatus: function (status) {
