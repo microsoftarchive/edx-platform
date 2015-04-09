@@ -6,7 +6,6 @@ import unittest
 import functools
 import requests
 import os
-import time
 from datetime import datetime
 from path import path
 from bok_choy.javascript import js_defined
@@ -278,10 +277,8 @@ class EventsTestMixin(object):
     def setUp(self):
         super(EventsTestMixin, self).setUp()
         self.event_collection = MongoClient()["test"]["events"]
-        self.event_collection.drop()
         self.browser_event_collection = MongoClient()["test"]["browser_events"]
-        self.browser_event_collection.drop()
-        self.start_time = datetime.now()
+        self.reset_event_tracking()
 
     def assert_event_emitted_num_times(self, event_name, event_time, event_user_id, num_times_emitted):
         """
@@ -301,6 +298,14 @@ class EventsTestMixin(object):
             ).count(), num_times_emitted
         )
 
+    def reset_event_tracking(self):
+        """
+        Resets all event tracking so that previously captured events are removed.
+        """
+        self.event_collection.drop()
+        self.browser_event_collection.drop()
+        self.start_time = datetime.now()
+
     def get_matching_browser_events(self, event_type):
         """
         Returns a cursor for the matching browser events.
@@ -319,12 +324,15 @@ class EventsTestMixin(object):
                 have been fired.
         """
         EmptyPromise(
-            lambda: self.get_matching_browser_events(event_type).count() == len(expected_events),
+            lambda: self.get_matching_browser_events(event_type).count() >= len(expected_events),
             "Waiting for the correct number of browser events to have been recorded"
         ).fulfill()
 
-        # Verify that each of the expected events was found
+        # Verify that the correct number of events were found
         cursor = self.get_matching_browser_events(event_type)
+        self.assertEqual(cursor.count(), len(expected_events))
+
+        # Verify that each of the expected events was found
         for expected_event in expected_events:
             actual_event = cursor.next()
             self.assertEqual(json.loads(actual_event["event"]), expected_event)

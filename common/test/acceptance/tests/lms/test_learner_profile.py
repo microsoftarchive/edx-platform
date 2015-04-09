@@ -13,7 +13,7 @@ from ...pages.lms.dashboard import DashboardPage
 from ..helpers import EventsTestMixin
 
 
-class LearnerProfilePageTest(WebAppTest, EventsTestMixin):
+class LearnerProfilePageTest(EventsTestMixin, WebAppTest):
     """
     Tests that verify Student's Profile Page.
     """
@@ -44,6 +44,7 @@ class LearnerProfilePageTest(WebAppTest, EventsTestMixin):
         self.dashboard_page = DashboardPage(self.browser)
 
         self.my_auto_auth_page = AutoAuthPage(self.browser, username=self.USER_1_NAME, email=self.USER_1_EMAIL).visit()
+        self.my_user_id = self.my_auto_auth_page.get_user_id()
         self.my_profile_page = LearnerProfilePage(self.browser, self.USER_1_NAME)
 
         self.other_auto_auth_page = AutoAuthPage(
@@ -51,6 +52,7 @@ class LearnerProfilePageTest(WebAppTest, EventsTestMixin):
             username=self.USER_2_NAME,
             email=self.USER_2_EMAIL
         ).visit()
+        self.other_user_id = self.other_auto_auth_page.get_user_id()
 
         self.other_profile_page = LearnerProfilePage(self.browser, self.USER_2_NAME)
 
@@ -80,6 +82,10 @@ class LearnerProfilePageTest(WebAppTest, EventsTestMixin):
         """
         if authenticate:
             self.authenticate_as_user(user)
+
+        # Reset event tracking so that the tests only see events from
+        # loading the profile page.
+        self.reset_event_tracking()
 
         self.my_profile_page.visit()
         self.my_profile_page.wait_for_page()
@@ -125,24 +131,19 @@ class LearnerProfilePageTest(WebAppTest, EventsTestMixin):
         self.assertEqual(self.my_profile_page.age_limit_message_present, message is not None)
         self.assertIn(message, self.my_profile_page.profile_forced_private_message)
 
-    def test_page_view_event(self):
+    def verify_profile_page_view_event(self, profile_user_id, visibility=None, requires_parental_consent=False):
         """
-        Scenario: An event should be recorded when the profile page is viewed.
-
-        Given that I am a registered user
-        And I visit my own profile page
-        Then a page view analytics event should be recorded
+        Verifies that the correct view event was captured for the profile page.
         """
-        # self.visit_my_profile_page(self.MY_USER, privacy=self.PRIVACY_PUBLIC)
-        # self.verify_client_side_events(
-        #     u"edx.user.settings.viewed",
-        #     [{
-        #         u"user_id": int(self.user_id),
-        #         u"page": u"account",
-        #         u"visibility": None,
-        #         u"requires_parental_consent": True,
-        #     }]
-        # )
+        self.verify_browser_events(
+            u"edx.user.settings.viewed",
+            [{
+                u"user_id": int(profile_user_id),
+                u"page": u"profile",
+                u"visibility": unicode(visibility),
+                u"requires_parental_consent": requires_parental_consent,
+            }]
+        )
 
     def test_dashboard_learner_profile_link(self):
         """
@@ -177,6 +178,8 @@ class LearnerProfilePageTest(WebAppTest, EventsTestMixin):
         self.assertTrue(self.my_profile_page.privacy_field_visible)
         self.assertEqual(self.my_profile_page.visible_fields, self.PRIVATE_PROFILE_FIELDS)
 
+        self.verify_profile_page_view_event(self.my_user_id, visibility="private")
+
     def test_fields_on_my_public_profile(self):
         """
         Scenario: Verify that desired fields are shown when looking at her own public profile.
@@ -196,6 +199,8 @@ class LearnerProfilePageTest(WebAppTest, EventsTestMixin):
 
         self.assertEqual(self.my_profile_page.editable_fields, self.PUBLIC_PROFILE_EDITABLE_FIELDS)
 
+        self.verify_profile_page_view_event(self.my_user_id, visibility="public")
+
     def test_fields_on_others_private_profile(self):
         """
         Scenario: Verify that desired fields are shown when looking at her own private profile.
@@ -210,6 +215,8 @@ class LearnerProfilePageTest(WebAppTest, EventsTestMixin):
 
         self.assertFalse(self.other_profile_page.privacy_field_visible)
         self.assertEqual(self.other_profile_page.visible_fields, self.PRIVATE_PROFILE_FIELDS)
+
+        self.verify_profile_page_view_event(self.other_user_id, visibility="public")
 
     def test_fields_on_others_public_profile(self):
         """
@@ -353,11 +360,12 @@ class LearnerProfilePageTest(WebAppTest, EventsTestMixin):
 
         Given that I am a registered user.
         And birth year is not set for the user.
-        And i visit my profile page.
-        Then i should see message `Your profile is disabled because you haven't filled in your Year of Birth.`
+        And I visit my profile page.
+        Then I should see a message that the profile is private until the year of birth is set.
         """
         message = "You must specify your birth year before you can share your full profile."
         self.verify_profile_forced_private_message('', message=message)
+        self.verify_profile_page_view_event(self.my_user_id, visibility="private", requires_parental_consent=True)
 
     def test_user_is_under_age(self):
         """
@@ -365,7 +373,8 @@ class LearnerProfilePageTest(WebAppTest, EventsTestMixin):
 
         Given that I am a registered user.
         And birth year is set so that age is less than 13.
-        And i visit my profile page.
-        Then i should see message `You must be over 13 to share a full profile.`
+        And I visit my profile page.
+        Then I should see a message that the profile is private as I am under thirteen.
         """
         self.verify_profile_forced_private_message('2010', message='You must be over 13 to share a full profile.')
+        self.verify_profile_page_view_event(self.my_user_id, visibility="private", requires_parental_consent=True)

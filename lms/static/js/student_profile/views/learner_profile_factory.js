@@ -8,8 +8,6 @@
         'js/student_profile/views/learner_profile_fields',
         'js/student_profile/views/learner_profile_view',
         'js/student_account/views/account_settings_fields'
-
-
     ], function (gettext, $, _, Backbone, AccountSettingsModel, AccountPreferencesModel, FieldsView,
                  LearnerProfileFieldsView, LearnerProfileView, AccountSettingsFieldViews) {
 
@@ -88,7 +86,8 @@
 
             var learnerProfileView = new LearnerProfileView({
                 el: learnerProfileElement,
-                own_profile: options['own_profile'],
+                profileUserId: options['profile_user_id'],
+                ownProfile: options['own_profile'],
                 has_preferences_access: options['has_preferences_access'],
                 accountSettingsModel: accountSettingsModel,
                 preferencesModel: accountPreferencesModel,
