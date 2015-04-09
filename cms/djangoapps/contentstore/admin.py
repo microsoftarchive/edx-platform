@@ -8,3 +8,4 @@ from config_models.admin import ConfigurationModelAdmin
 from contentstore.models import VideoUploadConfig
 
 admin.site.register(VideoUploadConfig, ConfigurationModelAdmin)
+admin.site.register(MobileNotificationsConfig, ConfigurationModelAdmin)
