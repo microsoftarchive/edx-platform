@@ -522,24 +522,52 @@
 
             initialize: function (options) {
                 this._super(options);
-                _.bindAll(this, 'render', 'imageChangeSucceeded', 'imageChangeFailed', 'fileUploadHandler', 'addWindowActions',
-                          'onBeforeUnload');
+                _.bindAll(this, 'render', 'imageChangeSucceeded', 'imageChangeFailed', 'fileSelectHandler',
+                          'addGlobalEvents', 'onBeforeUnload');
                 this.listenTo(this.model, "change:" + this.options.valueAttribute, this.render);
             },
 
             render: function () {
                 this.$el.html(this.template({
                     id: this.options.valueAttribute,
-                    imageLink: this.model.profileImageUrl(),
-                    username: this.model.get('username'),
+                    imageUrl: _.result(this, 'imageUrl'),
+                    imageAltText: _.result(this, 'imageAltText'),
                     uploadButtonIcon: _.result(this, 'iconUpload'),
                     uploadButtonTitle: _.result(this, 'uploadButtonTitle'),
                     removeButtonIcon: _.result(this, 'iconRemove'),
                     removeButtonTitle: _.result(this, 'removeButtonTitle')
                 }));
                 this.setElementVisibility('none');
-                this.addWindowActions();
+                this.addGlobalEvents();
                 return this;
+            },
+
+            imageUrl: function () {
+                return '';
+            },
+
+            imageAltText: function () {
+                return '';
+            },
+
+            uploadButtonTitle: function () {
+               return '';
+            },
+
+            removeButtonTitle: function () {
+                return this.titleRemove;
+            },
+
+            setElementVisibility: function (state) {
+                return state;
+            },
+
+            setUploadButtonVisibility: function (state) {
+                return state
+            },
+
+            setRemoveButtonVisibility: function (state) {
+                return state;
             },
 
             clickedUploadButton: function () {
@@ -547,7 +575,7 @@
                     url: this.options.imageUploadUrl,
                     type: 'POST',
                     autoUpload: true,
-                    add: this.fileUploadHandler,
+                    add: this.fileSelectHandler,
                     done: this.imageChangeSucceeded,
                     fail: this.imageChangeFailed
                 });
@@ -556,7 +584,7 @@
             clickedRemoveButton: function () {
                 var self = this;
                 this.hideMessage();
-                this.setCurrentStatus('remove');
+                this.setCurrentStatus('removing');
                 this.setUploadButtonVisibility('none');
                 this.showRemovalInProgressMessage();
                  $.ajax({
@@ -571,26 +599,8 @@
                 });
             },
 
-            uploadButtonTitle: function () {
-                if (this.model.hasProfileImage()) {
-                    return _.result(this, 'titleEdit')
-                } else {
-                    return _.result(this, 'titleAdd')
-                }
-            },
-
-            removeButtonTitle: function () {
-                return this.titleRemove;
-            },
-
             imageChangeSucceeded: function (e, data) {
-                var self = this;
-                // Update model to get the latest urls of profile image.
-                this.model.fetch().done(function () {
-                    self.setCurrentStatus('');
-                }).fail(function () {
-                    self.showMessage(self.errorMessage);
-                });
+                return true;
             },
 
             imageChangeFailed: function (e, data) {
@@ -608,11 +618,11 @@
                 this.render();
             },
 
-            fileUploadHandler: function (e, data) {
+            fileSelectHandler: function (e, data) {
                 if (this.validateImageSize(data.files[0].size)) {
                     data.formData = {file: data.files[0]};
                     this.hideMessage();
-                    this.setCurrentStatus('upload');
+                    this.setCurrentStatus('uploading');
                     this.setRemoveButtonVisibility('none');
                     this.showUploadInProgressMessage();
                     data.submit();
@@ -653,54 +663,21 @@
                 return this.$('.image-wrapper').attr('data-status');
             },
 
-            showMessage: function (message) {
-                this.options.messageView.showMessage(message);
-            },
-
-            hideMessage: function () {
-                this.options.messageView.hideMessage();
-            },
-
-            setUploadButtonVisibility: function (state) {
-                this.$('.u-field-upload-button').css('display', state);
-            },
-
-            setRemoveButtonVisibility: function (state) {
-                this.$('.u-field-remove-button').css('display', state);
-            },
-
-            setElementVisibility: function (state) {
-                if (!this.model.isAboveMinimumAge()) {
-                    this.setUploadButtonVisibility(state);
-                }
-
-                if (!this.model.hasProfileImage()) {
-                    this.$('.u-field-remove-button').css('display', state);
-                }
-
-                if(this.inProgress() ||  this.options.editable === 'never') {
-                    this.setUploadButtonVisibility(state);
-                    this.setRemoveButtonVisibility(state);
-                }
-            },
-
-            addWindowActions: function () {
-                $(window).on('beforeunload', this.onBeforeUnload);
-            },
-
             inProgress: function() {
                 var status = this.getCurrentStatus();
                 return _.isUndefined(status) ? false : true;
             },
 
+            addGlobalEvents: function () {
+                $(window).on('beforeunload', this.onBeforeUnload);
+            },
+
             onBeforeUnload: function () {
                 var status = this.getCurrentStatus();
-                var message = gettext("{status} is in progress. To avoid errors, stay on this page until the process is complete.");
-
-                if (status === 'upload') {
-                    return interpolate_text(message, {status: 'Upload'});
-                } else if (status === 'remove') {
-                    return interpolate_text(message, {status: 'Removal'});
+                if (status === 'uploading') {
+                    return gettext("Upload is in progress. To avoid errors, stay on this page until the process is complete.");
+                } else if (status === 'removing') {
+                    return gettext("Removal is in progress. To avoid errors, stay on this page until the process is complete.");
                 }
             },
 

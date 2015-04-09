@@ -23,58 +23,62 @@
         width: ($baseline*5);
     }
 
-    .image-wrapper {
-        width: $profile-image-dimension;
-        position: relative;
+    .profile-image-field {
+        @include float(left);
 
-        .image-frame {
+        .image-wrapper {
+            width: $profile-image-dimension;
             position: relative;
-            width: 120px;
-            height: 120px;
-        }
 
-        .u-field-upload-button {
-            width: 120px;
-            height: 120px;
-            position: absolute;
-            top: 0;
-            opacity: 0;
-            color: $white;
-
-            i {
-                color: $white;
+            .image-frame {
+                position: relative;
+                width: 120px;
+                height: 120px;
             }
-        }
 
-        .upload-button-icon, .upload-button-title {
-            text-align: center;
-            transform: translateY(45px);
-        }
+            .u-field-upload-button {
+                width: 120px;
+                height: 120px;
+                position: absolute;
+                top: 0;
+                opacity: 0;
+                color: $white;
 
-        .upload-button-input {
-            width: 120px;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            cursor: pointer;
-        }
+                i {
+                    color: $white;
+                }
+            }
 
-        .u-field-remove-button {
-            width: 120px;
-            height: 20px;
-            opacity: 0;
-            position: relative;
-            margin-top: 2px;
-            text-align: center;
-            cursor: pointer;
-            display: block;
-        }
+            .upload-button-icon, .upload-button-title {
+                text-align: center;
+                transform: translateY(45px);
+            }
 
-        &:hover {
-            .u-field-upload-button, .u-field-remove-button {
-                opacity: 1;
+            .upload-button-input {
+                width: 120px;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                opacity: 0;
+                cursor: pointer;
+            }
+
+            .u-field-remove-button {
+                width: 120px;
+                height: 20px;
+                opacity: 0;
+                position: relative;
+                margin-top: 2px;
+                text-align: center;
+                cursor: pointer;
+                display: block;
+            }
+
+            &:hover {
+                .u-field-upload-button, .u-field-remove-button {
+                    opacity: 1;
+                }
             }
         }
     }

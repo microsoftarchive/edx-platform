@@ -45,15 +45,15 @@
                 accountSettingsPageUrl: options['account_settings_page_url']
             });
 
-            var profileImageFieldView = new FieldsView.ImageFieldView({
-                    model: accountSettingsModel,
-                    valueAttribute: "profile_image",
-                    editable: editable,
-                    messageView: messageView,
-                    imageMaxBytes: options['profile_image_max_bytes'],
-                    imageMinBytes: options['profile_image_min_bytes'],
-                    imageUploadUrl: options['profile_image_upload_url'],
-                    imageRemoveUrl: options['profile_image_remove_url']
+            var profileImageFieldView = new LearnerProfileFieldsView.ProfileImageFieldView({
+                model: accountSettingsModel,
+                valueAttribute: "profile_image",
+                editable: editable,
+                messageView: messageView,
+                imageMaxBytes: options['profile_image_max_bytes'],
+                imageMinBytes: options['profile_image_min_bytes'],
+                imageUploadUrl: options['profile_image_upload_url'],
+                imageRemoveUrl: options['profile_image_remove_url']
             });
 
             var usernameFieldView = new FieldsView.ReadonlyFieldView({

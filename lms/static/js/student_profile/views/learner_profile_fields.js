@@ -41,6 +41,67 @@
             }
         });
 
+        LearnerProfileFieldViews.ProfileImageFieldView = FieldViews.ImageFieldView.extend({
+
+            imageUrl: function () {
+                return this.model.profileImageUrl();
+            },
+
+            imageAltText: function () {
+                return gettext("Profile photo for " + this.model.get('username'));
+            },
+
+            uploadButtonTitle: function () {
+                if (this.model.hasProfileImage()) {
+                    return _.result(this, 'titleEdit')
+                } else {
+                    return _.result(this, 'titleAdd')
+                }
+            },
+
+            imageChangeSucceeded: function (e, data) {
+                var view = this;
+                // Update model to get the latest urls of profile image.
+                this.model.fetch().done(function () {
+                    view.setCurrentStatus('');
+                }).fail(function () {
+                    view.showMessage(view.errorMessage);
+                });
+            },
+
+            showMessage: function (message) {
+                this.options.messageView.showMessage(message);
+            },
+
+            hideMessage: function () {
+                this.options.messageView.hideMessage();
+            },
+
+            setUploadButtonVisibility: function (state) {
+                this.$('.u-field-upload-button').css('display', state);
+            },
+
+            setRemoveButtonVisibility: function (state) {
+                this.$('.u-field-remove-button').css('display', state);
+            },
+
+            setElementVisibility: function (state) {
+                if (!this.model.isAboveMinimumAge()) {
+                    this.setUploadButtonVisibility(state);
+                }
+
+                if (!this.model.hasProfileImage()) {
+                    this.$('.u-field-remove-button').css('display', state);
+                }
+
+                if(this.inProgress() ||  this.options.editable === 'never') {
+                    this.setUploadButtonVisibility(state);
+                    this.setRemoveButtonVisibility(state);
+                }
+            },
+
+        });
+
         return LearnerProfileFieldViews;
     })
 }).call(this, define || RequireJS.define);
