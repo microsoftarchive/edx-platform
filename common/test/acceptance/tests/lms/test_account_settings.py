@@ -4,14 +4,16 @@ End-to-end tests for the Account Settings page.
 """
 from unittest import skip
 
+from bok_choy.web_app_test import WebAppTest
+
 from ...pages.lms.account_settings import AccountSettingsPage
 from ...pages.lms.auto_auth import AutoAuthPage
 from ...pages.lms.dashboard import DashboardPage
 
-from ..helpers import EventsTestMixin, UniqueCourseTest
+from ..helpers import EventsTestMixin
 
 
-class AccountSettingsPageTest(EventsTestMixin, UniqueCourseTest):
+class AccountSettingsPageTest(EventsTestMixin, WebAppTest):
     """
     Tests that verify behaviour of the Account Settings page.
     """
@@ -48,7 +50,7 @@ class AccountSettingsPageTest(EventsTestMixin, UniqueCourseTest):
         Then a page view analytics event should be recorded
         """
         self.visit_account_settings_page()
-        self.verify_client_side_events(
+        self.verify_browser_events(
             u"edx.user.settings.viewed",
             [{
                 u"user_id": int(self.user_id),

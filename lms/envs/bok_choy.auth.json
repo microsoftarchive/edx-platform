@@ -54,7 +54,7 @@
             "ENGINE": "track.backends.mongodb.MongoBackend",
             "OPTIONS": {
                 "database": "test",
-                "collection": "user_events"
+                "collection": "browser_events"
             }
         }
     },
