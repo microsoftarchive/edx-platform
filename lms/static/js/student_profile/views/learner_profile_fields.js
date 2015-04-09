@@ -43,20 +43,15 @@
 
         LearnerProfileFieldViews.ProfileImageFieldView = FieldViews.ImageFieldView.extend({
 
+            titleAdd: gettext("upload a photo"),
+            titleEdit: gettext("change photo"),
+
             imageUrl: function () {
                 return this.model.profileImageUrl();
             },
 
             imageAltText: function () {
-                return gettext("Profile photo for " + this.model.get('username'));
-            },
-
-            uploadButtonTitle: function () {
-                if (this.model.hasProfileImage()) {
-                    return _.result(this, 'titleEdit')
-                } else {
-                    return _.result(this, 'titleAdd')
-                }
+                return interpolate_text(gettext("Profile photo for {username}"), {username: this.model.get('username')});
             },
 
             imageChangeSucceeded: function (e, data) {
@@ -65,41 +60,46 @@
                 this.model.fetch().done(function () {
                     view.setCurrentStatus('');
                 }).fail(function () {
-                    view.showMessage(view.errorMessage);
+                    view.showErrorMessage(view.errorMessage);
                 });
             },
 
-            showMessage: function (message) {
+            imageChangeFailed: function (e, data) {
+                this.setCurrentStatus('');
+                 if (_.contains([400, 404], data.jqXHR.status)) {
+                    try {
+                        var errors = JSON.parse(data.jqXHR.responseText);
+                        this.showErrorMessage(errors.user_message);
+                    } catch (error) {
+                        this.showErrorMessage(this.errorMessage);
+                    }
+                } else {
+                    this.showErrorMessage(this.errorMessage);
+                }
+                this.render();
+            },
+
+            showErrorMessage: function (message) {
                 this.options.messageView.showMessage(message);
             },
 
-            hideMessage: function () {
+            isEditingAllowed: function () {
+                return this.model.isAboveMinimumAge();
+            },
+
+            isShowingPlaceholder: function () {
+                return !this.model.hasProfileImage();
+            },
+
+            clickedRemoveButton: function (e, data) {
                 this.options.messageView.hideMessage();
+                this._super(e, data);
             },
 
-            setUploadButtonVisibility: function (state) {
-                this.$('.u-field-upload-button').css('display', state);
-            },
-
-            setRemoveButtonVisibility: function (state) {
-                this.$('.u-field-remove-button').css('display', state);
-            },
-
-            setElementVisibility: function (state) {
-                if (!this.model.isAboveMinimumAge()) {
-                    this.setUploadButtonVisibility(state);
-                }
-
-                if (!this.model.hasProfileImage()) {
-                    this.$('.u-field-remove-button').css('display', state);
-                }
-
-                if(this.inProgress() ||  this.options.editable === 'never') {
-                    this.setUploadButtonVisibility(state);
-                    this.setRemoveButtonVisibility(state);
-                }
-            },
-
+            fileSelected: function (e, data) {
+                this.options.messageView.hideMessage();
+                this._super(e, data);
+            }
         });
 
         return LearnerProfileFieldViews;

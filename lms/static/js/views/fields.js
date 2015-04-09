@@ -502,12 +502,14 @@
             templateSelector: '#field_image-tpl',
             uploadButtonSelector: '.upload-button-input',
 
-            titleAdd: gettext("upload a photo"),
-            titleEdit: gettext("change photo"),
+            titleAdd: gettext("upload an image"),
+            titleEdit: gettext("change image"),
             titleRemove: gettext("remove"),
 
             titleUploading: gettext("Uploading"),
             titleRemoving: gettext("Removing"),
+
+            titleImageAlt: '',
 
             iconUpload: '<i class="icon fa fa-camera" aria-hidden="true"></i><span class="sr">Upload Profile Image</span>',
             iconRemove: '<i class="icon fa fa-remove" aria-hidden="true"></i><span class="sr">Remove Profile Image</span>',
@@ -522,8 +524,8 @@
 
             initialize: function (options) {
                 this._super(options);
-                _.bindAll(this, 'render', 'imageChangeSucceeded', 'imageChangeFailed', 'fileSelectHandler',
-                          'addGlobalEvents', 'onBeforeUnload');
+                _.bindAll(this, 'render', 'imageChangeSucceeded', 'imageChangeFailed', 'fileSelected',
+                          'watchForPageUnload', 'onBeforeUnload');
                 this.listenTo(this.model, "change:" + this.options.valueAttribute, this.render);
             },
 
@@ -537,53 +539,68 @@
                     removeButtonIcon: _.result(this, 'iconRemove'),
                     removeButtonTitle: _.result(this, 'removeButtonTitle')
                 }));
-                this.setElementVisibility('none');
-                this.addGlobalEvents();
+                this.updateButtonsVisibility();
+                this.watchForPageUnload();
                 return this;
+            },
+
+            showErrorMessage: function () {
             },
 
             imageUrl: function () {
                 return '';
             },
 
-            imageAltText: function () {
-                return '';
-            },
-
             uploadButtonTitle: function () {
-               return '';
+                if (this.isShowingPlaceholder()) {
+                    return _.result(this, 'titleAdd')
+                } else {
+                    return _.result(this, 'titleEdit')
+                }
             },
 
             removeButtonTitle: function () {
                 return this.titleRemove;
             },
 
-            setElementVisibility: function (state) {
-                return state;
+            isEditingAllowed: function () {
+                return true
+            },
+
+            isShowingPlaceholder: function () {
+                return false;
             },
 
             setUploadButtonVisibility: function (state) {
-                return state
+                this.$('.u-field-upload-button').css('display', state);
             },
 
             setRemoveButtonVisibility: function (state) {
-                return state;
+                this.$('.u-field-remove-button').css('display', state);
+            },
+
+            updateButtonsVisibility: function () {
+                if (!this.isEditingAllowed() || !this.options.editable) {
+                    this.setUploadButtonVisibility('none');
+                }
+
+                if (this.isShowingPlaceholder() || !this.options.editable) {
+                    this.setRemoveButtonVisibility('none');
+                }
             },
 
             clickedUploadButton: function () {
                 $(this.uploadButtonSelector).fileupload({
                     url: this.options.imageUploadUrl,
                     type: 'POST',
-                    autoUpload: true,
-                    add: this.fileSelectHandler,
+                    add: this.fileSelected,
                     done: this.imageChangeSucceeded,
                     fail: this.imageChangeFailed
                 });
             },
 
             clickedRemoveButton: function () {
-                var self = this;
-                this.hideMessage();
+                var view = this;
                 this.setCurrentStatus('removing');
                 this.setUploadButtonVisibility('none');
                 this.showRemovalInProgressMessage();
@@ -591,37 +608,24 @@
                     type: 'POST',
                     url: this.options.imageRemoveUrl,
                     success: function (data, status, xhr) {
-                        self.imageChangeSucceeded();
+                        view.imageChangeSucceeded();
                     },
                     error: function (xhr, status, error) {
-                       self.imageChangeFailed();
+                       view.imageChangeFailed();
                     }
                 });
             },
 
             imageChangeSucceeded: function (e, data) {
-                return true;
-            },
-
-            imageChangeFailed: function (e, data) {
-                this.setCurrentStatus('');
-                 if (_.contains([400, 404], data.jqXHR.status)) {
-                    try {
-                        var errors = JSON.parse(data.jqXHR.responseText);
-                        this.showMessage(errors.user_message);
-                    } catch (error) {
-                        this.showMessage(this.errorMessage);
-                    }
-                } else {
-                    this.showMessage(this.errorMessage);
-                }
                 this.render();
             },
 
-            fileSelectHandler: function (e, data) {
+            imageChangeFailed: function (e, data) {
+            },
+
+            fileSelected: function (e, data) {
                 if (this.validateImageSize(data.files[0].size)) {
                     data.formData = {file: data.files[0]};
-                    this.hideMessage();
                     this.setCurrentStatus('uploading');
                     this.setRemoveButtonVisibility('none');
                     this.showUploadInProgressMessage();
@@ -633,11 +637,11 @@
                 var humanReadableSize;
                 if (imageBytes < this.options.imageMinBytes) {
                     humanReadableSize = this.bytesToHumanReadable(this.options.imageMinBytes);
-                    this.showMessage(interpolate_text(gettext("Your image must be at least {size} in size."), {size: humanReadableSize}));
+                    this.showErrorMessage(interpolate_text(gettext("Your image must be at least {size} in size."), {size: humanReadableSize}));
                     return false;
                 } else if (imageBytes > this.options.imageMaxBytes) {
                     humanReadableSize = this.bytesToHumanReadable(this.options.imageMaxBytes);
-                    this.showMessage(interpolate_text(gettext("Your image must be smaller than {size} in size."), {size: humanReadableSize}));
+                    this.showErrorMessage(interpolate_text(gettext("Your image must be smaller than {size} in size."), {size: humanReadableSize}));
                     return false;
                 }
                 return true;
@@ -668,7 +672,7 @@
                 return _.isUndefined(status) ? false : true;
             },
 
-            addGlobalEvents: function () {
+            watchForPageUnload: function () {
                 $(window).on('beforeunload', this.onBeforeUnload);
             },
 
