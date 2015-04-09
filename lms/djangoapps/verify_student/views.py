@@ -56,7 +56,7 @@ from util.json_request import JsonResponse
 from util.date_utils import get_default_time_display
 from eventtracking import tracker
 import analytics
-from url_helpers import get_redirect_url
+from courseware.url_helpers import get_redirect_url
 
 log = logging.getLogger(__name__)
 
