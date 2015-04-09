@@ -56,7 +56,7 @@ from util.json_request import JsonResponse
 from util.date_utils import get_default_time_display
 from eventtracking import tracker
 import analytics
-from courseware.url_helpers import get_redirect_url
+from url_helpers import get_redirect_url
 
 log = logging.getLogger(__name__)
 
@@ -1188,14 +1188,14 @@ class InCourseReverifyView(View):
                 redirect_url = reverse("courseware", args=(unicode(course_key),))
 
             return JsonResponse({'url': redirect_url})
-        except Http404 as e:
+        except Http404 as expt:
             log.exception("Invalid location during photo verification.")
-            return HttpResponseBadRequest(_(e.message))
+            return HttpResponseBadRequest(expt.message)
         except IndexError:
             log.exception("Invalid image data during photo verification.")
             return HttpResponseBadRequest(_("Invalid image data during photo verification."))
         except Exception:  # pylint: disable=broad-except
-            log.exception("Could not submit verification attempt for user {}.".format(request.user.id))
+            log.exception("Could not submit verification attempt for user %s." % request.user.id)
             msg = _("Could not submit photos")
             return HttpResponseBadRequest(msg)
 
