@@ -26,6 +26,10 @@
     .profile-image-field {
         @include float(left);
 
+        .u-field-image {
+            padding-top: 0;
+        }
+
         .image-wrapper {
             width: $profile-image-dimension;
             position: relative;
