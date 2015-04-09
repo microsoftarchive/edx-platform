@@ -376,6 +376,9 @@ class PayAndVerifyView(View):
         # so we can fire an analytics event upon payment.
         request.session['attempting_upgrade'] = (message == self.UPGRADE_MSG)
 
+        # Determine the photo verification status
+        verification_good_until = self._verification_valid_until(request.user, "%m/%d/%Y") or ''
+
         # Render the top-level page
         context = {
             'contribution_amount': contribution_amount,
@@ -396,6 +399,8 @@ class PayAndVerifyView(View):
                 get_default_time_display(unexpired_paid_course_mode.expiration_datetime)
                 if unexpired_paid_course_mode.expiration_datetime else ""
             ),
+            'already_verified': already_verified,
+            'verification_good_until': verification_good_until,
         }
         return render_to_response("verify_student/pay_and_verify.html", context)
 
@@ -578,6 +583,28 @@ class PayAndVerifyView(View):
                     all_requirements[requirement] = True
 
         return all_requirements
+
+    def _verification_valid_until(self, user, date_format=None):
+        """
+        Check whether the user has a valid or pending verification.
+
+        Arguments:
+            user:
+            date_format: optional parameter, if provided format
+                datetime object in response to string
+
+        Returns:
+            datetime object or datetime object in string format if
+            'date_format' argument is provided
+        """
+        photo_verifications = SoftwareSecurePhotoVerification.verification_valid_or_pending(user)
+        # return 'expiration_datetime' of latest photo verification if found,
+        # otherwise implicitly return None
+        if photo_verifications:
+            if date_format:
+                return photo_verifications[0].expiration_datetime.strftime(date_format)
+
+            return photo_verifications[0].expiration_datetime
 
     def _check_already_verified(self, user):
         """Check whether the user has a valid or pending verification.
