@@ -1,0 +1,34 @@
+<%! from django.utils.translation import ugettext as _, ungettext %>
+<%def name="span(num)"><span>${num}</span></%def>
+<div class="user-profile">
+  <p>Documents Viewed:</p>
+  <%def name="docslist(docs)">
+    % if not docs:
+      <div class="sidebar-user-roles">None.</div>
+    % else:
+      % for doc in docs:
+        <div class="sidebar-user-roles">${caller.body(doc=doc)}</div>
+      % endfor
+    % endif
+  </%def>
+
+  <%self:docslist docs="${user_graph_info['office_graph_info']['documents_viewed']}" args="doc">
+      <!-- <img src="${doc['PictureThumbnailURL']}" alt="${doc['Title']}" height="30" width="30"> -->
+      <a href="${doc['ServerRedirectedURL']}" target="_blank"><i class="fa fa-file-o"></i>&nbsp;&nbsp;${doc['Title']}</a>
+  </%self:docslist>
+  <br/>
+  <p>Working With:</p>
+  <%def name="userslist(users)">
+    % if not users:
+      <div class="sidebar-user-roles">None.</div>
+    % else:
+      % for user in users:
+        <div class="sidebar-user-roles">${caller.body(user=user)}</div>
+      % endfor
+    % endif
+  </%def>
+
+  <%self:userslist users="${user_graph_info['office_graph_info']['working_with']}" args="user">
+    <a href="${user['Path']}" target="_blank"><img src="${user['PictureThumbnailURL']}" alt="${user['Title']}" height="30" width="30">&nbsp;&nbsp;${user['Title']}</a>
+  </%self:userslist>
+ </div>

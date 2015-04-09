@@ -322,6 +322,10 @@ if settings.COURSEWARE_ENABLED:
         url(r'^courses/{}/get_coupon_info$'.format(settings.COURSE_ID_PATTERN),
             'instructor.views.coupons.get_coupon_info', name="get_coupon_info"),
 
+        # For Yammer
+        url(r'^courses/{}/yammer_discussion$'.format(settings.COURSE_ID_PATTERN),
+            'django_comment_client.forum.views.yammer_discussion', name='yammer_discussion'),
+
         # see ENABLE_INSTRUCTOR_LEGACY_DASHBOARD section for legacy dash urls
 
         # Open Ended grading views

@@ -6,6 +6,8 @@ from functools import wraps
 import json
 import logging
 import xml.sax.saxutils as saxutils
+import xml.etree.ElementTree as ET
+import requests
 
 from django.contrib.auth.decorators import login_required
 from django.core.context_processors import csrf
@@ -405,6 +407,7 @@ def user_profile(request, course_key, user_id):
                 'annotated_content_info': _attr_safe_json(annotated_content_info),
                 'page': query_params['page'],
                 'num_pages': query_params['num_pages'],
+                'user_graph_info': get_user_graph_info(request, user_id)
             }
 
             return render_to_response('discussion/user_profile.html', context)
@@ -487,3 +490,89 @@ def followed_threads(request, course_key, user_id):
             return render_to_response('discussion/user_profile.html', context)
     except User.DoesNotExist:
         raise Http404
+
+def get_user_graph_info(request, user_id):
+    user_graph_info = {}
+    office_graph_info = {}
+    documents_viewed = []
+    working_with = []
+
+    try:
+        django_user_social = User.objects.get(id=user_id).social_auth.get(provider='azuread-openidconnect') # TODO: remove provider name hardcoding
+        loggedin_user_social = request.user.social_auth.get(provider='azuread-openidconnect') # TODO: remove provider name hardcoding
+        
+        # AD graph info
+        # url = 'https://graph.windows.net/' + django_user_social.uid.split("@")[1] + '/users/' + django_user_social.uid + '?api-version=2013-04-05'
+        # response = requests.get(url, headers={'Authorization': 'Bearer ' + loggedin_user_social.extra_data['access_token']})
+        # ad_graph_info = json.loads(response.content)
+        # if ad_graph_info['odata.error']:
+            # raise ValueError('Bad response from AD graph API')
+        #
+        # student_graph_info['ad_graph_info'] = ad_graph_info
+
+        # use sharepoint site specified in settings of the logged in user
+        sharepoint_site = loggedin_user_social.extra_data['sharepoint_site']
+        
+        # get actor id of the user whose profile we are viewing
+        profile_username = django_user_social.uid.split("@")[0]
+        graph_info_response = requests.get(sharepoint_site+"/_api/search/query?Querytext='Username:" + profile_username + "'&SourceId='b09a7990-05ea-4af9-81ef-edfab16c4e31'&SelectProperties='DocId'",
+                                           headers={'Authorization': 'Bearer ' + django_user_social.extra_data['access_token']})
+        graph_elements = get_data_from_gql(graph_info_response.content)
+        actor_id = graph_elements[0]['DocId']
+
+        # get documents viewed by user from GQL
+        documents_viewed_response = requests.get(sharepoint_site+"/_api/search/query?Querytext='*'&Properties='GraphQuery:ACTOR("+actor_id+"\,action\:1001)'",
+            headers={'Authorization': 'Bearer ' + django_user_social.extra_data['access_token']})
+        documents_viewed = get_data_from_gql(documents_viewed_response.content)
+
+        # get other users that the user is working with from GQL
+        working_with_response = requests.get(sharepoint_site+"/_api/search/query?Querytext='*'&Properties='GraphQuery:ACTOR("+actor_id+"\,action\:1019)'",
+            headers={'Authorization': 'Bearer ' + django_user_social.extra_data['access_token']})
+        working_with = get_data_from_gql(working_with_response.content)
+
+    except:
+        logging.exception('Failed to get user graph info.')
+        
+    office_graph_info['documents_viewed'] = documents_viewed
+    office_graph_info['working_with'] = working_with
+    user_graph_info['office_graph_info'] = office_graph_info
+
+    return user_graph_info
+
+def get_data_from_gql(content):
+
+    namespaces = {
+        'd': 'http://schemas.microsoft.com/ado/2007/08/dataservices',
+        'm': 'http://schemas.microsoft.com/ado/2007/08/dataservices/metadata'
+    }
+
+    root = ET.fromstring(content)
+    row_elements = root.findall("d:PrimaryQueryResult//d:Table//d:Rows/d:element", namespaces)
+
+    data = []
+    for row_element in row_elements:
+        keyvalue_elements = row_element.findall('.//d:element', namespaces)
+        item = {}
+
+        for keyvalue_element in keyvalue_elements:
+            key = keyvalue_element.find('d:Key', namespaces)
+            value = keyvalue_element.find('d:Value', namespaces)
+            item[key.text] = value.text
+
+        data.append(item)
+
+    return data
+
+@login_required
+@use_bulk_ops
+def yammer_discussion(request, course_key):
+    """
+    Renders the Yammer Discussion page
+    """
+    course = get_course_with_access(request.user, 'load_forum', course_key, check_if_enrolled=True)
+
+    context = {
+            'course': course,
+            'staff_access': has_access(request.user, 'staff', course),
+        }
+    return render_to_response('discussion/yammer.html', context)
