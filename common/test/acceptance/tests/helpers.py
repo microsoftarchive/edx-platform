@@ -6,6 +6,7 @@ import unittest
 import functools
 import requests
 import os
+import time
 from datetime import datetime
 from path import path
 from bok_choy.javascript import js_defined
@@ -278,6 +279,8 @@ class EventsTestMixin(object):
         super(EventsTestMixin, self).setUp()
         self.event_collection = MongoClient()["test"]["events"]
         self.event_collection.drop()
+        self.user_event_collection = MongoClient()["test"]["user_events"]
+        self.user_event_collection.drop()
         self.start_time = datetime.now()
 
     def assert_event_emitted_num_times(self, event_name, event_time, event_user_id, num_times_emitted):
@@ -297,6 +300,29 @@ class EventsTestMixin(object):
                 }
             ).count(), num_times_emitted
         )
+
+    def verify_client_side_events(self, event_type, expected_events):
+        """Verify that the expected client-side events were logged.
+
+        Args:
+            event_type (str): The type of event to be verified.
+            expected_events (list): A list of dicts representing the events that should
+                have been fired.
+        """
+        # Wait for a couple of seconds to ensure that the event was posted from the client
+        time.sleep(2)
+
+        # Find all events of the specified event type
+        cursor = self.user_event_collection.find({
+            "event_type": event_type,
+            "time": {"$gt": self.start_time},
+        })
+
+        # Verify that each of the expected events was found
+        self.assertEqual(cursor.count(), len(expected_events))
+        for expected_event in expected_events:
+            actual_event = cursor.next()
+            self.assertEqual(json.loads(actual_event["event"]), expected_event)
 
 
 class UniqueCourseTest(WebAppTest):

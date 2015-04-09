@@ -3,15 +3,17 @@
 End-to-end tests for Student's Profile Page.
 """
 
+from bok_choy.web_app_test import WebAppTest
+
 from ...pages.lms.account_settings import AccountSettingsPage
 from ...pages.lms.auto_auth import AutoAuthPage
 from ...pages.lms.learner_profile import LearnerProfilePage
 from ...pages.lms.dashboard import DashboardPage
 
-from bok_choy.web_app_test import WebAppTest
+from ..helpers import EventsTestMixin
 
 
-class LearnerProfilePageTest(WebAppTest):
+class LearnerProfilePageTest(WebAppTest, EventsTestMixin):
     """
     Tests that verify Student's Profile Page.
     """
@@ -64,7 +66,7 @@ class LearnerProfilePageTest(WebAppTest):
         elif user == self.OTHER_USER:
             self.other_auto_auth_page.visit()
 
-    def set_pubilc_profile_fields_data(self, profile_page):
+    def set_public_profile_fields_data(self, profile_page):
         """
         Fill in the public profile fields of a user.
         """
@@ -86,7 +88,7 @@ class LearnerProfilePageTest(WebAppTest):
             self.my_profile_page.privacy = privacy
 
             if privacy == self.PRIVACY_PUBLIC:
-                self.set_pubilc_profile_fields_data(self.my_profile_page)
+                self.set_public_profile_fields_data(self.my_profile_page)
 
     def visit_other_profile_page(self, user, privacy=None):
         """
@@ -102,7 +104,7 @@ class LearnerProfilePageTest(WebAppTest):
             self.other_profile_page.privacy = privacy
 
             if privacy == self.PRIVACY_PUBLIC:
-                self.set_pubilc_profile_fields_data(self.other_profile_page)
+                self.set_public_profile_fields_data(self.other_profile_page)
 
     def set_birth_year(self, user, birth_year):
         """
@@ -122,6 +124,25 @@ class LearnerProfilePageTest(WebAppTest):
         self.assertTrue(self.my_profile_page.privacy_field_visible)
         self.assertEqual(self.my_profile_page.age_limit_message_present, message is not None)
         self.assertIn(message, self.my_profile_page.profile_forced_private_message)
+
+    def test_page_view_event(self):
+        """
+        Scenario: An event should be recorded when the profile page is viewed.
+
+        Given that I am a registered user
+        And I visit my own profile page
+        Then a page view analytics event should be recorded
+        """
+        # self.visit_my_profile_page(self.MY_USER, privacy=self.PRIVACY_PUBLIC)
+        # self.verify_client_side_events(
+        #     u"edx.user.settings.viewed",
+        #     [{
+        #         u"user_id": int(self.user_id),
+        #         u"page": u"account",
+        #         u"visibility": None,
+        #         u"requires_parental_consent": True,
+        #     }]
+        # )
 
     def test_dashboard_learner_profile_link(self):
         """

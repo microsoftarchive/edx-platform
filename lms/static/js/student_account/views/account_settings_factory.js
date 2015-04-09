@@ -10,7 +10,7 @@
     ], function (gettext, $, _, Backbone, FieldViews, UserAccountModel, UserPreferencesModel,
                  AccountSettingsFieldViews, AccountSettingsView) {
 
-        return function (fieldsData, authData, userAccountsApiUrl, userPreferencesApiUrl) {
+        return function (fieldsData, authData, userAccountsApiUrl, userPreferencesApiUrl, accountUserId) {
 
             var accountSettingsElement = $('.wrapper-account-settings');
 
@@ -132,13 +132,15 @@
                                 connectUrl: provider['connect_url'],
                                 disconnectUrl: provider['disconnect_url']
                             })
-                        }
+                        };
                     })
                 };
                 sectionsData.push(accountsSectionData);
             }
 
             var accountSettingsView = new AccountSettingsView({
+                model: userAccountModel,
+                accountUserId: accountUserId,
                 el: accountSettingsElement,
                 sectionsData: sectionsData
             });
@@ -156,7 +158,7 @@
                             accountSettingsView.renderFields();
                         },
                         error: showLoadingError
-                    })
+                    });
                 },
                 error: showLoadingError
             });
@@ -167,5 +169,5 @@
                 accountSettingsView: accountSettingsView
             };
         };
-    })
+    });
 }).call(this, define || RequireJS.define);
