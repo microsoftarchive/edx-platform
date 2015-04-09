@@ -40,18 +40,18 @@
   	            return response;
             },
 
-            has_profile_image: function () {
+            hasProfileImage: function () {
                 var profile_image = this.get('profile_image');
-                return (_.isObject(profile_image) && profile_image['has_image']);
+                return (_.isObject(profile_image) && profile_image['has_image'] === true);
+            },
+
+            profileImageUrl: function () {
+                return this.get('profile_image')['image_url_large'];
             },
 
             isAboveMinimumAge: function() {
                 var isBirthDefined = !(_.isUndefined(this.get('year_of_birth')) || _.isNull(this.get('year_of_birth')));
                 return isBirthDefined && !(this.get("requires_parental_consent"));
-            },
-
-            profileImageUrl: function () {
-                return this.get('profile_image')['image_url_large'];
             }
         });
         return UserAccountModel;

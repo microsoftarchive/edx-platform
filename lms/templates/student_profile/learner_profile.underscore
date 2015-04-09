@@ -1,5 +1,4 @@
 <div class="profile <%- ownProfile ? 'profile-self' : 'profile-other' %>">
-    <div class="error-message-banner"></div>
     <div class="wrapper-profile-field-account-privacy"></div>
 
     <div class="wrapper-profile-sections account-settings-container">

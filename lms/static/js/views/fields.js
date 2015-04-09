@@ -1,8 +1,8 @@
 ;(function (define, undefined) {
     'use strict';
     define([
-        'gettext', 'jquery', 'underscore', 'backbone', 'js/mustache', 'js/views/message_banner', 'backbone-super'
-    ], function (gettext, $, _, Backbone, RequireMustache, MessageBannerView) {
+        'gettext', 'jquery', 'underscore', 'backbone', 'js/mustache', 'backbone-super'
+    ], function (gettext, $, _, Backbone, RequireMustache) {
 
         var Mustache = window.Mustache || RequireMustache;
 
@@ -506,11 +506,14 @@
             titleEdit: gettext("change photo"),
             titleRemove: gettext("remove"),
 
+            titleUploading: gettext("Uploading"),
+            titleRemoving: gettext("Removing"),
+
             iconUpload: '<i class="icon fa fa-camera" aria-hidden="true"></i><span class="sr">Upload Profile Image</span>',
             iconRemove: '<i class="icon fa fa-remove" aria-hidden="true"></i><span class="sr">Remove Profile Image</span>',
             iconProgress: '<i class="icon fa fa-spinner fa-pulse fa-spin" aria-hidden="true"></i></i><span class="sr">In Progress</span>',
 
-            errorMessage: gettext("We've encountered an error. Refresh your browser and then try again."),
+            errorMessage: gettext("An error has occurred. Refresh the page, and then try again."),
 
             events: {
                 'click .u-field-upload-button': 'clickedUploadButton',
@@ -519,7 +522,7 @@
 
             initialize: function (options) {
                 this._super(options);
-                _.bindAll(this, 'render', 'successHandler', 'failureHandler', 'fileUploadHandler', 'addWindowActions',
+                _.bindAll(this, 'render', 'imageChangeSucceeded', 'imageChangeFailed', 'fileUploadHandler', 'addWindowActions',
                           'onBeforeUnload');
                 this.listenTo(this.model, "change:" + this.options.valueAttribute, this.render);
             },
@@ -528,6 +531,7 @@
                 this.$el.html(this.template({
                     id: this.options.valueAttribute,
                     imageLink: this.model.profileImageUrl(),
+                    username: this.model.get('username'),
                     uploadButtonIcon: _.result(this, 'iconUpload'),
                     uploadButtonTitle: _.result(this, 'uploadButtonTitle'),
                     removeButtonIcon: _.result(this, 'iconRemove'),
@@ -540,34 +544,35 @@
 
             clickedUploadButton: function () {
                 $(this.uploadButtonSelector).fileupload({
-                    url: this.options.profileImageUploadUrl,
+                    url: this.options.imageUploadUrl,
                     type: 'POST',
                     autoUpload: true,
                     add: this.fileUploadHandler,
-                    done: this.successHandler,
-                    fail: this.failureHandler
+                    done: this.imageChangeSucceeded,
+                    fail: this.imageChangeFailed
                 });
             },
 
             clickedRemoveButton: function () {
                 var self = this;
-                this.hideUserErrorMessage();
+                this.hideMessage();
                 this.setCurrentStatus('remove');
+                this.setUploadButtonVisibility('none');
                 this.showRemovalInProgressMessage();
                  $.ajax({
                     type: 'POST',
-                    url: this.options.profileImageRemoveUrl,
+                    url: this.options.imageRemoveUrl,
                     success: function (data, status, xhr) {
-                        self.successHandler();
+                        self.imageChangeSucceeded();
                     },
                     error: function (xhr, status, error) {
-                       self.failureHandler();
+                       self.imageChangeFailed();
                     }
                 });
             },
 
             uploadButtonTitle: function () {
-                if (this.model.has_profile_image()) {
+                if (this.model.hasProfileImage()) {
                     return _.result(this, 'titleEdit')
                 } else {
                     return _.result(this, 'titleAdd')
@@ -578,27 +583,27 @@
                 return this.titleRemove;
             },
 
-            successHandler: function (e, data) {
+            imageChangeSucceeded: function (e, data) {
                 var self = this;
                 // Update model to get the latest urls of profile image.
                 this.model.fetch().done(function () {
                     self.setCurrentStatus('');
                 }).fail(function () {
-                    self.showUserErrorMessage(self.errorMessage);
+                    self.showMessage(self.errorMessage);
                 });
             },
 
-            failureHandler: function (e, data) {
+            imageChangeFailed: function (e, data) {
                 this.setCurrentStatus('');
                  if (_.contains([400, 404], data.jqXHR.status)) {
                     try {
                         var errors = JSON.parse(data.jqXHR.responseText);
-                        this.showUserErrorMessage(errors.user_message);
+                        this.showMessage(errors.user_message);
                     } catch (error) {
-                        this.showUserErrorMessage(this.errorMessage);
+                        this.showMessage(this.errorMessage);
                     }
                 } else {
-                    this.showUserErrorMessage(this.errorMessage);
+                    this.showMessage(this.errorMessage);
                 }
                 this.render();
             },
@@ -606,34 +611,38 @@
             fileUploadHandler: function (e, data) {
                 if (this.validateImageSize(data.files[0].size)) {
                     data.formData = {file: data.files[0]};
-                    this.hideUserErrorMessage();
+                    this.hideMessage();
                     this.setCurrentStatus('upload');
+                    this.setRemoveButtonVisibility('none');
                     this.showUploadInProgressMessage();
                     data.submit();
                 }
             },
 
             validateImageSize: function (imageBytes) {
+                var humanReadableSize;
                 if (imageBytes < this.options.imageMinBytes) {
-                    this.showUserErrorMessage(gettext("Minimum file size not met."));
+                    humanReadableSize = this.bytesToHumanReadable(this.options.imageMinBytes);
+                    this.showMessage(interpolate_text(gettext("Your image must be at least {size} in size."), {size: humanReadableSize}));
                     return false;
                 } else if (imageBytes > this.options.imageMaxBytes) {
-                    this.showUserErrorMessage(gettext("Maximum file size exceeded."));
+                    humanReadableSize = this.bytesToHumanReadable(this.options.imageMaxBytes);
+                    this.showMessage(interpolate_text(gettext("Your image must be smaller than {size} in size."), {size: humanReadableSize}));
                     return false;
                 }
                 return true;
             },
 
             showUploadInProgressMessage: function () {
-                this.$('.upload-button-wrapper').css('opacity', 1);
+                this.$('.u-field-upload-button').css('opacity', 1);
                 this.$('.upload-button-icon').html(this.iconProgress);
-                this.$('.upload-button-title').html(gettext("Uploading..."));
+                this.$('.upload-button-title').html(this.titleUploading);
             },
 
             showRemovalInProgressMessage: function () {
                 this.$('.u-field-remove-button').css('opacity', 1);
                 this.$('.remove-button-icon').html(this.iconProgress);
-                this.$('.remove-button-title').html(gettext("Removing..."));
+                this.$('.remove-button-title').html(this.titleRemoving);
             },
 
             setCurrentStatus: function (status) {
@@ -644,30 +653,34 @@
                 return this.$('.image-wrapper').attr('data-status');
             },
 
-            showUserErrorMessage: function (message) {
-                 var messageBannerView = new MessageBannerView({
-                    el: '.error-message-banner',
-                    message: message
-                });
-                messageBannerView.render();
+            showMessage: function (message) {
+                this.options.messageView.showMessage(message);
             },
 
-            hideUserErrorMessage: function () {
-                $('.error-message-banner').html('');
+            hideMessage: function () {
+                this.options.messageView.hideMessage();
+            },
+
+            setUploadButtonVisibility: function (state) {
+                this.$('.u-field-upload-button').css('display', state);
+            },
+
+            setRemoveButtonVisibility: function (state) {
+                this.$('.u-field-remove-button').css('display', state);
             },
 
             setElementVisibility: function (state) {
                 if (!this.model.isAboveMinimumAge()) {
-                    this.$('.upload-button-wrapper').css('display', state);
+                    this.setUploadButtonVisibility(state);
                 }
 
-                if (!this.model.has_profile_image()) {
+                if (!this.model.hasProfileImage()) {
                     this.$('.u-field-remove-button').css('display', state);
                 }
 
                 if(this.inProgress() ||  this.options.editable === 'never') {
-                    this.$('.upload-button-wrapper').css('display', state);
-                    this.$('.u-field-remove-button').css('display', state);
+                    this.setUploadButtonVisibility(state);
+                    this.setRemoveButtonVisibility(state);
                 }
             },
 
@@ -682,13 +695,23 @@
 
             onBeforeUnload: function () {
                 var status = this.getCurrentStatus();
-                var message = gettext("{status} is in progress. Navigating away will abort it.");
+                var message = gettext("{status} is in progress. To avoid errors, stay on this page until the process is complete.");
 
                 if (status === 'upload') {
-                    return interpolate_text(message, {status: 'Uploading'});
+                    return interpolate_text(message, {status: 'Upload'});
                 } else if (status === 'remove') {
                     return interpolate_text(message, {status: 'Removal'});
                 }
+            },
+
+            bytesToHumanReadable: function (size) {
+                var units = ['Bytes', 'KB', 'MB'];
+                var i = 0;
+                while(size >= 1024) {
+                    size /= 1024;
+                    ++i;
+                }
+                return size.toFixed(1)*1 + ' ' + units[i];
             }
         });
 

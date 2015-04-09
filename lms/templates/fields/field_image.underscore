@@ -1,17 +1,15 @@
 <div class="image-wrapper">
+    <img class="image-frame" src="<%- gettext(imageLink) %>"  alt="Profile photo for <%=username%>"/>
     <div class="u-field-actions">
-        <div class="u-field-upload-button">
-            <img class="image-frame" src="<%- gettext(imageLink) %>"/>
-            <div class="upload-button-wrapper">
-                <div class="upload-button-icon" aria-hidden="true"><%= uploadButtonIcon %></div>
-                <div class="upload-button-title" aria-live="polite"><%= uploadButtonTitle %></div>
-                <input class="upload-button-input" type="file" name="<%= id %>"/>
-            </div>
-       	</div>
+        <a class="u-field-upload-button">
+            <div class="upload-button-icon" aria-hidden="true"><%= uploadButtonIcon %></div>
+            <div class="upload-button-title" aria-live="polite"><%= uploadButtonTitle %></div>
+            <input class="upload-button-input" type="file" name="<%= id %>"/>
+       	</a>
         
-        <div class="u-field-remove-button">
+        <a class="u-field-remove-button">
             <span class="remove-button-icon" aria-hidden="true"><%= removeButtonIcon %></span>
             <span class="remove-button-title" aria-live="polite"><%= removeButtonTitle %></span>
-        </div>
+        </a>
     </div>
 </div>

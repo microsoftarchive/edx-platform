@@ -6,17 +6,24 @@
 
         var MessageBannerView = Backbone.View.extend({
 
-            templateSelector: '#message_banner-tpl',
-
             initialize: function (options) {
-                this.template = _.template($(this.templateSelector).text());
+                this.template = _.template($('#message_banner-tpl').text());
             },
 
             render: function () {
                 this.$el.html(this.template({
-                    message: this.options.message
+                    message: this.message
                 }));
                 return this;
+            },
+
+            showMessage: function (message) {
+                this.message = message;
+                this.render();
+            },
+
+            hideMessage: function () {
+                this.$el.html('');
             }
         });
 
