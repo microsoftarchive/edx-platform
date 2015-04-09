@@ -374,6 +374,7 @@ def emit_field_changed_events(instance, user, db_table):
 
     # only emit events when something has changed
     if len(changed_settings) > 0:
+        log.info('firing event for settings %r', changed_settings)
         context = {'user_id': user.id}
         event_name = 'edx.user.settings.changed'
         with tracker.get_tracker().context(event_name, context):

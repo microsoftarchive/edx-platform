@@ -123,6 +123,7 @@ class AccountSettingsPageTest(EventsTestMixin, WebAppTest):
         self.assertEqual(self.account_settings_page.value_for_dropdown_field(field_id), initial_value)
 
         for new_value in new_values:
+            print new_value
             self.assertEqual(self.account_settings_page.value_for_dropdown_field(field_id, new_value), new_value)
             self.account_settings_page.wait_for_messsage(field_id, success_message)
             if reloads_on_save:

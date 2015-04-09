@@ -288,6 +288,16 @@ class EventsTestMixin(object):
         :param event_user_id: user_id expected in the event
         :param num_times_emitted: number of times the event is expected to appear since the event_time
         """
+        events = self.event_collection.find(
+            {
+                "name": event_name,
+                "time": {"$gt": event_time},
+                "event.user_id": int(event_user_id),
+            }
+        )
+        for event in events:
+            print event
+
         self.assertEqual(
             self.event_collection.find(
                 {
