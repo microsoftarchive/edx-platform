@@ -322,6 +322,10 @@ if settings.COURSEWARE_ENABLED:
         url(r'^courses/{}/get_coupon_info$'.format(settings.COURSE_ID_PATTERN),
             'instructor.views.coupons.get_coupon_info', name="get_coupon_info"),
 
+        # For Yammer
+        url(r'^courses/{}/yammer$'.format(settings.COURSE_ID_PATTERN),
+            'yammer.views.yammer', name='yammer'),
+
         # see ENABLE_INSTRUCTOR_LEGACY_DASHBOARD section for legacy dash urls
 
         # Open Ended grading views
@@ -403,6 +407,10 @@ if settings.COURSEWARE_ENABLED:
             url(r'^notification_prefs/resubscribe/(?P<token>[a-zA-Z0-9-_=]+)/',
                 'notification_prefs.views.set_subscription', {'subscribe': True}, name="resubscribe_forum_update"),
         )
+    urlpatterns += (
+        url(r'^courses/{}/yammer/'.format(settings.COURSE_ID_PATTERN),
+            include('yammer.urls')),
+    )
     urlpatterns += (
         # This MUST be the last view in the courseware--it's a catch-all for custom tabs.
         url(r'^courses/{}/(?P<tab_slug>[^/]+)/$'.format(settings.COURSE_ID_PATTERN),
