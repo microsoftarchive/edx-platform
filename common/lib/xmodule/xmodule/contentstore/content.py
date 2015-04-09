@@ -107,6 +107,7 @@ class StaticContent(object):
 
         assert(isinstance(course_key, CourseKey))
         placeholder_id = uuid.uuid4().hex
+
         # create a dummy asset location with a fake but unique name. strip off the name, and return it
         url_path = StaticContent.serialize_asset_key_with_slash(
             course_key.make_asset_key('asset', placeholder_id).for_branch(None)
@@ -114,20 +115,25 @@ class StaticContent(object):
         return url_path.replace(placeholder_id, '')
 
     @staticmethod
-    def get_location_from_path(path):
+    def get_location_from_path(path, from_url=False):
         """
         Generate an AssetKey for the given path (old c4x/org/course/asset/name syntax)
         """
         try:
+            if from_url:
+                return AssetKey.from_url(path)
             return AssetKey.from_string(path)
         except InvalidKeyError:
             # TODO - re-address this once LMS-11198 is tackled.
             if path.startswith('/'):
                 # try stripping off the leading slash and try again
+                path = path[1:]
+                if from_url:
+                    return AssetKey.from_url(path)
                 return AssetKey.from_string(path[1:])
 
     @staticmethod
-    def convert_legacy_static_url_with_course_id(path, course_id):
+    def convert_legacy_static_url_with_course_id(path, course_id, to_url=False):
         """
         Returns a path to a piece of static content when we are provided with a filepath and
         a course_id
@@ -135,7 +141,7 @@ class StaticContent(object):
         # Generate url of urlparse.path component
         scheme, netloc, orig_path, params, query, fragment = urlparse(path)
         loc = StaticContent.compute_location(course_id, orig_path)
-        loc_url = StaticContent.serialize_asset_key_with_slash(loc)
+        loc_url = StaticContent.serialize_asset_key_with_slash(loc, to_url)
 
         # parse the query params for "^/static/" and replace with the location url
         orig_query = parse_qsl(query)
@@ -158,12 +164,15 @@ class StaticContent(object):
         yield self._data
 
     @staticmethod
-    def serialize_asset_key_with_slash(asset_key):
+    def serialize_asset_key_with_slash(asset_key, to_url=False):
         """
         Legacy code expects the serialized asset key to start w/ a slash; so, do that in one place
         :param asset_key:
         """
-        url = unicode(asset_key)
+        if to_url:
+            url = asset_key.to_url()
+        else:
+            url = unicode(asset_key)
         if not url.startswith('/'):
             url = '/' + url  # TODO - re-address this once LMS-11198 is tackled.
         return url

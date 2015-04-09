@@ -180,10 +180,7 @@ def replace_static_urls(text, data_directory=None, course_id=None, static_asset_
             else:
                 # if not, then assume it's courseware specific content and then look in the
                 # Mongo-backed database
-                url = StaticContent.convert_legacy_static_url_with_course_id(rest, course_id)
-
-                if AssetLocator.CANONICAL_NAMESPACE in url:
-                    url = url.replace('block@', 'block/', 1)
+                url = StaticContent.convert_legacy_static_url_with_course_id(rest, course_id, to_url=True)
 
         # Otherwise, look the file up in staticfiles_storage, and append the data directory if needed
         else:

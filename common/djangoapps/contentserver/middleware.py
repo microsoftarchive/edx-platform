@@ -31,10 +31,8 @@ class StaticContentServer(object):
             request.path.startswith('/' + XASSET_LOCATION_TAG + '/') or
             request.path.startswith('/' + AssetLocator.CANONICAL_NAMESPACE)
         ):
-            if AssetLocator.CANONICAL_NAMESPACE in request.path:
-                request.path = request.path.replace('block/', 'block@', 1)
             try:
-                loc = StaticContent.get_location_from_path(request.path)
+                loc = StaticContent.get_location_from_path(request.path, from_url=True)
             except (InvalidLocationError, InvalidKeyError):
                 # return a 'Bad Request' to browser as we have a malformed Location
                 response = HttpResponse()
