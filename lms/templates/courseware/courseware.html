@@ -149,10 +149,10 @@ ${fragment.foot_html()}
       </header>
 
       % if settings.FEATURES.get('ENABLE_COURSEWARE_SEARCH'):
-        <div id="courseware-search-bar" class="search-bar" role="search" aria-label="Course">
+        <div id="courseware-search-bar" class="search-bar courseware-search-bar" role="search" aria-label="Course">
           <form>
             <label for="course-search-input" class="sr">${_('Course Search')}</label>
-            <div>
+            <div class="search-field-wrapper">
               <input id="course-search-input" type="text" class="search-field"/>
               <button type="submit" class="search-button">
                 ${_('search')} <i class="icon fa fa-search" aria-hidden="true"></i>
@@ -200,7 +200,7 @@ ${fragment.foot_html()}
       ${fragment.body_html()}
     </section>
     % if settings.FEATURES.get('ENABLE_COURSEWARE_SEARCH'):
-      <section id="courseware-search-results" class="search-results" data-course-id="${course.id}">
+      <section id="courseware-search-results" class="search-results courseware-search-results " data-course-id="${course.id}">
       </section>
     % endif
   </div>

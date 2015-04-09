@@ -4,46 +4,41 @@
 
   @include box-sizing(border-box);
   position: relative;
-  padding: 5px;
-  font-family: $sans-serif;
+  padding: ($baseline/4);
 
-  form > div {
+  .search-field-wrapper {
     position: relative;
   }
 
   .search-field {
+    @extend %t-weight2;
     @include box-sizing(border-box);
-    @include border-radius(4px);
     top: 5px;
     width: 100%;
+    border-radius: 4px;
     background: $white-t1;
-    font-family: $sans-serif;
-    font-style: normal;
-    font-weight: normal;
-    letter-spacing: normal;
     &.is-active {
       background: $white;
     }
   }
 
   .search-button, .cancel-button {
+    @extend %t-icon6;
+    @extend %t-regular;
     @include box-sizing(border-box);
+    @include right(12px);
     display: block;
     position: absolute;
     top: 0;
-    @include right(12px);
-    height: 35px;
-    padding: 0;
-    color: #888;
-    font-size: 14px;
-    font-weight: normal;
-    line-height: 35px;
     border: none;
+    background: transparent;
+    padding: 0;
+    height: 35px;
+    color: $gray-l1;
     box-shadow: none;
+    line-height: 35px;
     text-shadow: none;
     text-transform: none;
-    letter-spacing: normal;
-    background: transparent;
   }
 
   .cancel-button {
@@ -52,18 +47,14 @@
 
 }
 
-
 .search-results {
 
   display: none;
 
   .search-info {
-    padding-bottom: $baseline;
-    border-bottom: 4px solid $border-color-l4;
     margin-bottom: $baseline;
-    h2 {
-      font-family: $sans-serif;
-    }
+    border-bottom: 4px solid $border-color-l4;
+    padding-bottom: $baseline;
     .search-count {
       @include float(right);
       color: $gray-l1;
@@ -75,35 +66,35 @@
   }
 
   .search-results-item {
-    position: relative;
-    border-bottom: 1px solid $gray-l4;
-    list-style-type: none;
-    margin-bottom: $baseline;
-    padding-bottom: $baseline;
     @include padding-right(140px);
+    position: relative;
+    margin-bottom: $baseline;
+    border-bottom: 1px solid $gray-l4;
+    padding-bottom: $baseline;
+    list-style-type: none;
 
-    .sri-excerpt {
+    .result-excerpt {
       margin-bottom: $baseline;
     }
-    .sri-type {
-      position: absolute;
+    .result-type {
       @include right(0);
+      position: absolute;
       bottom: $baseline;
-      color: $gray-l1;
       font-size: 14px;
+      color: $gray-l1;
     }
-    .sri-course-name {
+    .result-course-name {
       @include margin-right(1em);
-      color: $gray-l1;
       font-size: 14px;
-    }
-    .sri-location {
       color: $gray-l1;
-      font-size: 14px;
     }
-    .sri-link {
-      position: absolute;
+    .result-location {
+      font-size: 14px;
+      color: $gray-l1;
+    }
+    .result-link {
       @include right(0);
+      position: absolute;
       top: 0;
       line-height: 1.6em;
       text-transform: uppercase;
@@ -112,36 +103,34 @@
 
   .search-load-next {
     display: block;
-    text-transform: uppercase;
-    color: $base-font-color;
     border: 2px solid $link-color;
-    @include border-radius(3px);
     padding: 1rem;
+    border-radius: 3px;
+    color: $base-font-color;
+    text-transform: uppercase;
   }
 
 }
 
 
-#courseware-search-bar  {
-  box-shadow: 0 1px 0 #fff inset, 0 -1px 0 rgba(0, 0, 0, .1) inset;
+.courseware-search-bar {
+  box-shadow: 0 1px 0 $white inset, 0 -1px 0 $shadow-l1 inset;
 }
 
 
-#dashboard-search-bar  {
+.dashboard-search-bar  {
   @include float(right);
   @include margin-left(flex-gutter());
-  width: flex-grid(3);
-  background: $gray-l6;
+  margin-bottom: $baseline;
   border: 1px solid $gray-l4;
   border-radius: ($baseline/4);
-  margin-bottom: $baseline;
+  width: flex-grid(3);
+  background: $gray-l6;
   label {
+    @extend %t-regular;
     color: $gray;
-    font-family: $sans-serif;
     font-size: 13px;
     font-style: normal;
-    font-weight: normal;
-    letter-spacing: normal;
     text-transform: uppercase;
   }
   .search-field {
@@ -149,18 +138,18 @@
   }
 }
 
-#dashboard-search-results {
+.dashboard-search-results {
   @include float(left);
-  width: flex-grid(9);
-  min-height: 300px;
   margin: 0;
   padding: 0;
+  width: flex-grid(9);
+  min-height: 300px;
   .search-info {
     padding-bottom: lh(1.75);
     a {
       display: block;
-      font-size: 13px;
       margin-bottom: lh(.5);
+      font-size: 13px;
     }
     h2 {
       @include float(left);
@@ -169,6 +158,6 @@
   }
 }
 
-#courseware-search-results {
-  padding: 40px;
+.courseware-search-results {
+  padding: ($baseline*2);
 }

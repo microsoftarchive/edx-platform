@@ -251,18 +251,18 @@ define([
             expect(this.item.$el).toHaveAttr('role', 'region');
             expect(this.item.$el).toHaveAttr('aria-label', 'search result');
             expect(this.item.$el).toContain('a[href="' + this.model.get('url') + '"]');
-            expect(this.item.$el.find('.sri-type')).toContainHtml(this.model.get('content_type'));
-            expect(this.item.$el.find('.sri-excerpt')).toContainHtml(this.model.get('excerpt'));
-            expect(this.item.$el.find('.sri-location')).toContainHtml('section ▸ subsection ▸ unit');
+            expect(this.item.$el.find('.result-type')).toContainHtml(this.model.get('content_type'));
+            expect(this.item.$el.find('.result-excerpt')).toContainHtml(this.model.get('excerpt'));
+            expect(this.item.$el.find('.result-location')).toContainHtml('section ▸ subsection ▸ unit');
         }
 
         function rendersSequentialItem() {
             expect(this.seqItem.$el).toHaveAttr('role', 'region');
             expect(this.seqItem.$el).toHaveAttr('aria-label', 'search result');
             expect(this.seqItem.$el).toContain('a[href="' + this.seqModel.get('url') + '"]');
-            expect(this.seqItem.$el.find('.sri-type')).toBeEmpty();
-            expect(this.seqItem.$el.find('.sri-excerpt')).toBeEmpty();
-            expect(this.seqItem.$el.find('.sri-location')).toContainHtml('section ▸ subsection');
+            expect(this.seqItem.$el.find('.result-type')).toBeEmpty();
+            expect(this.seqItem.$el.find('.result-excerpt')).toBeEmpty();
+            expect(this.seqItem.$el.find('.result-location')).toContainHtml('section ▸ subsection');
         }
 
         function logsSearchItemViewEvent() {
@@ -293,7 +293,7 @@ define([
             it('renders items correctly', rendersItem);
             it('renders Sequence items correctly', rendersSequentialItem);
             it('displays course name in breadcrumbs', function () {
-                expect(this.seqItem.$el.find('.sri-course-name')).toContainHtml(this.model.get('course_name'));
+                expect(this.seqItem.$el.find('.result-course-name')).toContainHtml(this.model.get('course_name'));
             });
             it('logs view event', logsSearchItemViewEvent);
         });
