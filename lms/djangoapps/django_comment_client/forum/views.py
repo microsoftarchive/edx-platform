@@ -570,9 +570,22 @@ def yammer_discussion(request, course_key):
     Renders the Yammer Discussion page
     """
     course = get_course_with_access(request.user, 'load_forum', course_key, check_if_enrolled=True)
+    course_settings = make_course_settings(course)
+
+    user = cc.User.from_django_user(request.user)
+    user_info = user.to_dict()
 
     context = {
+            'csrf': csrf(request)['csrf_token'],
             'course': course,
+            #'recent_active_threads': recent_active_threads,
             'staff_access': has_access(request.user, 'staff', course),
+            'user_info': _attr_safe_json(user_info),
+            'course_id': course.id.to_deprecated_string(),
+            'roles': _attr_safe_json(utils.get_role_ids(course_key)),
+            'is_moderator': cached_has_permission(request.user, "see_all_cohorts", course_key),
+            'sort_preference': user.default_sort_key,
+            'category_map': course_settings["category_map"],
+            'course_settings': _attr_safe_json(course_settings)
         }
-    return render_to_response('discussion/yammer.html', context)
+    return render_to_response('yammer/index.html', context)

@@ -1,0 +1,38 @@
+<%! from django.utils.translation import ugettext as _ %>
+<%! import django_comment_client.helpers as helpers %>
+<%! from django.template.defaultfilters import escapejs %>
+<%! from django.core.urlresolvers import reverse %>
+
+<%inherit file="../main.html" />
+<%namespace name='static' file='../static_content.html'/>
+<%block name="bodyclass">discussion</%block>
+<%block name="pagetitle">${_("Yammer - {course_number}").format(course_number=course.display_number_with_default) | h}</%block>
+<%block name="nav_skip">#discussion-container</%block>
+
+<%block name="headextra">
+<%static:css group='style-course-vendor'/>
+<%static:css group='style-course'/>
+<%namespace name='static' file='../static_content.html'/>
+</%block>
+
+<%include file="_yammer_course_navigation.html" args="active_page='yammer_discussion'" />
+
+<section class="discussion container" id="discussion-container"
+         data-roles="${roles}"
+         data-course-id="${course_id | h}"
+         data-user-info="${user_info}"
+         data-sort-preference="${sort_preference}"
+         data-course-settings="${course_settings}">
+    <div class="discussion-body">
+        <div class="discussion-column" style="float:left; width:100%" >
+            <script type="text/javascript" src="https://c64.assets-yammer.com/assets/platform_embed.js"></script>
+            <div id="embedded-feed" style="height:600px; width:100%;"></div> 
+            <script>
+                yam.connect.embedFeed(
+                  { container: '#embedded-feed',
+                    network: 'msopentechtest01.onmicrosoft.com'  // network permalink
+                });
+            </script>
+        </div>
+    </div>
+</section>

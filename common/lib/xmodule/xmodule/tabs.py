@@ -998,14 +998,13 @@ class UnequalTabsException(Exception):
 
 class YammerTab(EnrolledOrStaffTab):
     """
-     A tab for displaying Yammer conversation.
+     A tab for displaying Yammer conversations.
     """
     type = 'yammer_discussion'
 
     def __init__(self, tab_dict=None):
         super(YammerTab, self).__init__(
-            # Translators: "Discussion" is the title of the course forum page
-            name=tab_dict['name'] if tab_dict else _('Yammer Discussion'),
+            name=tab_dict['name'] if tab_dict else _('Yammer'),
             tab_id=self.type,
             link_func=link_reverse_func('django_comment_client.forum.views.yammer_discussion'),
         )
