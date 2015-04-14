@@ -8,6 +8,7 @@ import logging
 import xml.sax.saxutils as saxutils
 import xml.etree.ElementTree as ET
 import requests
+import urllib
 
 from django.contrib.auth.decorators import login_required
 from django.core.context_processors import csrf
@@ -498,9 +499,10 @@ def get_user_graph_info(request, user_id):
     working_with = []
 
     try:
-        django_user_social = User.objects.get(id=user_id).social_auth.get(provider='azuread-openidconnect') # TODO: remove provider name hardcoding
-        loggedin_user_social = request.user.social_auth.get(provider='azuread-openidconnect') # TODO: remove provider name hardcoding
-        
+        django_user_social = User.objects.get(id=user_id).social_auth.get(provider='azuread-oauth2') # TODO: remove provider name hardcoding
+        loggedin_user_social = request.user.social_auth.get(provider='azuread-oauth2') # TODO: remove provider name hardcoding
+        # app_token = get_app_token() TODO: Switch to app token so we don't have to rely on other users' tokens to get their properties
+
         # AD graph info
         # url = 'https://graph.windows.net/' + django_user_social.uid.split("@")[1] + '/users/' + django_user_social.uid + '?api-version=2013-04-05'
         # response = requests.get(url, headers={'Authorization': 'Bearer ' + loggedin_user_social.extra_data['access_token']})
@@ -515,8 +517,9 @@ def get_user_graph_info(request, user_id):
         
         # get actor id of the user whose profile we are viewing
         profile_username = django_user_social.uid.split("@")[0]
-        graph_info_response = requests.get(sharepoint_site+"/_api/search/query?Querytext='Username:" + profile_username + "'&SourceId='b09a7990-05ea-4af9-81ef-edfab16c4e31'&SelectProperties='DocId'",
-                                           headers={'Authorization': 'Bearer ' + django_user_social.extra_data['access_token']})
+        graph_info_response = requests.get(
+            sharepoint_site+"/_api/search/query?Querytext='Username:" + profile_username + "'&SourceId='b09a7990-05ea-4af9-81ef-edfab16c4e31'&SelectProperties='DocId'",
+            headers={'Authorization': 'Bearer ' + django_user_social.extra_data['access_token']})
         graph_elements = get_data_from_gql(graph_info_response.content)
         actor_id = graph_elements[0]['DocId']
 
@@ -526,9 +529,11 @@ def get_user_graph_info(request, user_id):
         documents_viewed = get_data_from_gql(documents_viewed_response.content)
 
         # get other users that the user is working with from GQL
-        working_with_response = requests.get(sharepoint_site+"/_api/search/query?Querytext='*'&Properties='GraphQuery:ACTOR("+actor_id+"\,action\:1019)'",
+        working_with_response = requests.get(
+            sharepoint_site+"/_api/search/query?Querytext='*'&Properties='GraphQuery:ACTOR("+actor_id+"\,action\:1019),GraphRankingModel:{\"features\"\:[{\"function\"\:\"EdgeWeight\"}]}'&RankingModelId='0c77ded8-c3ef-466d-929d-905670ea1d72'",
             headers={'Authorization': 'Bearer ' + django_user_social.extra_data['access_token']})
         working_with = get_data_from_gql(working_with_response.content)
+        update_thumbnails(sharepoint_site, working_with)
 
     except:
         logging.exception('Failed to get user graph info.')
@@ -538,6 +543,21 @@ def get_user_graph_info(request, user_id):
     user_graph_info['office_graph_info'] = office_graph_info
 
     return user_graph_info
+
+# TODO: Move this to somewhere in the auth code and save the token instead of getting it every time
+def get_app_token():
+    payload = {
+        'grant_type': 'client_credentials',
+        'client_id': 'd54d6b86-8b0d-4c13-ae77-6e9374476419',
+        'client_secret': '6Ts5kRjDAAJAZmgvnGDvBBQQaiJ+eii4+vFyvcXpHnM=',
+        'resource': 'https://msopentechtest01-my.sharepoint.com',
+        'scope': 'openid profile user_impersonation'
+    }
+
+    response = requests.post('https://login.windows.net/ec02513e-fec1-4bac-af12-d76197b80939/oauth2/token', data=payload)
+    responseObj = json.loads(response.content)
+    return responseObj['access_token']
+
 
 def get_data_from_gql(content):
 
@@ -562,6 +582,16 @@ def get_data_from_gql(content):
         data.append(item)
 
     return data
+
+def update_thumbnails(sharepoint_site, working_with):
+    # TODO: Find a better way to get the user thumbnail images
+    for item in working_with:
+        if item['PictureThumbnailURL'] is None:
+            url = urllib.unquote(item['OriginalPath']).decode('utf8')
+            uid = url[url.find('|membership|') + len('|membership|') : ]
+            item['PictureThumbnailURL'] = sharepoint_site + '/_layouts/15/userphoto.aspx?size=s&accountname=' + uid
+
+    return working_with
 
 @login_required
 @use_bulk_ops
