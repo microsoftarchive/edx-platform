@@ -1,5 +1,5 @@
 """
-Views handling read (GET) requests for the Discussion tab and inline discussions.
+Views handling read (GET) requests for the Yammer Discussion tab.
 """
 
 from functools import wraps
@@ -9,6 +9,7 @@ import xml.sax.saxutils as saxutils
 import xml.etree.ElementTree as ET
 import requests
 import urllib
+import yampy
 
 from django.contrib.auth.decorators import login_required
 from django.core.context_processors import csrf
@@ -592,3 +593,34 @@ def update_thumbnails(sharepoint_site, working_with):
             item['PictureThumbnailURL'] = sharepoint_site + '/_layouts/15/userphoto.aspx?size=s&accountname=' + uid
 
     return working_with
+
+# TODO: Move this outside the django_comment_client
+@login_required
+@use_bulk_ops
+def yammer(request, course_key):
+    """
+    Renders the Yammer Discussion page
+    """
+    course = get_course_with_access(request.user, 'load_forum', course_key, check_if_enrolled=True)
+    course_settings = make_course_settings(course)
+
+    loggedin_user_social = request.user.social_auth.get(provider='azuread-oauth2') # TODO: remove provider name hardcoding
+    # use sharepoint site specified in settings of the logged in user
+    sharepoint_site = loggedin_user_social.extra_data['sharepoint_site']
+
+    yammer_client_id = 's8cW3Athg6JzbIpFIQ3Lg'
+    yammer_client_secret = 'XSayi36bT4HVwZW5IUTyAwkIwMKOiWAyCfCe9Pgo'
+    authenticator = yampy.Authenticator(client_id=yammer_client_id, client_secret=yammer_client_secret)
+
+    # TODO: figure out Yammer group id for the current course
+    feed_id = 5602922
+
+    context = {
+            'course': course,
+            'course_id': course.id.to_deprecated_string(),
+            'course_settings': _attr_safe_json(course_settings),
+            'sharepoint_site': sharepoint_site,
+            'feed_id': feed_id
+        }
+
+    return render_to_response('yammer/index.html', context)

@@ -1000,13 +1000,13 @@ class YammerTab(EnrolledOrStaffTab):
     """
      A tab for displaying Yammer conversations.
     """
-    type = 'yammer_discussion'
+    type = 'yammer'
 
     def __init__(self, tab_dict=None):
         super(YammerTab, self).__init__(
             name=tab_dict['name'] if tab_dict else _('Yammer'),
             tab_id=self.type,
-            link_func=link_reverse_func('django_comment_client.forum.views.yammer_discussion'),
+            link_func=link_reverse_func('yammer.views.yammer'),
         )
 
     def can_display(self, course, settings, is_user_authenticated, is_user_staff, is_user_enrolled):

@@ -15,23 +15,22 @@
 <%namespace name='static' file='../static_content.html'/>
 </%block>
 
-<%include file="_yammer_course_navigation.html" args="active_page='yammer_discussion'" />
+<%include file="_yammer_course_navigation.html" args="active_page='yammer'" />
 
 <section class="discussion container" id="discussion-container"
-         data-roles="${roles}"
          data-course-id="${course_id | h}"
-         data-user-info="${user_info}"
-         data-sort-preference="${sort_preference}"
          data-course-settings="${course_settings}">
     <div class="discussion-body">
-        <div class="discussion-column" style="float:left; width:100%" >
-            <script type="text/javascript" src="https://c64.assets-yammer.com/assets/platform_embed.js"></script>
-            <div id="embedded-feed" style="height:600px; width:100%;"></div> 
-            <script>
-                yam.connect.embedFeed(
-                  { container: '#embedded-feed',
-                    network: 'msopentechtest01.onmicrosoft.com'  // network permalink
-                });
+        <div class="discussion-column" style="float:left">
+            <h3 style="padding: 10px; background-color: #F5F5F5">Course Discussions</h3>
+
+            <script type="text/javascript" src="https://assets.yammer.com/assets/platform_embed.js"></script>
+            <div id="embedded-feed" style="height:800px;width:100%;"></div>
+            <script type="text/javascript"> yam.connect.embedFeed({
+                container: "#embedded-feed",
+                network: "${sharepoint_site}",
+                feedType: "group",
+                feedId: "${feed_id}"});
             </script>
         </div>
     </div>
