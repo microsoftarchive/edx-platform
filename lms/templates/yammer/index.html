@@ -19,7 +19,6 @@
 
 <section class="discussion container" id="discussion-container"
          data-course-id="${course_id | h}"
-         data-course-settings="${course_settings}">
     <div class="discussion-body">
         <div class="discussion-column" style="float:left">
             <h3 style="padding: 10px; background-color: #F5F5F5">Course Discussions</h3>
@@ -28,7 +27,7 @@
             <div id="embedded-feed" style="height:800px;width:100%;"></div>
             <script type="text/javascript"> yam.connect.embedFeed({
                 container: "#embedded-feed",
-                network: "${sharepoint_site}",
+                network: "${network}",
                 feedType: "group",
                 feedId: "${feed_id}"});
             </script>

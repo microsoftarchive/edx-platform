@@ -4,7 +4,7 @@ Loaded by Django's settings mechanism. Consequently, this module must not
 invoke the Django armature.
 """
 
-from social.backends import google, linkedin, facebook, azuread
+from social.backends import google, linkedin, facebook, azuread, yammer
 
 _DEFAULT_ICON_CLASS = 'fa-signin'
 
@@ -200,6 +200,25 @@ class AzureADOpenIDConnect(BaseProvider):
         'SOCIAL_AUTH_AZUREAD_OPENIDCONNECT_KEY': None,
         'SOCIAL_AUTH_AZUREAD_OPENIDCONNECT_SECRET': None,
         'SOCIAL_AUTH_AZUREAD_OPENIDCONNECT_SHAREPOINT_SITE': None
+    }
+
+    @classmethod
+    def get_email(cls, provider_details):
+        return provider_details.get('email')
+
+    @classmethod
+    def get_name(cls, provider_details):
+        return provider_details.get('fullname')
+
+class YammerOauth2(BaseProvider):
+    """Provider for Yammer's Oauth2 auth system."""
+
+    BACKEND_CLASS = yammer.YammerOAuth2
+    ICON_CLASS = 'fa-comment'
+    NAME = 'Yammer'
+    SETTINGS = {
+        'SOCIAL_AUTH_YAMMER_KEY': None,
+        'SOCIAL_AUTH_YAMMER_SECRET': None
     }
 
     @classmethod
