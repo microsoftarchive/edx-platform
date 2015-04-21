@@ -23,12 +23,7 @@ def yammer(request, course_id):
     course_key = CourseKey.from_string(course_id)
     course = get_course_with_access(request.user, 'load_forum', course_key, check_if_enrolled=True)
 
-    # TODO: For now, we will assume that Yammer network name is the same as the sharepoint site name.
-    # Eventually this will have to become a setting.
-    loggedin_user_social = request.user.social_auth.get(provider='azuread-oauth2')
-    sharepoint_site = loggedin_user_social.extra_data['sharepoint_site']
-    parsed_url = urlparse(sharepoint_site)
-    network = parsed_url.netloc
+    network = request.user.social_auth.get(provider='yammer').extra_data['access_token']['network_name']
 
     feed_id = course.yammer_group_id # Yammer feed id is the same as the group id
 
