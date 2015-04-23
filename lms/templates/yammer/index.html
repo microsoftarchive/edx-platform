@@ -22,15 +22,18 @@
     <div class="discussion-body">
         <div class="discussion-column" style="float:left">
             <h3 style="padding: 10px; background-color: #F5F5F5">Course Discussions</h3>
-
-            <script type="text/javascript" src="https://assets.yammer.com/assets/platform_embed.js"></script>
-            <div id="embedded-feed" style="height:800px;width:100%;"></div>
-            <script type="text/javascript"> yam.connect.embedFeed({
-                container: "#embedded-feed",
-                network: "${network}",
-                feedType: "group",
-                feedId: "${feed_id}"});
-            </script>
+            % if not feed_id:
+                <div><p style="padding: 10px;">Your edX account is currently not linked to your Yammer account. Please try again after linking them together.</p></div>
+            % else:
+                <script type="text/javascript" src="https://assets.yammer.com/assets/platform_embed.js"></script>
+                <div id="embedded-feed" style="height:800px;width:100%;"></div>
+                <script type="text/javascript"> yam.connect.embedFeed({
+                    container: "#embedded-feed",
+                    network: "${network}",
+                    feedType: "group",
+                    feedId: "${feed_id}"});
+                </script>
+            % endif
         </div>
     </div>
 </section>
