@@ -530,10 +530,9 @@ def get_user_graph_info(request, user_id):
 
         # get other users that the user is working with
         working_with_response = requests.get(
-            sharepoint_site+"/_api/search/query?Querytext='*'&Properties='GraphQuery:ACTOR("+actor_id+"\,action\:1033),GraphRankingModel:{\"features\"\:[{\"function\"\:\"EdgeWeight\"}]}'&RankingModelId='0c77ded8-c3ef-466d-929d-905670ea1d72'",
+            sharepoint_site+"/_api/search/query?Querytext='*'&Properties='GraphQuery:ACTOR("+actor_id+"\,action\:1033),GraphRankingModel:{\"features\"\:[{\"function\"\:\"EdgeWeight\"}]}'&RankingModelId='0c77ded8-c3ef-466d-929d-905670ea1d72'&SelectProperties='Path,Title,PictureThumbnailURL,PictureURL'",
             headers={'Authorization': 'Bearer ' + loggedin_user_social.extra_data['access_token']})
         working_with = get_data_from_gql(working_with_response.content)
-        update_thumbnails(sharepoint_site, working_with)
 
     except:
         logging.exception('Failed to get user graph info.')
@@ -582,13 +581,3 @@ def get_data_from_gql(content):
         data.append(item)
 
     return data
-
-def update_thumbnails(sharepoint_site, working_with):
-    # TODO: Find a better way to get the user thumbnail images
-    for item in working_with:
-        if item['PictureThumbnailURL'] is None:
-            url = urllib.unquote(item['OriginalPath']).decode('utf8')
-            uid = url[url.find('|membership|') + len('|membership|') : ]
-            item['PictureThumbnailURL'] = sharepoint_site + '/_layouts/15/userphoto.aspx?size=s&accountname=' + uid
-
-    return working_with
