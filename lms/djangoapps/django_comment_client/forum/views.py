@@ -521,9 +521,10 @@ def get_user_graph_info(request, user_id):
 
         # get other users that the user is working with
         working_with_response = requests.get(
-            sharepoint_site+"/_api/search/query?Querytext='*'&Properties='GraphQuery:ACTOR("+actor_id+"\,action\:1033),GraphRankingModel:{\"features\"\:[{\"function\"\:\"EdgeWeight\"}]}'&RankingModelId='0c77ded8-c3ef-466d-929d-905670ea1d72'&SelectProperties='Path,Title,PictureThumbnailURL,PictureURL'",
+            sharepoint_site+"/_api/search/query?Querytext='*'&Properties='GraphQuery:ACTOR("+actor_id+"\,action\:1033),GraphRankingModel:{\"features\"\:[{\"function\"\:\"EdgeWeight\"}]}'&RankingModelId='0c77ded8-c3ef-466d-929d-905670ea1d72'&SelectProperties='UserName,Path,Title,PictureThumbnailURL,PictureURL'",
             headers={'Authorization': 'Bearer ' + access_token})
         working_with = get_data_from_gql(working_with_response.content)
+        working_with = process_working_with(working_with)
 
     except:
         logging.exception('Failed to get user graph info.')
@@ -557,3 +558,22 @@ def get_data_from_gql(content):
         data.append(item)
 
     return data
+
+# Process the list of users the logged in user is working with to add additional displayable information where available.
+def process_working_with(graph_users):
+    for graph_user in graph_users:
+        user_found = None
+        graph_user_name = graph_user['UserName']
+        for user in User.objects.all():
+            try:
+                user_social_auth = user.social_auth.get(provider='azuread-oauth2')
+                if user_social_auth.uid == graph_user_name:
+                    user_found = user
+                    break
+            except:
+                continue
+
+        if user_found is not None:
+            graph_user['user_id'] = user_found.id
+
+    return graph_users
