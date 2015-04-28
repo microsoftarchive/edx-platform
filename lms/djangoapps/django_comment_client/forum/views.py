@@ -501,16 +501,7 @@ def get_user_graph_info(request, user_id):
     try:
         django_user_social = User.objects.get(id=user_id).social_auth.get(provider='azuread-oauth2') # TODO: remove provider name hardcoding
         loggedin_user_social = request.user.social_auth.get(provider='azuread-oauth2') # TODO: remove provider name hardcoding
-        # app_token = get_app_token() TODO: Switch to app token so we don't have to rely on other users' tokens to get their properties
-
-        # AD graph info
-        # url = 'https://graph.windows.net/' + django_user_social.uid.split("@")[1] + '/users/' + django_user_social.uid + '?api-version=2013-04-05'
-        # response = requests.get(url, headers={'Authorization': 'Bearer ' + loggedin_user_social.extra_data['access_token']})
-        # ad_graph_info = json.loads(response.content)
-        # if ad_graph_info['odata.error']:
-            # raise ValueError('Bad response from AD graph API')
-        #
-        # student_graph_info['ad_graph_info'] = ad_graph_info
+        access_token = loggedin_user_social.extra_data['access_token']
 
         # use sharepoint site specified in settings of the logged in user
         sharepoint_site = loggedin_user_social.extra_data['sharepoint_site']
@@ -519,19 +510,19 @@ def get_user_graph_info(request, user_id):
         profile_username = django_user_social.uid.split("@")[0]
         graph_info_response = requests.get(
             sharepoint_site+"/_api/search/query?Querytext='Username:" + profile_username + "'&SourceId='b09a7990-05ea-4af9-81ef-edfab16c4e31'&SelectProperties='DocId'",
-            headers={'Authorization': 'Bearer ' + loggedin_user_social.extra_data['access_token']})
+            headers={'Authorization': 'Bearer ' + access_token})
         graph_elements = get_data_from_gql(graph_info_response.content)
         actor_id = graph_elements[0]['DocId']
 
         # get documents modified by the user
         documents_modified_response = requests.get(sharepoint_site+"/_api/search/query?Querytext='*'&Properties='GraphQuery:ACTOR("+actor_id+"\,action\:1003)'",
-            headers={'Authorization': 'Bearer ' + loggedin_user_social.extra_data['access_token']})
+            headers={'Authorization': 'Bearer ' + access_token})
         documents_modified = get_data_from_gql(documents_modified_response.content)
 
         # get other users that the user is working with
         working_with_response = requests.get(
             sharepoint_site+"/_api/search/query?Querytext='*'&Properties='GraphQuery:ACTOR("+actor_id+"\,action\:1033),GraphRankingModel:{\"features\"\:[{\"function\"\:\"EdgeWeight\"}]}'&RankingModelId='0c77ded8-c3ef-466d-929d-905670ea1d72'&SelectProperties='Path,Title,PictureThumbnailURL,PictureURL'",
-            headers={'Authorization': 'Bearer ' + loggedin_user_social.extra_data['access_token']})
+            headers={'Authorization': 'Bearer ' + access_token})
         working_with = get_data_from_gql(working_with_response.content)
 
     except:
@@ -542,21 +533,6 @@ def get_user_graph_info(request, user_id):
     user_graph_info['office_graph_info'] = office_graph_info
 
     return user_graph_info
-
-# TODO: Move this to somewhere in the auth code and save the token instead of getting it every time
-def get_app_token():
-    payload = {
-        'grant_type': 'client_credentials',
-        'client_id': 'd54d6b86-8b0d-4c13-ae77-6e9374476419',
-        'client_secret': '6Ts5kRjDAAJAZmgvnGDvBBQQaiJ+eii4+vFyvcXpHnM=',
-        'resource': 'https://msopentechtest01-my.sharepoint.com',
-        'scope': 'openid profile user_impersonation'
-    }
-
-    response = requests.post('https://login.windows.net/ec02513e-fec1-4bac-af12-d76197b80939/oauth2/token', data=payload)
-    responseObj = json.loads(response.content)
-    return responseObj['access_token']
-
 
 def get_data_from_gql(content):
 
