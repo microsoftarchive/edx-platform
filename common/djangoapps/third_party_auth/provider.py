@@ -177,8 +177,7 @@ class AzureADOauth2(BaseProvider):
     NAME = 'AzureAD'
     SETTINGS = {
         'SOCIAL_AUTH_AZUREAD_OAUTH2_KEY': None,
-        'SOCIAL_AUTH_AZUREAD_OAUTH2_SECRET': None,
-        'SOCIAL_AUTH_AZUREAD_OAUTH2_SHAREPOINT_SITE': None
+        'SOCIAL_AUTH_AZUREAD_OAUTH2_SECRET': None
     }
 
     @classmethod
@@ -197,8 +196,7 @@ class AzureADOpenIDConnect(BaseProvider):
     NAME = 'AzureADOpenIDConnect'
     SETTINGS = {
         'SOCIAL_AUTH_AZUREAD_OPENIDCONNECT_KEY': None,
-        'SOCIAL_AUTH_AZUREAD_OPENIDCONNECT_SECRET': None,
-        'SOCIAL_AUTH_AZUREAD_OPENIDCONNECT_SHAREPOINT_SITE': None
+        'SOCIAL_AUTH_AZUREAD_OPENIDCONNECT_SECRET': None
     }
 
     @classmethod
