@@ -1,0 +1,105 @@
+<%inherit file="/main.html" />
+<%! from django.core.urlresolvers import reverse %>
+<%! from django.utils.translation import ugettext as _ %>
+<%namespace name='static' file='/static_content.html'/>
+
+<%block name="headextra">
+  <%static:css group='style-course'/>
+  <script type="text/javascript" src="${static.url('js/vendor/flot/jquery.flot.js')}"></script>
+  <script type="text/javascript" src="${static.url('js/vendor/flot/jquery.flot.axislabels.js')}"></script>
+</%block>
+
+<style type="text/css">
+a.active-section {
+	color: #551A8B;
+}
+.sysadmin-dashboard-content h2 a {
+	margin-right: 1.2em;
+}
+table.stat_table {
+	font-family: verdana,arial,sans-serif;
+	font-size:11px;
+	color:#333333;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+}
+table.stat_table th {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #dedede;
+}
+table.stat_table td {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #ffffff;
+}
+
+a.selectedmode { background-color: yellow; }
+
+textarea {
+  height: 200px;
+}
+</style>
+
+<section class="container">
+<div class="sysadmin-dashboard-wrapper">
+
+  <section class="sysadmin-dashboard-content" style="margin-left:10pt;margin-top:10pt;margin-right:10pt;margin-bottom:20pt">
+    <h1>${_('Sysadmin Dashboard')}</h1>
+	<hr />
+    <h2 class="instructor-nav">
+	  <a href="${reverse('sysadmin')}" class="${modeflag.get('users')}">${_('Users')}</a>
+      <a href="${reverse('sysadmin_courses')}" class="${modeflag.get('courses')}">${_('Courses')}</a>
+      <a href="${reverse('sysadmin_staffing')}" class="${modeflag.get('staffing')}">${_('Staffing and Enrollment')}</a> 
+      ## Translators: refers to http://git-scm.com/docs/git-log
+      <a href="${reverse('gitlogs')}">${_('Git Logs')}</a>
+      <a href="${reverse('azuread_main')}" class="${modeflag.get('azuread')}">${_('Azure AD ')}</a>
+    </h2>
+	<hr />
+
+%if modeflag.get('azuread'):
+	<h3>${_('Azure AD Users Management')}</h3>
+
+    <br/>
+    <br/>
+    <p>
+      <hr width="100%">
+      <h2>${_('List of AAD Users')}</h2>
+      <table class="stat_table">
+        <tr>
+	
+	  <th>${_('User')}</th>
+	  <th>${_('Type')}</th>
+	  <th>${_('Actions')}</th>
+
+	</tr>
+        %for row in datatable['data']:
+          <tr>
+	    
+	  <td>${row["displayName"]}</td>
+	  <td>${row["userType"]}</td>
+	    
+	    	  </tr>
+        %endfor
+      </table>
+    </p>
+
+ %endif
+
+
+
+%if msg:
+    <p>${msg}</p>
+%endif
+
+  </section>
+  <div style="text-align:right; float: right"><span id="djangopid">'Django PID': ${djangopid}</span>
+  ## Translators: A version number appears after this string
+  | <span id="edxver">${_('Platform Version')}: ${edx_platform_version}</span></div>
+</div>
+</section>

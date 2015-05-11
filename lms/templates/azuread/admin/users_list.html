@@ -1,0 +1,19 @@
+<%! import json %>
+
+<h2 class="problem-header">
+AAD Users list
+</h2>
+
+% if users != None:
+    <ul class="users_list">
+	% for user in users:
+		<li>
+			${user['displayName']}, ${user['userType']}
+		</li>
+	% endfor    	
+    </ul>
+% else:
+	<b>There are no users in this directory</b>
+% endif
+
+</div>
