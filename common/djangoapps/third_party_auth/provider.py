@@ -177,7 +177,8 @@ class AzureADOauth2(BaseProvider):
     NAME = 'AzureAD'
     SETTINGS = {
         'SOCIAL_AUTH_AZUREAD_OAUTH2_KEY': None,
-        'SOCIAL_AUTH_AZUREAD_OAUTH2_SECRET': None
+        'SOCIAL_AUTH_AZUREAD_OAUTH2_SECRET': None,
+        'SOCIAL_AUTH_AZUREAD_OAUTH2_RESOURCE': None
     }
 
     @classmethod
