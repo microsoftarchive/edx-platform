@@ -174,7 +174,7 @@ class AzureADOauth2(BaseProvider):
 
     BACKEND_CLASS = azuread.AzureADOAuth2
     ICON_CLASS = 'fa-windows'
-    NAME = 'AzureAD'
+    NAME = 'Office 365'
     SETTINGS = {
         'SOCIAL_AUTH_AZUREAD_OAUTH2_KEY': None,
         'SOCIAL_AUTH_AZUREAD_OAUTH2_SECRET': None,
