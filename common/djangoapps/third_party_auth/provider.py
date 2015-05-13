@@ -21,9 +21,11 @@ class BaseProvider(object):
     # String. Name of the FontAwesome glyph to use for sign in buttons (or the
     # name of a user-supplied custom glyph that is present at runtime).
     ICON_CLASS = _DEFAULT_ICON_CLASS
-    # String. User-facing name of the provider. Must be unique across all
-    # enabled providers. Will be presented in the UI.
+    # String. Name of the provider. Must be unique across all enabled providers.
     NAME = None
+    # String. User-facing name of the provider that shows up in the login button text.
+    # Can contain blanks and will be presented in the UI.
+    UINAME = None
     # Dict of string -> object. Settings that will be merged into Django's
     # settings instance. In most cases the value will be None, since real
     # values are merged from .json files (foo.auth.json; foo.env.json) onto the
@@ -115,7 +117,7 @@ class GoogleOauth2(BaseProvider):
 
     BACKEND_CLASS = google.GoogleOAuth2
     ICON_CLASS = 'fa-google-plus'
-    NAME = 'Google'
+    NAME = UINAME = 'Google'
     SETTINGS = {
         'SOCIAL_AUTH_GOOGLE_OAUTH2_KEY': None,
         'SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET': None,
@@ -135,7 +137,7 @@ class LinkedInOauth2(BaseProvider):
 
     BACKEND_CLASS = linkedin.LinkedinOAuth2
     ICON_CLASS = 'fa-linkedin'
-    NAME = 'LinkedIn'
+    NAME = UINAME = 'LinkedIn'
     SETTINGS = {
         'SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY': None,
         'SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET': None,
@@ -155,7 +157,7 @@ class FacebookOauth2(BaseProvider):
 
     BACKEND_CLASS = facebook.FacebookOAuth2
     ICON_CLASS = 'fa-facebook'
-    NAME = 'Facebook'
+    NAME = UINAME = 'Facebook'
     SETTINGS = {
         'SOCIAL_AUTH_FACEBOOK_KEY': None,
         'SOCIAL_AUTH_FACEBOOK_SECRET': None,
@@ -170,11 +172,12 @@ class FacebookOauth2(BaseProvider):
         return provider_details.get('fullname')
 
 class AzureADOauth2(BaseProvider):
-    """Provider for Azure AD's Oauth2 auth system."""
+    """Provider for Microsoft Azure Active Directory's Oauth2 auth system."""
 
     BACKEND_CLASS = azuread.AzureADOAuth2
     ICON_CLASS = 'fa-windows'
-    NAME = 'Office 365'
+    NAME = 'AzureAD'
+    UINAME = 'Office 365'
     SETTINGS = {
         'SOCIAL_AUTH_AZUREAD_OAUTH2_KEY': None,
         'SOCIAL_AUTH_AZUREAD_OAUTH2_SECRET': None,
