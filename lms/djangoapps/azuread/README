@@ -1,0 +1,17 @@
+AZURE ACTIVE DIRECTORY SSO
+==========================
+
+Configuration options for lms.auth.json:
+
+    "THIRD_PARTY_AUTH": {
+	"AzureAD" : {
+	"SOCIAL_AUTH_AZURE_PASSWORD": "",
+	"SOCIAL_AUTH_AZURE_CLIENT_ID": "",
+	"SOCIAL_AUTH_AZURE_DOMAIN" : ""
+	}
+
+All of these settings can be retrieved from the azure active directory app settings.
+
+You'll need to create a new 'password', this is not done by default, you must create one after setting up the new application settings.
+
+Client ID and Azure Domain are created by default on every new Azure setup.

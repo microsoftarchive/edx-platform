@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-#
 #
+from django.conf import settings
 
 	
 #
@@ -8,7 +9,7 @@
 def getCurlAuthHeader():
 	from  azuread import authAAD
 	auth = auth = authAAD.AuthorizationHelperForAADGraphService()
-	authHeader = auth.getAuthenticationHeader(auth.appTenantDomainName, auth.appPrincipalId, auth.password+'', auth.apiVersion)
+	authHeader = auth.getAuthenticationHeader()
 	if authHeader!='':
 		listHeader = [ ''+authHeader+'',  'Accept:application/json;odata=minimalmetadata', 'Content-Type:application/json;odata=minimalmetadata', 'Prefer:return-content' ]
 	else:
@@ -23,10 +24,9 @@ def getFeed(feedName):
 		feedName = 'users'
 		
 	#configure curlUrl	
-	import settings
-	settings = settings.Settings()
-	stsUrl = "https://graph.windows.net/%s/%s?api-version=%s" % ( settings.appTenantDomainName , feedName,  settings.apiVersion )
-	print stsUrl
+
+	stsUrl = "https://graph.windows.net/%s/%s?api-version=%s" % ( settings.SOCIAL_AUTH_AZURE_DOMAIN , feedName,  "1.0" )
+	# print stsUrl
 	#get authHeader
 	authHeader = getCurlAuthHeader()
 	#return authHeader
@@ -51,7 +51,8 @@ def getFeed(feedName):
 		c.perform()
 		c.close()
 		output = buffer.getvalue()
-		
+		print "Azure feed output:"
+		print output
 		return output
 		
 	else:
@@ -59,4 +60,4 @@ def getFeed(feedName):
 		
 
 """ testing """
-print getFeed('users');
+# print getFeed('users');

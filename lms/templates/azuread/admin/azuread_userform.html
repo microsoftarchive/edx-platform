@@ -62,55 +62,75 @@ textarea {
     </h2>
 	<hr />
 
-%if modeflag.get('azuread'):
-	<h3>${_('Azure AD Users Management')}</h3>
-	<h4><a href="${reverse('azuread_create_user')}">${_('Create new user')}</a>
 
-    <br/>
-    <br/>
-    <p>
-      <hr width="100%">
-      <h2>${_('List of AAD Users')}</h2>
-      <table class="stat_table">
-        <tr>
-	
-	  <th>${_('User')}</th>
-	  <th>${_('ID')}</th>
-	  <th>${_('Enabled')}</th>
-	  <th>${_('Actions')}</th>
+<section class="container">
+<div class="sysadmin-dashboard-wrapper">
 
-	</tr>
-        %for row in datatable['data']:
-          <tr>
-	    
-	  <td>${row["displayName"]}</td>
-%if row["userPrincipalName"].find("#EXT#") > -1:
-	  <td>${row["otherMails"][0]}</td>
+  <section class="sysadmin-dashboard-content" style="margin-left:10pt;margin-top:10pt;margin-right:10pt;margin-bottom:20pt">
+%if is_edit:
+	<h3>${_('Azure AD: Edit User')}</h3>
+
 %else:
-	  <td>${row["userPrincipalName"]}</td>
+	<h3>${_('Azure AD: Create User')}</h3>
 %endif
-	  <td>${row["accountEnabled"]}</td>
-	    <td>
-	    	<a href="${reverse('azuread_users_edit')}?id=${row["objectId"]}">${_("edit")}</a> |
-
-	%if row["accountEnabled"]:
-	    	<a href="${reverse('azuread_users_changestatus')}?a=d&id=${row["objectId"]}">${_("disable")}</a>
-	%else:
-	    	<a href="${reverse('azuread_users_changestatus')}?a=e&id=${row["objectId"]}">${_("enable")}</a>
-    %endif
-	    </td>
-	    	  </tr>
-        %endfor
-      </table>
-    </p>
-
- %endif
-
-
-
 %if msg:
     <p>${msg}</p>
 %endif
+    <form name="action" method="POST">
+    <input type="hidden" name="csrfmiddlewaretoken" value="${ csrf_token }" />
+
+
+%if is_edit == False:
+	<ul class="list-input">
+	  <li class="field text" style="padding-bottom: 1.2em">
+		<label for="username">${_('username')} </label>
+		<input type="text" name="username" size=40 ${'value="'+form_data["username"]+'"' if form_data.has_key("username") else ''} /> @${azuread_domain}
+	  </li>
+%else:
+	<ul class="list-input">
+	  <li class="field text" style="padding-bottom: 1.2em">
+		<label for="username">${_('username')}: ${form_data["email"]}</label>
+
+	  </li>
+%endif
+	  <li class="field text">
+		<label for="student_first_name">${_('First Name')}</label>
+		<input type="text" name="firstname" size=40 ${'value="'+form_data["firstname"]+'"' if form_data.has_key("firstname") else ''}/>
+				<label for="student_last_name">${_('Last Name')}</label>
+		<input type="text" name="lastname" size=40 ${'value="'+form_data["lastname"]+'"' if form_data.has_key("lastname") else ''}/>
+	  </li>
+	  <li class="field text">
+				<label for="student_displayname">${_('Display Name')}</label>
+		<input type="text" name="displayname" size=40  ${'value="'+form_data["displayname"]+'"' if form_data.has_key("displayname") else ''}/>
+	  </li>
+
+
+	  <li class="field text">
+		<label for="student_password">${_('Password')}</label>
+		<input type="password" name="password" size=40 />
+	  </li>
+	</ul>
+
+
+	<div class="form-actions">
+	  <p>
+%if is_edit:
+		<button type="submit" name="action" value="edit_user">${_('Save changes')}</button>
+%else:
+		<button type="submit" name="action" value="create_user">${_('Create user')}</button>
+%endif
+	  </p>
+    </div>
+
+%if form_data.has_key("object_id"):
+	<input type="hidden" name="object_id" value="${form_data['object_id']}" />
+	<input type="hidden" name="email" value="${form_data['email']}" />
+%endif
+
+    <hr width="40%" style="align:left">
+	</form>
+
+
 
   </section>
   <div style="text-align:right; float: right"><span id="djangopid">'Django PID': ${djangopid}</span>

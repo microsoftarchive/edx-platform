@@ -129,6 +129,8 @@ AUDIT_LOG = logging.getLogger("audit")
 
 ReverifyInfo = namedtuple('ReverifyInfo', 'course_id course_name course_number date status display')  # pylint: disable=invalid-name
 
+SETTING_CHANGE_INITIATED = 'edx.user.settings.change_initiated'
+
 
 def csrf_token(context):
     """A csrf token that can be included in a form."""
@@ -620,39 +622,10 @@ def dashboard(request):
 
     enrolled_courses_either_paid = frozenset(course.id for course, _enrollment in course_enrollment_pairs
                                              if _enrollment.is_paid_course())
-    # get info w.r.t ExternalAuthMap
-    external_auth_map = None
-    try:
-        external_auth_map = ExternalAuthMap.objects.get(user=user)
-    except ExternalAuthMap.DoesNotExist:
-        pass
 
     # If there are *any* denied reverifications that have not been toggled off,
     # we'll display the banner
     denied_banner = any(item.display for item in reverifications["denied"])
-
-    language_options = DarkLangConfig.current().released_languages_list
-
-    # add in the default language if it's not in the list of released languages
-    if settings.LANGUAGE_CODE not in language_options:
-        language_options.append(settings.LANGUAGE_CODE)
-        # Re-alphabetize language options
-        language_options.sort()
-
-    # try to get the preferred language for the user
-    preferred_language_code = preferences_api.get_user_preference(request.user, LANGUAGE_KEY)
-    # try and get the current language of the user
-    current_language_code = get_language()
-    if preferred_language_code and preferred_language_code in settings.LANGUAGE_DICT:
-        # if the user has a preference, get the name from the code
-        current_language = settings.LANGUAGE_DICT[preferred_language_code]
-    elif current_language_code in settings.LANGUAGE_DICT:
-        # if the user's browser is showing a particular language,
-        # use that as the current language
-        current_language = settings.LANGUAGE_DICT[current_language_code]
-    else:
-        # otherwise, use the default language
-        current_language = settings.LANGUAGE_DICT[settings.LANGUAGE_CODE]
 
     # Populate the Order History for the side-bar.
     order_history_list = order_history(user, course_org_filter=course_org_filter, org_filter_out_set=org_filter_out_set)
@@ -662,12 +635,22 @@ def dashboard(request):
                                              if course.pre_requisite_courses)
     courses_requirements_not_met = get_pre_requisite_courses_not_completed(user, courses_having_prerequisites)
 
+    ccx_membership_triplets = []
+    if settings.FEATURES.get('CUSTOM_COURSES_EDX', False):
+        from ccx import ACTIVE_CCX_KEY
+        from ccx.utils import get_ccx_membership_triplets
+        ccx_membership_triplets = get_ccx_membership_triplets(
+            user, course_org_filter, org_filter_out_set
+        )
+        # should we deselect any active CCX at this time so that we don't have
+        # to change the URL for viewing a course?  I think so.
+        request.session[ACTIVE_CCX_KEY] = None
+
     context = {
         'enrollment_message': enrollment_message,
         'course_enrollment_pairs': course_enrollment_pairs,
         'course_optouts': course_optouts,
         'message': message,
-        'external_auth_map': external_auth_map,
         'staff_access': staff_access,
         'errored_courses': errored_courses,
         'show_courseware_links_for': show_courseware_links_for,
@@ -682,22 +665,15 @@ def dashboard(request):
         'block_courses': block_courses,
         'denied_banner': denied_banner,
         'billing_email': settings.PAYMENT_SUPPORT_EMAIL,
-        'language_options': language_options,
-        'current_language': current_language,
-        'current_language_code': current_language_code,
         'user': user,
-        'duplicate_provider': None,
         'logout_url': reverse(logout_user),
         'platform_name': platform_name,
         'enrolled_courses_either_paid': enrolled_courses_either_paid,
         'provider_states': [],
         'order_history_list': order_history_list,
         'courses_requirements_not_met': courses_requirements_not_met,
+        'ccx_membership_triplets': ccx_membership_triplets,
     }
-
-    if third_party_auth.is_enabled():
-        context['duplicate_provider'] = pipeline.get_duplicate_provider(messages.get_messages(request))
-        context['provider_user_states'] = pipeline.get_provider_user_states(user)
 
     return render_to_response('dashboard.html', context)
 
@@ -984,6 +960,10 @@ def login_user(request, error=""):  # pylint: disable-msg=too-many-statements,un
         # logic as with first-party auth.
         running_pipeline = pipeline.get(request)
         username = running_pipeline['kwargs'].get('username')
+
+        print "-------"
+        print username
+        print running_pipeline['kwargs']
         backend_name = running_pipeline['backend']
         requested_provider = provider.Registry.get_by_backend_name(backend_name)
 
@@ -1746,13 +1726,14 @@ def auto_auth(request):
     # If successful, this will return a tuple containing
     # the new user object.
     try:
-        user, _profile, reg = _do_create_account(form)
+        user, profile, reg = _do_create_account(form)
     except AccountValidationError:
         # Attempt to retrieve the existing user.
         user = User.objects.get(username=username)
         user.email = email
         user.set_password(password)
         user.save()
+        profile = UserProfile.objects.get(user=user)
         reg = Registration.objects.get(user=user)
 
     # Set the user's global staff bit
@@ -1763,6 +1744,12 @@ def auto_auth(request):
     # Activate the user
     reg.activate()
     reg.save()
+
+    # ensure parental consent threshold is met
+    year = datetime.date.today().year
+    age_limit = settings.PARENTAL_CONSENT_AGE_LIMIT
+    profile.year_of_birth = (year - age_limit) - 1
+    profile.save()
 
     # Enroll the user in a course
     if course_key is not None:
@@ -1810,6 +1797,16 @@ def activate_account(request, key):
                 if cea.auto_enroll:
                     CourseEnrollment.enroll(student[0], cea.course_id)
 
+            # enroll student in any pending CCXs he/she may have if auto_enroll flag is set
+            if settings.FEATURES.get('CUSTOM_COURSES_EDX'):
+                from ccx.models import CcxMembership, CcxFutureMembership
+                ccxfms = CcxFutureMembership.objects.filter(
+                    email=student[0].email
+                )
+                for ccxfm in ccxfms:
+                    if ccxfm.auto_enroll:
+                        CcxMembership.auto_enroll(student[0], ccxfm)
+
         resp = render_to_response(
             "registration/activation_complete.html",
             {
@@ -1842,6 +1839,18 @@ def password_reset(request):
                   from_email=settings.DEFAULT_FROM_EMAIL,
                   request=request,
                   domain_override=request.get_host())
+        # When password change is complete, a "edx.user.settings.changed" event will be emitted.
+        # But because changing the password is multi-step, we also emit an event here so that we can
+        # track where the request was initiated.
+        tracker.emit(
+            SETTING_CHANGE_INITIATED,
+            {
+                "setting": "password",
+                "old": None,
+                "new": None,
+                "user_id": request.user.id,
+            }
+        )
     else:
         # bad user? tick the rate limiter counter
         AUDIT_LOG.info("Bad password_reset user passed in.")
@@ -2057,6 +2066,19 @@ def do_email_change_request(user, new_email, activation_key=uuid.uuid4().hex):
     except Exception:  # pylint: disable=broad-except
         log.error(u'Unable to send email activation link to user from "%s"', from_address, exc_info=True)
         raise ValueError(_('Unable to send email activation link. Please try again later.'))
+
+    # When the email address change is complete, a "edx.user.settings.changed" event will be emitted.
+    # But because changing the email address is multi-step, we also emit an event here so that we can
+    # track where the request was initiated.
+    tracker.emit(
+        SETTING_CHANGE_INITIATED,
+        {
+            "setting": "email",
+            "old": context['old_email'],
+            "new": context['new_email'],
+            "user_id": user.id,
+        }
+    )
 
 
 @ensure_csrf_cookie

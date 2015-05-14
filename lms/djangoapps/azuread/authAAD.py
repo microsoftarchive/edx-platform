@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-#
 #
-
+from django.conf import settings
+import json
+import pycurl
+from StringIO import StringIO
 
 #
 # AuthorizationHelperForAADGraphService class
@@ -9,58 +12,167 @@
 class AuthorizationHelperForAADGraphService:
 	
 	def __init__(self):
-		import settings
-		settings = settings.Settings()
 		
-		self.appTenantDomainName= settings.appTenantDomainName
-		self.appPrincipalId		= settings.appPrincipalId
-		self.password			= settings.password
-		self.apiVersion			= settings.apiVersion
-	
-	
-	#
-	# Post the token generated from the symettric key and 
-	# other information to STS URL and construct the authentication header
-	#
-	def getAuthenticationHeader(self, appTenantDomainName, appPrincipalId, password, apiVersion ):
+		self.appTenantDomainName= settings.SOCIAL_AUTH_AZURE_DOMAIN
+		self.appPrincipalId		= settings.SOCIAL_AUTH_AZURE_CLIENT_ID
+		self.password			= settings.SOCIAL_AUTH_AZURE_PASSWORD
+		self.apiVersion			= "1.0"
+
+
+	def getCurlAuthHeader(self):
+		from  azuread import authAAD
+		auth = auth = authAAD.AuthorizationHelperForAADGraphService()
+		authHeader = auth.getAuthenticationHeader()
+		if authHeader!='':
+			listHeader = [ ''+authHeader+'',  'Accept:application/json;odata=minimalmetadata', 'Content-Type:application/json;odata=minimalmetadata', 'Prefer:return-content' ]
+		else:
+			listHeader = ''
+			
+		return listHeader
+
+	def get_roles(self):
+		stsUrl = "https://graph.windows.net/%s/roles?api-version=%s" % ( self.appTenantDomainName, self.apiVersion )
+		authHeader = self.getCurlAuthHeader()
+		if authHeader !='':
+
+			c = pycurl.Curl()
+			c.setopt(c.URL, stsUrl)
+			c.setopt(pycurl.HTTPHEADER, authHeader)
+			c.setopt(pycurl.SSL_VERIFYPEER, 0)
+			c.setopt(pycurl.SSL_VERIFYHOST, 0)
+
+			buffer = StringIO()
+			c.setopt(c.WRITEFUNCTION, buffer.write)
+			c.perform()
+			c.close()
+			output = buffer.getvalue()
+			return output
+		else:
+			return 'None'
+
+	#send a PATCH request to azure to update an user's data
+	def update_user(self, user_id, new_data):
+
+		stsUrl = "https://graph.windows.net/%s/users/%s?api-version=%s" % ( self.appTenantDomainName , user_id, self.apiVersion )
+		
+		authHeader = self.getCurlAuthHeader()
+		if authHeader !='':
+
+			c = pycurl.Curl()
+			c.setopt(c.URL, stsUrl)
+			c.setopt(pycurl.HTTPHEADER, authHeader)
+			c.setopt(pycurl.SSL_VERIFYPEER, 0)
+			c.setopt(pycurl.SSL_VERIFYHOST, 0)
+
+			user_data = new_data
+			user_data = json.dumps(user_data)
+
+			
+			c.setopt(pycurl.POSTFIELDS,user_data)
+			c.setopt(c.CUSTOMREQUEST, 'PATCH')
+			buffer = StringIO()
+			c.setopt(c.WRITEFUNCTION, buffer.write)
+			c.perform()
+			c.close()
+			output = buffer.getvalue()
+
+			return output
+			
+		else:
+			return 'None'
+
+	#send basic POST to azure to create a new user
+	def create_user(self, data):
+
+		stsUrl = "https://graph.windows.net/%s/users?api-version=%s" % ( self.appTenantDomainName , self.apiVersion )
+		authHeader = self.getCurlAuthHeader()
+		if authHeader !='':
+		
+
+			c = pycurl.Curl()
+			c.setopt(c.URL, stsUrl)
+			c.setopt(pycurl.HTTPHEADER, authHeader)
+			c.setopt(pycurl.SSL_VERIFYPEER, 0)
+			c.setopt(pycurl.SSL_VERIFYHOST, 0)
+
+			user_data = {}
+			user_data["accountEnabled"] = True
+			user_data["displayName"] = data["fullname"]
+			user_data["mailNickname"] = data["username"]
+			user_data["passwordProfile"] = {"password":data["password"],"forceChangePasswordNextLogin":False}
+			user_data["userPrincipalName"] = "%s@%s" % (data["username"], self.appTenantDomainName)
+			user_data["givenName"] = data["givenName"]
+			user_data["surname"] = data["surname"]
+
+			user_data = json.dumps(user_data)
+
+
+			c.setopt(pycurl.POSTFIELDS,user_data)
+			
+			buffer = StringIO()
+
+			c.setopt(c.WRITEFUNCTION, buffer.write)
+			c.perform()
+			c.close()
+			output = buffer.getvalue()
+			return output
+			
+		else:
+			return 'None'
+
+	#retrieve user info from azure, using the user's object id.
+	def get_user(self, user_id):
+		stsUrl = "https://graph.windows.net/%s/users/%s?api-version=%s" % ( self.appTenantDomainName ,user_id, self.apiVersion )
+		authHeader = self.getCurlAuthHeader()
+		if authHeader !='':
+		
+
+			c = pycurl.Curl()
+			c.setopt(c.URL, stsUrl)
+			c.setopt(pycurl.HTTPHEADER, authHeader)
+			c.setopt(pycurl.SSL_VERIFYPEER, 0)
+			c.setopt(pycurl.SSL_VERIFYHOST, 0)
+			
+			buffer = StringIO()
+
+			c.setopt(c.WRITEFUNCTION, buffer.write)
+			c.perform()
+			c.close()
+			output = buffer.getvalue()
+			return output
+			
+		else:
+			return 'None'
+
+	#create azure auth header to login via sso
+	def getAuthenticationHeader(self ):
 		import urllib
 		# Password
-		clientSecret = urllib.quote_plus(password)
-		# Information about the resource we need access for which in this case is graph
+		clientSecret = urllib.quote_plus(self.password)
+
 		graphId = 'https://graph.windows.net'
 		protectedResourceHostName = 'graph.windows.net'
 		graphPrincipalId = urllib.quote_plus(graphId)
-		# Information about the app
-		clientPrincipalId = urllib.quote_plus(appPrincipalId)
-		# Construct the body for the STS request
+		clientPrincipalId = urllib.quote_plus(self.appPrincipalId)
 		authenticationRequestBody = 'grant_type=client_credentials&client_secret=%s&resource=%s&client_id=%s' % (clientSecret, graphPrincipalId, clientPrincipalId )
-		# Set url
-		stsUrl = 'https://login.windows.net/%s/oauth2/token?api-version=1.5' % ( appTenantDomainName )
+		stsUrl = 'https://login.windows.net/%s/oauth2/token?api-version=1.5' % ( self.appTenantDomainName )
 
-		#Using curl to post the information to STS and get back the authentication response
-		import pycurl
-		from StringIO import StringIO
 		
 		c = pycurl.Curl()
 		c.setopt(c.URL, stsUrl)
-		# By default https does not work for CURL
 		c.setopt(pycurl.SSL_VERIFYPEER, 0)
 		c.setopt(pycurl.SSL_VERIFYHOST, 0)
 		c.setopt(c.POSTFIELDS, authenticationRequestBody)
 		
 		buffer = StringIO()
-		#version pycurl >= 7.19.3
-		#c.setopt(c.WRITEDATA, buffer)
+
 		c.setopt(c.WRITEFUNCTION, buffer.write)
 		c.perform()
 		c.close()
 		output = buffer.getvalue()
-		
-		# decode the response from sts using json decoder
-		import json
 
 		if 'access_token' in output:
-			#remove non asccii 128 compat python2.x
+
 			from azuread import CommonFunc
 			jsonResponse	= json.loads(output.decode("ascii","ignore"))
 			jsonData		= CommonFunc.convertUnicode2Utf8Dict(jsonResponse)
