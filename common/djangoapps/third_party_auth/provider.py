@@ -179,7 +179,7 @@ class AzureADOauth2(BaseProvider):
     SETTINGS = {
         'SOCIAL_AUTH_AZUREAD_OAUTH2_KEY': None,
         'SOCIAL_AUTH_AZUREAD_OAUTH2_SECRET': None,
-        'SOCIAL_AUTH_AZUREAD_OAUTH2_SHAREPOINT_SITE': None
+        'SOCIAL_AUTH_AZUREAD_OAUTH2_RESOURCE': None
     }
 
     @classmethod
@@ -190,25 +190,25 @@ class AzureADOauth2(BaseProvider):
     def get_name(cls, provider_details):
         return provider_details.get('fullname')
 
-class AzureADOpenIDConnect(BaseProvider):
-    """Provider for Azure AD's OpenId connect system."""
+# class AzureADOpenIDConnect(BaseProvider):
+    # """Provider for Azure AD's OpenId connect system."""
 
-    BACKEND_CLASS = azuread.AzureADOpenIDConnect
-    ICON_CLASS = 'fa-windows'
-    NAME = 'AzureADOpenIDConnect'
-    SETTINGS = {
-        'SOCIAL_AUTH_AZUREAD_OPENIDCONNECT_KEY': None,
-        'SOCIAL_AUTH_AZUREAD_OPENIDCONNECT_SECRET': None,
-        'SOCIAL_AUTH_AZUREAD_OPENIDCONNECT_SHAREPOINT_SITE': None
-    }
+    # BACKEND_CLASS = azuread.AzureADOpenIDConnect
+    # ICON_CLASS = 'fa-windows'
+    # NAME = 'AzureADOpenIDConnect'
+    # SETTINGS = {
+        # 'SOCIAL_AUTH_AZUREAD_OPENIDCONNECT_KEY': None,
+        # 'SOCIAL_AUTH_AZUREAD_OPENIDCONNECT_SECRET': None,
+        # 'SOCIAL_AUTH_AZUREAD_OPENIDCONNECT_SHAREPOINT_SITE': None
+    # }
 
-    @classmethod
-    def get_email(cls, provider_details):
-        return provider_details.get('email')
+    # @classmethod
+    # def get_email(cls, provider_details):
+        # return provider_details.get('email')
 
-    @classmethod
-    def get_name(cls, provider_details):
-        return provider_details.get('fullname')
+    # @classmethod
+    # def get_name(cls, provider_details):
+        # return provider_details.get('fullname')
 
 class YammerOauth2(BaseProvider):
     """Provider for Yammer's Oauth2 auth system."""
